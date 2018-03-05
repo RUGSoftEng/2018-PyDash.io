@@ -28,15 +28,31 @@ asdf local python 3.4
 
 ```
 
-# Installing Flask
+# Installing Pipenv
 
 ```bash
-pip install flask
-asdf reshim python
+pip install pipenv
+asdf reshim python # So we get access to the `pipenv` binary right away
+```
+
+# Installing Flask
+
+## Setting up a new project
+
+This step is only required if not someone else has already set up the project using pipenv before (which will create a Pipfile).
+
+```bash
+pipenv install flask
+```
+
+## Installing local dependencies from an existing project
+
+```bash
+pipenv install --dev
 ```
 
 # Running Flask
 
 ```bash
-FLASK_APP=hello.py flask run
+FLASK_APP=hello.py pipenv run flask run
 ```
