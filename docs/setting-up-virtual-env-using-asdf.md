@@ -21,10 +21,10 @@ For other systems, see: https://github.com/asdf-vm/asdf#setup
 
 ```bash
 asdf plugin-add python
-asdf install python 3.4
+asdf install python 3.6
 
-# Run this from within the project folder; it probably is already set to 3.4 by the `.tool-versions`-file that is there
-asdf local python 3.4 
+# Run this from within the project folder; it probably is already set to 3.6 by the `.tool-versions`-file that is there
+asdf local python 3.6
 
 ```
 
