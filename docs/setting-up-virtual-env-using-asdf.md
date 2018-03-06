@@ -54,5 +54,6 @@ pipenv install --dev
 # Running Flask
 
 ```bash
-FLASK_APP=hello.py pipenv run flask run
+# From within the `pydash` directory:
+FLASK_APP=pydash.py pipenv run flask run
 ```
