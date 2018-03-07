@@ -8,6 +8,9 @@ class User:
         self.name = name
         self.password = password
 
+    def __repr__(self):
+        return '<{} {}>'.format(self.__class__.__name__, self.name)
+
     @classmethod
-    def find_user_by_name(name):
-        datastore.users.get(name)
+    def find_user_by_name(self,name):
+        return app.model.datastore.load()['users'].get(name)
