@@ -3,16 +3,22 @@
 {% block content %}
 
   <h1>Sign In</h1>
-  <form action="/login" method="POST">
+  <form action="{{ url_for('login_post') }}" method="POST">
     {{ login_form.hidden_tag() }}
     <p>
       {{ login_form.username.label }}
       {{ login_form.username(size=32) }}
+      {% for error in login_form.username.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+      {% endfor %}
     </p>
 
     <p>
       {{ login_form.password.label }}
       {{ login_form.password(size=32) }}
+      {% for error in login_form.password.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+      {% endfor %}
     </p>
     <p>
       {{ login_form.remember_me() }} {{ login_form.remember_me.label }}
