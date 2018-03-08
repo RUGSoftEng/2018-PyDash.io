@@ -11,7 +11,8 @@ flask_app.config.from_object(Config)
 login = LoginManager(flask_app)
 login.login_view = 'login'
 
-from app import routes # Needs to be below flask_app instantiation
+from app import routes  # Needs to be below flask_app instantiation
+
 
 @login.user_loader
 def load_user(name):
@@ -22,7 +23,8 @@ def load_user(name):
 @flask_app.cli.command('seed')
 def seed_command():
     """Initializes our datastore with some preliminary values"""
-    seed_datastore();
+    seed_datastore()
+
 
 @flask_app.shell_context_processor
 def make_shell_context():
