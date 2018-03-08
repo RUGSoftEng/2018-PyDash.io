@@ -1,3 +1,9 @@
+"""
+Entrypoint of `pydash_web`
+
+Initializes a Flask web application, and loads the relevant configuration settings.
+"""
+
 from flask import Flask
 from flask_login import LoginManager
 
@@ -10,7 +16,7 @@ flask_webapp.config.from_object(Config)
 login_manager = LoginManager(flask_webapp)
 login_manager.login_view = 'login'
 
-from pydash_web import routes  # Needs to be below flask_webapp instantiation
+from pydash_web import routes  # Needs to be below flask_webapp instantiation to prevent circular dependency
 
 
 @login_manager.user_loader

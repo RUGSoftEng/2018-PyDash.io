@@ -1,3 +1,7 @@
+"""
+A simple web form validator to allow a user to sign in properly
+"""
+
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired

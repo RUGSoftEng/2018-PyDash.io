@@ -12,7 +12,6 @@ It handles a subset of the following tasks
 - Deleting entities from the persistence layer.
 """
 
-
 from .user import User
 
 
@@ -29,4 +28,14 @@ def _hard_coded_users_dict():
     """
     Sneakily our user datastore is currently a hard-coded list of users!
     """
-    return {"Qqwy": User(name="Qqwy", password="topsecret")}
+    return {
+        "Alberto": User("Alberto", password="alberto"),
+        "Arjan": User(name="Arjan", password="arjan"),
+        "JeroenO": User(name="JeroenO", password="jeroeno"),
+        "JeroenL": User(name="JeroenL", password="jeroenl"),
+        "Koen": User(name="Koen", password="koen"),
+        "Lars": User("Lars", password="lars"),
+        "Patrick": User(name="Patrick", password="patrick"),
+        "Tom": User(name="Tom", password="tom"),
+        "Wiebe-Marten": User(name="W-M", password="topsecret")
+    }

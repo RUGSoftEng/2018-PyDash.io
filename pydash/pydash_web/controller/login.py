@@ -1,3 +1,7 @@
+"""
+Manages the logging in of a user into the application,
+and rejecting visitors that enter improper sign-in information.
+"""
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 import pydash_app.user
