@@ -1,3 +1,18 @@
+"""
+    This script converts your Google Sheet Document to a MarkDown file.
+    Commit this markdown file to git
+
+    Start by downloading your data from the Timetracking Google Sheet:
+    - File -> Download as -> Comma-separated values (.csv, current sheet)
+
+    Then run this script in your terminal with the following arguments:
+    - 1. the file that you've downloaded (tip, rename to file.csv)
+    - 2. You student number
+    - 3. Your name (use quotes)
+
+    Example: python ./timetracking.py file.csv s123456 "name name"
+"""
+
 import sys
 import csv
 import os
