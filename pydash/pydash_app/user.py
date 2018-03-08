@@ -2,7 +2,7 @@ from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from flask_login import UserMixin
 
-import pydash_app.datastore
+# import pydash_app.datastore
 
 
 class User(UserMixin):
@@ -25,11 +25,18 @@ class User(UserMixin):
         return check_password_hash(self.password_hash, password)
 
     @classmethod
-    def find_user_by_name(self, name):
+    def find_by_name(self, name):
         return pydash_app.datastore.load()['users'].get(name)
 
     @classmethod
-    def authenticate_user(self, name, password):
+    def authenticate(self, name, password):
+        """
+        Attempts to authenticate the user with name `name`
+        and password `password`.
+
+        If authentication fails (unknown user or incorrect password), returns None.
+        Otherwise, returns the user object.
+        """
         maybe_user = self.find_user_by_name(name)
         if maybe_user == None or maybe_user.check_password(password) == False:
             return None
