@@ -4,16 +4,23 @@
         <title> Home Page </title>
     </head>
     <body>
+        {% if current_user.is_anomymous %}
+            <a href="{{ url_for('login') }}">Login</a>
+        {% else %}
+            {{ current_user.name }}
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% endif %}
+
         {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            <ul>
-                {% for message in messages %}
-                <li>
-                    {{ message }}
-                </li>
-                {% endfor %}
-            </ul>
-            {% endif %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>
+                {{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
         {% endwith %}
         {% block content %}{% endblock %}
     </body>
