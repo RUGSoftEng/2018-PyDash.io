@@ -1,7 +1,7 @@
 import pickle
 import os
 
-from app.model.user import User
+from pydash_app.user import User
 
 def datastore_filename():
     return './_data/datastore.pkl'

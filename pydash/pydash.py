@@ -1,1 +1,1 @@
-from app import flask_app
+from pydash_web import flask_webapp
