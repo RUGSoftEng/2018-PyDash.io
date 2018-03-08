@@ -19,16 +19,21 @@ For other systems, see: https://github.com/asdf-vm/asdf#setup
 
 # Installing Python
 
+Before installing, make sure you have all the required dependencies listed here:
+
+https://github.com/pyenv/pyenv/wiki/Common-build-problems#removing-a-python-version
+
 ```bash
 asdf plugin-add python
 asdf install python 3.6
 
 # Run this from within the project folder; it probably is already set to 3.6 by the `.tool-versions`-file that is there
 asdf local python 3.6
-
 ```
 
 # Installing Pipenv
+
+Before running this step, restart your shell, so it will find the proper version of `pip`.
 
 ```bash
 pip install pipenv
