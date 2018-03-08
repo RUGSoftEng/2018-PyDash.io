@@ -1,26 +1,28 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template
 from flask_login import current_user, login_user, logout_user, login_required
 
 import pydash_app.datastore as datastore
 from pydash_web import flask_webapp
-import pydash_web.controller.login
+import pydash_web.controller as controller
+
 
 @flask_webapp.route("/index")
 def index():
-    return render_template('index.html', title='Home')
+    return controller.index()
+
 
 @flask_webapp.route("/")
 @flask_webapp.route("/login", methods=["GET", "POST"])
 def login():
-    return pydash_web.controller.login.login()
+    return controller.login()
 
 
 @flask_webapp.route("/logout")
 def logout():
-    logout_user()
-    return redirect(url_for("login"))
+    return controller.logout()
+
 
 @flask_webapp.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template('dashboard.html');
+    return controller.dashboard()
