@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect, url_for
-from flask_login import current_user, login_user, login_required
+from flask_login import current_user, login_user, logout_user, login_required
 
 from app.forms import LoginForm
 import app.model.datastore as datastore

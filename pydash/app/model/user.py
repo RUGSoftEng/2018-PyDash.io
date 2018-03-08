@@ -16,8 +16,9 @@ class User(UserMixin):
     def __repr__(self):
         return '<{} {}>'.format(self.__class__.__name__, self.name)
 
+    # TODO Use an ID that is separate from the user's name.
     def get_id(self):
-        self.id
+        return self.name
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)

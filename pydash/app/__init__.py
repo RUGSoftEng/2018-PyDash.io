@@ -13,6 +13,7 @@ login.login_view = 'login'
 
 @login.user_loader
 def load_user(name):
+    print("Loading user {}".format(name))
     return User.find_user_by_name(name)
 
 from app import routes

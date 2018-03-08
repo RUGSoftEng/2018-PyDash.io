@@ -4,7 +4,8 @@
         <title> Home Page </title>
     </head>
     <body>
-        {% if current_user.is_anomymous %}
+            {{ current_user}}
+        {% if not current_user.is_authenticated %}
             <a href="{{ url_for('login') }}">Login</a>
         {% else %}
             {{ current_user.name }}
