@@ -16,6 +16,7 @@ flask_webapp.config.from_object(Config)
 login_manager = LoginManager(flask_webapp)
 login_manager.login_view = 'login'
 
+
 from pydash_web import routes  # Needs to be below flask_webapp instantiation to prevent circular dependency
 
 

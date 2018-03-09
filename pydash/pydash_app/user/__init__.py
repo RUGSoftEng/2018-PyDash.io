@@ -5,6 +5,7 @@ for interacting with Users.
 from .user import User
 import pydash_app.user.user_repository
 
+
 def find_by_name(name):
     """
     Returns a single User-entity with the given `name`, or None if it could not be found.
