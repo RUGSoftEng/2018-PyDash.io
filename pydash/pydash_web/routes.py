@@ -4,8 +4,7 @@ Contains the different routes (web endpoints) that the pydash_web flask applicat
 The actual implementation of each of the routes' dispatching logic is handled by the respective 'controller' function.
 """
 
-from flask import render_template
-from flask_login import current_user, login_user, logout_user, login_required
+from flask_login import login_required
 
 from pydash_web import flask_webapp
 import pydash_web.controller as controller
