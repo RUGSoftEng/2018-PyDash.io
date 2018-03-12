@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
     This script converts your Google Sheet Document to a MarkDown file.
     Commit this markdown file to git
@@ -51,11 +53,11 @@ def write_to_file(filename, data):
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
-        print('Usage: python {} input_file s-number name'.format(sys.argv[0]))
+        print('Usage: {} input_file s-number name'.format(sys.argv[0]))
         sys.exit()
 
     _, input_file, s_number, name = sys.argv
-    output_file = '{}-{}.md'.format(s_number, name)
+    output_file = 'timetracking/{}-{}.md'.format(s_number, name)
 
     output = ['# Timelog for {} ({})'.format(name, s_number), '']
     output.append('| Date         |   Timestamp | Description                                                       |')
