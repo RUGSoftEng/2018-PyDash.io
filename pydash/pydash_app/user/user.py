@@ -2,12 +2,21 @@ from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from flask_login import UserMixin
 
-import app.model.datastore
 
 class User(UserMixin):
-    def __init__(self, name=None, password=None):
-        if name == None or password == None:
-            raise "Missing arguments to User constructor!"
+    """
+    The User entitity knows about:
+
+    - What properties a User has
+    - What functionality makes sense to have this User interact with information from elsewhere.
+
+    Per Domain Driven Design, it does _not_ contain information on how to persistently store/load a user!
+    (That is instead handled by the `user_repository`).
+    """
+
+    def __init__(self, name, password):
+        if not isinstance(name, str) or not isinstance(password, str):
+            raise TypeError("User expects name and password to be strings.")
 
         self.id = str(id(self))
         self.name = name
@@ -22,14 +31,3 @@ class User(UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-
-    @classmethod
-    def find_user_by_name(self, name):
-        return app.model.datastore.load()['users'].get(name)
-
-    @classmethod
-    def authenticate_user(self, name, password):
-        maybe_user = self.find_user_by_name(name)
-        if not maybe_user or not maybe_user.check_password(login_form.password.data):
-            return None
-        return maybe_user
