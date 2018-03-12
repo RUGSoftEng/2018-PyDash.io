@@ -16,8 +16,8 @@
 | *2018-3-3* | - | Instaling pycharm,Flask and understanding how they work |
 | *2018-3-3* | - | Instaling pycharm,Flask and understanding how they work |
 | *2018-3-3* | - | Instaling pycharm,Flask and understanding how they work |
-| *2018-3-5* | - | Installing virtual studio  |
-| *2018-3-5* | - | Installing virtual studio  |
+| *2018-3-5* | - | Installing visual studio  |
+| *2018-3-5* | - | Installing visual studio  |
 | *2018-03-08* | - | Front end meeting |
 | *2018-03-08* | - | Front end meeting |
 | *2018-03-12* | - | Meeting |
