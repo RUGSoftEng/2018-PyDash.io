@@ -6,7 +6,7 @@ import persistent
 import multi_indexed_collection
 
 
-class User(multi_indexed_collection.AutoUpdatingItem, persistent.Persistent, flask_login.UserMixin):
+class User(persistent.Persistent, flask_login.UserMixin):
     """
     The User entitity knows about:
 

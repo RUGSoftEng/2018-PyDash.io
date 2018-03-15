@@ -48,11 +48,15 @@ def _hard_coded_users_dict():
     }
 
 def all():
-    return list(database_root.users)
+    return database_root.users.values()
 
 def find(id):
     return database_root.users['id', id]
 
 def add(user):
     database_root.users.add(user)
+    transaction.commit()
+
+def update(user):
+    database_root.users.update_item(user)
     transaction.commit()
