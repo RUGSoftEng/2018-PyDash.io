@@ -14,6 +14,13 @@ It handles a subset of the following tasks
 
 from .user import User
 
+import BTrees.OOBTree
+import transaction
+from multi_indexed_collection import MultiIndexedCollection
+from ..impl.database import database_root
+
+database_root.users = MultiIndexedCollection({'id', 'name'}, dict_type=BTrees.OOBTree.BTree)
+
 
 def find_by_name(name):
     """
@@ -39,3 +46,13 @@ def _hard_coded_users_dict():
         "Tom": User(name="Tom", password="tom"),
         "Wiebe-Marten": User(name="W-M", password="topsecret")
     }
+
+def all():
+    return list(database_root.users)
+
+def find(id):
+    return database_root.users['id', id]
+
+def add(user):
+    database_root.users.add(user)
+    transaction.commit()

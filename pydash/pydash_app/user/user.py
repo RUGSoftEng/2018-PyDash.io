@@ -1,9 +1,12 @@
+import uuid
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
-from flask_login import UserMixin
+import flask_login
+import persistent
+import multi_indexed_collection
 
 
-class User(UserMixin):
+class User(multi_indexed_collection.AutoUpdatingItem, persistent.Persistent, flask_login.UserMixin):
     """
     The User entitity knows about:
 
@@ -18,16 +21,20 @@ class User(UserMixin):
         if not isinstance(name, str) or not isinstance(password, str):
             raise TypeError("User expects name and password to be strings.")
 
-        self.id = str(id(self))
+        self.id = uuid.uuid4() # str(id(self))
         self.name = name
         self.password_hash = generate_password_hash(password)
 
     def __repr__(self):
-        return '<{} {}>'.format(self.__class__.__name__, self.name)
+        return '<{} id={} name={}>'.format(self.__class__.__name__, self.id, self.name)
 
     # TODO Use an ID that is separate from the user's name.
     def get_id(self):
-        return self.name
+        return self.uuid
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+
+    def __lt__(self, other):
+        self.id < other.id
