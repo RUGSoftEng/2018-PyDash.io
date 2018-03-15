@@ -16,10 +16,10 @@ from .user import User
 
 import BTrees.OOBTree
 import transaction
-# from multi_indexed_collection import MultiIndexedCollection
 from ..impl.database import database_root, MultiIndexedPersistentCollection
 
-database_root.users = MultiIndexedPersistentCollection({'id', 'name'})
+if not hasattr(database_root, 'users'):
+    database_root.users = MultiIndexedPersistentCollection({'id', 'name'})
 
 
 def find_by_name(name):
