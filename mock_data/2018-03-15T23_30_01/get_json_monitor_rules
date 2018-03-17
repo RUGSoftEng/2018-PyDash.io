@@ -1,0 +1,212 @@
+[
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:39:50.070172",
+        "last_accessed": "None",
+        "endpoint": "dashboard.page_boxplot_per_endpoint"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:39:51.886515",
+        "last_accessed": "None",
+        "endpoint": "dashboard.overview"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:39:53.296870",
+        "last_accessed": "None",
+        "endpoint": "dashboard.page_number_of_requests_per_endpoint"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:39:54.703686",
+        "last_accessed": "None",
+        "endpoint": "dashboard.page_boxplot_per_version"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:39:56.113563",
+        "last_accessed": "None",
+        "endpoint": "dashboard.heatmap"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:39:57.335410",
+        "last_accessed": "None",
+        "endpoint": "dashboard.get_json_monitor_rules"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:39:58.745341",
+        "last_accessed": "None",
+        "endpoint": "dashboard.submit_test_results"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:00.161937",
+        "last_accessed": "None",
+        "endpoint": "dashboard.get_json_details"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:04.943762",
+        "last_accessed": "None",
+        "endpoint": "dashboard.download_csv"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:07.312938",
+        "last_accessed": "None",
+        "endpoint": "dashboard.testmonitor"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:08.725080",
+        "last_accessed": "None",
+        "endpoint": "dashboard.export_data"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:10.131582",
+        "last_accessed": "None",
+        "endpoint": "dashboard.settings"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:11.549459",
+        "last_accessed": "None",
+        "endpoint": "dashboard.logout"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:12.776507",
+        "last_accessed": "None",
+        "endpoint": "dashboard.login"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:14.186714",
+        "last_accessed": "None",
+        "endpoint": "dashboard.rules"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:15.608067",
+        "last_accessed": "None",
+        "endpoint": "dashboard.index"
+    },
+    {
+        "monitor": true,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:17.029012",
+        "last_accessed": "2018-03-15 19:52:32.312400",
+        "endpoint": "user"
+    },
+    {
+        "monitor": true,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:18.449705",
+        "last_accessed": "2018-03-15 19:52:36.822517",
+        "endpoint": "index"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:19.678386",
+        "last_accessed": "None",
+        "endpoint": "dashboard.result_time_per_version_per_user"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:21.087921",
+        "last_accessed": "None",
+        "endpoint": "dashboard.result_time_per_version_per_ip"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:22.505481",
+        "last_accessed": "None",
+        "endpoint": "dashboard.result_time_per_version"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:23.916184",
+        "last_accessed": "None",
+        "endpoint": "dashboard.result_time_per_hour"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:25.323071",
+        "last_accessed": "None",
+        "endpoint": "dashboard.result_hits_per_hour"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:26.533485",
+        "last_accessed": "None",
+        "endpoint": "dashboard.result_time_per_user"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:27.951587",
+        "last_accessed": "None",
+        "endpoint": "dashboard.result_outliers"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:29.362216",
+        "last_accessed": "None",
+        "endpoint": "dashboard.result_heatmap"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:30.779580",
+        "last_accessed": "None",
+        "endpoint": "dashboard.get_json_data_from"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:32.212161",
+        "last_accessed": "None",
+        "endpoint": "dashboard.test_result"
+    },
+    {
+        "monitor": false,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:33.441557",
+        "last_accessed": "None",
+        "endpoint": "dashboard.static"
+    },
+    {
+        "monitor": true,
+        "version_added": "1.0",
+        "time_added": "2018-03-06 11:40:34.862739",
+        "last_accessed": "2018-03-15 19:58:25.977072",
+        "endpoint": "static"
+    }
+]
