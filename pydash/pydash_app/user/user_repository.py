@@ -22,9 +22,12 @@ from .user import User
 if not hasattr(database_root, 'users'):
     database_root.users = MultiIndexedPersistentCollection({'id', 'name'})
 
+
 def find(user_id):
-    user_id = uuid.UUID(user_id) # Ensure that also callable with strings or integers.
+    user_id = uuid.UUID(
+        user_id)  # Ensure that also callable with strings or integers.
     return database_root.users['id', user_id]
+
 
 def find_by_name(name):
     """
@@ -33,7 +36,6 @@ def find_by_name(name):
     name -- Name of the user we hope to find.
     """
     return database_root.users.get('name', name, default=None)
-
 
 
 def all():
@@ -48,6 +50,7 @@ def add(user):
         transaction.abort()
         raise
 
+
 def update(user):
     try:
         database_root.users.update_item(user)
@@ -55,7 +58,6 @@ def update(user):
     except KeyError:
         transaction.abort()
         raise
-
 
 
 def seed_users():
