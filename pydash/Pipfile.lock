@@ -110,10 +110,10 @@
         },
         "multi-indexed-collection": {
             "hashes": [
-                "sha256:d499290e775a697697498a9ef1c5ad3d32a41726079c99fa6b9d2bf8a9001d05",
-                "sha256:f418162ad616e676323eb644df27d9c4c554a77d8a9c9a9c5a639e872b5adf1c"
+                "sha256:839ea5da5770ed89eaac735133cf208d6a3f7b695dfaf7194bc0a4759950964e",
+                "sha256:b831b1d54e46a20b33fdd0d2838823917e04c1e9523629dd741fa45c71b35ed9"
             ],
-            "version": "==1.0.4"
+            "version": "==1.1.0"
         },
         "persistent": {
             "hashes": [

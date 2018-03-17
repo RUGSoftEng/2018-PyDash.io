@@ -26,7 +26,7 @@ def load_user(name):
     return pydash_app.user.find_by_name(name)
 
 
-@flask_webapp.cli.command('seed')
+@flask_webapp.cli.command('seed', with_appcontext=False)
 def seed_command():
     """Initializes our datastore with some preliminary values"""
-    pydash_app.datastore.seed_datastore()
+    pydash_app.user.user_repository.seed_users()
