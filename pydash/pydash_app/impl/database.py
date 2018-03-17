@@ -1,6 +1,4 @@
 import ZEO
-import ZODB
-import ZODB.FileStorage
 import persistent
 import BTrees.OOBTree
 from multi_indexed_collection import MultiIndexedCollection
