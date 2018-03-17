@@ -30,7 +30,7 @@ class User(persistent.Persistent, flask_login.UserMixin):
 
     # TODO Use an ID that is separate from the user's name.
     def get_id(self):
-        return self.id
+        return str(self.id)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)

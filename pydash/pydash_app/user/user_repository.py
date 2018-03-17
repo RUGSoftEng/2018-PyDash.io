@@ -11,16 +11,20 @@ It handles a subset of the following tasks
 - Persisting updated versions of existing entities.
 - Deleting entities from the persistence layer.
 """
-
-from .user import User
-
+import uuid
 import BTrees.OOBTree
 import transaction
 from ..impl.database import database_root, MultiIndexedPersistentCollection
 
+from .user import User
+
+
 # if not hasattr(database_root, 'users'):
 #     database_root.users = MultiIndexedPersistentCollection({'id', 'name'})
 
+def find(user_id):
+    user_id = uuid.UUID(user_id) # Ensure that also callable with strings or integers.
+    return database_root.users['id', user_id]
 
 def find_by_name(name):
     """
@@ -35,8 +39,6 @@ def find_by_name(name):
 def all():
     return database_root.users.values()
 
-def find(id):
-    return database_root.users['id', id]
 
 def add(user):
     try:

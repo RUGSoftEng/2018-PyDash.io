@@ -10,8 +10,9 @@ name = "pypi"
 flask = "*"
 flask-wtf = "*"
 flask-login = "*"
-zodb = "*"
 multi-indexed-collection = "*"
+zeo = "*"
+zodb = "==5.1.1"
 
 
 [dev-packages]

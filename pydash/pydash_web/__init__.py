@@ -21,9 +21,9 @@ from pydash_web import routes  # Needs to be below flask_webapp instantiation to
 
 
 @login_manager.user_loader
-def load_user(name):
-    print("Loading user {}".format(name))
-    return pydash_app.user.find_by_name(name)
+def load_user(user_id):
+    print("Loading user {}".format(user_id))
+    return pydash_app.user.find(user_id)
 
 
 @flask_webapp.cli.command('seed', with_appcontext=False)

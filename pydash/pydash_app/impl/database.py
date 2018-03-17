@@ -1,12 +1,12 @@
+import ZEO
 import ZODB
 import ZODB.FileStorage
 import persistent
 import BTrees.OOBTree
 from multi_indexed_collection import MultiIndexedCollection
 
-_storage = ZODB.FileStorage.FileStorage('zodb_filestorage.fs')
-_db = ZODB.DB(_storage)
-_connection = _db.open()
+_db_address = 8090 # See the db_conf.zeoconf file for the correct port.
+_connection = ZEO.connection(_db_address)
 
 database_root = _connection.root
 
