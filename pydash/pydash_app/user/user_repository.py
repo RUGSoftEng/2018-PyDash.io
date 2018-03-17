@@ -19,8 +19,8 @@ from ..impl.database import database_root, MultiIndexedPersistentCollection
 from .user import User
 
 
-# if not hasattr(database_root, 'users'):
-#     database_root.users = MultiIndexedPersistentCollection({'id', 'name'})
+if not hasattr(database_root, 'users'):
+    database_root.users = MultiIndexedPersistentCollection({'id', 'name'})
 
 def find(user_id):
     user_id = uuid.UUID(user_id) # Ensure that also callable with strings or integers.

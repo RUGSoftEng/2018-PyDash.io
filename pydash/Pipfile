@@ -7,12 +7,11 @@ name = "pypi"
 
 [packages]
 
-flask = "*"
-flask-wtf = "*"
-flask-login = "*"
+Flask = "*"
+Flask-WTF = "*"
+Flask-Login = "*"
 multi-indexed-collection = "*"
-zeo = "*"
-zodb = "==5.1.1"
+ZEO = "*"
 
 
 [dev-packages]
