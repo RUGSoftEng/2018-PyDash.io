@@ -1,0 +1,11 @@
+.dashboard-tile {
+    width: 100px;
+    height: 100px;
+    background-color: #3f51b5;
+}
+
+#card {
+    background-color: #3f51b5;
+    minWidth: 100px;
+    minHeight: 100px;
+}

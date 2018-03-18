@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Login from './login/Login';
+import DashTileGrid from './overview/DashTileGrid';
 
 class App extends Component {
   state = {
@@ -20,7 +21,8 @@ class App extends Component {
         <header className="App-header">
           <h1 className="App-title">PyDash.io Login</h1>
         </header>
-        <Login />
+        {/*<Login />*/}
+        <DashTileGrid username='test-user' />
       </div>
     );
   }
