@@ -24,8 +24,9 @@ if not hasattr(database_root, 'users'):
 
 
 def find(user_id):
-    user_id = uuid.UUID(
-        user_id)  # Ensure that also callable with strings or integers.
+    # Ensure that also callable with strings or integers:
+    user_id = uuid.UUID(user_id)
+
     return database_root.users['id', user_id]
 
 

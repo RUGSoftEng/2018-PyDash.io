@@ -7,7 +7,7 @@ import pydash_app.user.user_repository
 
 def find(user_id):
     """
-    Reutnrs a single User-entity with the given UUID or None if it could not be found.
+    Returns a single User-entity with the given UUID or None if it could not be found.
 
     user_id- UUID of the user we hope to find."""
     return user_repository.find(user_id)

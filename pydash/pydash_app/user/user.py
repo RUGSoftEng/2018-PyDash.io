@@ -3,7 +3,6 @@ from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 import flask_login
 import persistent
-import multi_indexed_collection
 
 
 class User(persistent.Persistent, flask_login.UserMixin):
@@ -21,20 +20,20 @@ class User(persistent.Persistent, flask_login.UserMixin):
         if not isinstance(name, str) or not isinstance(password, str):
             raise TypeError("User expects name and password to be strings.")
 
-        self.id = uuid.uuid4() # str(id(self))
+        self.id = uuid.uuid4()
         self.name = name
         self.password_hash = generate_password_hash(password)
 
     def __repr__(self):
         return '<{} id={} name={}>'.format(self.__class__.__name__, self.id, self.name)
 
-    # TODO Use an ID that is separate from the user's name.
     def get_id(self):
         return str(self.id)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-
+    # Required because `multi_indexed_collection` puts users in a set, that needs to order its keys for fast lookup.
+    # Because the IDs are unchanging integer values, use that.
     def __lt__(self, other):
-        self.id < other.id
+        return self.id < other.id
