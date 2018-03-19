@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Login from './login/Login';
-import DashTileGrid from './overview/DashTileGrid';
+import Dashboard from './dashboard/Dashboard';
 import { Switch, Route } from 'react-router-dom'
 
 class App extends Component {
@@ -19,7 +19,7 @@ class App extends Component {
     return (
       <div className="App">
         <Switch>
-          <Route exact path='/' component={DashTileGrid} />
+          <Route exact path='/' component={Dashboard} />
           <Route path='/login' component={Login} />
         </Switch>
       </div>
