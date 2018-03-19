@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './overview.css';
 import Grid from 'material-ui/Grid';
-import Card, { CardActions, CardContent } from 'material-ui/Card';
+import Card, { CardContent } from 'material-ui/Card';
 import { withStyles } from 'material-ui/styles';
 
 const styles = {
