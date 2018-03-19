@@ -7,11 +7,9 @@ name = "pypi"
 
 [packages]
 
-Flask = "*"
-Flask-WTF = "*"
-Flask-Login = "*"
-multi-indexed-collection = "*"
-ZEO = "*"
+flask = "*"
+flask-wtf = "*"
+flask-login = "*"
 
 
 [dev-packages]
@@ -21,8 +19,3 @@ ZEO = "*"
 [requires]
 
 python_version = "3.6"
-
-
-[pipenv]
-
-keep_outdated = true

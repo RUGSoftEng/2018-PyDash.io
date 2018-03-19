@@ -21,12 +21,12 @@ from pydash_web import routes  # Needs to be below flask_webapp instantiation to
 
 
 @login_manager.user_loader
-def load_user(user_id):
-    print("Loading user {}".format(user_id))
-    return pydash_app.user.find(user_id)
+def load_user(name):
+    print("Loading user {}".format(name))
+    return pydash_app.user.find_by_name(name)
 
 
-@flask_webapp.cli.command('seed', with_appcontext=False)
+@flask_webapp.cli.command('seed')
 def seed_command():
     """Initializes our datastore with some preliminary values"""
-    pydash_app.user.user_repository.seed_users()
+    pydash_app.datastore.seed_datastore()
