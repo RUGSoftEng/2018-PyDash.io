@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import './App.css';
 import Login from './login/Login';
 import DashTileGrid from './overview/DashTileGrid';
+import { Switch, Route } from 'react-router-dom'
 
 class App extends Component {
   state = {
-    username: '',
-    password: ''
+    loggedIn: false
   };
 
   handleChange = key => event => {
@@ -18,11 +18,10 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">PyDash.io Login</h1>
-        </header>
-        {/*<Login />*/}
-        <DashTileGrid username='test-user' />
+        <Switch>
+          <Route exact path='/' component={DashTileGrid} />
+          <Route path='/login' component={Login} />
+        </Switch>
       </div>
     );
   }
