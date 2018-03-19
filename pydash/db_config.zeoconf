@@ -1,0 +1,8 @@
+<zeo>
+  address localhost:8090
+</zeo>
+
+<filestorage>
+  path zeo_filestorage.fs
+</filestorage>
+
