@@ -3,7 +3,6 @@ from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 import flask_login
 import persistent
-import multi_indexed_collection
 
 
 class User(persistent.Persistent, flask_login.UserMixin):
@@ -36,5 +35,7 @@ class User(persistent.Persistent, flask_login.UserMixin):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    # Required because `multi_indexed_collection` puts users in a set, that needs to order its keys for fast lookup.
+    # Because the IDs are unchanging integer values, use that.
     def __lt__(self, other):
         self.id < other.id
