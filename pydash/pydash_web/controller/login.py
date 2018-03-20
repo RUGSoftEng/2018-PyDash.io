@@ -31,7 +31,7 @@ def login():
 
 def __next_page():
     next = request.args.get('next')
-    if not next or url_parse.netloc(next) != '':
+    if not (next or url_parse.netloc(next) == ''):
         next = url_for("pydash_web.dashboard")
     return next
 
