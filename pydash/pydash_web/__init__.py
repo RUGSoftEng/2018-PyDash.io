@@ -19,9 +19,6 @@ login_manager.login_view = 'login'
 flask_webapp.register_blueprint(pydash_web_bp)
 
 
-# from pydash_web import routes  # Needs to be below flask_webapp instantiation to prevent circular dependency
-
-
 @login_manager.user_loader
 def load_user(user_id):
     print("Loading user {}".format(user_id))
