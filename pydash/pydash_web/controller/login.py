@@ -12,7 +12,7 @@ from pydash_web.forms import LoginForm
 
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("dashboard"))
+        return redirect(url_for("pydash_web.dashboard"))
 
     login_form = LoginForm()
     if not login_form.validate_on_submit():
@@ -32,7 +32,7 @@ def login():
 def __next_page():
     next = request.args.get('next')
     if not next or url_parse.netloc(next) != '':
-        next = url_for("dashboard")
+        next = url_for("pydash_web.dashboard")
     return next
 
 
