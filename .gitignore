@@ -105,3 +105,6 @@ ENV/
 /**/*.fs.index
 /**/*.fs.tmp
 /**/*.fs.lock
+
+#Pycharm
+.idea/
