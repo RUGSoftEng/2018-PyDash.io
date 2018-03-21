@@ -10,8 +10,7 @@ from pydash_web.blueprint import bp
 import pydash_web.controller as controller
 
 
-@bp.route("/")
-@bp.route("/login", methods=["GET", "POST"])
+@bp.route("/api/login", methods=["POST"])
 def login():
     return controller.login()
 

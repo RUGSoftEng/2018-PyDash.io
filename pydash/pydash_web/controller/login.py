@@ -2,40 +2,41 @@
 Manages the logging in of a user into the application,
 and rejecting visitors that enter improper sign-in information.
 """
-from flask import render_template, flash, redirect, url_for, request
-from flask_login import current_user, login_user
-from werkzeug.urls import url_parse
-import pydash_app.user
+import json
 
-from pydash_web.forms import LoginForm
+from flask_login import current_user, login_user
+from flask_restplus.reqparse import RequestParser
+from werkzeug.exceptions import Unauthorized
+
+import pydash_app.user
 
 
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("pydash_web.dashboard"))
+        result = {"message": "User already logged in"}
+        return json.dumps(result)
 
-    login_form = LoginForm()
-    if not login_form.validate_on_submit():
-        return __render_login_form(login_form)
+    args = __parse_arguments()
 
-    user = pydash_app.user.authenticate(login_form.username.data,
-                                        login_form.password.data)
+    if 'username' not in args or 'password' not in args:
+        result = {"message": "Username or password missing"}
+        return json.dumps(result), 400
+
+    user = pydash_app.user.authenticate(args['username'],
+                                        args['password'])
+
     if not user:
-        flash("Wrong username or password!")
-        return __render_login_form(login_form)
+        result = {"message": "Username or password incorrect"}
+        return json.dumps(result), 401
 
-    login_user(user, remember=login_form.remember_me.data)
-    flash("User {} successfully logged in!".format(user.name))
-    return redirect(__next_page())
+    login_user(user)
 
-
-def __next_page():
-    next = request.args.get('next')
-    if not (next and url_parse.netloc(next) == ''):
-        next = url_for("pydash_web.dashboard")
-    return next
+    result = {"message": "User successfully logged in"}
+    return json.dumps(result)
 
 
-def __render_login_form(login_form):
-    return render_template(
-        "login.html", title="Sign In", login_form=login_form)
+def __parse_arguments():
+    parser = RequestParser()
+    parser.add_argument('username')
+    parser.add_argument('password')
+    return parser.parse_args()
