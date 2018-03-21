@@ -15,7 +15,7 @@ def login():
     return controller.login()
 
 
-@bp.route("/logout")
+@bp.route("/api/logout", methods=["POST"])
 def logout():
     return controller.logout()
 
