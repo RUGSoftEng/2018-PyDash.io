@@ -1,6 +1,9 @@
+html {
+  background-color: #fafafa;
+}
+
 .App {
   text-align: center;
-  background-color: #fafafa;
 }
 
 .App-header {
