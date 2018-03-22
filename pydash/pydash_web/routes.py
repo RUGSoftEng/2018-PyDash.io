@@ -10,6 +10,11 @@ from pydash_web.blueprint import bp
 import pydash_web.controller as controller
 
 
+@bp.route("/")
+def serve_react():
+    return bp.send_static_file("index.html")
+
+
 @bp.route("/api/login", methods=["POST"])
 def login():
     return controller.login()
