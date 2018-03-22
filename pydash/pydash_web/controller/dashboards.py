@@ -11,7 +11,7 @@ from flask_restplus.reqparse import RequestParser
 #
 def get_dashboard(dashboard_id):
 
-    return __read_json_mock_data(), 200
+    return jsonify(__read_json_mock_data()), 200
 
 
 # Currently not yet implemented.
@@ -45,7 +45,7 @@ def __read_json_mock_data():
                 "endpoints": [
                   {
                     "name": "my.endpoint.name",
-                    "enabled": true
+                    "enabled": True
                   }
                 ]
               }
