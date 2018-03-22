@@ -85,7 +85,7 @@ class ResponsiveDrawer extends React.Component {
                             <MenuIcon />
                         </IconButton>
                         <Typography variant="title" color="inherit" noWrap>
-                            Responsive drawer
+                            PyDash.io Dashboard
             </Typography>
                     </Toolbar>
                 </AppBar>
@@ -118,7 +118,7 @@ class ResponsiveDrawer extends React.Component {
                 </Hidden>
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
-                    <Typography noWrap>{'You think water moves fast? You should see ice.'}</Typography>
+                    <Typography noWrap>{'You haven\'t added any fancy dashboard yet ✌🏻.'}</Typography>
                 </main>
             </div>
         );
