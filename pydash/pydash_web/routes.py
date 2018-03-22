@@ -5,8 +5,6 @@ The actual implementation of each of the routes' dispatching logic is handled by
 """
 
 from flask_login import login_required
-from flask import send_from_directory
-import os
 
 from pydash_web.blueprint import bp
 import pydash_web.controller as controller
@@ -17,12 +15,12 @@ def serve_react():
     return bp.send_static_file("index.html")
 
 
-@bp.route("/login", methods=["GET", "POST"])
+@bp.route("/api/login", methods=["POST"])
 def login():
     return controller.login()
 
 
-@bp.route("/logout")
+@bp.route("/api/logout", methods=["POST"])
 def logout():
     return controller.logout()
 
