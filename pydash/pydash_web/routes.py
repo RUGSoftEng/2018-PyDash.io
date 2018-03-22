@@ -29,3 +29,15 @@ def logout():
 @login_required
 def dashboard():
     return controller.dashboard()
+
+
+@bp.route("/api/dashboards", methods=["GET"])
+@login_required
+def get_dashboards():
+    return controller.get_dashboards()
+
+
+@bp.route("/api/dashboard/<dashboard_id>", methods=["GET"])
+@login_required
+def get_dashboard():
+    return controller.get_dashboard(dashboard_id)

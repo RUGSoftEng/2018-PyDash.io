@@ -3,5 +3,7 @@ The controller contains one dispatching function per flask_webapp endpoint actio
 """
 
 from .login import login
-from .dashboard import dashboard
+from .meta_dashboard import meta_dashboard
 from .logout import logout
+from .dashboards import get_dashboards
+from .dashboards import get_dashboard
