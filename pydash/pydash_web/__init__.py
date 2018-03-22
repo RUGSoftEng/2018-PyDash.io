@@ -6,6 +6,7 @@ Initializes a Flask web application, and loads the relevant configuration settin
 
 from flask import Flask
 from flask_login import LoginManager
+from pydash_web.blueprint import bp as pydash_web_bp
 
 from config import Config
 
@@ -15,9 +16,7 @@ flask_webapp = Flask(__name__, static_folder="../../pydash-front/build", static_
 flask_webapp.config.from_object(Config)
 login_manager = LoginManager(flask_webapp)
 login_manager.login_view = 'login'
-
-
-from pydash_web import routes  # Needs to be below flask_webapp instantiation to prevent circular dependency
+flask_webapp.register_blueprint(pydash_web_bp)
 
 
 @login_manager.user_loader

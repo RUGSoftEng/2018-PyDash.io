@@ -8,25 +8,26 @@ from flask_login import login_required
 from flask import send_from_directory
 import os
 
-from pydash_web import flask_webapp
+from pydash_web.blueprint import bp
 import pydash_web.controller as controller
 
 
-@flask_webapp.route("/")
+@bp.route("/")
 def serve_react():
     return flask_webapp.send_static_file("index.html")
 
-@flask_webapp.route("/login", methods=["GET", "POST"])
+
+@bp.route("/login", methods=["GET", "POST"])
 def login():
     return controller.login()
 
 
-@flask_webapp.route("/logout")
+@bp.route("/logout")
 def logout():
     return controller.logout()
 
 
-@flask_webapp.route("/dashboard")
+@bp.route("/dashboard")
 @login_required
 def dashboard():
     return controller.dashboard()
