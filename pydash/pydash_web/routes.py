@@ -14,7 +14,7 @@ import pydash_web.controller as controller
 
 @bp.route("/")
 def serve_react():
-    return flask_webapp.send_static_file("index.html")
+    return bp.send_static_file("index.html")
 
 
 @bp.route("/login", methods=["GET", "POST"])
