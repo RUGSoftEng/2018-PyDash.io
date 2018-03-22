@@ -11,8 +11,23 @@ It handles a subset of the following tasks
 - Persisting updated versions of existing entities.
 - Deleting entities from the persistence layer.
 """
+import uuid
+import BTrees.OOBTree
+import transaction
+from ..impl.database import database_root, MultiIndexedPersistentCollection
 
 from .user import User
+
+
+if not hasattr(database_root, 'users'):
+    database_root.users = MultiIndexedPersistentCollection({'id', 'name'})
+
+
+def find(user_id):
+    # Ensure that also callable with strings or integers:
+    user_id = uuid.UUID(user_id)
+
+    return database_root.users['id', user_id]
 
 
 def find_by_name(name):
@@ -21,21 +36,53 @@ def find_by_name(name):
 
     name -- Name of the user we hope to find.
     """
-    return _hard_coded_users_dict().get(name)
+    return database_root.users.get('name', name, default=None)
 
 
-def _hard_coded_users_dict():
+def all():
+    return database_root.users.values()
+
+
+def add(user):
+    try:
+        database_root.users.add(user)
+        transaction.commit()
+    except KeyError:
+        transaction.abort()
+        raise
+
+
+def update(user):
+    try:
+        database_root.users.update_item(user)
+        transaction.commit()
+    except KeyError:
+        transaction.abort()
+        raise
+
+
+def seed_users():
     """
-    Sneakily our user datastore is currently a hard-coded list of users!
+    Stores some preliminary debug users in the datastore,
+    to be used during development.
     """
-    return {
-        "Alberto": User("Alberto", password="alberto"),
-        "Arjan": User(name="Arjan", password="arjan"),
-        "JeroenO": User(name="JeroenO", password="jeroeno"),
-        "JeroenL": User(name="JeroenL", password="jeroenl"),
-        "Koen": User(name="Koen", password="koen"),
-        "Lars": User("Lars", password="lars"),
-        "Patrick": User(name="Patrick", password="patrick"),
-        "Tom": User(name="Tom", password="tom"),
-        "Wiebe-Marten": User(name="W-M", password="topsecret")
-    }
+
+    # Clear current DB.
+    database_root.users = MultiIndexedPersistentCollection({'id', 'name'})
+
+    # Fill in users.
+    _development_users = [
+        User(name="Alberto", password="alberto"),
+        User(name="Arjan", password="arjan"),
+        User(name="JeroenO", password="jeroeno"),
+        User(name="JeroenL", password="jeroenl"),
+        User(name="Koen", password="koen"),
+        User(name="Lars", password="lars"),
+        User(name="Patrick", password="patrick"),
+        User(name="Tom", password="tom"),
+        User(name="W-M", password="topsecret")
+    ]
+    for user in _development_users:
+        print("Adding user {}".format(user))
+        add(user)
+    print("Seeding of users is done!")

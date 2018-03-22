@@ -1,0 +1,42 @@
+[
+    {
+        "group_by": "None",
+        "ip": "84.82.36.21",
+        "time": "2018-03-15 22:43:44.066868",
+        "execution_time": 6.931543350219727,
+        "version": "1.0",
+        "endpoint": "index"
+    },
+    {
+        "group_by": "None",
+        "ip": "84.82.36.21",
+        "time": "2018-03-15 22:44:02.241493",
+        "execution_time": 1397.693395614624,
+        "version": "1.0",
+        "endpoint": "user"
+    },
+    {
+        "group_by": "None",
+        "ip": "84.82.36.21",
+        "time": "2018-03-15 22:44:03.771129",
+        "execution_time": 12.86935806274414,
+        "version": "1.0",
+        "endpoint": "index"
+    },
+    {
+        "group_by": "None",
+        "ip": "84.82.36.21",
+        "time": "2018-03-15 22:44:25.434524",
+        "execution_time": 1791.8524742126465,
+        "version": "1.0",
+        "endpoint": "user"
+    },
+    {
+        "group_by": "None",
+        "ip": "84.82.36.21",
+        "time": "2018-03-15 22:44:26.930865",
+        "execution_time": 7.244348526000977,
+        "version": "1.0",
+        "endpoint": "index"
+    }
+]
