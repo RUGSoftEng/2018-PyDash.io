@@ -13,6 +13,8 @@ flask-login = "*"
 multi-indexed-collection = "*"
 zeo = "*"
 flask-restplus = "*"
+pyjwt = "*"
+requests = "*"
 
 
 [dev-packages]
