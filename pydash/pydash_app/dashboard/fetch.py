@@ -31,7 +31,7 @@ def get_monitor_rules(dashboard_url, dashboard_token):
     if response.status_code != 200:
         return None
 
-    return __decode_jwt(response.text, dashboard_token)
+    return _decode_jwt(response.text, dashboard_token)
 
 
 def get_data(dashboard_url, dashboard_token, time_from=None):
@@ -52,10 +52,10 @@ def get_data(dashboard_url, dashboard_token, time_from=None):
     if response.status_code != 200:
         return None
 
-    return __decode_jwt(response.text, dashboard_token)
+    return _decode_jwt(response.text, dashboard_token)
 
 
-def __decode_jwt(payload, token):
+def _decode_jwt(payload, token):
     """
     Decode a Json Web Token response from the python-monitoring-dashboard JSON data API
     :param payload: The JWT payload to decode
