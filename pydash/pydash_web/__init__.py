@@ -15,7 +15,6 @@ import pydash_app
 flask_webapp = Flask(__name__, static_folder="../../pydash-front/build", static_url_path="")
 flask_webapp.config.from_object(Config)
 login_manager = LoginManager(flask_webapp)
-login_manager.login_view = 'login'
 flask_webapp.register_blueprint(pydash_web_bp)
 
 

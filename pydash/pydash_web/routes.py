@@ -28,4 +28,16 @@ def logout():
 @bp.route("/dashboard")
 @login_required
 def dashboard():
-    return controller.dashboard()
+    return controller.meta_dashboard()
+
+
+@bp.route("/api/dashboards", methods=["GET"])
+@login_required
+def get_dashboards():
+    return controller.dashboards()
+
+
+@bp.route("/api/dashboards/<dashboard_id>", methods=["GET"])
+@login_required
+def get_dashboard(dashboard_id):
+    return controller.dashboard(dashboard_id)

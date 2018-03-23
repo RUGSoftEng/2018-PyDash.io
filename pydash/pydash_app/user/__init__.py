@@ -30,6 +30,6 @@ def authenticate(name, password):
     Otherwise, returns the user object.
     """
     maybe_user = find_by_name(name)
-    if maybe_user == None or maybe_user.check_password(password) == False:
+    if maybe_user is None or not maybe_user.check_password(password):
         return None
     return maybe_user
