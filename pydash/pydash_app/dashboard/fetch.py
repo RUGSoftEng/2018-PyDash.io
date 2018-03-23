@@ -16,7 +16,7 @@ def get_details(dashboard_url):
     """
     endpoint = _endpoint_name(DETAILS_ENDPOINT)
 
-    response = requests.get(f'{dashboard_url}/{_endpoint_name()}')
+    response = requests.get(f'{dashboard_url}/{endpoint}')
 
     if response.status_code != 200:
         return None
