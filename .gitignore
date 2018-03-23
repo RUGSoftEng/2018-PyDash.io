@@ -99,3 +99,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# ZODB
+/**/*.fs
+/**/*.fs.index
+/**/*.fs.tmp
+/**/*.fs.lock
