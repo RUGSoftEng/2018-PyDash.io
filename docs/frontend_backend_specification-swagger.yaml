@@ -40,7 +40,8 @@ paths:
       responses:
         200:
           description: "successful operation"
-            
+        400:
+          description: "Missing username or password"
         401:
           description: "Invalid username/password supplied"
   /api/logout:
@@ -51,9 +52,9 @@ paths:
       description: ""
       parameters: []
       responses:
-        202:
+        200:
           description: "successful operation"
-        400:
+        401:
           description: "Returned if logout was called while the user was not logged in."
   /api/dashboards:
     get:
