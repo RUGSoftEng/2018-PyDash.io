@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c1f46527ed4a8226b741d27a7ca3852d50bba183c9df546baf16f21b481eecad"
+            "sha256": "32625b213101eca6573b02c9a43cced40a8481edb25ca6df1b90ce16b16f0b5f"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -96,6 +96,14 @@
                 "sha256:49f44461237b69ecd901cc7ce66feea0319b9158743dd27a2899962ab214dac1"
             ],
             "version": "==0.12.2"
+        },
+        "flask-cors": {
+            "hashes": [
+                "sha256:55eb3864b4290f939ff19a2250fcb47d8c0f63d250c6780b922629299d011ec8",
+                "sha256:62ebc5ad80dc21ca0ea9f57466c2c74e24a62274af890b391790c260eb7b754b",
+                "sha256:ac4b81b3d90f5f18714c995c807f94501df8c9bbc22ef4261c1cd850748c3850"
+            ],
+            "version": "==3.0.3"
         },
         "flask-login": {
             "hashes": [
@@ -279,9 +287,9 @@
         },
         "zodb": {
             "hashes": [
-                "sha256:633c2f89481d8ebc55639b59216f7d16d07b44a94758850c0b887006967214f3"
+                "sha256:0b306042f4f0d558a477d65c34b0dd6e7604c6e583f55dfda52befa2fa13e076"
             ],
-            "version": "==5.3.0"
+            "version": "==5.4.0"
         },
         "zodbpickle": {
             "hashes": [

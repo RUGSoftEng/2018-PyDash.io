@@ -15,6 +15,7 @@ zeo = "*"
 flask-restplus = "*"
 pyjwt = "*"
 requests = "*"
+flask-cors = "*"
 
 
 [dev-packages]
