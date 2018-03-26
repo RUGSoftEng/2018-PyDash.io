@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Route, Redirect } from 'react-router'
 import './Login.css';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
@@ -9,7 +10,8 @@ class Login extends Component {
         username: '',
         password: '',
         error: false,
-        message: ''
+        message: '',
+        success: false
     };
 
     handleChange = key => event => {
@@ -36,7 +38,8 @@ class Login extends Component {
             console.log(response.data)
             this.setState(prevState => ({
                 error: false,
-                helperText: ''
+                helperText: '',
+                success: true
             }))
         })
         .catch((error) => {
@@ -49,7 +52,9 @@ class Login extends Component {
     }
 
     render() {
-        return (
+        return this.state.success ? (
+            <Redirect to="/dashboard" />
+        ) : (
             <div>
                 <header className="App-header">
                     <h1 className="App-title">PyDash.io Login</h1>
