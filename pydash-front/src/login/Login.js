@@ -35,14 +35,12 @@ class Login extends Component {
             password
         }).then((response) => {
             console.log(response);
-            console.log(response.data)
             this.setState(prevState => ({
                 error: false,
                 helperText: '',
                 success: true
             }))
-        })
-        .catch((error) => {
+        }).catch((error) => {
             console.log(error);
             this.setState(prevState => ({
                 error: true,
