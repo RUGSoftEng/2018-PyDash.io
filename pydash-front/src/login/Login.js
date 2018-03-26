@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 import './Login.css';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
+import axios from 'axios';
 
 class Login extends Component {
     state = {
         username: '',
-        password: ''
+        password: '',
+        error: false,
+        message: ''
     };
 
     handleChange = key => event => {
@@ -15,6 +18,36 @@ class Login extends Component {
         });
     };
 
+    tryLogin = (e) => {
+        e.preventDefault()
+        let username = this.state.username,
+            password = this.state.password
+        
+        if (!(username.trim()) || !(password.trim())) {
+            return;
+        }
+
+        // Make a request for a user with a given ID
+        axios.post('http://localhost:5000/api/login/', {
+            username,
+            password
+        }).then((response) => {
+            console.log(response);
+            console.log(response.data)
+            this.setState(prevState => ({
+                error: false,
+                helperText: ''
+            }))
+        })
+        .catch((error) => {
+            console.log(error);
+            this.setState(prevState => ({
+                error: true,
+                helperText: 'Incorrect credentials 😱'
+            }))
+        });
+    }
+
     render() {
         return (
             <div>
@@ -22,7 +55,7 @@ class Login extends Component {
                     <h1 className="App-title">PyDash.io Login</h1>
                 </header>
 
-                <form>
+                <form onSubmit={this.tryLogin}>
                     <br />
                     <TextField
                         id="username"
@@ -30,6 +63,7 @@ class Login extends Component {
                         value={this.state.username}
                         onChange={this.handleChange('username')}
                         margin="normal"
+                        error={this.state.error}
                     />
                     <br />
                     <TextField
@@ -39,11 +73,13 @@ class Login extends Component {
                         onChange={this.handleChange('password')}
                         margin="normal"
                         type="password"
+                        error={this.state.error}
+                        helperText={this.state.helperText}
                     />
                     <p>
-                        <Button variant="raised" color="primary">
-                            Login
-                        </Button>
+                    <Button type="submit" variant="raised" color="primary">
+                        Login
+                    </Button>
                     </p>
                 </form>
             </div>
