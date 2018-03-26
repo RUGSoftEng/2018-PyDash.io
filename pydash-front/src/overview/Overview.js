@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './overview.css';
+import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 // import AppBar from 'material-ui/AppBar';
 // import Toolbar from 'material-ui/Toolbar';
@@ -14,6 +15,11 @@ import Toolbar from 'material-ui/Toolbar';
 import MenuIcon from 'material-ui-icons/Menu';
 import IconButton from 'material-ui/IconButton';
 import Typography from 'material-ui/Typography';
+import Hidden from 'material-ui/Hidden';
+import Drawer from 'material-ui/Drawer';
+import List from 'material-ui/List';
+import { mailFolderListItems, otherMailFolderListItems } from './../dashboard/tileData';
+import Divider from 'material-ui/Divider';
 
 const drawerWidth = 240;
 
@@ -55,10 +61,27 @@ const styles = theme => ({
 });
 
 class Overview extends Component {
-    
+    state = {
+        mobileOpen: false,
+    };
+
+    handleDrawerToggle = () => {
+        this.setState({ mobileOpen: !this.state.mobileOpen });
+    };
   
     render() {
         const {classes , theme} = this.props;
+        
+        const drawer = (
+            <div>
+                <div className={classes.toolbar} />
+                <Divider />
+                <List>{mailFolderListItems}</List>
+                <Divider />
+                <List>{otherMailFolderListItems}</List>
+            </div>
+        );
+        
         return (
           <div className = {classes.root}>
             <AppBar className={classes.appBar}>
@@ -76,6 +99,33 @@ class Overview extends Component {
                 </Typography>
               </Toolbar>
             </AppBar>
+            <Hidden mdUp>
+                    <Drawer
+                        variant="temporary"
+                        anchor="left"
+                        open={this.state.mobileOpen}
+                        onClose={this.handleDrawerToggle}
+                        classes={{
+                            paper: classes.drawerPaper,
+                        }}
+                        ModalProps={{
+                            keepMounted: true, // Better open performance on mobile.
+                        }}
+                    >
+                        {drawer}
+                    </Drawer>
+                </Hidden>
+                <Hidden smDown implementation="css">
+                    <Drawer
+                        variant="permanent"
+                        open
+                        classes={{
+                            paper: classes.drawerPaper,
+                        }}
+                    >
+                        {drawer}
+                    </Drawer>
+                </Hidden>
             <main className={classes.content}>
               <div className={classes.toolbar} />
               <DashTileGrid username='testuser' />
@@ -85,5 +135,10 @@ class Overview extends Component {
         );
     }
 }
+
+Overview.propTypes = {
+    classes: PropTypes.object.isRequired,
+    theme: PropTypes.object.isRequired,
+};
 
 export default withStyles(styles)(Overview);
