@@ -1,46 +1,27 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
-
-let name = 'hhaha'
+import Login from './login/Login';
+import Dashboard from './dashboard/Dashboard';
+import { Switch, Route } from 'react-router-dom'
 
 class App extends Component {
   state = {
-    name: 'Jeroen Overschie'
+    loggedIn: false
   };
 
-  handleChange = name => event => {
+  handleChange = key => event => {
     this.setState({
-      [name]: event.target.value,
+      [key]: event.target.value
     });
   };
 
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">PyDash.io Login page</h1>
-        </header>
-        <p className="App-intro">
-          Example react page ⚡️
-          {name}
-        </p>
-        <Button variant="raised" color="primary">
-          Hello World
-        </Button>
-
-        <br/>
-        <TextField
-          id="name"
-          label="Name"
-          value={this.state.name}
-          onChange={this.handleChange('name')}
-          margin="normal"
-        />
-        {this.state.name}
+        <Switch>
+          <Route exact path='/' component={Login} />
+          <Route exact path='/dashboard' component={Dashboard} />
+        </Switch>
       </div>
     );
   }
