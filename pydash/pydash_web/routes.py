@@ -15,23 +15,23 @@ def serve_react():
     return bp.send_static_file("index.html")
 
 
-@bp.route("/api/login", methods=["POST"])
+@bp.route("/api/login/", methods=["POST"])
 def login():
     return controller.login()
 
 
-@bp.route("/api/logout", methods=["POST"])
+@bp.route("/api/logout/", methods=["POST"])
 def logout():
     return controller.logout()
 
 
-@bp.route("/api/dashboards", methods=["GET"])
+@bp.route("/api/dashboards/", methods=["GET"])
 @login_required
 def get_dashboards():
     return controller.dashboards()
 
 
-@bp.route("/api/dashboards/<dashboard_id>", methods=["GET"])
+@bp.route("/api/dashboards/<dashboard_id>/", methods=["GET"])
 @login_required
 def get_dashboard(dashboard_id):
     return controller.dashboard(dashboard_id)
