@@ -34,12 +34,15 @@ import queue
 from pqdict import pqdict
 
 class _Task:
-    """
-    :name: An identifier to find this task again later (and e.g. remove or alter it)
-    :target: A function (or other callable) that will perform this task's functionality.
-    :run_at_start: If true, runs task right after it was added to the scheduler, rather than only after the first interval has passed.
-    """
-    def __init__(self, name, target, run_at_start=False):
+    def __init__(self, name, target):
+        """
+        :name: An identifier to find this task again later (and e.g. remove or alter it). Can be any hashable (using a string or a tuple of strings/integers is common.)
+        :target: A function (or other callable) that will perform this task's functionality.
+        :run_at_start: If true, runs task right after it was added to the scheduler, rather than only after the first interval has passed.
+        """
+        if not callable(target) and target is not None:
+            raise ValueError(f"`target` passed to _Task constructor should be callable (or None), but `{target}` is not.")
+
         self.name = name
         self.target = target
 
@@ -52,38 +55,74 @@ class _Task:
         return hash(self.name)
 
     def __eq__(self, other):
-        return isinstance(other, Task) and other.name == self.name
+        return isinstance(other, _Task) and other.name == self.name
 
     def __repr__(self):
         return f"<{self.__class__.__name__} name={self.name}, target={self.target}, next_run_dt={self.next_run_dt}>"
 
 class _TaskRemoval(_Task):
+    """
+    A placeholder '_Task' that will indicate to the scheduler
+    that the existing task that has `name` should be removed from the schedule.
+    """
     def __init__(self, name):
         super().__init__(name, None, None)
 
 class _BackgroundTask(_Task):
+    """
+    A task that is run only once, right after it is added to the scheduler.
+    """
     def __init__(self, name, task):
+        """
+        :name: An identifier to find this task again later (and e.g. remove or alter it). Can be any hashable (using a string or a tuple of strings/integers is common.)
+        :target: A function (or other callable) that will perform this task's functionality.
+        """
         super().__init__(name, task)
 
 class _PeriodicTask(_Task):
-    # TODO: Shift more logic to this class
+    """
+    A task that is run many times periodically.
+    """
     def __init__(self, name, task, interval, run_at_start=False):
-        super().__init__(name, task, run_at_start=run_at_start)
+        """
+        :name: An identifier to find this task again later (and e.g. remove or alter it). Can be any hashable (using a string or a tuple of strings/integers is common.)
+        :target: A function (or other callable) that will perform this task's functionality.
+        :interval: A datetime.timedelta representing how frequently to run the given target.
+        :run_at_start: If true, runs task right after it was added to the scheduler, rather than only after the first interval has passed.
+        """
+        super().__init__(name, task)
+
+        if not isinstance(interval, datetime.timedelta):
+            raise ValueError(f"`interval` is expected to be a `datetime.timedelta` instance, but `{interval}` is not.")
+
         self.interval = interval
         if not run_at_start:
             self.next_run_dt += interval
 
     def update_for_next_run(self):
+        """
+        Makes the Task ready to be re-run once the next period has passed.
+        """
+        # A conscious choice has been made to always update next_run_dt w.r.t the current time.
+        # This means that even if a task's `next_run_dt` would lag behind,
+        # the task would not be run multiple times right after another.
         self.next_run_dt = datetime.datetime.now() + self.interval
         return self.next_run_dt
 
     def __repr__(self):
+        """
+        Overrides superclass to show `interval` and `next_run_dt` in the string representation.
+        """
         return f"<{self.__class__.__name__} name={self.name}, target={self.target}, interval={self.interval}, next_run_dt={self.next_run_dt}>"
 
 class TaskScheduler:
+    """
+    Runs tasks in a process pool of subprocesses (See `multiprocessing.Pool`).
+    The task scheduler itself, which passes tasks on to this process pool, runs its scheduling loop in a separate subprocess as well.
+    This means that there is no computational overhead for the main process.
+    """
     def __init__(self, granularity=1.0):
         """
-
         :granularity: How often the scheduler should check if a periodic task's timeout has passed, in seconds. Defaults to `1.0`.
         """
         self._task_queue = pqdict()
@@ -93,42 +132,67 @@ class TaskScheduler:
 
     def add_periodic_task(self, name, interval, task, run_at_start=False):
         """
-        Altering an already-existing task can be done
-        by calling this function with the new information but use the same name.
+        Adds a task to be run periodically to the scheduler.
+
+        :name: An identifier to find this task again later (and e.g. remove or alter it). Can be any hashable (using a string or a tuple of strings/integers is common.)
+        (Calling this function again with the same name will override the earlier task).
+        :target: A function (or other callable) that will perform this task's functionality.
+        :interval: A datetime.timedelta representing how frequently to run the given target.
+        :run_at_start: If true, runs task right after it was added to the scheduler, rather than only after the first interval has passed.
+
         """
-        # TODO input checking:
-        # name: string
-        # interval: timedelta
         self._add_task(_PeriodicTask(name, task, interval=interval, run_at_start=run_at_start))
-        # self._add_task(name, interval, task)
 
     def add_background_task(self, name, task):
-        # self._add_task(name, None, task)
+        """
+        Adds a task to be run only once (and as soon as possible) to the scheduler.
+
+        :name: An identifier to find this task again later (and e.g. remove or alter it). Can be any hashable (using a string or a tuple of strings/integers is common.)
+        (Calling this function again with the same name will override the earlier task).
+        :target: A function (or other callable) that will perform this task's functionality.
+        """
         self._add_task(_BackgroundTask(name, task))
 
     def remove_task(self, name):
-        # self._add_task(Task(name, None, None))
+        """
+        Removes a task that was previously added from the scheduler.
+        Will do nothing if there is no task with the given name.
+
+        :name: The task with this name will be removed.
+        """
         self._add_task(_TaskRemoval(name))
 
     def _add_task(self, task):
         self._tasks_to_be_scheduled.put(task)
 
     def start(self):
+        """
+        Starts the scheduler scheduling loop on a separate process.
+
+        Should only be called once per scheduler.
+        """
         if hasattr(self, '_scheduler_process'):
             raise Exception("TaskScheduler.start() called multiple times.")
         import atexit
-        self._scheduler_process = multiprocessing.Process(target=self._start, daemon=False)
+        self._scheduler_process = multiprocessing.Process(target=self._scheduling_loop, daemon=False)
         # Ensure scheduler quits alongside main program
         atexit.register(self.stop)
 
         self._scheduler_process.start()
 
     def stop(self):
+        """
+        Stops the scheduler scheduling loop.
+
+        Should only be called once per scheduler, and only after `start()` was called.
+        When the program exits suddenly, this function will (in most cases) automatically be called
+        to clean up the scheduling process.
+        """
         if not hasattr(self, '_scheduler_process'):
             raise Exception("`TaskScheduler.stop()` called before calling `TaskScheduler.start()`")
         self._scheduler_process.terminate()
 
-    def _start(self):
+    def _scheduling_loop(self):
         with multiprocessing.Pool() as pool:
             while True:
                 self._add_tasks_to_be_scheduled()
