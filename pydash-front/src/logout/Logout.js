@@ -26,7 +26,7 @@ class Login extends Component {
         // });
 
         // Make a request for a user with a given ID
-        axios('http://localhost:5000/api/logout/', {
+        axios('http://localhost:5000/api/logout', {
             method: 'post',
             withCredentials: true
         }).then((response) => {
