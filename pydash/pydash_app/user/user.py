@@ -7,7 +7,7 @@ import persistent
 
 class User(persistent.Persistent, flask_login.UserMixin):
     """
-    The User entitity knows about:
+    The User entity knows about:
 
     - What properties a User has
     - What functionality makes sense to have this User interact with information from elsewhere.
