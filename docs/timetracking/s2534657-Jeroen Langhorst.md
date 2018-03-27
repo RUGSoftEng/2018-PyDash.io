@@ -17,3 +17,12 @@
 | *2018-03-09* | 15:30-16:00 | Writing architecture design doc - introduction |
 | *2018-03-09* | 16:00-16:30 | Making overview on excel sheet |
 | *2018-03-12* | 15:00-16:00 | Meeting |
+| *2018-03-15* | 11:00-12:00 | TA meeting |
+| *2018-03-18* | 15:00-17:00 | Setting up api routes & getting familiar with jsonapi format |
+| *2018-03-19* | 15:00-17:00 | Meeting  |
+| *2018-03-22* | 11:00-12:00 | TA meeting |
+| *2018-03-22* | 19:00-21:00 | Reading up on ZODB and ZOE |
+| *2018-03-23* | 22:00-22:30 | Updating requirements document |
+| *2018-03-24* | 19:00-21:00 | Setting up workspace, again... |
+| *2018-03-26* | 15:00-17:00 | Weekly meeting |
+| *2018-03-26* | 20:00-21:30 | Rework timetracking sheet |
