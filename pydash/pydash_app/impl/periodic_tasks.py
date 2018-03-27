@@ -3,12 +3,21 @@ Allows for the running of tasks in the background.
 
 Still to be done:
 
-- wrapping default scheduler as 'global', which can be used as default for function decorators.
-- said function decorators.
-- background tasks besides the periodic tasks that only run once (partial support already exists, but no public calls to add them yet).
-- refactoring :D
+- documentation
 
-Example code:
+Example code with default scheduler:
+
+
+    >>> import pydash_app.impl.periodic_tasks as pt
+    >>> import datetime
+    >>> pt.start_default_scheduler()
+    >>> pt.add_periodic_task('foo', datetime.timedelta(seconds=3), pt.foo)
+    >>> pt.add_periodic_task('bar', datetime.timedelta(seconds=5), pt.bar)
+    >>> pt.add_periodic_task('bar', datetime.timedelta(seconds=1), pt.bar)
+    >>> pt.add_background_task('baz', pt.baz)
+    >>> pt.remove_task('bar')
+
+Example code with custom scheduler:
 
     >>> import pydash_app.impl.periodic_tasks as pt
     >>> ts = pt.TaskScheduler()
@@ -22,30 +31,19 @@ import datetime
 from time import sleep
 import multiprocessing
 import queue
-# import heapq
-# import heapy
 from pqdict import pqdict
 
-class Task:
+class _Task:
     """
     :name: An identifier to find this task again later (and e.g. remove or alter it)
     :target: A function (or other callable) that will perform this task's functionality.
-    :interval: None for one-off (background) tasks, should otherwise a datetime.timedelta value.
     :run_at_start: If true, runs task right after it was added to the scheduler, rather than only after the first interval has passed.
-
     """
-    def __init__(self, name, target, interval=None, run_at_start=False):
+    def __init__(self, name, target, run_at_start=False):
         self.name = name
-        self.interval = interval
         self.target = target
-        self.run_at_start = run_at_start
 
         self.next_run_dt = datetime.datetime.now()
-        if self.interval is not None and not self.run_at_start:
-            self.next_run_dt += interval
-
-    # def __lt__(self, other):
-    #     return self.next_run_dt.__le__(other.next_run_dt)
 
     def __call__(self, *args, **kwargs):
         self.target(*args, **kwargs)
@@ -56,6 +54,31 @@ class Task:
     def __eq__(self, other):
         return isinstance(other, Task) and other.name == self.name
 
+    def __repr__(self):
+        return f"<{self.__class__.__name__} name={self.name}, target={self.target}, next_run_dt={self.next_run_dt}>"
+
+class _TaskRemoval(_Task):
+    def __init__(self, name):
+        super().__init__(name, None, None)
+
+class _BackgroundTask(_Task):
+    def __init__(self, name, task):
+        super().__init__(name, task)
+
+class _PeriodicTask(_Task):
+    # TODO: Shift more logic to this class
+    def __init__(self, name, task, interval, run_at_start=False):
+        super().__init__(name, task, run_at_start=run_at_start)
+        self.interval = interval
+        if not run_at_start:
+            self.next_run_dt += interval
+
+    def update_for_next_run(self):
+        self.next_run_dt = datetime.datetime.now() + self.interval
+        return self.next_run_dt
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__} name={self.name}, target={self.target}, interval={self.interval}, next_run_dt={self.next_run_dt}>"
 
 class TaskScheduler:
     def __init__(self, granularity=1.0):
@@ -68,7 +91,7 @@ class TaskScheduler:
         self._granularity = granularity
         self._tasks_to_be_scheduled = multiprocessing.Queue()
 
-    def add_periodic_task(self, name, interval, task):
+    def add_periodic_task(self, name, interval, task, run_at_start=False):
         """
         Altering an already-existing task can be done
         by calling this function with the new information but use the same name.
@@ -76,13 +99,19 @@ class TaskScheduler:
         # TODO input checking:
         # name: string
         # interval: timedelta
-        self._add_task(name, interval, task)
+        self._add_task(_PeriodicTask(name, task, interval=interval, run_at_start=run_at_start))
+        # self._add_task(name, interval, task)
 
     def add_background_task(self, name, task):
-        self._add_task(name, None, task)
+        # self._add_task(name, None, task)
+        self._add_task(_BackgroundTask(name, task))
 
     def remove_task(self, name):
-        self._add_task(name, None, None)
+        # self._add_task(Task(name, None, None))
+        self._add_task(_TaskRemoval(name))
+
+    def _add_task(self, task):
+        self._tasks_to_be_scheduled.put(task)
 
     def start(self):
         if hasattr(self, '_scheduler_process'):
@@ -99,8 +128,13 @@ class TaskScheduler:
             raise Exception("`TaskScheduler.stop()` called before calling `TaskScheduler.start()`")
         self._scheduler_process.terminate()
 
-    def _add_task(self, name, interval, task):
-        self._tasks_to_be_scheduled.put(Task(name, task, interval=interval))
+    def _start(self):
+        with multiprocessing.Pool() as pool:
+            while True:
+                self._add_tasks_to_be_scheduled()
+                current_time = datetime.datetime.now()
+                self._run_waiting_tasks(pool, current_time)
+                sleep(self._granularity)
 
     def _add_tasks_to_be_scheduled(self):
         try:
@@ -111,42 +145,29 @@ class TaskScheduler:
                     self._task_queue.pop(task, default=None)
                 else:
                     print(f"Adding task {task.name} to internal pqueue")
-                    # heapq.heappush(self._task_queue, task)
+                    # Remove old task with same name if it existed
+                    self._task_queue.pop(task, default=None)
+                    # And then add new task with new priority
                     self._task_queue[task] = task.next_run_dt
         except queue.Empty:
             # Thrown by self._tasks_to_be_scheduled.get_nowait()
             # when this cross-process queue happens to be empty.
             pass
 
-    def _start(self):
-        with multiprocessing.Pool() as pool:
-            while True:
-                self._add_tasks_to_be_scheduled()
-                current_time = datetime.datetime.now()
-                self._run_tasks_that_should_have_start(pool, current_time)
-                sleep(self._granularity)
-
-    def _run_tasks_that_should_have_start(self, pool, current_time):
-        # Otherwise, iterate while tasks are before current time.
+    def _run_waiting_tasks(self, pool, current_time):
         # TODO restructure into for-comprehension?
         while True:
-            # print(f"task queue: {self._task_queue}")
-
             # Do nothing if empty
             if not self._task_queue:
-                return
+                break
 
             task = self._task_queue.top()
-            # print(f"Looking at task {task.name} which should be run at {task.next_run_dt}, every {task.interval}")
-            if task.next_run_dt < current_time:
-                print(f"Running task {task.name} at {current_time}, every {task.interval}...")
-                # heapq.heappop(self._task_queue)
+            if task.next_run_dt <= current_time:
+                print(f"Running task {task} at {current_time}...")
                 self._task_queue.pop()
                 self._run_task(pool, task)
-                if task.interval is not None:
-                    # self._add_periodic_task(task.name, task.interval, tasktask)
-                    task.next_run_dt = datetime.datetime.now() + task.interval
-                    # heapq.heappush(self._task_queue, task)
+                if isinstance(task, _PeriodicTask):
+                    task.update_for_next_run()
                     self._task_queue[task] = task.next_run_dt
             else:
                 break
@@ -158,7 +179,7 @@ class TaskScheduler:
 
 default_task_scheduler = TaskScheduler()
 
-def add_periodic_task(name, interval, task, scheduler = default_task_scheduler):
+def add_periodic_task(name, interval, task, run_at_start=False, scheduler = default_task_scheduler):
     scheduler.add_periodic_task(name, interval, task)
 
 def add_background_task(name, task, scheduler = default_task_scheduler):
@@ -167,12 +188,28 @@ def add_background_task(name, task, scheduler = default_task_scheduler):
 def remove_task(name, scheduler = default_task_scheduler):
     scheduler.remove_task(name)
 
-def periodic_task(name, interval, scheduler = default_task_scheduler):
-    def task_decor(task_function):
+def periodic_task(name, interval, run_at_start=False, scheduler = default_task_scheduler):
+    """
+    Function decorator to specify that the following function
+    should be called periodically.
+
+    Usage:
+
+        @periodic_task('qux', datetime.timedelta(seconds=2))
+        def qux():
+            print('qux')
+
+
+        @periodic_task('qux', datetime.timedelta(seconds=2), run_at_start=True, scheduler = your_scheduler)
+        def qux():
+            print('qux')
+
+    """
+    def task_decorator(task_function):
         add_periodic_task(name, interval, task_function, scheduler)
         return task_function
 
-    return task_decor
+    return task_decorator
 
 def start_default_scheduler():
     default_task_scheduler.start()
@@ -189,5 +226,3 @@ def baz():
 @periodic_task('qux', datetime.timedelta(seconds=2))
 def qux():
     print('qux')
-
-
