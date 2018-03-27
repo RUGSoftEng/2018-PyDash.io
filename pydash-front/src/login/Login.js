@@ -30,7 +30,7 @@ class Login extends Component {
         }
 
         // Make a request for a user with a given ID
-        axios.post('http://localhost:5000/api/login/', {
+        axios.post('http://localhost:5000/api/login', {
             username,
             password
         }).then((response) => {
