@@ -28,3 +28,4 @@ def load_user(user_id):
 def seed_command():
     """Initializes our datastore with some preliminary values"""
     pydash_app.user.user_repository.seed_users()
+    pydash_app.dashboard.dashboard_repository.seed_dashboards()
