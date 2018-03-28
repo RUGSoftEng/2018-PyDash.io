@@ -6,6 +6,7 @@ import axios from 'axios';
 
 class Login extends Component {
     state = {
+        success: false
     };
 
     handleChange = key => event => {
@@ -31,13 +32,17 @@ class Login extends Component {
             withCredentials: true
         }).then((response) => {
             console.log(response);
+            this.setState(prevState => ({success: true}))
         }).catch((error) => {
             console.log(error);
         });
     }
 
     render() {
-        return (
+
+        return this.state.success ? (
+            <Redirect to="/" />
+        ) : (
             <ListItem button onClick={this.logout}>
                 <ListItemIcon>
                     <ExitToApp />
