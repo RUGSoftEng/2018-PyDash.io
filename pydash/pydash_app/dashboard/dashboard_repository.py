@@ -17,6 +17,7 @@ import transaction
 from ..impl.database import database_root, MultiIndexedPersistentCollection
 
 from .dashboard import Dashboard
+from pydash_app.user import user_repository
 
 
 if not hasattr(database_root, 'dashboards'):
@@ -63,7 +64,7 @@ def seed_dashboards():
     _dev_dashboard_urls = ['http://pydash.io/', 'http://pystach.io/']
 
     # Fill in dashboards.
-    for user in database_root.users:
+    for user in user_repository.all():
         for url in _dev_dashboard_urls:
             dashboard = Dashboard(url, user.get_id())
             print(f'Adding dashboard {dashboard}')
