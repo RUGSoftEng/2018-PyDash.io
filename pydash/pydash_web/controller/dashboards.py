@@ -58,7 +58,7 @@ def _json_mock_data():
                   },
                   {
                     "id": "5353535353535353",
-                    "url": "http://pydash.io/",
+                    "url": "http://pistach.io/",
                     "endpoints": [
                       {
                         "name": "my.other.endpoint.name",
