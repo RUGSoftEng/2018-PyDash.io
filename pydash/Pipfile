@@ -1,0 +1,33 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[packages]
+
+Flask = "*"
+Flask-WTF = "*"
+flask-login = "*"
+multi-indexed-collection = "*"
+ZEO = "*"
+flask-restplus = "*"
+PyJWT = "*"
+requests = "*"
+Flask-Cors = "*"
+pqdict = "*"
+
+
+[dev-packages]
+
+
+
+[requires]
+
+python_version = "3.6"
+
+
+[pipenv]
+
+keep_outdated = true
