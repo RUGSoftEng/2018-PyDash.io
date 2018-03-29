@@ -50,10 +50,7 @@ class Dashboard(persistent.Persistent):
         """
         # TODO: perhaps remove all relevant endpoint calls from endpoint_calls? Discuss with team.
         # TODO: THIS IS POST-MVP
-        try:
-            self.endpoints.remove(endpoint)
-        except ValueError:
-            raise
+        self.endpoints.remove(endpoint)
 
     def add_endpoint_call(self, endpoint_call):
         """
