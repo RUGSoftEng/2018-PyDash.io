@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './App.css';
 import Login from './login/Login';
 import Dashboard from './app/dashboard/Dashboard';
-import Overview from './app/overview/Overview';
 import { Switch, Route } from 'react-router-dom'
 
 class App extends Component {
@@ -10,9 +9,9 @@ class App extends Component {
     return (
       <div className="App">
         <Switch>
+          {/* `exact` because its only one slash */}
           <Route exact path='/' component={Login} />
-          <Route exact path='/dashboard' component={Dashboard} />
-          <Route path='/overview' component={Overview} />
+          <Route path='/dashboard' component={Dashboard} />
         </Switch>
       </div>
     );
