@@ -3,6 +3,7 @@ import './overview.css';
 import Grid from 'material-ui/Grid';
 import Card, { CardContent } from 'material-ui/Card';
 import { withStyles } from 'material-ui/styles';
+import Typography from 'material-ui/Typography';
 
 const styles = {
     card: {
@@ -17,15 +18,18 @@ class DashTile extends Component {
         super(props);
         this.state = {
             title: props.title,
+            col: props.xs,
         };
     }
     
     render() {
         return(
-            <Grid item xs={2}>
+            <Grid item xs={this.state.col}>
                 <Card>
                     <CardContent>
-                        {this.state.title}
+                        <Typography variant='headline' component='h2'>
+                            {this.state.title}
+                        </Typography>
                     </CardContent>
                 </Card>
             </Grid>
