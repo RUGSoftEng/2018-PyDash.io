@@ -5,7 +5,7 @@ import persistent
 
 class Dashboard(persistent.Persistent):
     """
-
+    TODO: Add this description.
     """
 
     def __init__(self, url, user_id):
@@ -26,11 +26,25 @@ class Dashboard(persistent.Persistent):
         return str(self.id)
 
     def add_endpoint(self, endpoint):
+        """
+        Adds an endpoint to this dashboard's internal collection of endpoints.
+        :param endpoint:  The endpoint to add, expects an Endpoint object.
+        """
         self.endpoints.append(endpoint)
 
     def remove_endpoint(self, endpoint):
-        # TODO: perhaps remove all relevant endpoint calls from endpoint_calls?
-        self.endpoints.remove(endpoint)
+        """
+        Removes an endpoint from this dashboard's internal collection of endpoints.
+
+        Raises a ValueError if no such endpoint exists.
+        :param endpoint: The endpoint to remove.
+        """
+        # TODO: perhaps remove all relevant endpoint calls from endpoint_calls? Discuss with team.
+        # TODO: THIS IS POST-MVP
+        try:
+            self.endpoints.remove(endpoint)
+        except ValueError:
+            raise
 
     # Required because `multi_indexed_collection` puts dashboards in a set,
     #  that needs to order its keys for fast lookup.
