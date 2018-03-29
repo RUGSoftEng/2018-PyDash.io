@@ -21,7 +21,7 @@ class Aggregator(persistent.Persistent):
         self.total_execution_time = 0
 
         self.average_execution_time = None
-        
+
         self.visits_per_day = defaultdict(lambda: 0)
         self.visits_per_ip = defaultdict(lambda: 0)
 

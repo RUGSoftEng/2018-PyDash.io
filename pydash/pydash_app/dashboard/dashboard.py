@@ -63,6 +63,13 @@ class Dashboard(persistent.Persistent):
         self._endpoint_calls.append(endpoint_call)
         self._aggregator.add_endpoint_call(endpoint_call)
 
+    def get_aggregated_data(self):
+        """
+        Returns aggregated data on this dashboard.
+        :return: A dict containing aggregated data points.
+        """
+        return self._aggregator.as_dict()
+
     # Required because `multi_indexed_collection` puts dashboards in a set,
     #  that needs to order its keys for fast lookup.
     # Because the IDs are unchanging integer values, use that.
