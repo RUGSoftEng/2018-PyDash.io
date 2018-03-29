@@ -6,6 +6,7 @@ import axios from 'axios';
 
 class Login extends Component {
     state = {
+        success: false
     };
 
     handleChange = key => event => {
@@ -26,18 +27,22 @@ class Login extends Component {
         // });
 
         // Make a request for a user with a given ID
-        axios('http://localhost:5000/api/logout/', {
+        axios('http://localhost:5000/api/logout', {
             method: 'post',
             withCredentials: true
         }).then((response) => {
             console.log(response);
+            this.setState(prevState => ({success: true}))
         }).catch((error) => {
             console.log(error);
         });
     }
 
     render() {
-        return (
+
+        return this.state.success ? (
+            <Redirect to="/" />
+        ) : (
             <ListItem button onClick={this.logout}>
                 <ListItemIcon>
                     <ExitToApp />

@@ -19,6 +19,7 @@ from ..impl.database import database_root, MultiIndexedPersistentCollection
 from .dashboard import Dashboard
 from pydash_app.user import user_repository
 
+
 if not hasattr(database_root, 'dashboards'):
     database_root.dashboards = MultiIndexedPersistentCollection({'id'})
 

@@ -7,15 +7,16 @@ name = "pypi"
 
 [packages]
 
-flask = "*"
-flask-wtf = "*"
+Flask = "*"
+Flask-WTF = "*"
 flask-login = "*"
 multi-indexed-collection = "*"
-zeo = "*"
+ZEO = "*"
 flask-restplus = "*"
-pyjwt = "*"
+PyJWT = "*"
 requests = "*"
-flask-cors = "*"
+Flask-Cors = "*"
+pqdict = "*"
 
 
 [dev-packages]

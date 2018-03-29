@@ -41,12 +41,13 @@ def get_monitor_rules(dashboard_url, dashboard_token):
     return _decode_jwt(response.text, dashboard_token)
 
 
-def get_data(dashboard_url, dashboard_token, time_from=None):
+def get_data(dashboard_url, dashboard_token, time_from=None, time_to=None):
     """
     Get data from a deployed flask-monitoring-dashboard
     :param dashboard_url: The base URL for the deployed dashboard, without trailing slash
     :param dashboard_token: The secret token for the dashboard, used to decode the Json Web Token response
     :param time_from: An optional timestamp string indicating only data since that timestamp should be included
+    :param time_to: An optional timestamp string indicating only data up to that timestamp should be included
     :return: A dict containing all monitoring data or data since a given timestamp
     """
     endpoint = _endpoint_name(DATA_ENDPOINT)
@@ -54,6 +55,8 @@ def get_data(dashboard_url, dashboard_token, time_from=None):
     url = f'{dashboard_url}/{endpoint}'
     if time_from is not None:
         url = f'{url}/{time_from}'
+    if time_to is not None:
+        url = f'{url}/{time_to}'
 
     response = requests.get(url)
 
