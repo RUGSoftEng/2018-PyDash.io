@@ -62,6 +62,12 @@ class Dashboard(persistent.Persistent):
         """
         self._endpoint_calls.append(endpoint_call)
         self._aggregator.add_endpoint_call(endpoint_call)
+        
+        # Quick and dirty fix to add endpoint call to endpoint
+        for endpoint in self.endpoints:
+            if endpoint.name == endpoint_call.endpoint:
+                endpoint.add_call(endpoint_call)
+                break
 
     def get_aggregated_data(self):
         """
