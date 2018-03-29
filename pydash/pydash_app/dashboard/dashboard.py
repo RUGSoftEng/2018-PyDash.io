@@ -2,6 +2,8 @@
 import uuid
 import persistent
 
+from .aggregator import Aggregator
+
 
 class Dashboard(persistent.Persistent):
     """
@@ -20,9 +22,11 @@ class Dashboard(persistent.Persistent):
         self.id = uuid.uuid4()
         self.url = url
         self.user_id = uuid.UUID(user_id)
-        self.endpoints = list()
-        self.endpoint_calls = list()  # list of unfiltered endpoint calls, for use with an aggregator.
+        self.endpoints = []
         self.last_fetch_time = None
+
+        self._endpoint_calls = []  # list of unfiltered endpoint calls, for use with an aggregator.
+        self._aggregator = Aggregator(self._endpoint_calls)
 
     def __repr__(self):
         return f'<{self.__class__.__name__} id={self.id} url={self.url} endpoints={self.endpoints}>'
@@ -50,6 +54,14 @@ class Dashboard(persistent.Persistent):
             self.endpoints.remove(endpoint)
         except ValueError:
             raise
+
+    def add_endpoint_call(self, endpoint_call):
+        """
+        Adds an endpoint call to the dashboard.
+        :param endpoint_call: The endpoint call to add
+        """
+        self._endpoint_calls.append(endpoint_call)
+        self._aggregator.add_endpoint_call(endpoint_call)
 
     # Required because `multi_indexed_collection` puts dashboards in a set,
     #  that needs to order its keys for fast lookup.
