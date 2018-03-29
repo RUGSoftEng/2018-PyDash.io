@@ -1,0 +1,18 @@
+[
+    {
+        "execution_time": 12.929201126098633,
+        "endpoint": "index",
+        "group_by": "None",
+        "version": "1.0",
+        "ip": "101.199.108.120",
+        "time": "2018-03-16 00:19:27.144240"
+    },
+    {
+        "execution_time": 1391.9451236724854,
+        "endpoint": "static",
+        "group_by": "None",
+        "version": "1.0",
+        "ip": "101.199.108.120",
+        "time": "2018-03-16 00:19:30.682605"
+    }
+]
