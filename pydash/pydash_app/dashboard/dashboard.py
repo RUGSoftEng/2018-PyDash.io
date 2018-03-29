@@ -1,9 +1,12 @@
-
 import uuid
 import persistent
+from datetime import datetime
 
 from .aggregator import Aggregator
+from .endpoint import Endpoint
+from .endpoint_call import EndpointCall
 
+from ..impl.fetch import get_monitor_rules, get_data
 
 class Dashboard(persistent.Persistent):
     """
@@ -24,6 +27,9 @@ class Dashboard(persistent.Persistent):
         self.user_id = uuid.UUID(user_id)
         self.endpoints = []
         self.last_fetch_time = None
+
+        # TODO: implement tokens
+        self._token = None
 
         self._endpoint_calls = []  # list of unfiltered endpoint calls, for use with an aggregator.
         self._aggregator = Aggregator(self._endpoint_calls)
@@ -69,6 +75,53 @@ class Dashboard(persistent.Persistent):
         :return: A dict containing aggregated data points.
         """
         return self._aggregator.as_dict()
+
+    def fetch_endpoints(self):
+        """
+        Fetches and returns a list of `Endpoint`s in this dashboard.
+        :return: A list of `Endpoint`s for this dashboard.
+        """
+
+        # TODO: this function does not actually put the data into the dashboard yet, only returns it
+
+        monitor_rules = get_monitor_rules(self.url, self.token)
+
+        if monitor_rules is None:
+            return None
+
+        return [Endpoint(rule['endpoint'], rule['monitor']) for rule in monitor_rules]
+
+    def fetch_endpoint_calls(self, time_from=None, time_to=None):
+        """
+        Fetches and returns a list of `EndpointCall`s for this dashboard.
+        :param time_from: An optional timestamp indicating only data since that timestamp should be returned.
+        :param time_to: An optional timestamp indicating only data up to that timestamp should be returned.
+        :return: A list of `EndpointCall`s containing the endpoint call data for this dashboard.
+        """
+
+        # TODO: this function does not actually put the data into the dashboard yet, only returns it
+
+        endpoint_requests = get_data(self.url, self.token, time_from, time_to)
+
+        if endpoint_requests is None:
+            return None
+
+        endpoint_calls = []
+        for request in endpoint_requests:
+            # The raw endpoint call data contains a timestamp formatted
+            # as "yyyy-mm-dd hh:mm:ss.micro" so we need to parse it
+            time = datetime.strptime(request['time'], '%Y-%m-%d %H:%M:%S.%f')
+            call = EndpointCall(
+                request['endpoint'],
+                request['execution_time'],
+                time,
+                request['version'],
+                request['group_by'],
+                request['ip']
+            )
+            endpoint_calls.append(call)
+
+        return endpoint_calls
 
     # Required because `multi_indexed_collection` puts dashboards in a set,
     #  that needs to order its keys for fast lookup.
