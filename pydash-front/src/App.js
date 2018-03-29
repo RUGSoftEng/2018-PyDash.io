@@ -6,16 +6,6 @@ import Overview from './overview/Overview';
 import { Switch, Route } from 'react-router-dom'
 
 class App extends Component {
-  state = {
-    loggedIn: false
-  };
-
-  handleChange = key => event => {
-    this.setState({
-      [key]: event.target.value
-    });
-  };
-
   render() {
     return (
       <div className="App">
