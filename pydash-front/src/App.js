@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Login from './login/Login';
 import Dashboard from './dashboard/Dashboard';
-import Overview from './overview/Overview';
+import Overview from './dashboard/overview/Overview';
 import { Switch, Route } from 'react-router-dom'
 
 class App extends Component {

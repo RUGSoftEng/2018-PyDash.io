@@ -2,7 +2,7 @@ import React from 'react';
 import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import DonutSmall from 'material-ui-icons/DonutSmall';
 import StarIcon from 'material-ui-icons/Star';
-import Logout from '../logout/Logout'
+import Logout from './logout/Logout'
 
 export const mailFolderListItems = (
     <div>
