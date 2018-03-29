@@ -36,7 +36,7 @@ def dashboards():
     Note: For now, this function only returns static mock data.
     """
 
-    dbs = _json_mock_data()
+    dbs = _json_mock_dashboards()
     return jsonify(dbs), 200
 
 
