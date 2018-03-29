@@ -46,10 +46,7 @@ class Endpoint(persistent.Persistent):
         Raises a ValueError if no such call exists.
         :param call: The endpoint call to remove.
         """
-        try:
-            self._calls.remove(call)
-        except ValueError:
-            raise
+        self._calls.remove(call)
 
     def set_monitored(self, is_monitored):
         self.is_monitored = is_monitored
