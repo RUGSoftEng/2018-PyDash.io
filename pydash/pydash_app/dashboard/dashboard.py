@@ -5,7 +5,12 @@ import persistent
 
 class Dashboard(persistent.Persistent):
     """
-    TODO: Add this description.
+    The Dashboard entity knows about:
+    - Its own properties (id, url, user_id, endpoints, endpoint_calls and last_fetch_time)
+    - The functionalities for Dashboard interactions with information from elsewhere.
+
+    It does not contain information on how to persistently store/load a dashboard.
+    This task is handled by the `dashboard_repository`.
     """
 
     def __init__(self, url, user_id):
@@ -16,7 +21,7 @@ class Dashboard(persistent.Persistent):
         self.url = url
         self.user_id = uuid.UUID(user_id)
         self.endpoints = list()
-        self.endpoint_calls = list()
+        self.endpoint_calls = list()  # list of unfiltered endpoint calls, for use with an aggregator.
         self.last_fetch_time = None
 
     def __repr__(self):
