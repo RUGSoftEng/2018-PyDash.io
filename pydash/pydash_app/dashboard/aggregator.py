@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 import persistent
 
 
@@ -19,9 +21,9 @@ class Aggregator(persistent.Persistent):
         self.total_execution_time = 0
 
         self.average_execution_time = None
-
-        self.visits_per_day = {}
-        self.visits_per_ip = {}
+        
+        self.visits_per_day = defaultdict(lambda: 0)
+        self.visits_per_ip = defaultdict(lambda: 0)
 
     def add_endpoint_call(self, endpoint_call):
         """
@@ -37,16 +39,9 @@ class Aggregator(persistent.Persistent):
         self.average_execution_time = self.total_execution_time / len(self._endpoint_calls)
 
         day = endpoint_call.time.strftime('%Y-%m-%d')
-        if day in self.visits_per_day:
-            self.visits_per_day[day] += 1
-        else:
-            self.visits_per_day[day] = 1
+        self.visits_per_day[day] += 1
 
-        ip = endpoint_call.ip
-        if ip in self.visits_per_ip:
-            self.visits_per_ip[ip] += 1
-        else:
-            self.visits_per_ip[ip] = 1
+        self.visits_per_ip[endpoint_call.ip] += 1
 
     def as_dict(self):
         """
@@ -58,6 +53,6 @@ class Aggregator(persistent.Persistent):
             'total_visits': self.total_visits,
             'total_execution_time': self.total_execution_time,
             'average_execution_time': self.average_execution_time,
-            'visits_per_day': self.visits_per_day,
-            'visits_per_ip': self.visits_per_ip
+            'visits_per_day': dict(self.visits_per_day),
+            'visits_per_ip': dict(self.visits_per_ip)
         }
