@@ -1,4 +1,3 @@
-
 import persistent
 from datetime import datetime
 
@@ -47,7 +46,7 @@ class EndpointCall(persistent.Persistent):
             raise TypeError('EndpointCall expects ip to be a string.')
 
     # Note: this function only exists to provide an interface and abstract away from internal representation.
-    def get_data(self):
+    def as_dict(self):
         """returns a dict containing the data of the EndpointCall"""
         return {"endpoint": self.endpoint,
                 "execution_time": self.execution_time,
@@ -55,4 +54,4 @@ class EndpointCall(persistent.Persistent):
                 "version": self.version,
                 "group_by": self.group_by,
                 "ip": self.ip
-                }
+        }
