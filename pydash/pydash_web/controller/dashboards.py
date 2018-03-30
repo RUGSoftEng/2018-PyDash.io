@@ -70,13 +70,14 @@ def _json_mock_dashboards():
 
     return mock_data
 
+
 def _json_mock_dashboard_detail():
     return {
         "id": "4242424242424242",
         "url": "http://pydash.io/",
         "aggregates": {
             "total_visits": _json_mock_total_visits(),
-             "visits_per_day": _json_mock_visits_per_day()
+            "visits_per_day": _json_mock_visits_per_day()
         },
         "endpoints": [
             {
@@ -92,11 +93,11 @@ def _json_mock_dashboard_detail():
     }
 
 
-
 from datetime import datetime, timedelta
 def daterange(start_date, end_date):
     for n in range(int ((end_date - start_date).days)):
         yield start_date + timedelta(n)
+
 
 def _json_mock_visits_per_day():
     fake_visits = [
@@ -118,8 +119,10 @@ def _json_mock_visits_per_day():
     last_week = [_json_date(date) for date in daterange(datetime.today() - timedelta(days=len(fake_visits)), datetime.today())]
     return dict(zip(last_week, fake_visits))
 
+
 def _json_mock_total_visits():
     return sum(_json_mock_visits_per_day().values())
+
 
 def _json_date(datetime):
     """
