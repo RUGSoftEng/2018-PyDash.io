@@ -33,7 +33,8 @@ class Login extends Component {
         // Make a request for a user with a given ID
         axios.post('http://localhost:5000/api/login', {
             username,
-            password
+            password,
+            withCredentials: true
         }).then((response) => {
             console.log(response);
             this.setState(prevState => ({

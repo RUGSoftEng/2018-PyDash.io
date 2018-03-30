@@ -3,6 +3,7 @@ import './overview.css';
 import Grid from 'material-ui/Grid';
 import DashTile from './DashTile';
 import { withStyles } from 'material-ui/styles';
+import axios from 'axios';
 
 const styles = theme => ({
   root: {
@@ -22,6 +23,18 @@ class DashTileGrid extends Component {
         this.state = {
             username: props.username,
         };
+    }
+
+    componentDidMount() {
+        axios('http://localhost:5000/api/dashboards/123', {
+            method: 'get',
+            withCredentials: true
+        }).then((response) => {
+            console.log('success', response);
+        }).catch((error) => {
+            console.log('error', error);
+        });
+
     }
     
     render() {
