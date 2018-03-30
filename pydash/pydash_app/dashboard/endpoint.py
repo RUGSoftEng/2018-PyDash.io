@@ -51,7 +51,7 @@ class Endpoint(persistent.Persistent):
     def set_monitored(self, is_monitored):
         self.is_monitored = is_monitored
 
-    def get_aggregated_data(self):
+    def aggregated_data(self):
         """
         Get aggregated data on this endpoint.
         :return: A dict containing aggregated data points.
