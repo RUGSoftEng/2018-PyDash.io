@@ -5,6 +5,30 @@ import persistent
 from .aggregator import Aggregator
 
 
+"""
+
+Example testing code:
+
+from pydash_app.dashboard.dashboard import Dashboard
+from pydash_app.dashboard.endpoint_call import EndpointCall
+import uuid
+from datetime import datetime, timedelta
+d = Dashboard("http://foo.io", str(uuid.uuid4()))
+
+ec1 = EndpointCall("foo", 0.5, datetime.now(), 0.1, "None", "127.0.0.1")
+ec2 = EndpointCall("foo", 0.1, datetime.now(), 0.1, "None", "127.0.0.2")
+ec3 = EndpointCall("bar", 0.2, datetime.now(), 0.1, "None", "127.0.0.1")
+ec4 = EndpointCall("bar", 0.2, datetime.now() - timedelta(days=1), 0.1, "None", "127.0.0.1")
+ec5 = EndpointCall("bar", 0.2, datetime.now() - timedelta(days=2), 0.1, "None", "127.0.0.1")
+d.add_endpoint_call(ec1)
+d.add_endpoint_call(ec2)
+d.add_endpoint_call(ec3)
+d.add_endpoint_call(ec4)
+d.add_endpoint_call(ec5)
+d.aggregated_data()
+"""
+
+
 class Dashboard(persistent.Persistent):
     """
     The Dashboard entity knows about:

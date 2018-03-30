@@ -4,7 +4,6 @@ import datetime
 import persistent
 
 
-
 class Aggregator(persistent.Persistent):
     """
     Maintains aggregate data for either a dashboard or a single endpoint.
