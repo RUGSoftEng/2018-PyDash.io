@@ -9,12 +9,17 @@ from .aggregator import Aggregator
 
 Example testing code:
 
+```
 from pydash_app.dashboard.dashboard import Dashboard
+from pydash_app.dashboard.endpoint import Endpoint
 from pydash_app.dashboard.endpoint_call import EndpointCall
 import uuid
 from datetime import datetime, timedelta
 d = Dashboard("http://foo.io", str(uuid.uuid4()))
-
+e1 = Endpoint("foo", True)
+e2 = Endpoint("bar", True)
+d.add_endpoint(e1)
+d.add_endpoint(e2)
 ec1 = EndpointCall("foo", 0.5, datetime.now(), 0.1, "None", "127.0.0.1")
 ec2 = EndpointCall("foo", 0.1, datetime.now(), 0.1, "None", "127.0.0.2")
 ec3 = EndpointCall("bar", 0.2, datetime.now(), 0.1, "None", "127.0.0.1")
@@ -26,6 +31,9 @@ d.add_endpoint_call(ec3)
 d.add_endpoint_call(ec4)
 d.add_endpoint_call(ec5)
 d.aggregated_data()
+d.endpoints['foo'].aggregated_data()
+d.endpoints['bar'].aggregated_data()
+```
 """
 
 
@@ -46,7 +54,7 @@ class Dashboard(persistent.Persistent):
         self.id = uuid.uuid4()
         self.url = url
         self.user_id = uuid.UUID(user_id)
-        self.endpoints = []
+        self.endpoints = dict() # name -> Endpoint
         self.last_fetch_time = None
 
         self._endpoint_calls = []  # list of unfiltered endpoint calls, for use with an aggregator.
@@ -63,7 +71,7 @@ class Dashboard(persistent.Persistent):
         Adds an endpoint to this dashboard's internal collection of endpoints.
         :param endpoint:  The endpoint to add, expects an Endpoint object.
         """
-        self.endpoints.append(endpoint)
+        self.endpoints[endpoint.name] = endpoint
 
     def remove_endpoint(self, endpoint):
         """
@@ -74,7 +82,8 @@ class Dashboard(persistent.Persistent):
         """
         # TODO: perhaps remove all relevant endpoint calls from endpoint_calls? Discuss with team.
         # TODO: THIS IS POST-MVP
-        self.endpoints.remove(endpoint)
+        # TODO: Is this function required at all?
+        del self.endpoints[endpoint.name]
 
     def add_endpoint_call(self, endpoint_call):
         """
@@ -84,11 +93,8 @@ class Dashboard(persistent.Persistent):
         self._endpoint_calls.append(endpoint_call)
         self._aggregator.add_endpoint_call(endpoint_call)
 
-        # Quick and dirty fix to add endpoint call to endpoint
-        for endpoint in self.endpoints:
-            if endpoint.name == endpoint_call.endpoint:
-                endpoint.add_call(endpoint_call)
-                break
+        if endpoint_call.endpoint in self.endpoints:
+            self.endpoints[endpoint_call.endpoint].add_endpoint_call(endpoint_call)
 
     def aggregated_data(self):
         """

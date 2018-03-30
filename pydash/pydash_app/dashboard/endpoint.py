@@ -32,17 +32,17 @@ class Endpoint(persistent.Persistent):
     def get_id(self):
         return str(self.id)
 
-    def add_call(self, call):
+    def add_endpoint_call(self, call):
         """
-        Adds a call to its internal collection of endpoint calls.
+        Adds an EndpointCall to its internal collection of endpoint calls.
         :param call: The endpoint call to add.
         """
         self._calls.append(call)
         self._aggregator.add_endpoint_call(call)
 
-    def remove_call(self, call):
+    def remove_endpoint_call(self, call):
         """
-        Removes a call from this endpoint's internal collection of endpoint calls.
+        Removes an EndpointCall from this endpoint's internal collection of endpoint calls.
         Raises a ValueError if no such call exists.
         :param call: The endpoint call to remove.
         """
