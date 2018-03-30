@@ -4,6 +4,7 @@ import './Login.css';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import axios from 'axios';
+import Logo from '../logo.png'
 
 class Login extends Component {
     state = {
@@ -55,7 +56,7 @@ class Login extends Component {
         ) : (
             <div>
                 <header className="App-header">
-                    <h1 className="App-title">PyDash.io Login</h1>
+                    <img width="200" src={Logo} />
                 </header>
 
                 <form onSubmit={this.tryLogin}>

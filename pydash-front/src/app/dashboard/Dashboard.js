@@ -1,5 +1,8 @@
 import React from 'react';
+import { Route } from 'react-router-dom'
 import PropTypes from 'prop-types';
+
+// material-ui
 import { withStyles } from 'material-ui/styles';
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
@@ -10,7 +13,11 @@ import IconButton from 'material-ui/IconButton';
 import Hidden from 'material-ui/Hidden';
 import Divider from 'material-ui/Divider';
 import MenuIcon from 'material-ui-icons/Menu';
-import { mailFolderListItems, otherMailFolderListItems } from './tileData';
+
+// APP
+import { mailFolderListItems, otherMailFolderListItems } from './Sidebar';
+import Overview from '../overview/Overview';
+import Statistics from '../statistics/Statistics';
 
 const drawerWidth = 240;
 
@@ -119,7 +126,8 @@ class ResponsiveDrawer extends React.Component {
                 </Hidden>
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
-                    <Typography noWrap>{'You haven\'t added any fancy dashboard yet ✌🏻.'}</Typography>
+                    <Route exact path='/dashboard' component={Overview} />
+                    <Route path='/dashboard/statistics' component={Statistics} />
                 </main>
             </div>
         );
