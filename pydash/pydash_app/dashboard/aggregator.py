@@ -23,11 +23,11 @@ class Aggregator(persistent.Persistent):
 
         self.average_execution_time = None
 
-        self.visits_per_day = defaultdict(lambda: 0)
-        self.visits_per_ip = defaultdict(lambda: 0)
+        self.visits_per_day = defaultdict(int)
+        self.visits_per_ip = defaultdict(int)
 
         self.unique_visitors_all_time_set = set()
-        self.unique_visitors_per_day_set = defaultdict(lambda: set())
+        self.unique_visitors_per_day_set = defaultdict(set)
 
     def add_endpoint_call(self, endpoint_call):
         """
