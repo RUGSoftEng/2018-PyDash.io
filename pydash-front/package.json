@@ -3,13 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@nivo/line": "^0.33.0",
     "axios": "^0.18.0",
+    "lodash-es": "^4.17.8",
     "material-ui": "^1.0.0-beta.36",
     "material-ui-icons": "^1.0.0-beta.36",
+    "nivo": "^0.31.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.1"
+    "react-scripts": "1.1.1",
+    "react-vis": "^1.9.2"
   },
   "scripts": {
     "start": "react-scripts start",

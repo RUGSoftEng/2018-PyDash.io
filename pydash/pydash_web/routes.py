@@ -5,11 +5,9 @@ The actual implementation of each of the routes' dispatching logic is handled by
 """
 
 from flask_login import login_required
-from flask_cors import CORS
 
 from pydash_web.blueprint import bp
 import pydash_web.controller as controller
-cors = CORS(bp, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True) # Only keep this during development!
 
 @bp.route("/")
 def serve_react():
