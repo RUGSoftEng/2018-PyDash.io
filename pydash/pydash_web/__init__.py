@@ -20,7 +20,7 @@ flask_webapp.config.from_object(Config)
 login_manager = LoginManager(flask_webapp)
 flask_webapp.register_blueprint(pydash_web_bp)
 flask_webapp.config['CORS_HEADERS'] = 'Content-Type'
-cors = CORS(flask_webapp, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True) # Only keep this during development!
+cors = CORS(flask_webapp, resources={r"/api/*": {"origins": "*"}}, allow_headers=['Content-Type'], supports_credentials=True) # Only keep this during development!
 
 
 @login_manager.user_loader

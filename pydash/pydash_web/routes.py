@@ -5,6 +5,7 @@ The actual implementation of each of the routes' dispatching logic is handled by
 """
 
 from flask_login import login_required
+from flask_cors import cross_origin
 
 from pydash_web.blueprint import bp
 import pydash_web.controller as controller

@@ -6,7 +6,7 @@ import { withStyles } from 'material-ui/styles';
 import axios from 'axios';
 import Typography from 'material-ui/Typography';
 
-import '../../../node_modules/react-vis/dist/style.css';
+/* import '../../../node_modules/react-vis/dist/style.css';*/
 /* import {XYPlot, VerticalBarSeries, VerticalGridLines, HorizontalGridLines, XAxis, YAxis} from 'react-vis';*/
 
 import { Line } from '@nivo/line'
@@ -122,30 +122,30 @@ function destringify_date_keys(dict){
     return res;
 }
 
-        const data = [{
-            id: "foobar",
-            data: [
-                {
-                    x: "2018-03-25",
-                    y: 1
-                },
-                {
-                    x: "2018-03-27",
-                    y: 1
-                },
-                {
-                    x: "2018-03-28",
-                    y: 1
-                },
-                {
-                    x: "2018-03-29",
-                    y: 1
-                },
-                {
-                    x: "2018-03-30",
-                    y: 3
-                }
-            ]}]
+const data = [{
+    id: "foobar",
+    data: [
+        {
+            x: "2018-03-25",
+            y: 1
+        },
+        {
+            x: "2018-03-27",
+            y: 1
+        },
+        {
+            x: "2018-03-28",
+            y: 1
+        },
+        {
+            x: "2018-03-29",
+            y: 1
+        },
+        {
+            x: "2018-03-30",
+            y: 3
+        }
+    ]}]
 
 
 class DashTileGrid extends Component {
@@ -462,9 +462,10 @@ class DashTileGrid extends Component {
         
         return(
             <div className={classes.root}>
+            <h2>Dashboard Information</h2>
 
                 <Line
-                    data={[{id:'No. of pageviews per day', data: this.state.visits_per_day}]}
+                    data={[{id:'No. of pageviews per day:', data: this.state.visits_per_day}]}
                     width={500}
                     height={500}
                     curve="monotoneX"
