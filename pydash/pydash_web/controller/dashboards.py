@@ -87,6 +87,9 @@ def _json_mock_dashboard_detail():
     ec4 = EndpointCall("bar", 0.2, datetime.now() - timedelta(days=1), 0.1, "None", "127.0.0.1")
     ec5 = EndpointCall("bar", 0.2, datetime.now() - timedelta(days=2), 0.1, "None", "127.0.0.1")
     ec6 = EndpointCall("bar", 0.2, datetime.now() - timedelta(days=3), 0.1, "None", "127.0.0.2")
+    ec6b = EndpointCall("bar", 0.2, datetime.now() - timedelta(days=3), 0.1, "None", "127.0.0.2")
+    ec6c = EndpointCall("bar", 0.2, datetime.now() - timedelta(days=3), 0.1, "None", "127.0.0.2")
+    ec6d = EndpointCall("bar", 0.2, datetime.now() - timedelta(days=3), 0.1, "None", "127.0.0.2")
     ec7 = EndpointCall("bar", 0.3, datetime.now() - timedelta(days=5), 0.1, "None", "127.0.0.1")
     ec8 = EndpointCall("bar", 0.1, datetime.now() - timedelta(days=4), 0.1, "None", "127.0.0.2")
     d.add_endpoint_call(ec1)
@@ -95,7 +98,14 @@ def _json_mock_dashboard_detail():
     d.add_endpoint_call(ec4)
     d.add_endpoint_call(ec5)
     d.add_endpoint_call(ec6)
+    d.add_endpoint_call(ec6b)
+    d.add_endpoint_call(ec6c)
+    d.add_endpoint_call(ec6d)
     d.add_endpoint_call(ec7)
+
+    for n in range(0, 150):
+        d.add_endpoint_call(EndpointCall("foo", n / 10, datetime.now() - timedelta(days = (n % 13)), 0.1, "None", "127.0.0.3"))
+
     aggregate_data = d.aggregated_data()
     # d.endpoints['foo'].aggregated_data()
     # d.endpoints['bar'].aggregated_data()
