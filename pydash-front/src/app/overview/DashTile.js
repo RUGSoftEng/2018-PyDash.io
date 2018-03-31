@@ -74,22 +74,24 @@ class DashTile extends Component {
     }
 
 
-    render() {
+    render() { 
         return(
-            <Card>
-                <CardContent>
-                    <h2>{this.props.title}</h2>
-                    <h3>Total Visits: {this.state.total_visits}</h3>
-                    <GridList cellHeight='auto'>
-                    <GridListTile>
-                    <DashboardVisitsGraph data={this.state.visits_per_day} title="Visits Per Day" tooltip_title="No. visits: "/>
-                    </GridListTile>
-                    <GridListTile>
-                        <DashboardVisitsGraph data={this.state.unique_visitors_per_day} title="Unique Visitors Per Day" tooltip_title="No. unique visits: "/>
-                    </GridListTile>
-                    </GridList>
-                </CardContent>
-            </Card>
+            <Grid item xs={12}>
+                <Card>
+                    <CardContent>
+                        <h2>{this.props.title}</h2>
+                        <h3>Total Visits: {this.state.total_visits}</h3>
+                        <GridList cellHeight='auto'>
+                            <GridListTile>
+                                <DashboardVisitsGraph data={this.state.visits_per_day} title="Visits Per Day" tooltip_title="No. visits: "/>
+                            </GridListTile>
+                            <GridListTile>
+                                <DashboardVisitsGraph data={this.state.unique_visitors_per_day} title="Unique Visitors Per Day" tooltip_title="No. unique visits: "/>
+                            </GridListTile>
+                        </GridList>
+                    </CardContent>
+                </Card>
+            </Grid>
         );
     }
 }
