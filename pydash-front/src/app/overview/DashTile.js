@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import './overview.css';
 import Grid from 'material-ui/Grid';
+import GridList, {GridListTile} from 'material-ui/GridList';
 import Card, { CardContent } from 'material-ui/Card';
 import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
@@ -35,6 +36,7 @@ class DashTile extends Component {
             col: props.xs,
             total_visits: "?",
             visits_per_day: [],
+            unique_visitors_per_day: [],
         };
     }
 
@@ -51,6 +53,7 @@ class DashTile extends Component {
                 let newState = prevState;
                 newState.total_visits = "" + response.data.aggregates.total_visits;
                 newState.visits_per_day = dict_to_xy_arr(response.data.aggregates.visits_per_day)
+                newState.unique_visitors_per_day = dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day)
                 console.log(newState)
 
                 return newState;
@@ -73,15 +76,20 @@ class DashTile extends Component {
 
     render() {
         return(
-            <Grid item xs={this.state.col}>
-                <Card>
-                    <CardContent>
-                        <Typography component='h2'>{this.props.title}</Typography>
-                        <Typography>Total Visits: {this.state.total_visits}</Typography>
-                        <DashboardVisitsGraph data={this.state.visits_per_day} title="Visits Per Day" tooltip_title="No. visits: "/>
-                    </CardContent>
-                </Card>
-            </Grid>
+            <Card>
+                <CardContent>
+                    <h2>{this.props.title}</h2>
+                    <h3>Total Visits: {this.state.total_visits}</h3>
+                    <GridList cellHeight='auto'>
+                    <GridListTile>
+                    <DashboardVisitsGraph data={this.state.visits_per_day} title="Visits Per Day" tooltip_title="No. visits: "/>
+                    </GridListTile>
+                    <GridListTile>
+                        <DashboardVisitsGraph data={this.state.unique_visitors_per_day} title="Unique Visitors Per Day" tooltip_title="No. unique visits: "/>
+                    </GridListTile>
+                    </GridList>
+                </CardContent>
+            </Card>
         );
     }
 }

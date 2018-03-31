@@ -8,10 +8,10 @@ class DashboardVisitsGraph extends Component {
 
     render() {
         return (<div>
-            <h2>{this.props.title}</h2>
+            <h4>{this.props.title}:</h4>
             <Line
                 data={[{id: this.props.tooltip_title, data: this.props.data}]}
-                width={800}
+                width={500}
                 height={400}
                 curve="monotoneX"
                 axisBottom={{

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './overview.css';
 import Grid from 'material-ui/Grid';
+import List from 'material-ui/List';
 import DashTile from './DashTile';
 import DashboardVisitsGraph from './DashboardVisitsGraph'
 import { withStyles } from 'material-ui/styles';
@@ -81,19 +82,17 @@ class DashTileGrid extends Component {
              */
         });
     }
-    
+ 
     render() {
         const {classes, theme} = this.props;
 
         return(
             <div className={classes.root}>
 
-                <Grid container justify="center">
                 {/* For each found dashboard for username */}
                     <DashTile title='lorem ipsum dolor sid amet, onzin en nog wat meer padding die ik ter plekke uit mijn duim zuig' dashboard_id="foo" xs={12} />
                     <DashTile title='test2' dashboard_id="bar" xs={12}/>
                     <DashTile title='eenveeltelangwoorddatnietbestaat' dashboard_id="baz" xs={12} />
-                </Grid>
             </div>
         );
     }
