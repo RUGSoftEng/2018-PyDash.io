@@ -20,17 +20,17 @@ def dashboard(dashboard_id):
                A dict containing an error message describing the particular error.
              - A corresponding HTML status code.
     """
-
-    db = pydash_app.dashboard.find(dashboard_id)
-    if db is None:
+    try:
+        db = pydash_app.dashboard.find(dashboard_id)
+    except KeyError:
         return jsonify({"message": "Could not find a matching dashboard."}), 404
-    if db.user_id is not current_user.id:
+
+    if db.user_id != current_user.id:
         return jsonify({"message": "Not authorised to view this dashboard."}), 403
 
     return jsonify(_dashboard_detail(db)), 200
 
 
-# Currently returns mock-data.
 def dashboards():
     """
     Lists the dashboards of the current user.
@@ -42,7 +42,7 @@ def dashboards():
     """
     dbs = pydash_app.dashboard.dashboards_of_user(current_user.id)
 
-    return jsonify(_dashboard_detail(dbs)), 200
+    return jsonify([_dashboard_detail(db) for db in dbs]), 200
 
 
 def _dashboard_detail(db):
