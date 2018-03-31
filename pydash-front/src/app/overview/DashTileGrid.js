@@ -90,9 +90,9 @@ class DashTileGrid extends Component {
             <Grid container spacing={24} className={classes.root}>
 
                 {/* For each found dashboard for username */}
-                    <DashTile title='lorem ipsum dolor sid amet, onzin en nog wat meer padding die ik ter plekke uit mijn duim zuig' dashboard_id="foo" xs={12} />
-                    <DashTile title='test2' dashboard_id="bar" xs={12}/>
-                    <DashTile title='eenveeltelangwoorddatnietbestaat' dashboard_id="baz" xs={12} />
+                    <DashTile title='pistach.io' dashboard_id="foo" xs={12} />
+                    <DashTile title='yetanotherdashboard.com' dashboard_id="bar" xs={12}/>
+                    <DashTile title='zeeguu.unibe.ch' dashboard_id="baz" xs={12} />
             </Grid>
         );
     }
