@@ -68,8 +68,7 @@ def seed_dashboards():
     database_root.dashboards = MultiIndexedPersistentCollection({'id'})
 
     # Fill in dashboards.
-    # _dev_dashboard_urls = ['http://pydash.io/', 'http://pystach.io/']
-    # _dev_endpoints = [Endpoint("foo", True), Endpoint("bar", True)]
+    _dev_dashboard_urls = ['http://pydash.io/', 'http://pystach.io/']
     _dev_endpoint_calls = [EndpointCall("foo", 0.5, datetime.now(), 0.1, "None", "127.0.0.1"),
                            EndpointCall("foo", 0.1, datetime.now(), 0.1, "None", "127.0.0.2"),
                            EndpointCall("bar", 0.2, datetime.now(), 0.1, "None", "127.0.0.1"),
@@ -77,8 +76,11 @@ def seed_dashboards():
                            EndpointCall("bar", 0.2, datetime.now() - timedelta(days=2), 0.1, "None", "127.0.0.1")
                            ]
 
+    # Instead of storing the endpoints in a list, we generate them on the fly,
+    #  to avoid users sharing the same endpoints for now, as we'd like to have a controlled environment for every user
+    #  during this stage of development.
     for user in user_repository.all():
-        for url in ['http://pydash.io/', 'http://pystach.io/']:
+        for url in _dev_dashboard_urls:
             dashboard = Dashboard(url, user.get_id())
             for endpoint in [Endpoint("foo", True), Endpoint("bar", True)]:
                 dashboard.add_endpoint(endpoint)
