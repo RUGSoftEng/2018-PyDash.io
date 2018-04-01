@@ -61,7 +61,7 @@ class Dashboard(persistent.Persistent):
         self.last_fetch_time = None
 
         # TODO: implement tokens
-        self._token = None
+        self.token = None
 
         self._endpoint_calls = []  # list of unfiltered endpoint calls, for use with an aggregator.
         self._aggregator = Aggregator(self._endpoint_calls)
