@@ -6,7 +6,21 @@ from .endpoint_call import EndpointCall
 from .dashboard_repository import update as update_dashboard
 
 
-def fetch_endpoints(dashboard):
+def initialize_endpoints(dashboard):
+    """
+    For a given dashboard, initialize it with the endpoints it has registered.
+    Note that this will not add endpoint call data.
+    :param dashboard: The dashboard to initialize with endpoints.
+    """
+
+    endpoints = _fetch_endpoints(dashboard)
+    for endpoint in endpoints:
+        dashboard.add_endpoint(endpoint)
+
+    update_dashboard(dashboard)
+
+
+def _fetch_endpoints(dashboard):
     """
     Fetches and returns a list of `Endpoint`s in the given dashboard.
     :param dashboard: The dashboard for which to fetch endpoints.
@@ -28,6 +42,7 @@ def initialize_endpoint_calls(dashboard):
     For a given dashboard, retrieve all historical endpoint calls and store them in the database.
     :param dashboard: The dashboard to initialize with historical data.
     """
+
     if dashboard.last_fetch_time is not None:
         return
 
@@ -38,6 +53,7 @@ def initialize_endpoint_calls(dashboard):
     current_time = datetime.utcnow()
 
     while start_time < current_time:
+        # TODO: for now historical data is pulled in chunks of 1 hour (hardcoded)
         end_time = start_time + timedelta(hours=1)
 
         endpoint_calls = _fetch_endpoint_calls(dashboard, start_time, end_time)
@@ -55,7 +71,7 @@ def update_endpoint_calls(dashboard):
     :param dashboard: The dashboard for which to update endpoint calls.
     """
 
-    fetch_start_time = datetime.utcnow() - timedelta(minutes=1)
+    fetch_start_time = datetime.utcnow()
 
     if dashboard.last_fetch_time is None:
         return
@@ -63,6 +79,8 @@ def update_endpoint_calls(dashboard):
     new_calls = _fetch_endpoint_calls(dashboard, dashboard.last_fetch_time)
     for call in new_calls:
         dashboard.add_endpoint_call(call)
+
+    dashboard.last_fetch_time = fetch_start_time
 
     update_dashboard(dashboard)
 
