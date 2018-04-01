@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 
 import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import DonutSmall from 'material-ui-icons/DonutSmall';
+import SettingsIcon from 'material-ui-icons/Settings';
 import HomeIcon from 'material-ui-icons/Home';
 import StarIcon from 'material-ui-icons/Star';
 
@@ -14,19 +15,13 @@ export const mailFolderListItems = (
             <ListItemIcon>
                 <HomeIcon />
             </ListItemIcon>
-            <ListItemText primary="Overview" />
+            <ListItemText primary="Dashboards" />
         </ListItem>
         <ListItem button component={NavLink} to={'/dashboard/statistics'}>
             <ListItemIcon>
-                <DonutSmall />
+                <SettingsIcon />
             </ListItemIcon>
-            <ListItemText primary="Statistics" />
-        </ListItem>
-        <ListItem button>
-            <ListItemIcon>
-                <StarIcon />
-            </ListItemIcon>
-            <ListItemText primary="Analytics" />
+            <ListItemText primary="Settings" />
         </ListItem>
     </div>
 );

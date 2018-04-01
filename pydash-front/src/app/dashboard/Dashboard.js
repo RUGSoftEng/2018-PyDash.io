@@ -19,6 +19,10 @@ import { mailFolderListItems, otherMailFolderListItems } from './Sidebar';
 import Overview from '../overview/Overview';
 import Statistics from '../statistics/Statistics';
 
+
+// Styling
+import Logo from '../../images/logo.png'
+
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -72,6 +76,7 @@ class ResponsiveDrawer extends React.Component {
 
         const drawer = (
             <div>
+
                 <div className={classes.toolbar} />
                 <Divider />
                 <List>{mailFolderListItems}</List>
@@ -93,7 +98,7 @@ class ResponsiveDrawer extends React.Component {
                             <MenuIcon />
                         </IconButton>
                         <Typography variant="title" color="inherit" noWrap>
-                            PyDash.io Dashboard
+                            <img src={Logo} style={{marginTop: "15px", marginLeft: "20px;", marginBottom: "10px", maxWidth: "150px"}} />
             </Typography>
                     </Toolbar>
                 </AppBar>

@@ -4,7 +4,7 @@ import './Login.css';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import axios from 'axios';
-import Logo from '../logo.png'
+import Logo from '../images/logo.png'
 
 class Login extends Component {
     state = {
