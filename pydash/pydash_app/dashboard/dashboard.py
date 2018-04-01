@@ -57,7 +57,7 @@ class Dashboard(persistent.Persistent):
         self.id = uuid.uuid4()
         self.url = url
         self.user_id = uuid.UUID(user_id)
-        self.endpoints = dict() # name -> Endpoint
+        self.endpoints = dict()  # name -> Endpoint
         self.last_fetch_time = None
 
         # TODO: implement tokens
