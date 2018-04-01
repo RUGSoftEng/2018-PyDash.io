@@ -26,7 +26,12 @@ cors = CORS(flask_webapp, resources={r"/api/*": {"origins": "*"}}, allow_headers
 @login_manager.user_loader
 def load_user(user_id):
     print("Loading user {}".format(user_id))
-    return pydash_app.user.find(user_id)
+    try:
+        return pydash_app.user.find(user_id)
+    except KeyError:
+        # Returning None signals the LoginManager that the login is invalid.
+        # Everything else is handled automatically.
+        return None
 
 
 @flask_webapp.cli.command('seed', with_appcontext=False)
