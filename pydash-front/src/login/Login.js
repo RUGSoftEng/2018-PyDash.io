@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Redirect } from 'react-router'
+import { Redirect } from 'react-router'
 import './Login.css';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
@@ -57,7 +57,7 @@ class Login extends Component {
         ) : (
             <div>
                 <header className="App-header">
-                    <img width="200" src={Logo} />
+                    <img alt="PyDash logo" width="200" src={Logo} />
                 </header>
 
                 <form onSubmit={this.tryLogin}>

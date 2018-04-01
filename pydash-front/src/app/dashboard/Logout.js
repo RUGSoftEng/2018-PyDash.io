@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Redirect } from 'react-router'
+import { Redirect } from 'react-router'
 import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import ExitToApp from 'material-ui-icons/ExitToApp';
 import axios from 'axios';

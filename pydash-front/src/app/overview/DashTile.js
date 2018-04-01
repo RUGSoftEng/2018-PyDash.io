@@ -6,7 +6,6 @@ import Grid from 'material-ui/Grid';
 import GridList, {GridListTile} from 'material-ui/GridList';
 import Card, { CardContent } from 'material-ui/Card';
 import { withStyles } from 'material-ui/styles';
-import Typography from 'material-ui/Typography';
 
 import DashboardVisitsGraph from './DashboardVisitsGraph'
 

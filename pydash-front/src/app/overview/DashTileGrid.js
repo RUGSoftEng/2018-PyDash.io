@@ -1,15 +1,9 @@
 import React, {Component} from 'react';
 import './overview.css';
 import Grid from 'material-ui/Grid';
-import List from 'material-ui/List';
 import DashTile from './DashTile';
-import DashboardVisitsGraph from './DashboardVisitsGraph'
 import { withStyles } from 'material-ui/styles';
 import axios from 'axios';
-import Typography from 'material-ui/Typography';
-
-import { Line } from '@nivo/line'
-
 
 const styles = theme => ({
   root: {
@@ -84,7 +78,7 @@ class DashTileGrid extends Component {
     }
  
     render() {
-        const {classes, theme} = this.props;
+        const {classes} = this.props;
 
         return(
             <Grid container spacing={24} className={classes.root}>
