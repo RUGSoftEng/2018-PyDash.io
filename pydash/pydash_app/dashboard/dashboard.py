@@ -1,9 +1,12 @@
-
 import uuid
 import persistent
+from datetime import datetime
 
 from .aggregator import Aggregator
+from .endpoint import Endpoint
+from .endpoint_call import EndpointCall
 
+from ..impl.fetch import get_monitor_rules, get_data
 
 """
 
@@ -56,6 +59,9 @@ class Dashboard(persistent.Persistent):
         self.user_id = uuid.UUID(user_id)
         self.endpoints = dict()  # name -> Endpoint
         self.last_fetch_time = None
+
+        # TODO: implement tokens
+        self._token = None
 
         self._endpoint_calls = []  # list of unfiltered endpoint calls, for use with an aggregator.
         self._aggregator = Aggregator(self._endpoint_calls)
