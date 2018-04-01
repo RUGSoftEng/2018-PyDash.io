@@ -24,6 +24,8 @@ def dashboard(dashboard_id):
         db = pydash_app.dashboard.find(dashboard_id)
     except KeyError:
         return jsonify({"message": "Could not find a matching dashboard."}), 404
+    except ValueError: # Happens when called without a proper UUID -- return test data for now in this case.
+        return jsonify(_json_mock_dashboard_detail())
 
     if db.user_id != current_user.id:
         return jsonify({"message": "Not authorised to view this dashboard."}), 403
@@ -122,10 +124,10 @@ def _json_mock_dashboard_detail():
             'enabled': endpoint.is_monitored
         }
 
-    endpoints_dict = [endpoint_dict(endpoint) for endpoint in db.endpoints.values()]
+    endpoints_dict = [endpoint_dict(endpoint) for endpoint in d.endpoints.values()]
     return {
-        'id': db.id,
-        'url': db.url,
-        'aggregates': db.aggregated_data(),
+        'id': d.id,
+        'url': d.url,
+        'aggregates': d.aggregated_data(),
         'endpoints': endpoints_dict
     }
