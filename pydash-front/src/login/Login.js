@@ -4,7 +4,23 @@ import './Login.css';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import axios from 'axios';
-import Logo from '../images/logo.png'
+import Logo from '../images/logo.png';
+import {Howl, Howler} from 'howler';
+
+const login_sound = new Howl({
+    src: [
+        'http://www.sousound.com/music/healing/healing_01.mp3'
+        /* '/sounds/320664__pizzaiolo__lovelyboot1.mp3',*/
+        /* '../sounds/320664__pizzaiolo__lovelyboot1.ogg',
+         * '../sounds/320664__pizzaiolo__lovelyboot1.mp3',*/
+    ],
+    /* autoplay: true,*/
+});
+
+login_sound.once('load', function(){
+    console.log('login_sound loaded!')
+    login_sound.play();
+});
 
 class Login extends Component {
     state = {
@@ -37,6 +53,8 @@ class Login extends Component {
             {withCredentials: true}
         ).then((response) => {
             console.log(response);
+
+            /* login_sound.play()*/
             this.setState(prevState => ({
                 error: false,
                 helperText: '',
