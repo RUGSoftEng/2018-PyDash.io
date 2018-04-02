@@ -35,11 +35,19 @@ class Login extends Component {
             password = this.state.password
         
         if (!(username.trim()) || !(password.trim())) {
+            this.setState(prevState => ({
+                ...prevState,
+                error: true,
+                helperText: 'Both fields are required!',
+            }))
+
             return;
         }
 
         this.setState(prevState => ({
             ...prevState,
+                error: false,
+                helperText: '',
                 loading: true
             }))
 
