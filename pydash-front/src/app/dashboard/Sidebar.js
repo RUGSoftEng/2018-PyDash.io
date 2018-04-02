@@ -10,17 +10,16 @@ import StarIcon from 'material-ui-icons/Star';
 import Logout from './Logout'
 
 
-import {Howl, Howler} from 'howler';
-import menu_soundfile from '../../sounds/194081__potentjello__woosh-noise-1.mp3';
+import {Howl} from 'howler';
+import menu_soundfile from './woosh.mp3';
 const menu_sound = new Howl({
     src: [ menu_soundfile],
-    volume: 0.5
+    volume: 0.8
 });
 
 function playMenuSound(){
-menu_sound.play();
+  menu_sound.play();
 }
-
 
 export const mailFolderListItems = (
     <div>

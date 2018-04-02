@@ -4,6 +4,14 @@ import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import ExitToApp from 'material-ui-icons/ExitToApp';
 import axios from 'axios';
 
+import {Howl} from 'howler';
+import logout_soundfile from './pop.mp3';
+const logout_sound = new Howl({
+    src: [ logout_soundfile],
+});
+
+
+
 class Login extends Component {
     state = {
         success: false
@@ -32,6 +40,7 @@ class Login extends Component {
             withCredentials: true
         }).then((response) => {
             console.log(response);
+            logout_sound.play();
             this.setState(prevState => ({success: true}))
         }).catch((error) => {
             console.log(error);

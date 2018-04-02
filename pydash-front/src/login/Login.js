@@ -5,7 +5,7 @@ import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import axios from 'axios';
 import Logo from '../images/logo.png';
-import {Howl, Howler} from 'howler';
+import {Howl} from 'howler';
 
 import login_soundfile from "./boot.mp3";
 
