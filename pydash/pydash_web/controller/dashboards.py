@@ -44,15 +44,6 @@ def dashboards():
     """
     dbs = pydash_app.dashboard.dashboards_of_user(current_user.id)
 
-    return jsonify([_dashboard_detail(db) for db in dbs]), 200
-
-
-def _dashboard_detail(db):
-    """
-    Returns the representation of the given dashboard in detail.
-    :param db: The Dashboard-entity in question.
-    :return: A dict structured as the JSON-representation of the given dashboard.
-    """
     mock_data = [
                   {
                     "id": "4242424242424242",
@@ -75,8 +66,17 @@ def _dashboard_detail(db):
                     ]
                   }
                 ]
+    return jsonify(mock_data), 200
 
-    return mock_data
+
+def _dashboard_detail(db):
+    """
+    Returns the representation of the given dashboard in detail.
+    :param db: The Dashboard-entity in question.
+    :return: A dict structured as the JSON-representation of the given dashboard.
+    """
+
+    return _json_mock_dashboard_detail()
 
 def _json_mock_dashboard_detail():
     from pydash_app.dashboard.dashboard import Dashboard
