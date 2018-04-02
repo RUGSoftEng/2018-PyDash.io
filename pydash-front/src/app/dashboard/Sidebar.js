@@ -9,15 +9,28 @@ import StarIcon from 'material-ui-icons/Star';
 
 import Logout from './Logout'
 
+
+import {Howl, Howler} from 'howler';
+import menu_soundfile from '../../sounds/194081__potentjello__woosh-noise-1.mp3';
+const menu_sound = new Howl({
+    src: [ menu_soundfile],
+    volume: 0.5
+});
+
+function playMenuSound(){
+menu_sound.play();
+}
+
+
 export const mailFolderListItems = (
     <div>
-        <ListItem button component={NavLink} to={'/dashboard/'}>
+        <ListItem button component={NavLink} to={'/dashboard/'} onClick={playMenuSound}>
             <ListItemIcon>
                 <HomeIcon />
             </ListItemIcon>
             <ListItemText primary="Dashboards" />
         </ListItem>
-        <ListItem button component={NavLink} to={'/dashboard/statistics'}>
+        <ListItem button component={NavLink} to={'/dashboard/statistics'} onClick={playMenuSound}>
             <ListItemIcon>
                 <SettingsIcon />
             </ListItemIcon>
