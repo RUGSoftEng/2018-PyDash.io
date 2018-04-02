@@ -12,26 +12,24 @@ from functools import partial
 def initialise_dashboard_fetching(dashboard, interval=timedelta(hours=1), scheduler=pt.default_task_scheduler):
     """
     Initialise a dashboard from its remote endpoints and add them to the scheduler, with the given interval.
-    This also fetches and stores historical data in one go.
+    This also fetches and stores all historical data up to this point in time.
     :param dashboard: The Dashboard to initialise.
     :param interval: The interval at which the endpoints should be fetched. This should be a datetime.timedelta object.
      Defaults to 1 hour.
     :param scheduler: The scheduler to add the fetch calls to.
      Defaults to the default TaskScheduler provided in the pydash_app.impl.periodic_tasks package.
     """
-    # TODO: _fetch_endpoints() is being called quite a lot like this. Add an `endpoints` parameter to the other methods,
-    # TODO:    such that we can give a list of endpoints, such that it doesn't have to fetch from a remote location.
-    endpoints = _fetch_endpoints(dashboard)
     initialize_endpoints(dashboard)
     initialize_endpoint_calls(dashboard)
 
-    for endpoint in endpoints:
+    for endpoint in dashboard.endpoints:
         _add_endpoint_to_fetch_from(dashboard, endpoint, interval, scheduler)
 
 
-def update_dashboard_fetching(dashboard, interval, scheduler, override_previous_endpoint_interval=True):
+def update_dashboard_fetching(dashboard, interval=timedelta(hours=1), scheduler=pt.default_task_scheduler,
+                              override_previous_endpoint_interval=True):
     """
-    Update a dashboard from its remote endpoints and add fetching them to the scheduler, with the given interval.
+    Update a dashboard from its remote endpoints and update their fetching w.r.t the scheduler, with the given interval.
     :param dashboard: The Dashboard to update.
     :param interval: The interval at which the endpoints should be fetched. This should be a datetime.timedelta object.
      Defaults to 1 hour.
@@ -69,12 +67,12 @@ def update_dashboard_fetching(dashboard, interval, scheduler, override_previous_
 def _add_endpoint_to_fetch_from(dashboard, endpoint, interval=timedelta(hours=1), scheduler=pt.default_task_scheduler):
     """
     Adds the fetching of data from `endpoint` of `dashboard` to the given scheduler.
-    Defaults to the default scheduler that is provided in the pydash_app.impl.periodic_tasks package.
     :param dashboard: The Dashboard this Endpoint belongs to.
     :param endpoint: The Endpoint in question.
-    :param interval: The Datetime.Timedelta object indicating the interval of the fetching, starting from this moment in time.
+    :param interval: The datetime.timedelta object indicating the interval of the fetching.
      Defaults to 1 hour.
     :param scheduler: The TaskScheduler we want to add this Endpoint-fetching to.
+     Defaults to the default scheduler that is provided in the pydash_app.impl.periodic_tasks package.
     """
 
     pt.add_periodic_task(name=str(dashboard.url) + "/" + str(endpoint.name),  # key='<url>/<endpoint>'
