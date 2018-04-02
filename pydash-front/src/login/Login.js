@@ -19,7 +19,8 @@ class Login extends Component {
         password: '',
         error: false,
         message: '',
-        success: false
+        success: false,
+        loading: false
     };
 
     handleChange = key => event => {
@@ -37,6 +38,12 @@ class Login extends Component {
             return;
         }
 
+        this.setState(prevState => ({
+            ...prevState,
+                loading: true
+            }))
+
+
         // Make a request for a user with a given ID
         axios.post('http://localhost:5000/api/login', {
             username,
@@ -49,13 +56,15 @@ class Login extends Component {
             this.setState(prevState => ({
                 error: false,
                 helperText: '',
-                success: true
+                success: true,
+                loading: false,
             }))
         }).catch((error) => {
             console.log(error);
             this.setState(prevState => ({
                 error: true,
-                helperText: 'Incorrect credentials 😱'
+                helperText: 'Incorrect credentials 😱',
+                loading: false,
             }))
         });
     }
@@ -91,8 +100,8 @@ class Login extends Component {
                         helperText={this.state.helperText}
                     />
                     <p>
-                    <Button type="submit" variant="raised" color="primary">
-                        Login
+                    <Button type="submit" variant="raised" color="primary" disabled={this.state.loading}>
+                        {this.state.loading ? "Logging in..." : "Login"}
                     </Button>
                     </p>
                 </form>
