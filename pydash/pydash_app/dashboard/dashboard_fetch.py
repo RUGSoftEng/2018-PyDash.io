@@ -27,8 +27,6 @@ def _fetch_endpoints(dashboard):
     :return: A list of `Endpoint`s for the dashboard.
     """
 
-    # TODO: this function does not actually put the data into the dashboard yet, only returns it
-
     monitor_rules = get_monitor_rules(dashboard.url, dashboard.token)
 
     if monitor_rules is None:
