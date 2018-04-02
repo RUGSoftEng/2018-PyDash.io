@@ -44,6 +44,8 @@ class Login extends Component {
             this.setState(prevState => ({success: true}))
         }).catch((error) => {
             console.log(error);
+            // Also log out on error.
+            this.setState(prevState => ({success: true}))
         });
     }
 
