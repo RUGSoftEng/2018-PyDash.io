@@ -17,7 +17,7 @@ class EndpointCall(persistent.Persistent):
         :param endpoint: String denoting the endpoint's name.
         :param execution_time: Float denoting the execution time of the endpoint call.
         :param time: datetime.datetime object denoting the time the endpoint call was made.
-        :param version: Float (?) denoting the dashboard's version number.
+        :param version: String denoting the dashboard's version number.
         :param group_by: String denoting which user is calling the function (?).
         :param ip: String denoting the IP-address the endpoint call was made from.
         """
