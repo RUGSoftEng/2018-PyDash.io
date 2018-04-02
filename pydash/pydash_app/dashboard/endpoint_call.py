@@ -26,7 +26,7 @@ class EndpointCall(persistent.Persistent):
         self.endpoint = endpoint  # string
         self.execution_time = execution_time  # float
         self.time = time  # datetime.datetime
-        self.version = version  # float
+        self.version = version  # string
         self.group_by = group_by  # string
         self.ip = ip  # string
 
@@ -38,8 +38,8 @@ class EndpointCall(persistent.Persistent):
             raise TypeError('EndpointCall expects execution_time to be a float.')
         if not isinstance(time, datetime):
             raise TypeError('EndpointCall expects time to be a datetime.')
-        if not isinstance(version, float):
-            raise TypeError('EndpointCall expects version to be a float.')
+        if not isinstance(version, str):
+            raise TypeError('EndpointCall expects version to be a string.')
         if not isinstance(group_by, str):
             raise TypeError('EndpointCall expects group_by to be a string.')
         if not isinstance(ip, str):
@@ -54,4 +54,4 @@ class EndpointCall(persistent.Persistent):
                 "version": self.version,
                 "group_by": self.group_by,
                 "ip": self.ip
-        }
+            }
