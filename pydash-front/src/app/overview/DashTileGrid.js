@@ -54,7 +54,7 @@ class DashTileGrid extends Component {
         };
     }
 
-    componentDidMount() {
+    /*componentDidMount() {
         axios('http://localhost:5000/api/dashboards/123', {
             method: 'get',
             withCredentials: true
@@ -80,7 +80,18 @@ class DashTileGrid extends Component {
              *     return newState;
              * })
              */
-        });
+        /*});
+    }*/
+    
+    componentDidMount() {
+      axios('http://localhost:5000/api/dashboards', {
+        method: 'get',
+        withCredentials: true
+      }).then((response) => {
+        console.log('found some data', response);
+      }).catch((error) => {
+        console.log('error', error);
+      });
     }
  
     render() {
@@ -92,7 +103,7 @@ class DashTileGrid extends Component {
                 {/* For each found dashboard for username */}
                     <DashTile title='pistach.io' dashboard_id="foo" xs={12} />
                     <DashTile title='yetanotherdashboard.com' dashboard_id="bar" xs={12}/>
-                    <DashTile title='zeeguu.unibe.ch' dashboard_id="baz" xs={12} />
+                    <DashTile title='zeeguu.unibe.ch' dashboard_id="4242424242424242" xs={12} />
             </Grid>
         );
     }
