@@ -1,5 +1,8 @@
 import React from 'react';
+import { Route } from 'react-router-dom'
 import PropTypes from 'prop-types';
+
+// material-ui
 import { withStyles } from 'material-ui/styles';
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
@@ -10,7 +13,15 @@ import IconButton from 'material-ui/IconButton';
 import Hidden from 'material-ui/Hidden';
 import Divider from 'material-ui/Divider';
 import MenuIcon from 'material-ui-icons/Menu';
-import { mailFolderListItems, otherMailFolderListItems } from './tileData';
+
+// APP
+import { mailFolderListItems, otherMailFolderListItems } from './Sidebar';
+import Overview from '../overview/Overview';
+import Statistics from '../statistics/Statistics';
+
+
+// Styling
+import Logo from '../../images/logo.png'
 
 const drawerWidth = 240;
 
@@ -65,6 +76,7 @@ class ResponsiveDrawer extends React.Component {
 
         const drawer = (
             <div>
+
                 <div className={classes.toolbar} />
                 <Divider />
                 <List>{mailFolderListItems}</List>
@@ -86,7 +98,7 @@ class ResponsiveDrawer extends React.Component {
                             <MenuIcon />
                         </IconButton>
                         <Typography variant="title" color="inherit" noWrap>
-                            PyDash.io Dashboard
+                            <img src={Logo} style={{marginTop: "15px", marginLeft: "20px;", marginBottom: "10px", maxWidth: "150px"}} />
             </Typography>
                     </Toolbar>
                 </AppBar>
@@ -119,7 +131,8 @@ class ResponsiveDrawer extends React.Component {
                 </Hidden>
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
-                    <Typography noWrap>{'You haven\'t added any fancy dashboard yet ✌🏻.'}</Typography>
+                    <Route exact path='/dashboard' component={Overview} />
+                    <Route path='/dashboard/statistics' component={Statistics} />
                 </main>
             </div>
         );

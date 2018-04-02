@@ -1,22 +1,27 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom'
+
 import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import DonutSmall from 'material-ui-icons/DonutSmall';
+import SettingsIcon from 'material-ui-icons/Settings';
+import HomeIcon from 'material-ui-icons/Home';
 import StarIcon from 'material-ui-icons/Star';
-import Logout from '../logout/Logout'
+
+import Logout from './Logout'
 
 export const mailFolderListItems = (
     <div>
-        <ListItem button>
+        <ListItem button component={NavLink} to={'/dashboard/'}>
             <ListItemIcon>
-                <DonutSmall />
+                <HomeIcon />
             </ListItemIcon>
-            <ListItemText primary="Statistics" />
+            <ListItemText primary="Dashboards" />
         </ListItem>
-        <ListItem button>
+        <ListItem button component={NavLink} to={'/dashboard/statistics'}>
             <ListItemIcon>
-                <StarIcon />
+                <SettingsIcon />
             </ListItemIcon>
-            <ListItemText primary="Analytics" />
+            <ListItemText primary="Settings" />
         </ListItem>
     </div>
 );
