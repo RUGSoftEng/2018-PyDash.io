@@ -1,15 +1,9 @@
 import React, {Component} from 'react';
 import './overview.css';
 import Grid from 'material-ui/Grid';
-import List from 'material-ui/List';
 import DashTile from './DashTile';
-import DashboardVisitsGraph from './DashboardVisitsGraph'
 import { withStyles } from 'material-ui/styles';
 import axios from 'axios';
-import Typography from 'material-ui/Typography';
-
-import { Line } from '@nivo/line'
-
 
 const styles = theme => ({
   root: {
@@ -49,12 +43,11 @@ class DashTileGrid extends Component {
         super(props);
         this.state = {
             username: props.username,
-            total_visits: "?",
-            visits_per_day: [],
+            dashboards: [],
         };
     }
 
-    componentDidMount() {
+    /*componentDidMount() {
         axios('http://localhost:5000/api/dashboards/123', {
             method: 'get',
             withCredentials: true
@@ -80,19 +73,47 @@ class DashTileGrid extends Component {
              *     return newState;
              * })
              */
+        /*});
+    }*/
+    
+    componentDidMount() {
+      axios('http://localhost:5000/api/dashboards', {
+        method: 'get',
+        withCredentials: true
+      }).then((response) => {
+        console.log('found some data', response);
+        
+        
+        this.setState(prevState => {
+          let newState = prevState;
+          newState.dashboards = response.data;
+          
+          console.log(newState);
+          
+          return newState;
         });
+      }).catch((error) => {
+        console.log('error', error);
+      });
     }
  
     render() {
-        const {classes, theme} = this.props;
+        const {classes} = this.props;
+        
+        let tiles = [];
+        
+        for (let i in this.state.dashboards) {
+          let id = this.state.dashboards[i].id;
+          let url = this.state.dashboards[i].url;
+          tiles.push(<DashTile title={url} dashboard_id={id} xs={12} />);
+        }
 
         return(
             <Grid container spacing={24} className={classes.root}>
 
                 {/* For each found dashboard for username */}
-                    <DashTile title='pistach.io' dashboard_id="foo" xs={12} />
-                    <DashTile title='yetanotherdashboard.com' dashboard_id="bar" xs={12}/>
-                    <DashTile title='zeeguu.unibe.ch' dashboard_id="baz" xs={12} />
+                {tiles}
+                    
             </Grid>
         );
     }
