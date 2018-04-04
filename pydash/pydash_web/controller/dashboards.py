@@ -23,7 +23,7 @@ def dashboard(dashboard_id):
     try:
         db = pydash_app.dashboard.find(dashboard_id)
     except KeyError:
-        return jsonify({"message": "Could not find a matching dashboard."}), 500
+        return jsonify({"message": "Could not find a matching dashboard."}), 404
     except ValueError:  # Happens when called without a proper UUID
         return jsonify({"message": "Invalid dashboard_id"}), 400
 
@@ -42,15 +42,34 @@ def dashboards():
                A dict containing an error message describing the particular error.
              - A corresponding HTML status code.
     """
-    dbs = pydash_app.dashboard.dashboards_of_user(current_user.id)
+    dashboards = pydash_app.dashboard.dashboards_of_user(current_user.id)
 
-    return jsonify([_dashboard_detail(db) for db in dbs]), 200
+    return jsonify([_simple_dashboard_detail(dashboard) for dashboard in dashboards]), 200
 
 
-def _dashboard_detail(db):
+def _simple_dashboard_detail(dashboard):
+    """
+    Returns a simple representation of the given dashboard.
+    :param dashboard: The Dashboard-entity in question.
+    :return: A dict structured as the simple JSON-representation of the given dashboard.
+    """
+    def endpoint_dict(endpoint):
+        return {
+            'name': endpoint.name,
+            'enabled': endpoint.is_monitored
+        }
+    endpoints = [endpoint_dict(endpoint) for endpoint in dashboard.endpoints.values()]
+
+    return {
+        'id': dashboard.id,
+        'url': dashboard.url,
+        'endpoints': endpoints
+    }
+
+def _dashboard_detail(dashboard):
     """
     Returns the representation of the given dashboard in detail.
-    :param db: The Dashboard-entity in question.
+    :param dashboard: The Dashboard-entity in question.
     :return: A dict structured as the JSON-representation of the given dashboard.
     """
 
@@ -61,10 +80,10 @@ def _dashboard_detail(db):
             'enabled': endpoint.is_monitored
         }
 
-    endpoints_dict = [endpoint_dict(endpoint) for endpoint in db.endpoints.values()]
+    endpoints_dict = [endpoint_dict(endpoint) for endpoint in dashboard.endpoints.values()]
     return {
-        'id': db.id,
-        'url': db.url,
-        'aggregates': db.aggregated_data(),
+        'id': dashboard.id,
+        'url': dashboard.url,
+        'aggregates': dashboard.aggregated_data(),
         'endpoints': endpoints_dict
     }
