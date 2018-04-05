@@ -87,6 +87,7 @@ class ResponsiveDrawer extends React.Component {
 
     render() {
         const { classes, theme } = this.props;
+        console.log('username', this.props.username)
 
         const drawer = (
             <div>
@@ -94,7 +95,7 @@ class ResponsiveDrawer extends React.Component {
                 <div className={classes.toolbar}>
                     <UserIcon className={classes.accounticon} />
                     <div className={classes.accountname}>
-                        Username
+                        {this.props.username || 'Username'}
                     </div>
                 </div>
                 <Divider />
