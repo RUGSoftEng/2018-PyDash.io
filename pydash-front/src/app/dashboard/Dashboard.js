@@ -54,12 +54,14 @@ const styles = theme => ({
         position: 'absolute',
         top: 17,
         left: 30,
-        fontSize: 36
+        fontSize: 36,
+        color: 'rgba(0, 0, 0, 0.54)'
     },
     accountname: {
         position: 'absolute',
         top: 25,
-        left: 80
+        left: 80,
+        color: 'rgba(0, 0, 0, 0.54)'
     },
     drawerPaper: {
         width: drawerWidth,
