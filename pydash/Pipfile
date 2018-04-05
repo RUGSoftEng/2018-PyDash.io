@@ -9,9 +9,14 @@ name = "pypi"
 
 Flask = "*"
 Flask-WTF = "*"
-Flask-Login = "*"
+flask-login = "*"
 multi-indexed-collection = "*"
 ZEO = "*"
+flask-restplus = "*"
+PyJWT = "*"
+requests = "*"
+Flask-Cors = "*"
+pqdict = "*"
 
 
 [dev-packages]
