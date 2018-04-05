@@ -38,7 +38,7 @@ def update_dashboard_fetching(dashboard, interval=timedelta(hours=1), scheduler=
     :param override_previous_endpoint_interval: A Boolean to indicate whether the user wishes to override the interval
      of all other endpoint-fetching connected to this dashboard. Defaults to True.
     """
-    old_endpoints = set([dashboard.endpoints[key] for key in dashboard.endpoints])
+    old_endpoints = set(dashboard.values())
     new_endpoints = set(_fetch_endpoints(dashboard))
 
     additions = new_endpoints.difference(old_endpoints)

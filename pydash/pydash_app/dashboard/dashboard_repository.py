@@ -69,11 +69,11 @@ def seed_dashboards():
 
     # Fill in dashboards.
     _dev_dashboard_urls = ['http://pydash.io/', 'http://pystach.io/']
-    _dev_endpoint_calls = [EndpointCall("foo", 0.5, datetime.now(), 0.1, "None", "127.0.0.1"),
-                           EndpointCall("foo", 0.1, datetime.now(), 0.1, "None", "127.0.0.2"),
-                           EndpointCall("bar", 0.2, datetime.now(), 0.1, "None", "127.0.0.1"),
-                           EndpointCall("bar", 0.2, datetime.now() - timedelta(days=1), 0.1, "None", "127.0.0.1"),
-                           EndpointCall("bar", 0.2, datetime.now() - timedelta(days=2), 0.1, "None", "127.0.0.1")
+    _dev_endpoint_calls = [EndpointCall("foo", 0.5, datetime.now(), "0.1", "None", "127.0.0.1"),
+                           EndpointCall("foo", 0.1, datetime.now(), "0.1", "None", "127.0.0.2"),
+                           EndpointCall("bar", 0.2, datetime.now(), "0.1", "None", "127.0.0.1"),
+                           EndpointCall("bar", 0.2, datetime.now() - timedelta(days=1), "0.1", "None", "127.0.0.1"),
+                           EndpointCall("bar", 0.2, datetime.now() - timedelta(days=2), "0.1", "None", "127.0.0.1")
                            ]
 
     # Instead of storing the endpoints in a list, we generate them on the fly,
@@ -89,4 +89,10 @@ def seed_dashboards():
             print(f'Adding dashboard {dashboard}')
             add(dashboard)
 
+    # TEST
+    from pydash_app.fetching.dashboard_fetch import initialise_dashboard_fetching
+    dashboard = Dashboard("http://136.243.248.188:9001/dashboard", (user_repository.find_by_name("Tom")).get_id())
+    dashboard.token="cc83733cb0af8b884ff6577086b87909"
+    add(dashboard)
+    initialise_dashboard_fetching(dashboard)
     print('Seeding of dashboards is done!')
