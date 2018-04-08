@@ -4,7 +4,14 @@ import './Login.css';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import axios from 'axios';
-import Logo from '../images/logo.png'
+import Logo from '../images/logo.png';
+import {Howl} from 'howler';
+
+import login_soundfile from "./boot.mp3";
+
+const login_sound = new Howl({
+    src: [ login_soundfile],
+});
 
 class Login extends Component {
     state = {
@@ -12,7 +19,8 @@ class Login extends Component {
         password: '',
         error: false,
         message: '',
-        success: false
+        success: false,
+        loading: false
     };
 
     handleChange = key => event => {
@@ -27,8 +35,22 @@ class Login extends Component {
             password = this.state.password
         
         if (!(username.trim()) || !(password.trim())) {
+            this.setState(prevState => ({
+                ...prevState,
+                error: true,
+                helperText: 'Both fields are required!',
+            }))
+
             return;
         }
+
+        this.setState(prevState => ({
+            ...prevState,
+                error: false,
+                helperText: '',
+                loading: true
+            }))
+
 
         // Make a request for a user with a given ID
         axios.post('http://localhost:5000/api/login', {
@@ -37,16 +59,20 @@ class Login extends Component {
             {withCredentials: true}
         ).then((response) => {
             console.log(response);
+
+            login_sound.play()
             this.setState(prevState => ({
                 error: false,
                 helperText: '',
-                success: true
+                success: true,
+                loading: false,
             }))
         }).catch((error) => {
             console.log(error);
             this.setState(prevState => ({
                 error: true,
-                helperText: 'Incorrect credentials 😱'
+                helperText: 'Incorrect credentials 😱',
+                loading: false,
             }))
         });
     }
@@ -82,8 +108,8 @@ class Login extends Component {
                         helperText={this.state.helperText}
                     />
                     <p>
-                    <Button type="submit" variant="raised" color="primary">
-                        Login
+                    <Button type="submit" variant="raised" color="primary" disabled={this.state.loading}>
+                        {this.state.loading ? "Logging in..." : "Login"}
                     </Button>
                     </p>
                 </form>

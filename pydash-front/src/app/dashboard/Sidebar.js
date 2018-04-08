@@ -7,15 +7,27 @@ import HomeIcon from 'material-ui-icons/Home';
 
 import Logout from './Logout'
 
+
+import {Howl} from 'howler';
+import menu_soundfile from './woosh.mp3';
+const menu_sound = new Howl({
+    src: [ menu_soundfile],
+    volume: 0.8
+});
+
+function playMenuSound(){
+  menu_sound.play();
+}
+
 export const mailFolderListItems = (
     <div>
-        <ListItem button component={NavLink} to={'/dashboard/'}>
+        <ListItem button component={NavLink} to={'/dashboard/'} onClick={playMenuSound}>
             <ListItemIcon>
                 <HomeIcon />
             </ListItemIcon>
             <ListItemText primary="Dashboards" />
         </ListItem>
-        <ListItem button component={NavLink} to={'/dashboard/statistics'}>
+        <ListItem button component={NavLink} to={'/dashboard/statistics'} onClick={playMenuSound}>
             <ListItemIcon>
                 <SettingsIcon />
             </ListItemIcon>
