@@ -1,119 +1,148 @@
-swagger: "2.0"
+swagger: '2.0'
 info:
-  description: "This is a simple specification of the PyDash.IO backend<->frontend API."
-  version: "0.0.1"
-  title: "PyDash.IO"
+  description: This is a simple specification of the PyDash.IO backend<->frontend API.
+  version: 0.0.1
+  title: PyDash.IO
   contact:
-    email: "w-m@wmcode.nl"
+    email: w-m@wmcode.nl
   license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "pydash.io"
-basePath: "/"
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: pydash.io
+basePath: /
 tags:
-- name: "user"
-  description: "Operations about a user"
-- name: "dashboards"
-  description: "Operations concerning dashboards"
+  - name: user
+    description: Operations about a user
+  - name: dashboards
+    description: Operations concerning dashboards
 schemes:
-- "http"
+  - http
 produces:
-- "application/json"
+  - application/json
 paths:
   /api/login:
     post:
       tags:
-      - "user"
-      summary: "Logs user into the system"
-      description: ""
+        - user
+      summary: Logs user into the system
+      description: ''
       parameters:
-      - name: "username"
-        in: "query"
-        description: "The user name for login"
-        required: true
-        type: "string"
-      - name: "password"
-        in: "query"
-        description: "The password for login in clear text"
-        required: true
-        type: "string"
+        - name: username
+          in: query
+          description: The user name for login
+          required: true
+          type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: true
+          type: string
       responses:
-        200:
-          description: "successful operation"
-        400:
-          description: "Missing username or password"
-        401:
-          description: "Invalid username/password supplied"
+        '200':
+          description: Successful operation
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              user:
+                $ref: '#/definitions/User'
+        '400':
+          description: Missing username or password
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        '401':
+          description: Invalid username/password supplied
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
   /api/logout:
     post:
       tags:
-      - "user"
-      summary: "Logs out current logged in user session"
-      description: ""
+        - user
+      summary: Logs out current logged in user session
+      description: ''
       parameters: []
       responses:
-        200:
-          description: "successful operation"
-        401:
-          description: "Returned if logout was called while the user was not logged in."
+        '200':
+          description: Successful operation
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        '401':
+          description: User was not logged in
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
   /api/dashboards:
     get:
       tags:
-      - "dashboards"
-      summary: "Lists the dashboards of the current user"
+        - dashboards
+      summary: Lists the dashboards of the current user
       parameters: []
       responses:
-        200:
-          description: "successful operation"
+        '200':
+          description: Successful operation
           schema:
-            type: "array"
+            type: array
             items:
-              $ref: "#/definitions/Dashboard"
-  /api/dashboards/{dashboard_id}:
+              $ref: '#/definitions/Dashboard'
+  '/api/dashboards/{dashboard_id}':
     get:
-      tags: 
-      - "dashboards"
-      summary: "Lists information of a single dashboard, including a whole bunch of information."
+      tags:
+        - dashboards
+      summary: >-
+        Lists information of a single dashboard
       parameters:
-      - name: "dashboard_id"
-        in: "path"
-        description: "ID of the dashboard to return"
-        required: true
-        type: "string"
-        format: "uuid"
+        - name: dashboard_id
+          in: path
+          description: ID of the dashboard to return
+          required: true
+          type: string
+          format: uuid
       responses:
-        200:
-          description: "successful operation"
-          schema: 
-            $ref: "#/definitions/Dashboard"
+        '200':
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/Dashboard'
 definitions:
   Dashboard:
-    type: "object"
-    properties: 
-      id: 
-        type: "string"
-        format: "uuid"
-        example: "4242424242424242"
-      url:
-        type: "string"
-        example: "http://pydash.io/"
-      endpoints:
-        type: "array"
-        items: 
-          $ref: "#/definitions/Endpoint"
-  Endpoint:
-    type: "object"
-    properties: 
-      name:
-        type: "string"
-        example: "my.endpoint.name"
-      enabled:
-        type: "boolean"
-  User:
-    type: "object"
+    type: object
     properties:
       id:
-        type: "integer"
-        format: "int64"
+        type: string
+        format: uuid
+        example: 'abcdef12-3456-7890-abcd-123456789abc'
+      url:
+        type: string
+        example: 'https://pydash.io/'
+      endpoints:
+        type: array
+        items:
+          $ref: '#/definitions/Endpoint'
+  Endpoint:
+    type: object
+    properties:
       name:
-        type: "string"
+        type: string
+        example: my.endpoint.name
+      enabled:
+        type: boolean
+  User:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: 'abcdef12-3456-7890-abcd-123456789abc'
+      name:
+        type: string
