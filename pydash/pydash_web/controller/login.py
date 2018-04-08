@@ -49,5 +49,5 @@ def _parse_arguments():
 def _user_details(user):
     return {
         "id": user.id,
-        "username": user.name
+        "name": user.name
     }
