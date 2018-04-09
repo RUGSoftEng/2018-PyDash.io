@@ -5,13 +5,25 @@ import Dashboard from './app/dashboard/Dashboard';
 import { Switch, Route } from 'react-router-dom'
 
 class App extends Component {
+    state = {
+        username: '',
+    };
+
+    changeUsername = (username) => {
+        console.log(username);
+        this.setState({
+            username: username
+        });
+    };
+
+
   render() {
     return (
       <div className="App">
         <Switch>
           {/* `exact` because its only one slash */}
-          <Route exact path='/' component={Login} />
-          <Route path='/dashboard' component={Dashboard} />
+          <Route exact path='/' render={(props) => <Login changeUsernameHandler={this.changeUsername} {...props} />} />
+          <Route path='/dashboard' render={(props) => <Dashboard username={this.state.username} {...props} /> } />
         </Switch>
       </div>
     );
