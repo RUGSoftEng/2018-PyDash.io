@@ -14,10 +14,26 @@ import pydash_app
 import pydash_app.user
 import pydash_app.dashboard
 
+
 flask_webapp = Flask(__name__, static_folder="../../pydash-front/build", static_url_path="")
 flask_webapp.config.from_object(Config)
 login_manager = LoginManager(flask_webapp)
 flask_webapp.register_blueprint(pydash_web_bp)
+
+# NOTE: TEMPORARY TO SEE WHETHER THIS WORKS
+import pydash_app.impl.periodic_tasks as pt
+from pydash_app.fetching.dashboard_fetch import _add_dashboard_to_fetch_from
+from datetime import timedelta
+
+##### NOTE TO SELF: THIS FILE IS BEING RUN TWICE FOR SOME [redacted] REASON
+for dashboard in pydash_app.dashboard.dashboard_repository.all():
+    # _add_dashboard_to_fetch_from(dashboard, timedelta(minutes=5), pt.default_task_scheduler)
+    print(dashboard)
+
+print(f'nr of elements in dashboard db = {len(pydash_app.dashboard.dashboard_repository.all())}')
+# scheduler.start()
+
+# NOTE: TEMPORARY TO SEE WHETHER THIS WORKS
 
 
 @login_manager.user_loader
