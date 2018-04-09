@@ -22,16 +22,16 @@ flask_webapp.register_blueprint(pydash_web_bp)
 
 # NOTE: TEMPORARY TO SEE WHETHER THIS WORKS
 import pydash_app.impl.periodic_tasks as pt
-from pydash_app.fetching.dashboard_fetch import _add_dashboard_to_fetch_from
+from pydash_app.fetching.dashboard_fetch import _add_dashboard_to_fetch_from, start_default_scheduler
 from datetime import timedelta
 
-##### NOTE TO SELF: THIS FILE IS BEING RUN TWICE FOR SOME [redacted] REASON
+# Note to self: in DEBUG mode, this script is run twice. because Flask.
 for dashboard in pydash_app.dashboard.dashboard_repository.all():
-    # _add_dashboard_to_fetch_from(dashboard, timedelta(minutes=5), pt.default_task_scheduler)
-    print(dashboard)
+    _add_dashboard_to_fetch_from(dashboard, timedelta(minutes=1), pt.default_task_scheduler)
+    # print(dashboard)
 
-print(f'nr of elements in dashboard db = {len(pydash_app.dashboard.dashboard_repository.all())}')
-# scheduler.start()
+# print(f'nr of elements in dashboard db = {len(pydash_app.dashboard.dashboard_repository.all())}')
+start_default_scheduler()
 
 # NOTE: TEMPORARY TO SEE WHETHER THIS WORKS
 
