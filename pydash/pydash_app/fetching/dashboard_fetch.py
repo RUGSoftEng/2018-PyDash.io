@@ -55,7 +55,7 @@ def _add_dashboard_to_fetch_from(dashboard, interval=timedelta(hours=1), schedul
      Defaults to the default scheduler that is provided in the pydash_app.impl.periodic_tasks package.
     """
 
-    pt.add_periodic_task(name='<' + str(dashboard.user_id) + '>' + '/' + str(dashboard.url),
+    pt.add_periodic_task(name=_dashboard_fetch_task_name(dashboard),
                          interval=interval,
                          task=partial(update_endpoint_calls, dashboard),
                          scheduler=scheduler
@@ -69,7 +69,11 @@ def _remove_dashboard_to_fetch_from(dashboard, scheduler=pt.default_task_schedul
     :param scheduler: The TaskScheduler to remove it from.
      Defaults to the default scheduler that is provided in the pydash_app.impl.periodic_tasks package.
     """
-    pt.remove_task(name='<' + str(dashboard.user_id) + '>' + '/' + str(dashboard.url), scheduler=scheduler)
+    pt.remove_task(name=_dashboard_fetch_task_name(dashboard), scheduler=scheduler)
+
+
+def _dashboard_fetch_task_name(dashboard):
+    return f'fetch_{dashboard.id}'
 
 
 def initialize_endpoints(dashboard):
