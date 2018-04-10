@@ -1,3 +1,4 @@
+from functools import partial
 from datetime import datetime, timedelta
 
 from pydash_app.impl.fetch import get_monitor_rules, get_data, get_details
@@ -6,7 +7,6 @@ from pydash_app.dashboard.endpoint_call import EndpointCall
 from pydash_app.dashboard.dashboard_repository import update as update_dashboard
 
 import pydash_app.impl.periodic_tasks as pt
-from functools import partial
 
 
 def start_default_scheduler():
@@ -23,8 +23,15 @@ def initialize_dashboard_fetching(dashboard, interval=timedelta(hours=1), schedu
     :param scheduler: The scheduler to add the fetch calls to.
      Defaults to the default TaskScheduler provided in the pydash_app.impl.periodic_tasks package.
     """
-    initialize_endpoints(dashboard)
-    initialize_endpoint_calls(dashboard)
+
+    def initialize_dashboard(dashboard):
+        initialize_endpoints(dashboard)
+        initialize_endpoint_calls(dashboard)
+
+    pt.add_background_task(name=_dashboard_init_task_name(dashboard),
+                           task=partial(initialize_dashboard, dashboard),
+                           scheduler=scheduler
+                           )
 
     _add_dashboard_to_fetch_from(dashboard, interval, scheduler)
 
@@ -74,6 +81,10 @@ def _remove_dashboard_to_fetch_from(dashboard, scheduler=pt.default_task_schedul
 
 def _dashboard_fetch_task_name(dashboard):
     return f'fetch_{dashboard.id}'
+
+
+def _dashboard_init_task_name(dashboard):
+    return f'init_{dashboard.id}'
 
 
 def initialize_endpoints(dashboard):
