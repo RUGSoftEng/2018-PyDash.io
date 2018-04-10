@@ -49,7 +49,6 @@ def _add_dashboard_to_fetch_from(dashboard, interval=timedelta(hours=1), schedul
     """
     Adds the fetching of data from `endpoint` of `dashboard` to the given scheduler.
     :param dashboard: The Dashboard this Endpoint belongs to.
-    :param endpoint: The Endpoint in question.
     :param interval: The datetime.timedelta object indicating the interval of the fetching.
      Defaults to 1 hour.
     :param scheduler: The TaskScheduler we want to add this Endpoint-fetching to.
