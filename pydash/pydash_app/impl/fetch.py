@@ -46,16 +46,18 @@ def get_data(dashboard_url, dashboard_token, time_from=None, time_to=None):
     Get data from a deployed flask-monitoring-dashboard
     :param dashboard_url: The base URL for the deployed dashboard, without trailing slash
     :param dashboard_token: The secret token for the dashboard, used to decode the Json Web Token response
-    :param time_from: An optional timestamp string indicating only data since that timestamp should be included
-    :param time_to: An optional timestamp string indicating only data up to that timestamp should be included
+    :param time_from: An optional datetime indicating only data since that moment should be included
+    :param time_to: An optional datetime indicating only data up to that point should be included
     :return: A dict containing all monitoring data or data since a given timestamp
     """
     endpoint = _endpoint_name(DATA_ENDPOINT)
 
     url = f'{dashboard_url}/{endpoint}'
     if time_from is not None:
+        time_from = int(time_from.timestamp())
         url = f'{url}/{time_from}'
     if time_to is not None:
+        time_to = int(time_to.timestamp())
         url = f'{url}/{time_to}'
 
     response = requests.get(url)
