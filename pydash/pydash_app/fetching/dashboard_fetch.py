@@ -142,9 +142,7 @@ def initialize_endpoint_calls(dashboard):
         if end_time > current_time:
             end_time = current_time
 
-        start_timestamp = int(start_time.timestamp())
-        end_timestamp = int(end_time.timestamp())
-        endpoint_calls = _fetch_endpoint_calls(dashboard, start_timestamp, end_timestamp)
+        endpoint_calls = _fetch_endpoint_calls(dashboard, start_time, end_time)
 
         if endpoint_calls is None:
             continue
@@ -167,8 +165,7 @@ def update_endpoint_calls(dashboard):
     if dashboard.last_fetch_time is None:
         return
 
-    last_fetch_timestamp = int(dashboard.last_fetch_time.timestamp())
-    new_calls = _fetch_endpoint_calls(dashboard, last_fetch_timestamp)
+    new_calls = _fetch_endpoint_calls(dashboard, dashboard.last_fetch_time)
 
     if new_calls is None:
         return
@@ -185,8 +182,8 @@ def _fetch_endpoint_calls(dashboard, time_from=None, time_to=None):
     """
     Fetches and returns a list of `EndpointCall`s for the given dashboard.
     :param dashboard: The dashboard for which to fetch endpoint calls.
-    :param time_from: An optional timestamp indicating only data since that timestamp should be returned.
-    :param time_to: An optional timestamp indicating only data up to that timestamp should be returned.
+    :param time_from: An optional datetime indicating only data since that moment should be returned.
+    :param time_to: An optional datetime indicating only data up to that point should be returned.
     :return: A list of `EndpointCall`s containing the endpoint call data for this dashboard.
     """
 
