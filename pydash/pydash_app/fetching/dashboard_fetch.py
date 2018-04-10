@@ -145,8 +145,6 @@ def update_endpoint_calls(dashboard):
     :param dashboard: The dashboard for which to update endpoint calls.
     """
 
-    fetch_start_time = datetime.utcnow()
-
     if dashboard.last_fetch_time is None:
         return
 
@@ -159,7 +157,7 @@ def update_endpoint_calls(dashboard):
     for call in new_calls:
         dashboard.add_endpoint_call(call)
 
-    dashboard.last_fetch_time = fetch_start_time
+    dashboard.last_fetch_time = new_calls[-1].time
 
     update_dashboard(dashboard)
 
