@@ -13,11 +13,11 @@ def start_default_scheduler():
     pt.start_default_scheduler()
 
 
-def initialise_dashboard_fetching(dashboard, interval=timedelta(hours=1), scheduler=pt.default_task_scheduler):
+def initialize_dashboard_fetching(dashboard, interval=timedelta(hours=1), scheduler=pt.default_task_scheduler):
     """
-    Initialise a dashboard from its remote endpoints and add them to the scheduler, with the given interval.
+    Initialize a dashboard from its remote endpoints and add it to the scheduler, with the given interval.
     This also fetches and stores all historical data up to this point in time.
-    :param dashboard: The Dashboard to initialise.
+    :param dashboard: The Dashboard to initialize.
     :param interval: The interval at which the endpoints should be fetched. This should be a datetime.timedelta object.
      Defaults to 1 hour.
     :param scheduler: The scheduler to add the fetch calls to.
