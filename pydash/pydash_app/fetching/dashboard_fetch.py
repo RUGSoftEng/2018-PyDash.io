@@ -124,6 +124,9 @@ def initialize_endpoint_calls(dashboard):
         # TODO: for now historical data is pulled in chunks of 1 hour (hardcoded)
         end_time = start_time + timedelta(hours=1)
 
+        if end_time > current_time:
+            end_time = current_time
+
         start_timestamp = int(start_time.timestamp())
         end_timestamp = int(end_time.timestamp())
         endpoint_calls = _fetch_endpoint_calls(dashboard, start_timestamp, end_timestamp)
@@ -133,6 +136,7 @@ def initialize_endpoint_calls(dashboard):
 
         for call in endpoint_calls:
             dashboard.add_endpoint_call(call)
+            dashboard.last_fetch_time = call.time
 
         start_time = end_time
 
