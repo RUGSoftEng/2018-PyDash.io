@@ -80,6 +80,10 @@ def initialize_endpoints(dashboard):
     """
 
     endpoints = _fetch_endpoints(dashboard)
+
+    if endpoints is None:
+        return
+
     for endpoint in endpoints:
         dashboard.add_endpoint(endpoint)
 
@@ -123,6 +127,10 @@ def initialize_endpoint_calls(dashboard):
         start_timestamp = int(start_time.timestamp())
         end_timestamp = int(end_time.timestamp())
         endpoint_calls = _fetch_endpoint_calls(dashboard, start_timestamp, end_timestamp)
+
+        if endpoint_calls is None:
+            continue
+
         for call in endpoint_calls:
             dashboard.add_endpoint_call(call)
 
@@ -144,6 +152,10 @@ def update_endpoint_calls(dashboard):
 
     last_fetch_timestamp = int(dashboard.last_fetch_time.timestamp())
     new_calls = _fetch_endpoint_calls(dashboard, last_fetch_timestamp)
+
+    if new_calls is None:
+        return
+
     for call in new_calls:
         dashboard.add_endpoint_call(call)
 
