@@ -35,5 +35,5 @@ def get_dashboard(dashboard_id):
 
 @bp.route("/", defaults={'path': ''})
 @bp.route("/<path:path>")
-def serve_react():
+def serve_react(path):
     return bp.send_static_file("index.html")
