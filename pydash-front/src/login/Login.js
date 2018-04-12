@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Route, Redirect } from 'react-router'
+import { Redirect } from 'react-router'
 import './Login.css';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import axios from 'axios';
+import Logo from '../images/logo.png'
 
 class Login extends Component {
     state = {
@@ -32,14 +33,16 @@ class Login extends Component {
         // Make a request for a user with a given ID
         axios.post('http://localhost:5000/api/login', {
             username,
-            password
-        }).then((response) => {
+            password},
+            {withCredentials: true}
+        ).then((response) => {
             console.log(response);
+            this.props.changeUsernameHandler(username)
             this.setState(prevState => ({
                 error: false,
                 helperText: '',
                 success: true
-            }))
+            }));
         }).catch((error) => {
             console.log(error);
             this.setState(prevState => ({
@@ -55,7 +58,7 @@ class Login extends Component {
         ) : (
             <div>
                 <header className="App-header">
-                    <h1 className="App-title">PyDash.io Login</h1>
+                    <img alt="PyDash logo" width="200" src={Logo} />
                 </header>
 
                 <form onSubmit={this.tryLogin}>

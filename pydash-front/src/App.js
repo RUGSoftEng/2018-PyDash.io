@@ -1,26 +1,28 @@
 import React, { Component } from 'react';
 import './App.css';
 import Login from './login/Login';
-import Dashboard from './dashboard/Dashboard';
+import Dashboard from './app/dashboard/Dashboard';
 import { Switch, Route } from 'react-router-dom'
 
 class App extends Component {
-  state = {
-    loggedIn: false
-  };
+    state = {
+        username: '',
+    };
 
-  handleChange = key => event => {
-    this.setState({
-      [key]: event.target.value
-    });
-  };
+    changeUsername = (username) => {
+        this.setState({
+            username: username
+        });
+    };
+
 
   render() {
     return (
       <div className="App">
         <Switch>
-          <Route exact path='/' component={Login} />
-          <Route exact path='/dashboard' component={Dashboard} />
+          {/* `exact` because its only one slash */}
+          <Route exact path='/' render={(props) => <Login changeUsernameHandler={this.changeUsername} {...props} />} />
+          <Route path='/dashboard' render={(props) => <Dashboard username={this.state.username} {...props} /> } />
         </Switch>
       </div>
     );

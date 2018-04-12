@@ -5,15 +5,10 @@ The actual implementation of each of the routes' dispatching logic is handled by
 """
 
 from flask_login import login_required
-from flask_cors import CORS
+from flask_cors import cross_origin
 
 from pydash_web.blueprint import bp
 import pydash_web.controller as controller
-cors = CORS(bp, resources={r"/api/*": {"origins": "*"}}) # Only keep this during development!
-
-@bp.route("/")
-def serve_react():
-    return bp.send_static_file("index.html")
 
 
 @bp.route("/api/login", methods=["POST"])
@@ -36,3 +31,9 @@ def get_dashboards():
 @login_required
 def get_dashboard(dashboard_id):
     return controller.dashboard(dashboard_id)
+
+
+@bp.route("/", defaults={'path': ''})
+@bp.route("/<path:path>")
+def serve_react(path):
+    return bp.send_static_file("index.html")
