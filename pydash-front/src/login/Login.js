@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Redirect } from 'react-router'
+import { Redirect } from 'react-router'
 import './Login.css';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
@@ -61,12 +61,13 @@ class Login extends Component {
             console.log(response);
 
             login_sound.play()
+            this.props.changeUsernameHandler(username)
             this.setState(prevState => ({
                 error: false,
                 helperText: '',
                 success: true,
-                loading: false,
-            }))
+                loading: false
+            }));
         }).catch((error) => {
             console.log(error);
             this.setState(prevState => ({
@@ -83,7 +84,7 @@ class Login extends Component {
         ) : (
             <div>
                 <header className="App-header">
-                    <img width="200" src={Logo} />
+                    <img alt="PyDash logo" width="200" src={Logo} />
                 </header>
 
                 <form onSubmit={this.tryLogin}>

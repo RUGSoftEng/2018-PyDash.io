@@ -6,7 +6,6 @@ import Grid from 'material-ui/Grid';
 import GridList, {GridListTile} from 'material-ui/GridList';
 import Card, { CardContent } from 'material-ui/Card';
 import { withStyles } from 'material-ui/styles';
-import Typography from 'material-ui/Typography';
 
 import DashboardVisitsGraph from './DashboardVisitsGraph'
 
@@ -54,7 +53,7 @@ class DashTile extends Component {
                 newState.total_visits = "" + response.data.aggregates.total_visits;
                 newState.visits_per_day = dict_to_xy_arr(response.data.aggregates.visits_per_day)
                 newState.unique_visitors_per_day = dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day)
-                console.log(newState)
+                console.log(newState);
 
                 return newState;
             })

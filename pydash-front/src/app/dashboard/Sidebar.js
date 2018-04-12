@@ -2,10 +2,8 @@ import React from 'react';
 import { NavLink } from 'react-router-dom'
 
 import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
-import DonutSmall from 'material-ui-icons/DonutSmall';
 import SettingsIcon from 'material-ui-icons/Settings';
 import HomeIcon from 'material-ui-icons/Home';
-import StarIcon from 'material-ui-icons/Star';
 
 import Logout from './Logout'
 

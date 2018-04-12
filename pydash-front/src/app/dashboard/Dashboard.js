@@ -13,6 +13,7 @@ import IconButton from 'material-ui/IconButton';
 import Hidden from 'material-ui/Hidden';
 import Divider from 'material-ui/Divider';
 import MenuIcon from 'material-ui-icons/Menu';
+import UserIcon from 'material-ui-icons/AccountCircle';
 
 // APP
 import { mailFolderListItems, otherMailFolderListItems } from './Sidebar';
@@ -51,6 +52,19 @@ const styles = theme => ({
         },
     },
     toolbar: theme.mixins.toolbar,
+    accounticon: {
+        position: 'absolute',
+        top: 17,
+        left: 30,
+        fontSize: 36,
+        color: 'rgba(0, 0, 0, 0.54)'
+    },
+    accountname: {
+        position: 'absolute',
+        top: 25,
+        left: 80,
+        color: 'rgba(0, 0, 0, 0.54)'
+    },
     drawerPaper: {
         width: drawerWidth,
         [theme.breakpoints.up('md')]: {
@@ -79,7 +93,12 @@ class ResponsiveDrawer extends React.Component {
         const drawer = (
             <div>
 
-                <div className={classes.toolbar} />
+                <div className={classes.toolbar}>
+                    <UserIcon className={classes.accounticon} />
+                    <div className={classes.accountname}>
+                        {this.props.username || 'Username'}
+                    </div>
+                </div>
                 <Divider />
                 <List>{mailFolderListItems}</List>
                 <Divider />
@@ -100,7 +119,7 @@ class ResponsiveDrawer extends React.Component {
                             <MenuIcon />
                         </IconButton>
                         <Typography variant="title" color="inherit" noWrap>
-                            <img src={Logo} style={{marginTop: "15px", marginLeft: "20px;", marginBottom: "10px", maxWidth: "150px"}} />
+                            <img src={Logo} alt="PyDash.io logo" style={{marginTop: "15px", marginLeft: "20px;", marginBottom: "10px", maxWidth: "150px"}} />
             </Typography>
                     </Toolbar>
                 </AppBar>

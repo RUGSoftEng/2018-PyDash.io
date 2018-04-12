@@ -2,10 +2,6 @@ import React, {Component} from 'react';
 import { Line } from '@nivo/line'
 
 class DashboardVisitsGraph extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (<div>
             <h4>{this.props.title}:</h4>
