@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import './App.css';
 import Login from './login/Login';
 import Dashboard from './app/dashboard/Dashboard';
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom';
+import IsLoggedIn from './login/IsLoggedIn';
 
 class App extends Component {
     state = {
         username: '',
+        loggedIn: IsLoggedIn
     };
 
     changeUsername = (username) => {
@@ -20,6 +22,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <p>LOGGED IN: {this.state.loggedIn}</p>
         <Switch>
           {/* `exact` because its only one slash */}
           <Route exact path='/' render={(props) => <Login changeUsernameHandler={this.changeUsername} {...props} />} />
