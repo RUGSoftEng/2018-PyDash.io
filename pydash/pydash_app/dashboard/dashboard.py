@@ -61,7 +61,7 @@ class Dashboard(persistent.Persistent):
         self._aggregator = Aggregator(self._endpoint_calls)
 
     def __repr__(self):
-        return f'<{self.__class__.__name__} id={self.id} url={self.url} endpoints={self.endpoints}>'
+        return f'<{self.__class__.__name__} id={self.id} url={self.url}>'
 
     def get_id(self):
         return str(self.id)
