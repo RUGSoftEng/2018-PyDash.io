@@ -36,14 +36,6 @@ RunDatabase()
     PydashPrint "Done!"
 }
 
-CloseDatabase()
-{
-    PydashPrint "Closing Database..."
-    killall "runzeo"
-    PydashPrint "Done! Goodbye :-)"
-}
-
-
 RunFlask()
 {
     PydashPrint "Finally: Starting flask webservice. Close with Ctrl+C"
@@ -55,4 +47,4 @@ BuildBackend
 RunDatabase
 xdg-open "http://localhost:5000" &
 RunFlask
-# CloseDatabase
+PydashPrint "Done! Goodbye :-)"
