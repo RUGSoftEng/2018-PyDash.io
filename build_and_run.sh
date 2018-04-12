@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PydashPrint()
 {
@@ -22,6 +22,7 @@ BuildBackend()
     export FLASK_APP=pydash.py
     export FLASK_DEBUG=1
     pipenv install
+    cd ..
     PydashPrint "Done!"
 }
 
@@ -29,10 +30,11 @@ BuildBackend()
 RunDatabase()
 {
     PydashPrint "Starting database in background..."
-    pipenv run "./start_database.sh &"
+    cd pydash
+    pipenv run "./start_database.sh" &
+    cd ..
     PydashPrint "Done!"
 }
-
 
 RunFlask()
 {
@@ -45,4 +47,4 @@ BuildBackend
 RunDatabase
 xdg-open "http://localhost:5000" &
 RunFlask
-
+PydashPrint "Done! Goodbye :-)"
