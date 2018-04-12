@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 from pydash_app.impl.fetch import get_monitor_rules, get_data, get_details
 from pydash_app.dashboard.endpoint import Endpoint
 from pydash_app.dashboard.endpoint_call import EndpointCall
-from pydash_app.dashboard.dashboard_repository import update as update_dashboard
+from pydash_app.dashboard.dashboard_repository import find as find_dashboard, update as update_dashboard
 
 import pydash_app.impl.periodic_tasks as pt
 
@@ -64,7 +64,7 @@ def _add_dashboard_to_fetch_from(dashboard, interval=timedelta(hours=1), schedul
 
     pt.add_periodic_task(name=_dashboard_fetch_task_name(dashboard),
                          interval=interval,
-                         task=partial(update_endpoint_calls, dashboard),
+                         task=partial(_update_endpoint_calls_task, str(dashboard.id)),
                          scheduler=scheduler
                          )
 
@@ -156,6 +156,15 @@ def initialize_endpoint_calls(dashboard):
     update_dashboard(dashboard)
 
 
+def _update_endpoint_calls_task(dashboard_id):
+    """
+    Function to be used as a periodic task to update endpoints.
+    :param dashboard_id: The id of the dashboard to update.
+    """
+    dashboard = find_dashboard(dashboard_id)
+    update_endpoint_calls(dashboard)
+
+
 def update_endpoint_calls(dashboard):
     """
     Retrieve the latest endpoint calls of the given dashboard and store them in the database.
@@ -166,6 +175,8 @@ def update_endpoint_calls(dashboard):
         return
 
     new_calls = _fetch_endpoint_calls(dashboard, dashboard.last_fetch_time)
+
+    print(f'New calls: {new_calls}')
 
     if new_calls is None:
         return
