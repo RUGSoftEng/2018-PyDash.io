@@ -22,6 +22,7 @@ BuildBackend()
     export FLASK_APP=pydash.py
     export FLASK_DEBUG=1
     pipenv install
+    cd ..
     PydashPrint "Done!"
 }
 
@@ -29,8 +30,17 @@ BuildBackend()
 RunDatabase()
 {
     PydashPrint "Starting database in background..."
-    pipenv run "./start_database.sh &"
+    cd pydash
+    pipenv run "./start_database.sh" &
+    cd ..
     PydashPrint "Done!"
+}
+
+CloseDatabase()
+{
+    PydashPrint "Closing Database..."
+    killall "runzeo"
+    PydashPrint "Done! Goodbye :-)"
 }
 
 
@@ -45,4 +55,4 @@ BuildBackend
 RunDatabase
 xdg-open "http://localhost:5000" &
 RunFlask
-
+# CloseDatabase
