@@ -1,5 +1,5 @@
 from functools import partial
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from pydash_app.impl.fetch import get_monitor_rules, get_data, get_details
 from pydash_app.dashboard.endpoint import Endpoint
@@ -132,8 +132,8 @@ def initialize_endpoint_calls(dashboard):
     details = get_details(dashboard.url)
     first_request = int(details['first_request'])
 
-    start_time = datetime.fromtimestamp(first_request)
-    current_time = datetime.utcnow()
+    start_time = datetime.fromtimestamp(first_request, tz=timezone.utc)
+    current_time = datetime.now(timezone.utc)
 
     while start_time < current_time:
         # TODO: for now historical data is pulled in chunks of 1 hour (hardcoded)
@@ -197,6 +197,8 @@ def _fetch_endpoint_calls(dashboard, time_from=None, time_to=None):
         # The raw endpoint call data contains a timestamp formatted
         # as "yyyy-mm-dd hh:mm:ss.micro" so we need to parse it
         time = datetime.strptime(request['time'], '%Y-%m-%d %H:%M:%S.%f')
+        time.replace(tzinfo=timezone.utc)
+
         call = EndpointCall(
             request['endpoint'],
             request['execution_time'],
