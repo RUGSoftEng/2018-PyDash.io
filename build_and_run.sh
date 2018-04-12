@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PydashPrint()
 {
@@ -39,6 +39,7 @@ RunDatabase()
 RunFlask()
 {
     PydashPrint "Finally: Starting flask webservice. Close with Ctrl+C"
+    cd pydash
     pipenv run "flask run"
 }
 
