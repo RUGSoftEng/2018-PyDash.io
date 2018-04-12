@@ -10,7 +10,7 @@ import {Howl} from 'howler';
 import login_soundfile from "./boot.mp3";
 
 const login_sound = new Howl({
-    src: [ login_soundfile],
+    src: [login_soundfile],
 });
 
 class Login extends Component {

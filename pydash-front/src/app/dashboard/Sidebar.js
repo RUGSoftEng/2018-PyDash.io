@@ -13,7 +13,7 @@ import Logout from './Logout'
 import {Howl} from 'howler';
 import menu_soundfile from './woosh.mp3';
 const menu_sound = new Howl({
-    src: [ menu_soundfile],
+    src: [menu_soundfile],
     volume: 0.8
 });
 
