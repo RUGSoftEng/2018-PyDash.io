@@ -92,8 +92,9 @@ def seed_dashboards():
     # TEST
     from pydash_app.fetching.dashboard_fetch import initialize_endpoints, initialize_endpoint_calls
     for user in user_repository.all():
-        dashboard = Dashboard("http://136.243.248.188:9001/dashboard", user.get_id())
-        dashboard.token = "cc83733cb0af8b884ff6577086b87909"
+        dashboard = Dashboard("http://136.243.248.188:9001/dashboard",
+                              "cc83733cb0af8b884ff6577086b87909",
+                              user.get_id())
         print(f'Adding dashboard {dashboard}')
         add(dashboard)
         print(f'Initialising dashboard {dashboard}')

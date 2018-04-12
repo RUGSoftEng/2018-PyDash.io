@@ -46,7 +46,7 @@ class Dashboard(persistent.Persistent):
     This task is handled by the `dashboard_repository`.
     """
 
-    def __init__(self, url, user_id):
+    def __init__(self, url, token, user_id):
         if not isinstance(url, str) or not isinstance(user_id, str):
             raise TypeError("Dashboard expects both url and user_id to be strings.")
 
@@ -55,9 +55,7 @@ class Dashboard(persistent.Persistent):
         self.user_id = uuid.UUID(user_id)
         self.endpoints = dict()  # name -> Endpoint
         self.last_fetch_time = None
-
-        # TODO: implement tokens
-        self.token = None
+        self.token = token
 
         self._endpoint_calls = []  # list of unfiltered endpoint calls, for use with an aggregator.
         self._aggregator = Aggregator(self._endpoint_calls)
