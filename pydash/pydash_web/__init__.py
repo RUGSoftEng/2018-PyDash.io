@@ -30,6 +30,7 @@ from datetime import timedelta
 
 # Note to self: in DEBUG mode, this script is run twice. because Flask.
 for dashboard in pydash_app.dashboard.dashboard_repository.all():
+    print(f'Adding task for dashboard: {dashboard}')
     _add_dashboard_to_fetch_from(dashboard, timedelta(minutes=1), pt.default_task_scheduler)
     # print(dashboard)
 
