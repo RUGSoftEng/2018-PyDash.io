@@ -7,9 +7,9 @@ from flask_login import current_user, login_user
 from flask_restplus.reqparse import RequestParser
 
 import pydash_app.user
-import pydash_app.impl.logger as pyLog
+import pydash_app.impl.logger as pylog
 
-logger = pyLog.Logger(__name__)
+logger = pylog.Logger(__name__)
 
 
 def login():
@@ -19,6 +19,7 @@ def login():
             "message": "User already logged in",
             "user": _user_details(current_user)
         }
+        logger.warning(f"Login failed - {current_user} already logged in")
         return jsonify(result)
 
     args = _parse_arguments()
@@ -37,7 +38,7 @@ def login():
         return jsonify(result), 401
 
     login_user(user)
-    logger.info(f"{args['username']} succesfully logged in")
+    logger.info(f"{current_user} successfully logged in")
 
     result = {
         "message": "User successfully logged in",
