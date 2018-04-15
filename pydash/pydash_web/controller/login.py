@@ -7,9 +7,13 @@ from flask_login import current_user, login_user
 from flask_restplus.reqparse import RequestParser
 
 import pydash_app.user
+import pydash_app.impl.logger as pyLog
+
+logger = pyLog.Logger()
 
 
 def login():
+    logger.info('Login requested')
     if current_user.is_authenticated:
         result = {
             "message": "User already logged in",

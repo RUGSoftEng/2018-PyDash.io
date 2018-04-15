@@ -1,2 +1,2 @@
-
+from .logger import Logger
 
