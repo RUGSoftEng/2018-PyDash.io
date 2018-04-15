@@ -10,11 +10,11 @@ from datetime import datetime
 
 
 class Logger:
-    def __init__(self):
+    def __init__(self, name=__name__):
         """Sets up default logging utility for logger object"""
         logging.basicConfig(level=logging.INFO)
 
-        self._default_logger = logging.getLogger(__name__)
+        self._default_logger = logging.getLogger(name)
         self._default_handler = logging.FileHandler(os.getcwd() + '/logs/' + str(datetime.today().date()) + '.log')
         self._default_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
