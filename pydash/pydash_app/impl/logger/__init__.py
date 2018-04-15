@@ -17,6 +17,8 @@ default_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - 
 default_handler.setFormatter(default_formatter)
 default_logger.addHandler(default_handler)
 
+default_logger.info('Initializing logger done')
+
 def log():
 
     pass
