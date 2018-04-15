@@ -5,6 +5,7 @@ files in the /logs directory of the project.
 from .logger import Logger
 
 logger = Logger()
+logger.info('Initializing logger done')
 
 # import logging
 # import datetime

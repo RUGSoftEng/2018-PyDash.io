@@ -16,8 +16,6 @@ class Logger:
         self._default_handler.setFormatter(self._default_formatter)
         self._default_logger.addHandler(self._default_handler)
 
-        self._default_logger.info('Initializing logger done')
-
     def _log(self, msg, level):
         """
         Helper function to abstract setting the filename with each call. This is done by removing the current
