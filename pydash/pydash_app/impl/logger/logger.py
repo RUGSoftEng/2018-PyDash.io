@@ -1,3 +1,8 @@
+"""
+Logger object will log messages and errors to date-stamped '.log' files in the /logs directory of the project. Simply
+import the class and use it to log messages.
+"""
+
 import logging
 import os
 
