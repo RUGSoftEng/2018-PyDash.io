@@ -14,6 +14,7 @@ from config import Config
 import pydash_app
 import pydash_app.user
 import pydash_app.dashboard
+import pydash_app.impl.logger as logger
 
 flask_webapp = Flask(__name__, static_folder="../../pydash-front/build", static_url_path="")
 flask_webapp.config.from_object(Config)
