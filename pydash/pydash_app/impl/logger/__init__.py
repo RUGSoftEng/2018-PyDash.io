@@ -6,23 +6,3 @@ from .logger import Logger
 
 logger = Logger()
 logger.info('Initializing logger done')
-
-# import logging
-# import datetime
-# import os
-#
-# """Default settings"""
-# logging.basicConfig(level=logging.INFO)
-#
-# default_logger = logging.getLogger(__name__)
-# default_handler = logging.FileHandler(os.getcwd() + '/logs/' + str(datetime.datetime.today().date()) + '.log')
-# default_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-#
-# default_handler.setFormatter(default_formatter)
-# default_logger.addHandler(default_handler)
-#
-# default_logger.info('Initializing logger done')
-#
-# def log():
-#
-#     pass
