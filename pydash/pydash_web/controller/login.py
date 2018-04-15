@@ -9,7 +9,7 @@ from flask_restplus.reqparse import RequestParser
 import pydash_app.user
 import pydash_app.impl.logger as pyLog
 
-logger = pyLog.Logger()
+logger = pyLog.Logger(__name__)
 
 
 def login():
@@ -25,6 +25,7 @@ def login():
 
     if 'username' not in args or 'password' not in args:
         result = {"message": "Username or password missing"}
+        logger.warning('Login failed - username or password missing')
         return jsonify(result), 400
 
     user = pydash_app.user.authenticate(args['username'],
@@ -32,9 +33,11 @@ def login():
 
     if not user:
         result = {"message": "Username or password incorrect"}
+        logger.warning(f"Failed login request using {args['username']}, {args['password']}")
         return jsonify(result), 401
 
     login_user(user)
+    logger.info(f"{args['username']} succesfully logged in")
 
     result = {
         "message": "User successfully logged in",
