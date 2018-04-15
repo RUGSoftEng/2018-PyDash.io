@@ -11,7 +11,11 @@ from datetime import datetime
 
 class Logger:
     def __init__(self, name=__name__):
-        """Sets up default logging utility for logger object"""
+        """
+        Sets up default logging utility for logger object
+        :param: name: namespace where you want the logger to be. Suggested value = __name__. Defaults to
+        'pydash_app.impl.logger'.
+        """
         logging.basicConfig(level=logging.INFO)
 
         self._default_logger = logging.getLogger(name)
@@ -25,8 +29,8 @@ class Logger:
         """
         Helper function to abstract setting the filename with each call. This is done by removing the current
         FileHandler and setting a new one up with the correct path.
-        :msg: the message to be logged.
-        :level: the level at which the message will be logged.
+        :param: msg: the message to be logged.
+        :param: level: the level at which the message will be logged.
         """
         self._default_logger.removeHandler(self._default_handler)
         self._default_handler = logging.FileHandler(os.getcwd() + '/logs/' + str(datetime.today().date()) + '.log')
@@ -50,27 +54,27 @@ class Logger:
     def debug(self, msg):
         """
         Takes a message and logs it at the logging.DEBUG level
-        :msg: the message to be logged
+        :param: msg: the message to be logged
         """
         self._log(msg, logging.DEBUG)
 
     def info(self, msg):
         """
         Takes a message and logs it at the logging.INFO level
-        :msg: the message to be logged
+        :param: msg: the message to be logged
         """
         self._log(msg, logging.INFO)
 
     def warning(self, msg):
         """
         Takes a message and logs it at the logging.WARN level
-        :msg: the message to be logged
+        :param: msg: the message to be logged
         """
         self._log(msg, logging.WARNING)
 
     def error(self, msg):
         """
         Takes a message and logs it at the logging.ERROR level
-        :msg: the message to be logged
+        :param: msg: the message to be logged
         """
         self._log(msg, logging.ERROR)
