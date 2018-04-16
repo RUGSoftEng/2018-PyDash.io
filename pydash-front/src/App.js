@@ -22,7 +22,7 @@ class App extends Component {
         <Switch>
           {/* `exact` because its only one slash */}
           <Route exact path='/' render={(props) => <Login changeUsernameHandler={this.changeUsername} {...props} />} />
-          <Route path='/dashboard' render={(props) => <Dashboard username={this.state.username} {...props} /> } />
+          <Route path='/dashboard' render={(props) => <Dashboard username={this.state.username} {...props} /> } /> 
         </Switch>
       </div>
     );
