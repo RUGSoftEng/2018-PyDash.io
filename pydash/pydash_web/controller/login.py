@@ -11,10 +11,13 @@ import pydash_app.user
 
 def login():
     if current_user.is_authenticated:
-        result = {"message": "User already logged in"}
+        result = {
+            "message": "User already logged in",
+            "user": _user_details(current_user)
+        }
         return jsonify(result)
 
-    args = __parse_arguments()
+    args = _parse_arguments()
 
     if 'username' not in args or 'password' not in args:
         result = {"message": "Username or password missing"}
@@ -29,12 +32,22 @@ def login():
 
     login_user(user)
 
-    result = {"message": "User successfully logged in"}
+    result = {
+        "message": "User successfully logged in",
+        "user": _user_details(user)
+    }
     return jsonify(result)
 
 
-def __parse_arguments():
+def _parse_arguments():
     parser = RequestParser()
     parser.add_argument('username')
     parser.add_argument('password')
     return parser.parse_args()
+
+
+def _user_details(user):
+    return {
+        "id": user.id,
+        "name": user.name
+    }
