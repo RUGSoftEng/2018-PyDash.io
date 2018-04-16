@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  description: This is a simple specification of the PyDash.IO backend<->frontend API.
+  description: This is a simple specification of the PyDash.IO backend API.
   version: 0.0.1
   title: PyDash.IO
   contact:
@@ -87,7 +87,7 @@ paths:
     get:
       tags:
         - dashboards
-      summary: Lists the dashboards of the current user
+      summary: Lists the dashboards of the current user in session
       parameters: []
       responses:
         '200':
@@ -95,13 +95,12 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Dashboard'
+              $ref: '#/definitions/Simple_Dashboard'
   '/api/dashboards/{dashboard_id}':
     get:
       tags:
         - dashboards
-      summary: >-
-        Lists information of a single dashboard
+      summary: Lists detailed information of a single dashboard
       parameters:
         - name: dashboard_id
           in: path
@@ -115,13 +114,13 @@ paths:
           schema:
             $ref: '#/definitions/Dashboard'
 definitions:
-  Dashboard:
+  Simple_Dashboard:
     type: object
     properties:
       id:
         type: string
         format: uuid
-        example: 'abcdef12-3456-7890-abcd-123456789abc'
+        example: abcdef12-3456-7890-abcd-123456789abc
       url:
         type: string
         example: 'https://pydash.io/'
@@ -129,6 +128,46 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Endpoint'
+  Dashboard:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: abcdef12-3456-7890-abcd-123456789abc
+      url:
+        type: string
+        example: 'https://pydash.io/'
+      aggregator:
+        $ref: '#/definitions/Aggregator'
+      endpoints:
+        type: array
+        items:
+          $ref: '#/definitions/Endpoint'
+  Aggregator:
+    type: object
+    properties: 
+      total_visits: 
+        type: string
+        example: '42'
+      total_execution_time: 
+        type: string
+        example: '212'
+      average_execution_time: 
+        type: string
+        example: '0.002'
+      visits_per_day: 
+        type: string
+        example: '27'
+      visits_per_ip: 
+        type: string
+        example: '11'
+      unique_visitors: 
+        type: string
+        example: '69'
+      unique_visitors_per_day: 
+        type: string
+        example: '3'
   Endpoint:
     type: object
     properties:
@@ -143,6 +182,6 @@ definitions:
       id:
         type: string
         format: uuid
-        example: 'abcdef12-3456-7890-abcd-123456789abc'
+        example: abcdef12-3456-7890-abcd-123456789abc
       name:
         type: string

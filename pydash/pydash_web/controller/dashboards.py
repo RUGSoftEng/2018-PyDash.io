@@ -66,6 +66,7 @@ def _simple_dashboard_detail(dashboard):
         'endpoints': endpoints
     }
 
+
 def _dashboard_detail(dashboard):
     """
     Returns the representation of the given dashboard in detail.
