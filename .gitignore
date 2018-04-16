@@ -111,3 +111,5 @@ ENV/
 
 # VSCode
 .vscode
+#Directories
+/pydash/logs
