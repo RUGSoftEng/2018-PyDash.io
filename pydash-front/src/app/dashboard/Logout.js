@@ -17,14 +17,6 @@ class Login extends Component {
 
     logout = (e) => {
         e.preventDefault()
-        console.log('logging out');
-        // axios.get('http://localhost:5000/api/dashboards/', {
-        //     withCredentials: true
-        // }).then((response) => {
-        //     console.log(response);
-        // }).catch((error) => {
-        //     console.log(error);
-        // });
 
         // Make a request for a user with a given ID
         axios('http://localhost:5000/api/logout', {

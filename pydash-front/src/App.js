@@ -12,7 +12,6 @@ class App extends Component {
     };
 
     changeUsername = (username) => {
-        console.log(username);
         this.setState({
             username: username
         });
