@@ -28,7 +28,7 @@ def dashboard(dashboard_id):
     try:
         db = pydash_app.dashboard.find(dashboard_id)
 
-        print(len(_fetch_endpoint_calls(db, db.last_fetch_time)))
+        logger.debug(f'Amount of newly fetched endpoint calls: {len(_fetch_endpoint_calls(db, db.last_fetch_time))}')
 
         update_endpoint_calls(db)
     except KeyError:
