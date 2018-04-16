@@ -108,3 +108,6 @@ ENV/
 
 #Pycharm
 .idea/
+
+#Directories
+/pydash/logs
