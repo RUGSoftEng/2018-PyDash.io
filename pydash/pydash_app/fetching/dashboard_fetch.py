@@ -176,8 +176,6 @@ def update_endpoint_calls(dashboard):
 
     new_calls = _fetch_endpoint_calls(dashboard, time_from=dashboard.last_fetch_time)
 
-    print(f'New calls: {new_calls}')
-
     if new_calls is None:
         return
 
@@ -185,7 +183,6 @@ def update_endpoint_calls(dashboard):
         dashboard.add_endpoint_call(call)
 
     dashboard.last_fetch_time = new_calls[-1].time
-
     update_dashboard(dashboard)
 
 

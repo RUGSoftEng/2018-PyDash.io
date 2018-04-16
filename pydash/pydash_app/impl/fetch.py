@@ -2,11 +2,13 @@ import requests
 import jwt
 import json
 
+import pydash_app.impl.logger as pylog
 
 DETAILS_ENDPOINT = 0
 RULES_ENDPOINT = 1
 DATA_ENDPOINT = 2
 
+logger = pylog.Logger(__name__)
 
 def get_details(dashboard_url):
     """
@@ -53,6 +55,11 @@ def get_data(dashboard_url, dashboard_token, time_from=None, time_to=None):
     endpoint = _endpoint_name(DATA_ENDPOINT)
 
     url = f'{dashboard_url}/{endpoint}'
+
+    if time_from is None and time_to is not None:
+        logger.error('Invalid input paramater combination: when time_from is None, time_to may not be specified.')
+        return None
+
     if time_from is not None:
         time_from = int(time_from.timestamp())
         url = f'{url}/{time_from}'
@@ -63,6 +70,7 @@ def get_data(dashboard_url, dashboard_token, time_from=None, time_to=None):
     response = requests.get(url)
 
     if response.status_code != 200:
+        logger.error(f'Bad response status code: {response.status_code}')
         return None
 
     return _decode_jwt(response.text, dashboard_token)
@@ -85,4 +93,5 @@ def _decode_jwt(payload, token):
     :return: A dict containing the data from the payload
     """
     message = jwt.decode(payload, token, algorithms=['HS256'])
+    print(message['data'])
     return json.loads(message['data'])
