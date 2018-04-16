@@ -23,22 +23,6 @@ flask_webapp.register_blueprint(pydash_web_bp)
 flask_webapp.config['CORS_HEADERS'] = 'Content-Type'
 cors = CORS(flask_webapp, resources={r"/api/*": {"origins": "*"}}, allow_headers=['Content-Type'], supports_credentials=True) # Only keep this during development!
 
-# NOTE: TEMPORARY TO SEE WHETHER THIS WORKS
-import pydash_app.impl.periodic_tasks as pt
-from pydash_app.fetching.dashboard_fetch import _add_dashboard_to_fetch_from, start_default_scheduler
-from datetime import timedelta
-
-# Note to self: in DEBUG mode, this script is run twice. because Flask.
-for dashboard in pydash_app.dashboard.dashboard_repository.all():
-    print(f'Adding task for dashboard: {dashboard}')
-    _add_dashboard_to_fetch_from(dashboard, timedelta(minutes=1), pt.default_task_scheduler)
-    # print(dashboard)
-
-# print(f'nr of elements in dashboard db = {len(pydash_app.dashboard.dashboard_repository.all())}')
-start_default_scheduler()
-
-# NOTE: TEMPORARY TO SEE WHETHER THIS WORKS
-
 
 @login_manager.user_loader
 def load_user(user_id):
