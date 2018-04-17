@@ -37,11 +37,12 @@ class Login extends Component {
             {withCredentials: true}
         ).then((response) => {
             console.log(response);
+            this.props.changeUsernameHandler(username)
             this.setState(prevState => ({
                 error: false,
                 helperText: '',
                 success: true
-            }))
+            }));
         }).catch((error) => {
             console.log(error);
             this.setState(prevState => ({

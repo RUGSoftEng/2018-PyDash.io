@@ -7,20 +7,26 @@ from flask_login import current_user, login_user
 from flask_restplus.reqparse import RequestParser
 
 import pydash_app.user
+import pydash_app.impl.logger as pylog
+
+logger = pylog.Logger(__name__)
 
 
 def login():
+    logger.info('Login requested')
     if current_user.is_authenticated:
         result = {
             "message": "User already logged in",
             "user": _user_details(current_user)
         }
+        logger.warning(f"Login failed - {current_user} already logged in")
         return jsonify(result)
 
     args = _parse_arguments()
 
     if 'username' not in args or 'password' not in args:
         result = {"message": "Username or password missing"}
+        logger.warning('Login failed - username or password missing')
         return jsonify(result), 400
 
     user = pydash_app.user.authenticate(args['username'],
@@ -28,9 +34,11 @@ def login():
 
     if not user:
         result = {"message": "Username or password incorrect"}
+        logger.warning(f"Failed login request using {args['username']}, {args['password']}")
         return jsonify(result), 401
 
     login_user(user)
+    logger.info(f"{current_user} successfully logged in")
 
     result = {
         "message": "User successfully logged in",
