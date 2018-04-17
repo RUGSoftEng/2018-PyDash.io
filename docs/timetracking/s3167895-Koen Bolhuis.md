@@ -40,3 +40,27 @@
 | *2018-04-01* | 23:00-23:45 | Investigating and Dockerizing a Flask sample app for testing |
 | *2018-04-01* | 12:15-14:30 | Dockerizing and deploying a Flask sample app for testing |
 | *2018-04-03* | 9:00-11:00 | Presentation rehearsal meeting with TA and team |
+| *2018-04-03* | 11:00-14:00 | Presentations |
+| *2018-04-05* | 11:20-12:00 | Internal weekly meeting with the team |
+| *2018-04-05* | 12:00-13:10 | Fixing periodic fetching with Tom |
+| *2018-04-07* | 14:00-15:00 | Returning user info from the backend after login |
+| *2018-04-08* | 12:30-14:00 | Updating Swagger API spec to be consistent with the backend |
+| *2018-04-09* | 15:00-17:00 | Internal weekly meeting with the team |
+| *2018-04-10* | 15:00-16:30 | Fixing some minor bugs related to fetching |
+| *2018-04-10* | 16:30-17:30 | Making sure the dashboard last fetch time is updated correctly |
+| *2018-04-10* | 18:00-18:30 | Adding small improvements to fetching code |
+| *2018-04-11* | 0:20-0:50 | Making sure datetimes are only converted to timestamps when necessary |
+| *2018-04-11* | 14:20-14:30 | Fixing bug where the React app wasn't served correctly leading to 404 errors |
+| *2018-04-12* | 11:00-12:00 | Weekly TA meeting |
+| *2018-04-12* | 12:15-12:30 | Personal TA meeting |
+| *2018-04-12* | 16:00-16:30 | Fixing Flask sample app Docker image |
+| *2018-04-12* | 18:00-23:30 | Debugging fetching implementation |
+| *2018-04-14* | 16:30-18:00 | Debugging fetching implementation |
+| *2018-04-14* | 21:30-22:30 | Debugging fetching implementation |
+| *2018-04-15* | 14:30-16:00 | Debugging fetching implementation |
+| *2018-04-16* | 9:00-10:00 | Debugging fetching implementation |
+| *2018-04-16* | 13:00-15:00 | Debugging fetching implementation |
+| *2018-04-16* | 15:00-15:30 | Weekly TA meeting |
+| *2018-04-16* | 15:30-17:00 | Internal meeting |
+| *2018-04-16* | 17:00-18:00 | Patching remote fetching with Tom |
+| *2018-04-17* | 20:00-21:10 | Updating requirements document: improving backlog, adding backend information to backlog |
