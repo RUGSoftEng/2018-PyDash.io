@@ -137,6 +137,6 @@ def baz():
     print('baz')
 
 
-@periodic_task('qux', datetime.timedelta(seconds=2))
+# @periodic_task('qux', datetime.timedelta(seconds=2))
 def qux():
     print('qux')

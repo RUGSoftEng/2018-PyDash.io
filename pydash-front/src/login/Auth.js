@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-
 class Auth{
     constructor() {
         this.peek = false;
@@ -11,10 +10,8 @@ class Auth{
             method: 'post',
             withCredentials: true
         }).then((response) => {
-            console.log('got diz', response);
             this.loggedIn = true;
         }).catch((error) => {
-            console.log('error', error);
             this.loggedIn = false;
         });
     }
