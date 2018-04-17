@@ -29,3 +29,14 @@
 | *2018-03-24* | 0:30-0:45 | Adding some minor improvements to merge dashboard data fetching |
 | *2018-03-26* | 15:00-17:00 | Internal weekly meeting with the team |
 | *2018-03-26* | 21:00-21:30 | Comparing Swagger API spec with the actual API and fixing it |
+| *2018-03-29* | 11:00-13:00 | Weekly TA meeting |
+| *2018-03-29* | 14:30-17:00 | Adding aggregator functionality to collect data for dashboards and individual endpoints |
+| *2018-03-29* | 18:00-19:00 | Refining aggregator functionality |
+| *2018-03-29* | 20:30-21:30 | Writing functions to return dashboard data as entities in our app |
+| *2018-03-30* | 17:45-18:00 | Extracting those functions to separate module |
+| *2018-03-30* | 20:00-21:00 | Fixing bug that prevented login after expired sessions |
+| *2018-04-01* | 17:00-18:00 | Writing functions to store dashboard fetching in the database |
+| *2018-04-01* | 18:30-22:00 | Writing functions to store dashboard fetching in the database |
+| *2018-04-01* | 23:00-23:45 | Investigating and Dockerizing a Flask sample app for testing |
+| *2018-04-01* | 12:15-14:30 | Dockerizing and deploying a Flask sample app for testing |
+| *2018-04-03* | 9:00-11:00 | Presentation rehearsal meeting with TA and team |
