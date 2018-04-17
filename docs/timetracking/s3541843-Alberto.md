@@ -25,5 +25,5 @@
 | *2018-04-5* | 11:00-12:00 | Thursday meeting with the group |
 | *2018-04-5* | 11:30-13:00 | Updating front-end notes on architectural document |
 | *2018-04-16* | 13:00-15:00 | Meeting  |
-| *2018-04-16* | 18:45-19:45 | Meeting with Jeroen O. Redux-react auth |
+| *2018-04-16* | 18:45-19:45 | Specific dashboard design |
 
