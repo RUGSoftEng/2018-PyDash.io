@@ -4,14 +4,10 @@ import Login from './login/Login';
 import Dashboard from './app/dashboard/Dashboard';
 import { Switch, Route } from 'react-router-dom';
 import ProtectedRoute from './login/ProtectedRoute'
-// import IsLoggedIn from './login/IsLoggedIn';
-// import axios from 'axios';
 
 class App extends Component {
   state = {
-      username: '',
-      // loggedIn: false,
-      // didPeek: false
+      username: ''
   };
 
   changeUsername = (username) => {
@@ -19,36 +15,6 @@ class App extends Component {
           username: username
       });
   };
-
-  // get isLoggedIn() {
-  //   if (this.state.didPeek) {
-  //     this.peek();
-  //     this.state.didPeek = true;
-  //   }
-
-  //   return this.state.loggedIn;
-  // }
-
-  // peek = () => {
-  //   axios('http://localhost:5000/api/login', {
-  //     method: 'post',
-  //     withCredentials: true
-  //   }).then((response) => {
-  //     console.log('got diz', response);
-  //     this.state.loggedIn = true;
-  //   }).catch((error) => {
-  //     console.log('error', error);
-  //     this.state.loggedIn = false;
-  //   });
-  // }
-  
-  // requireAuth(nextState, replace) {
-  //   if (!IsLoggedIn.isLoggedIn()) {
-  //     replace({
-  //       pathname: '/'
-  //     })
-  //   }
-  // }
 
   render() {
     return (
