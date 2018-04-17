@@ -109,5 +109,7 @@ ENV/
 #Pycharm
 .idea/
 
+# VSCode
+.vscode
 #Directories
 /pydash/logs
