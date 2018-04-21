@@ -35,9 +35,9 @@ def get_dashboard(dashboard_id):
 
 # NOTE: Passing the plaintext password around like this would be very silly and a potential severe security risk.
 #       Investigate on how to do this differently.
-@bp.route("/api/register_user/<name>/<password>", methods=["POST"])
-def register_user(name, password):
-    return controller.register_user(name, password)
+@bp.route("/api/register_user", methods=["POST"])
+def register_user():
+    return controller.register_user()
 
 
 @bp.route("/", defaults={'path': ''})
