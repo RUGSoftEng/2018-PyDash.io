@@ -19,6 +19,8 @@ import UserIcon from 'material-ui-icons/AccountCircle';
 import { mailFolderListItems, otherMailFolderListItems } from './Sidebar';
 import Overview from '../overview/Overview';
 import Statistics from '../statistics/Statistics';
+import Board from '../boards/Board';
+import Settings from '../settings/Settings';
 
 
 
@@ -119,7 +121,7 @@ class ResponsiveDrawer extends React.Component {
                             <MenuIcon />
                         </IconButton>
                         <Typography variant="title" color="inherit" noWrap>
-                            <img src={Logo} alt="PyDash.io logo" style={{marginTop: "15px", marginLeft: "20px;", marginBottom: "10px", maxWidth: "150px"}} />
+                            <img src={Logo} alt="PyDash.io logo" style={{marginTop: "15px", marginLeft: "20px", marginBottom: "10px", maxWidth: "150px"}} />
             </Typography>
                     </Toolbar>
                 </AppBar>
@@ -153,11 +155,19 @@ class ResponsiveDrawer extends React.Component {
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
                     <Route exact path='/dashboard' component={Overview} />
-                    <Route path='/dashboard/statistics' component={Statistics} />
+                    <Route exact path='/dashboard/settings' component={Settings} />
+                    <Route exact path='/dashboard/statistics' component={Statistics} />
+                    <Route path='/dashboard/view/:id' component={Db} />                    
                 </main>
             </div>
         );
     }
+
+    
+}
+
+const Db = ({match}) => {
+    return <Board id={match.params.id} />
 }
 
 ResponsiveDrawer.propTypes = {

@@ -8,6 +8,11 @@ from flask import jsonify
 from flask_login import current_user
 
 import pydash_app.dashboard
+import pydash_app.impl.logger as pylog
+
+from pydash_app.fetching.dashboard_fetch import update_endpoint_calls, _fetch_endpoint_calls
+
+logger = pylog.Logger(__name__)
 
 
 def dashboard(dashboard_id):
@@ -22,14 +27,22 @@ def dashboard(dashboard_id):
     """
     try:
         db = pydash_app.dashboard.find(dashboard_id)
+
+        logger.debug(f'Amount of newly fetched endpoint calls: {len(_fetch_endpoint_calls(db, db.last_fetch_time))}')
+
+        update_endpoint_calls(db)
     except KeyError:
+        logger.warning(f"Could not find dashboard matching with {dashboard_id}")
         return jsonify({"message": "Could not find a matching dashboard."}), 404
     except ValueError:  # Happens when called without a proper UUID
+        logger.warning(f"Invalid dashboard_id: {dashboard_id}")
         return jsonify({"message": "Invalid dashboard_id"}), 400
 
     if db.user_id != current_user.id:
+        logger.warning(F"{current_user} is not authorised to view {db}")
         return jsonify({"message": "Not authorised to view this dashboard."}), 403
 
+    logger.info(f"Retrieved dashboard {db}")
     return jsonify(_dashboard_detail(db)), 200
 
 
@@ -42,6 +55,7 @@ def dashboards():
                A dict containing an error message describing the particular error.
              - A corresponding HTML status code.
     """
+    logger.info(f"Retrieving list of dashboards for {current_user}")
     dashboards = pydash_app.dashboard.dashboards_of_user(current_user.id)
 
     return jsonify([_simple_dashboard_detail(dashboard) for dashboard in dashboards]), 200
@@ -65,6 +79,7 @@ def _simple_dashboard_detail(dashboard):
         'url': dashboard.url,
         'endpoints': endpoints
     }
+
 
 def _dashboard_detail(dashboard):
     """

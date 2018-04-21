@@ -27,7 +27,7 @@ export const mailFolderListItems = (
             </ListItemIcon>
             <ListItemText primary="Dashboards" />
         </ListItem>
-        <ListItem button component={NavLink} to={'/dashboard/statistics'} onClick={playMenuSound}>
+        <ListItem button component={NavLink} to={'/dashboard/settings'} onClick={playMenuSound}>
             <ListItemIcon>
                 <SettingsIcon />
             </ListItemIcon>
