@@ -86,6 +86,9 @@ class Login extends Component {
                         Login
                     </Button>
                     </p>
+                    <p>
+                    <Button bsStyle="info">Create an account?</Button>
+                    </p>
                 </form>
             </div>
         );
