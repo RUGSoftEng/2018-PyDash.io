@@ -18,7 +18,7 @@ import pydash_app.user
 import pydash_app.dashboard
 
 
-flask_webapp = Flask(__name__, static_folder="../../pydash-front/build", static_url_path="")
+flask_webapp = Flask(__name__)
 flask_webapp.config.from_object(Config)
 
 flask_webapp.config['CORS_HEADERS'] = 'Content-Type'
