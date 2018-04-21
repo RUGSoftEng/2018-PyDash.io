@@ -7,6 +7,6 @@ route decorators in this package should also use this blueprint object instead o
 
 from flask import Blueprint
 
-bp = Blueprint('pydash_web', __name__, static_folder="../../pydash-front/build", static_url_path="")
+api = Blueprint('pydash_web.api', __name__, static_folder="../../pydash-front/build", static_url_path="")
 
-from pydash_web import routes  #link routes to blueprint
+import pydash_web.api_routes
