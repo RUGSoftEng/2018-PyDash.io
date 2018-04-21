@@ -19,7 +19,7 @@ BuildBackend()
 {
     PydashPrint "building backend..."
     cd pydash
-    mkdir logs
+    mkdir -p logs
     export FLASK_APP=pydash.py
     export FLASK_DEBUG=1
     pipenv install
