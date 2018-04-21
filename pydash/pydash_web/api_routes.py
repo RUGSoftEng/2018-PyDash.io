@@ -30,9 +30,3 @@ def get_dashboards():
 @login_required
 def get_dashboard(dashboard_id):
     return controller.dashboard(dashboard_id)
-
-
-@api.route("/", defaults={'path': ''})
-@api.route("/<path:path>")
-def serve_react(path):
-    return api.send_static_file("index.html")
