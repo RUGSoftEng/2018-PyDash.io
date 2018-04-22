@@ -9,6 +9,7 @@ class accountCreation extends Component {
     state = {
         username: '',
         password: '',
+        Confirmpassword: '',
         email: '',
         error: false,
         message: '',
@@ -61,16 +62,15 @@ class accountCreation extends Component {
                     <br />
                     <TextField
                         id="username"
-                        label="Choose Username"
+                        label="Choose username"
                         value={this.state.username}
                         onChange={this.handleChange('username')}
                         margin="normal"
                         error={this.state.error}
                     />
                     <br />
-                    <br />
                     <TextField
-                        id="email"
+                        id="Email"
                         label="email"
                         value={this.state.email}
                         onChange={this.handleChange('email')}
@@ -80,7 +80,7 @@ class accountCreation extends Component {
                     <br />
                     
                     <TextField
-                        id="password"
+                        id="Password"
                         label="Password"
                         value={this.state.password}
                         onChange={this.handleChange('password')}
@@ -91,16 +91,17 @@ class accountCreation extends Component {
                     />
                     <br />
                     <TextField
-                        id="password"
-                        label="confirm password"
-                        value={this.state.email}
+                        id="Confirmpassword"
+                        label="Confirm password"
+                        value={this.state.Confirmpassword}
                         onChange={this.handleChange('password')}
                         margin="normal"
+                        type="password"
                         
                     />
                     <br />
                     <p>
-                    <Button type="submit" variant="raised" color="primary">
+                    <Button type="submit" variant="raised" color="primary" href="/dashboard">
                         Register
                     </Button>
                     </p>
