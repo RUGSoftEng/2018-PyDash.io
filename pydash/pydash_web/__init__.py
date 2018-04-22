@@ -24,6 +24,16 @@ flask_webapp.config['CORS_HEADERS'] = 'Content-Type'
 cors = CORS(flask_webapp, resources={r"/api/*": {"origins": "*"}}, allow_headers=['Content-Type'], supports_credentials=True) # Only keep this during development!
 
 
+import datetime
+from pydash_app.fetching.dashboard_fetch import start_default_scheduler, _add_dashboard_to_fetch_from
+
+start_default_scheduler()
+
+for dashboard in pydash_app.dashboard.dashboard_repository.all():
+    print(f'Creating periodic task for {dashboard}')
+    _add_dashboard_to_fetch_from(dashboard=dashboard, interval=datetime.timedelta(seconds=5))
+
+
 @login_manager.user_loader
 def load_user(user_id):
     print("Loading user {}".format(user_id))
