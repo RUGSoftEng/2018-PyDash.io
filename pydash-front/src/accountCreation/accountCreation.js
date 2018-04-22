@@ -101,11 +101,8 @@ class accountCreation extends Component {
                     <br />
                     <p>
                     <Button type="submit" variant="raised" color="primary">
-                        Login
+                        Register
                     </Button>
-                    </p>
-                    <p>
-                    <Button bsStyle="submit" href="/accountCreation">Create an account?</Button>
                     </p>
                 </form>
             </div>
