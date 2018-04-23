@@ -21,6 +21,10 @@ def database_root():
         _connection = ZEO.connection(_database_port)
         _database_root = _connection.root
         _current_process_id = os.getpid()
+        print(f"PID {os.getpid()}: Created new DB connection: {_connection}")
+    else:
+
+        print(f"PID {os.getpid()}: returning old connection")
     return _database_root
 
 class MultiIndexedPersistentCollection(MultiIndexedCollection, persistent.Persistent):
