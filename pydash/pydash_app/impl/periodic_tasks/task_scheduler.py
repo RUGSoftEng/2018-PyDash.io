@@ -230,8 +230,9 @@ class TaskScheduler:
         Runs all tasks whose `next_run_dt` has passed since last time.
         """
         for task in pqdict_iter_upto_priority(self._task_queue, current_time):
-            print(f"Running task {task} at {current_time}...")
+            print(f"====Running task {task} at {current_time}...")
             self._run_task(pool, task)
+            print(f"====Finished running task {task}.")
             if isinstance(task, _PeriodicTask):
                 task.update_for_next_run()
                 self._task_queue[task] = task.next_run_dt
@@ -241,4 +242,4 @@ class TaskScheduler:
         Executes a single task in one of the pool's processes
         """
         res = pool.apply_async(task, ())
-        res.get()
+        res.get() # <- Uncomment this line to debug tasks in an easy way. Serializes task execution however!
