@@ -33,6 +33,11 @@ def get_dashboard(dashboard_id):
     return controller.dashboard(dashboard_id)
 
 
+@bp.route("/api/user/register", methods=["POST"])
+def register_user():
+    return controller.register_user()
+
+
 @bp.route("/", defaults={'path': ''})
 @bp.route("/<path:path>")
 def serve_react(path):
