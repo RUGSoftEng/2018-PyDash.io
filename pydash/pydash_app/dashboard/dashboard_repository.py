@@ -50,14 +50,12 @@ def add(dashboard):
 
 
 def update(dashboard):
-    for attempt in transaction.manager.attempts():
-        with attempt:
-            try:
-                database_root().dashboards.update_item(dashboard)
-                transaction.commit()
-            except KeyError:
-                transaction.abort()
-                raise
+    try:
+        database_root().dashboards.update_item(dashboard)
+        transaction.commit()
+    except KeyError:
+        transaction.abort()
+        raise
 
 
 def seed_dashboards():
