@@ -30,3 +30,8 @@ def get_dashboards():
 @login_required
 def get_dashboard(dashboard_id):
     return controller.dashboard(dashboard_id)
+
+
+@api.route("/api/user/register", methods=["POST"])
+def register_user():
+    return controller.register_user()
