@@ -66,14 +66,14 @@ class DashTileGrid extends Component {
             <Grid container spacing={24} className={classes.root}>
 
             <Card>
-              <CardActions>
+              {/* <CardActions>
               <ListItem button component={NavLink} to={'/dashboard/settings'}>
                 <ListItemIcon>
                     <CreateIcon />
                 </ListItemIcon>
             </ListItem>
                 </CardActions>
-              Hola
+              Hola */}
               </Card>
                 {/* For each found dashboard for username */}
                 {tiles}

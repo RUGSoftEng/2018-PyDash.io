@@ -21,6 +21,7 @@ import Overview from '../overview/Overview';
 import Statistics from '../statistics/Statistics';
 import Board from '../boards/Board';
 import Settings from '../settings/Settings';
+import TestCards from '../testingCards/TestCards'
 
 
 // Styling
@@ -155,6 +156,7 @@ class ResponsiveDrawer extends React.Component {
                     <Route exact path='/dashboard' component={Overview} />
                     <Route exact path='/dashboard/settings' component={Settings} />
                     <Route exact path='/dashboard/statistics' component={Statistics} />
+                    <Route exact path='/dashboard/TestCards' component={TestCards} />
                     <Route path='/dashboard/view/:id' component={Db} />                    
                 </main>
             </div>
