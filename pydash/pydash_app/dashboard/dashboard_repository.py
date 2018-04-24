@@ -49,6 +49,15 @@ def add(dashboard):
         raise
 
 
+def delete(dashboard):
+    try:
+        database_root().dashboards.remove(dashboard)
+        transaction.commit()
+    except KeyError:
+        transaction.abort()
+        raise
+
+
 def update(dashboard):
     try:
         database_root().dashboards.update_item(dashboard)

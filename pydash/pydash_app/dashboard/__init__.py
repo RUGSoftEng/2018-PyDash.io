@@ -6,6 +6,20 @@ from .dashboard import Dashboard
 import pydash_app.dashboard.dashboard_repository
 
 
+def add_to_repository(dashboard):
+    try:
+        dashboard_repository.add(dashboard)
+    except KeyError:
+        raise
+
+
+def remove_from_repository(dashboard):
+    try:
+        dashboard_repository.delete(dashboard)
+    except KeyError:
+        raise
+
+
 def find(dashboard_id):
     """
     Returns a single Dashboard-entity with the given UUID or None if it could not be found.
