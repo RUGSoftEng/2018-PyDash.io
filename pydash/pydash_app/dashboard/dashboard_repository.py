@@ -26,30 +26,10 @@ def find(dashboard_id):
     # Ensure that this is also callable with strings or integers:
     dashboard_id = uuid.UUID(dashboard_id)
     print(f"Starting to look for dashboard {dashboard_id}")
-    # pydash_app.impl.database.initialize_db_connection()
 
     try:
-        # from ZODB import DB
-        print("1")
-        # _client = ZEO.client(8090)
-        # print("2")
-        # _client.wait_timeout = 1
-        # print("3")
-        # _db = DB(_client)
-        # print("4")
-        # _connection = _db.open()
-        # import ZEO
-        # _connection = ZEO.connection(8091)
-        # print("5")
-        # database_root = _connection.root
-        # print("6")
-        # print(f"Database root: {database_root}")
-        # print(f"Database dashboards: {database_root.dashboards}")
-
         res = database_root().dashboards['id', dashboard_id]
-
         print(f"FOUND DASHBOARD in find_dashboard: {res}")
-        # _connection.close()
         return res
     except Exception as e:
         print(f"EXCEPTION: {e}")

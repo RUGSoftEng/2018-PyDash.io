@@ -52,6 +52,11 @@ def update_dashboard_fetching_interval(dashboard, interval=timedelta(hours=1), s
     """
     _add_dashboard_to_fetch_from(dashboard, interval, scheduler)
 
+def schedule_periodic_dashboard_fetching(interval=timedelta(hours=1), scheduler=pt.default_task_scheduler):
+    for dashboard in pydash_app.dashboard.dashboard_repository.all():
+        print(f'Creating periodic task for {dashboard}')
+        _add_dashboard_to_fetch_from(dashboard=dashboard, interval=timedelta(seconds=5))
+
 
 def _add_dashboard_to_fetch_from(dashboard, interval=timedelta(hours=1), scheduler=pt.default_task_scheduler):
     """
