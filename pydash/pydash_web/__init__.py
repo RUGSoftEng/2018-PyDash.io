@@ -7,7 +7,9 @@ Initializes a Flask web application, and loads the relevant configuration settin
 from flask import Flask
 from flask_login import LoginManager
 from flask_cors import CORS
-from pydash_web.blueprint import bp as pydash_web_bp
+
+from pydash_web.api import api as api_blueprint
+from pydash_web.static import static as static_blueprint
 
 from config import Config
 
@@ -16,12 +18,16 @@ import pydash_app.user
 import pydash_app.dashboard
 
 
-flask_webapp = Flask(__name__, static_folder="../../pydash-front/build", static_url_path="")
+flask_webapp = Flask(__name__)
 flask_webapp.config.from_object(Config)
-login_manager = LoginManager(flask_webapp)
-flask_webapp.register_blueprint(pydash_web_bp)
+
 flask_webapp.config['CORS_HEADERS'] = 'Content-Type'
 cors = CORS(flask_webapp, resources={r"/api/*": {"origins": "*"}}, allow_headers=['Content-Type'], supports_credentials=True) # Only keep this during development!
+
+flask_webapp.register_blueprint(api_blueprint)
+flask_webapp.register_blueprint(static_blueprint)
+
+login_manager = LoginManager(flask_webapp)
 
 
 @login_manager.user_loader
