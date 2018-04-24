@@ -1,3 +1,4 @@
+import transaction
 from functools import partial
 from datetime import datetime, timedelta, timezone
 
@@ -25,12 +26,15 @@ def initialize_dashboard_fetching(dashboard, interval=timedelta(hours=1), schedu
      Defaults to the default TaskScheduler provided in the pydash_app.impl.periodic_tasks package.
     """
 
-    def initialize_dashboard(dashboard):
+    @transaction.manager.run
+    def initialize_dashboard(dashboard_id):
+        dashboard = find_dashboard(dashboard_id)
         initialize_endpoints(dashboard)
         initialize_endpoint_calls(dashboard)
+        print(f"FINISHED DASHBOARD TASK FOR {dashboard}")
 
     pt.add_background_task(name=_dashboard_init_task_name(dashboard),
-                           task=partial(initialize_dashboard, dashboard),
+                           task=partial(initialize_dashboard, dashboard.id),
                            scheduler=scheduler
                            )
 
@@ -107,8 +111,8 @@ def initialize_endpoints(dashboard):
 
     for endpoint in endpoints:
         dashboard.add_endpoint(endpoint)
+        update_dashboard(dashboard)
 
-    update_dashboard(dashboard)
 
 
 def _fetch_endpoints(dashboard):
@@ -159,7 +163,6 @@ def initialize_endpoint_calls(dashboard):
 
         start_time = end_time
 
-    update_dashboard(dashboard)
 
 
 def _update_endpoint_calls_task(dashboard_id):
@@ -194,6 +197,7 @@ def update_endpoint_calls(dashboard):
 
     for call in new_calls:
         dashboard.add_endpoint_call(call)
+        update_dashboard(dashboard)
 
     dashboard.last_fetch_time = new_calls[-1].time
     update_dashboard(dashboard)

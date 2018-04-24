@@ -19,7 +19,7 @@ def stop_task_scheduler():
 def schedule_periodic_tasks():
     import datetime  # <- remove this line when custom interval no longer necessary for testing.
     schedule_periodic_dashboard_fetching(
-        interval=datetime.timedelta(seconds=5))
+        interval=datetime.timedelta(seconds=15))
 
 
 def seed_datastructures():

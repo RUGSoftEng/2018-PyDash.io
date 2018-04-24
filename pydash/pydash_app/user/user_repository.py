@@ -20,7 +20,9 @@ from .user import User
 
 
 if not hasattr(database_root(), 'users'):
+    transaction.begin()
     database_root().users = MultiIndexedPersistentCollection({'id', 'name'})
+    transaction.commit()
 
 
 def find(user_id):
@@ -45,6 +47,7 @@ def all():
 
 def add(user):
     try:
+        transaction.begin()
         database_root().users.add(user)
         transaction.commit()
     except KeyError:
@@ -54,6 +57,7 @@ def add(user):
 
 def update(user):
     try:
+        transaction.begin()
         database_root().users.update_item(user)
         transaction.commit()
     except KeyError:
@@ -68,7 +72,9 @@ def seed_users():
     """
 
     # Clear current DB.
+    transaction.begin()
     database_root().users = MultiIndexedPersistentCollection({'id', 'name'})
+    transaction.commit()
 
     # Fill in users.
     _development_users = [

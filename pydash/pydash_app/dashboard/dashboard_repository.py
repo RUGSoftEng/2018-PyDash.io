@@ -19,8 +19,12 @@ import pydash_app.impl.database
 
 
 if not hasattr(database_root(), 'dashboards'):
+    transaction.begin()
     database_root().dashboards = MultiIndexedPersistentCollection({'id'})
+    transaction.commit()
 
+
+print(f"DASHBOARDS: {list(database_root().dashboards.values())}")
 
 def find(dashboard_id):
     # Ensure that this is also callable with strings or integers:
@@ -50,12 +54,13 @@ def add(dashboard):
 
 
 def update(dashboard):
-    try:
-        database_root().dashboards.update_item(dashboard)
-        transaction.commit()
-    except KeyError:
-        transaction.abort()
-        raise
+    # Update item itself:
+    transaction.commit()
+
+    # Update indexes for item:
+    for attempt in transaction.manager.attempts():
+        with attempt:
+            database_root().dashboards.update_item(dashboard)
 
 
 def seed_dashboards():
@@ -73,7 +78,9 @@ def seed_dashboards():
     from datetime import datetime, timedelta
 
     # Clear current Dashboards-DB.
+    transaction.begin()
     database_root().dashboards = MultiIndexedPersistentCollection({'id'})
+    transaction.commit()
 
     # # Fill in dashboards.
     # _dev_dashboard_urls = ['http://pydash.io/', 'http://pystach.io/']
@@ -109,6 +116,10 @@ def seed_dashboards():
         print(f'Initialising dashboard {dashboard}')
         initialize_endpoints(dashboard)
         initialize_endpoint_calls(dashboard)
+
+        print(f'- {len(dashboard.endpoints)} endpoints found')
+        print(f'- {len(dashboard._endpoint_calls)} historical endpoint calls')
+        update(dashboard)
         print(f'Initialized dashboard')
         print(f'- {len(dashboard.endpoints)} endpoints found')
         print(f'- {len(dashboard._endpoint_calls)} historical endpoint calls')
