@@ -25,17 +25,16 @@ cors = CORS(flask_webapp, resources={r"/api/*": {"origins": "*"}}, allow_headers
 
 
 import datetime
-from pydash_app.fetching.dashboard_fetch import start_default_scheduler, _add_dashboard_to_fetch_from
+from pydash_app.impl.periodic_tasks import default_task_scheduler
+from pydash_app.fetching.dashboard_fetch import _add_dashboard_to_fetch_from, _remove_dashboard_to_fetch_from
 
 def schedule_periodic_tasks():
-    print("TEST running app")
-    start_default_scheduler()
-
     for dashboard in pydash_app.dashboard.dashboard_repository.all():
         print(f'Creating periodic task for {dashboard}')
-        _add_dashboard_to_fetch_from(dashboard=dashboard, interval=datetime.timedelta(seconds=1))
+        _add_dashboard_to_fetch_from(dashboard=dashboard, interval=datetime.timedelta(seconds=5))
 
 schedule_periodic_tasks()
+default_task_scheduler.start()
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -51,5 +50,7 @@ def load_user(user_id):
 @flask_webapp.cli.command('seed', with_appcontext=False)
 def seed_command():
     """Initializes our datastore with some preliminary values"""
+    default_task_scheduler.stop() # Ensure no periodic tasks with old datastructures are run
+
     pydash_app.user.user_repository.seed_users()
     pydash_app.dashboard.dashboard_repository.seed_dashboards()

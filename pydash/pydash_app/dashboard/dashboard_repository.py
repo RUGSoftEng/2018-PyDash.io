@@ -51,8 +51,8 @@ def find(dashboard_id):
         print(f"FOUND DASHBOARD in find_dashboard: {res}")
         # _connection.close()
         return res
-    except Exception(e):
-        print("EXCEPTION: {e}")
+    except Exception as e:
+        print(f"EXCEPTION: {e}")
         raise
 
 
