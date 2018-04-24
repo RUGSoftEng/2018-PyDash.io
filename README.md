@@ -15,7 +15,7 @@ Push to this branch as soon as you've implemented a feature.
 2. Setup your virtual environment using `./start_pipenv.sh`.
 3. Make sure you have the latest versions of the dependencies using `pipenv install`.
 3. Start up the database using the `./start_database.sh` shell-script.
-4. In another tab (or after running above script in the background using `&`), run `flask run` to start up the web application on port 5000.
+4. In another tab (or after running above script in the background using `&`), run `flask run --no-reload` to start up the web application on port 5000.
 
 If you get errors stating that some attribute of `database_root` does not exist, you might need to run `flask seed` beforehand, to
 ensure that the database is properly initialized and filled with some example data.

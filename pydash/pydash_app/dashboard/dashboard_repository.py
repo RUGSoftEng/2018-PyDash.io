@@ -15,26 +15,34 @@ import uuid
 import BTrees.OOBTree
 import transaction
 from ..impl.database import database_root, MultiIndexedPersistentCollection
+import pydash_app.impl.database
 
 
-if not hasattr(database_root, 'dashboards'):
-    database_root.dashboards = MultiIndexedPersistentCollection({'id'})
+if not hasattr(database_root(), 'dashboards'):
+    database_root().dashboards = MultiIndexedPersistentCollection({'id'})
 
 
 def find(dashboard_id):
     # Ensure that this is also callable with strings or integers:
     dashboard_id = uuid.UUID(dashboard_id)
+    print(f"Starting to look for dashboard {dashboard_id}")
 
-    return database_root.dashboards['id', dashboard_id]
+    try:
+        res = database_root().dashboards['id', dashboard_id]
+        print(f"FOUND DASHBOARD in find_dashboard: {res}")
+        return res
+    except Exception as e:
+        print(f"EXCEPTION: {e}")
+        raise
 
 
 def all():
-    return database_root.dashboards.values()
+    return database_root().dashboards.values()
 
 
 def add(dashboard):
     try:
-        database_root.dashboards.add(dashboard)
+        database_root().dashboards.add(dashboard)
         transaction.commit()
     except KeyError:
         transaction.abort()
@@ -43,7 +51,7 @@ def add(dashboard):
 
 def update(dashboard):
     try:
-        database_root.dashboards.update_item(dashboard)
+        database_root().dashboards.update_item(dashboard)
         transaction.commit()
     except KeyError:
         transaction.abort()
@@ -65,7 +73,7 @@ def seed_dashboards():
     from datetime import datetime, timedelta
 
     # Clear current Dashboards-DB.
-    database_root.dashboards = MultiIndexedPersistentCollection({'id'})
+    database_root().dashboards = MultiIndexedPersistentCollection({'id'})
 
     # # Fill in dashboards.
     # _dev_dashboard_urls = ['http://pydash.io/', 'http://pystach.io/']
@@ -91,7 +99,8 @@ def seed_dashboards():
 
     # TEST
     from pydash_app.fetching.dashboard_fetch import initialize_endpoints, initialize_endpoint_calls
-    for user in user_repository.all():
+    #for user in user_repository.all():
+    for user in [user_repository.find_by_name('W-M'), user_repository.find_by_name('Koen')]:
         dashboard = Dashboard("http://136.243.248.188:9001/dashboard",
                               "cc83733cb0af8b884ff6577086b87909",
                               user.get_id())

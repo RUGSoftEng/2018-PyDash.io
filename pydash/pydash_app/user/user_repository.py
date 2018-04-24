@@ -19,15 +19,15 @@ from ..impl.database import database_root, MultiIndexedPersistentCollection
 from .user import User
 
 
-if not hasattr(database_root, 'users'):
-    database_root.users = MultiIndexedPersistentCollection({'id', 'name'})
+if not hasattr(database_root(), 'users'):
+    database_root().users = MultiIndexedPersistentCollection({'id', 'name'})
 
 
 def find(user_id):
     # Ensure that also callable with strings or integers:
     user_id = uuid.UUID(user_id)
 
-    return database_root.users['id', user_id]
+    return database_root().users['id', user_id]
 
 
 def find_by_name(name):
@@ -36,16 +36,16 @@ def find_by_name(name):
 
     name -- Name of the user we hope to find.
     """
-    return database_root.users.get('name', name, default=None)
+    return database_root().users.get('name', name, default=None)
 
 
 def all():
-    return database_root.users.values()
+    return database_root().users.values()
 
 
 def add(user):
     try:
-        database_root.users.add(user)
+        database_root().users.add(user)
         transaction.commit()
     except KeyError:
         transaction.abort()
@@ -54,7 +54,7 @@ def add(user):
 
 def update(user):
     try:
-        database_root.users.update_item(user)
+        database_root().users.update_item(user)
         transaction.commit()
     except KeyError:
         transaction.abort()
@@ -68,7 +68,7 @@ def seed_users():
     """
 
     # Clear current DB.
-    database_root.users = MultiIndexedPersistentCollection({'id', 'name'})
+    database_root().users = MultiIndexedPersistentCollection({'id', 'name'})
 
     # Fill in users.
     _development_users = [

@@ -93,5 +93,4 @@ def _decode_jwt(payload, token):
     :return: A dict containing the data from the payload
     """
     message = jwt.decode(payload, token, algorithms=['HS256'])
-    print(message['data'])
     return json.loads(message['data'])

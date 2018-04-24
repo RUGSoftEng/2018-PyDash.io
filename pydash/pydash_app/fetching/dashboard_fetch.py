@@ -1,6 +1,7 @@
 from functools import partial
 from datetime import datetime, timedelta, timezone
 
+import pydash_app.impl.database
 from pydash_app.impl.fetch import get_monitor_rules, get_data, get_details
 from pydash_app.dashboard.endpoint import Endpoint
 from pydash_app.dashboard.endpoint_call import EndpointCall
@@ -50,6 +51,11 @@ def update_dashboard_fetching_interval(dashboard, interval=timedelta(hours=1), s
      remote endpoints nor seeding it with historic data.
     """
     _add_dashboard_to_fetch_from(dashboard, interval, scheduler)
+
+def schedule_periodic_dashboard_fetching(interval=timedelta(hours=1), scheduler=pt.default_task_scheduler):
+    for dashboard in pydash_app.dashboard.dashboard_repository.all():
+        print(f'Creating periodic task for {dashboard}')
+        _add_dashboard_to_fetch_from(dashboard=dashboard, interval=timedelta(seconds=5))
 
 
 def _add_dashboard_to_fetch_from(dashboard, interval=timedelta(hours=1), scheduler=pt.default_task_scheduler):
@@ -161,8 +167,13 @@ def _update_endpoint_calls_task(dashboard_id):
     Function to be used as a periodic task to update endpoints.
     :param dashboard_id: The id of the dashboard to update.
     """
+    print("update endpoint calls task starting...")
+
+    # pydash_app.impl.database.initialize_db_connection()
     dashboard = find_dashboard(dashboard_id)
+    print(f"FOUND DASHBOARD {dashboard}")
     update_endpoint_calls(dashboard)
+    print("update endpoint calls task ending...")
 
 
 def update_endpoint_calls(dashboard):
@@ -170,11 +181,13 @@ def update_endpoint_calls(dashboard):
     Retrieve the latest endpoint calls of the given dashboard and store them in the database.
     :param dashboard: The dashboard for which to update endpoint calls.
     """
+    print(f"Updating endpoint calls for dashboard: {dashboard}")
 
     if dashboard.last_fetch_time is None:
         return
 
     new_calls = _fetch_endpoint_calls(dashboard, time_from=dashboard.last_fetch_time)
+    print(f"New endpoint calls: {new_calls}")
 
     if new_calls is None:
         return
@@ -184,6 +197,7 @@ def update_endpoint_calls(dashboard):
 
     dashboard.last_fetch_time = new_calls[-1].time
     update_dashboard(dashboard)
+    print(f"Saved to database: dashboard {dashboard}")
 
 
 def _fetch_endpoint_calls(dashboard, time_from=None, time_to=None):

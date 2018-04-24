@@ -21,6 +21,14 @@ def find(user_id):
     user_id- UUID of the user we hope to find."""
     return user_repository.find(user_id)
 
+def maybe_find_user(user_id):
+    """
+    Returns the User entity, or `None` if it does not exist.
+    """
+    try:
+        return pydash_app.user.find(user_id)
+    except KeyError:
+        return None
 
 def find_by_name(name):
     """
