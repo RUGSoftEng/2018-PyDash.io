@@ -5,6 +5,8 @@ import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import SettingsIcon from 'material-ui-icons/Settings';
 import HomeIcon from 'material-ui-icons/Home';
 
+
+
 import Logout from './Logout'
 
 export const mailFolderListItems = (

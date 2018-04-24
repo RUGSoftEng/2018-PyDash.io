@@ -4,7 +4,11 @@ import Grid from 'material-ui/Grid';
 import DashTile from './DashTile';
 import { withStyles } from 'material-ui/styles';
 import axios from 'axios';
-
+import Card from 'material-ui/Card'
+import {CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import CreateIcon from 'material-ui-icons/Create';
+import { NavLink } from 'react-router-dom'
+import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -61,6 +65,16 @@ class DashTileGrid extends Component {
         return(
             <Grid container spacing={24} className={classes.root}>
 
+            <Card>
+              <CardActions>
+              <ListItem button component={NavLink} to={'/dashboard/settings'}>
+                <ListItemIcon>
+                    <CreateIcon />
+                </ListItemIcon>
+            </ListItem>
+                </CardActions>
+              Hola
+              </Card>
                 {/* For each found dashboard for username */}
                 {tiles}
                     

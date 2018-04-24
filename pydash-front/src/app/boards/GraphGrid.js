@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import Grid from 'material-ui/Grid';
+import Card from 'material-ui/Card'
 import { withStyles } from 'material-ui/styles';
 import axios from 'axios';
 import DashboardVisitsGraph from './DashboardVisitsGraph';
-import Card from 'material-ui/Card';
-
+// import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+// import CreateIcon from 'material-ui-icons/Create';
+// import { NavLink } from 'react-router-dom'
 // Transforms a hashmap of key-value pairs into an array of {x: key, y: value} objects.
 // TODO move to a helper JS file.
 function dict_to_xy_arr(dict){
@@ -65,12 +67,15 @@ class GraphGrid extends Component {
       <Grid container spacing={24} className={classes.root}>
         <Grid item xs={6}>
           <Card>
+            {/* <CardActions button component={NavLink} to={'/dashboard/settings'}>
+              <CreateIcon/>
+            </CardActions> */}
             <DashboardVisitsGraph data={this.state.visits_per_day} title="Visits per day:" tooltip_title="No. visits: "/>
           </Card>
         </Grid>
         <Grid item xs={6}>
           <Card>
-            <DashboardVisitsGraph data={this.state.unique_visitors_per_day} title="Unique visitors per day" tooltip_title="No. unique visits: "/>
+            <DashboardVisitsGraph data={this.state.unique_visitors_per_day} title="Unique per day" tooltip_title="No. unique visits: "/>
           </Card>
         </Grid>
       </Grid>
