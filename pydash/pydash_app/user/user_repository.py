@@ -53,14 +53,12 @@ def add(user):
 
 
 def update(user):
-    for attempt in transaction.manager.attempts():
-        with attempt:
-            try:
-                database_root().users.update_item(user)
-                transaction.commit()
-            except KeyError:
-                transaction.abort()
-                raise
+    try:
+        database_root().users.update_item(user)
+        transaction.commit()
+    except KeyError:
+        transaction.abort()
+        raise
 
 
 def seed_users():
