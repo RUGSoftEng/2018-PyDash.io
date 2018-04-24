@@ -8,10 +8,24 @@ import pydash_app.user.user_repository
 
 def add_to_repository(user):
     """
-    Adds the given User-entity to the user_repository.
+    Adds the given User-entity to the user_repository. Raises a KeyError if the user is already in the repository.
     :param user: The User-entity in question.
     """
-    user_repository.add(user)
+    try:
+        user_repository.add(user)
+    except KeyError:
+        raise
+
+
+def remove_from_repository(user):
+    """
+    Removes the given User-entity from the user_repository. Reises a KeyError if the user is not in the repository.
+    :param user: The user-entity in question.
+    """
+    try:
+        user_repository.delete(user)
+    except KeyError:
+        raise
 
 
 def find(user_id):
@@ -21,6 +35,7 @@ def find(user_id):
     user_id- UUID of the user we hope to find."""
     return user_repository.find(user_id)
 
+
 def maybe_find_user(user_id):
     """
     Returns the User entity, or `None` if it does not exist.
@@ -29,6 +44,7 @@ def maybe_find_user(user_id):
         return pydash_app.user.find(user_id)
     except KeyError:
         return None
+
 
 def find_by_name(name):
     """

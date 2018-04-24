@@ -52,6 +52,15 @@ def add(user):
         raise
 
 
+def delete(user):
+    try:
+        database_root().users.remove(user)
+        transaction.commit()
+    except KeyError:
+        transaction.abort()
+        raise
+
+
 def update(user):
     try:
         database_root().users.update_item(user)
