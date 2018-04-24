@@ -6,6 +6,14 @@ from .user import User
 import pydash_app.user.user_repository
 
 
+def add_to_repository(user):
+    """
+    Adds the given User-entity to the user_repository.
+    :param user: The User-entity in question.
+    """
+    user_repository.add(user)
+
+
 def find(user_id):
     """
     Returns a single User-entity with the given UUID or None if it could not be found.
