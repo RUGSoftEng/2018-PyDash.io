@@ -15,26 +15,39 @@ import pydash_app.impl.periodic_tasks as periodic_tasks
 from pydash_app.impl.database import database_connection
 
 
-# def start_default_scheduler():
-#     periodic_tasks.start_default_scheduler()
-
 def schedule_all_periodic_dashboards_tasks(interval=timedelta(hours=1), scheduler=periodic_tasks.default_task_scheduler):
+    """
+    Sets up all tasks that should be run periodically for each of the dashboards.
+    (For now, that is only the EndpointCall fetching task.)
+
+    """
     for dashboard in pydash_app.dashboard.dashboard_repository.all():
-        schedule_periodic_dashboard_fetching(dashboard, interval=interval, scheduler=scheduler)
+        if dashboard.last_fetch_time is None:
+            schedule_historic_dashboard_fetching(dashboard, scheduler=scheduler)
+        else:
+            schedule_periodic_dashboard_fetching(dashboard, interval=interval, scheduler=scheduler)
+
 
 def schedule_periodic_dashboard_fetching(dashboard, interval=timedelta(hours=1), scheduler=periodic_tasks.default_task_scheduler):
-        print(f'Creating periodic fetching task for {dashboard}')
-        periodic_tasks.add_periodic_task(
-            name=("dashboard", dashboard.id, "fetch"),
-            task=partial(fetch_new_dashboard_info, dashboard.id),
-            interval=interval,
-            scheduler=scheduler
-        )
+    """
+    Schedules the periodic EndpointCall fetching task for this dashboard.
+    """
+    print(f'Creating periodic fetching task for {dashboard}')
+    periodic_tasks.add_periodic_task(
+        name=("dashboard", dashboard.id, "fetch"),
+        task=partial(fetch_and_update_new_dashboard_info, dashboard.id),
+        interval=interval,
+        scheduler=scheduler
+    )
 
 
 def schedule_historic_dashboard_fetching(dashboard, scheduler=periodic_tasks.default_task_scheduler):
+    """
+    Schedules the fetching of historic EndpointCall information as a background task.
+    The periodic fetching of new EndpointCall information is scheduled as soon as this task completes.
+    """
     def task(dashboard_id):
-        fetch_historic_dashboard_info(dashboard_id)
+        fetch_and_update_historic_dashboard_info(dashboard_id)
         schedule_periodic_dashboard_fetching(dashboard_id)
 
     periodic_tasks.add_background_task(
@@ -45,7 +58,10 @@ def schedule_historic_dashboard_fetching(dashboard, scheduler=periodic_tasks.def
 
 
 
-def fetch_new_dashboard_info(dashboard_id):
+def fetch_and_update_new_dashboard_info(dashboard_id):
+    """
+    Updates the dashboard with the new EndpointCall information that is fetched from the Dashboard's remote location.
+    """
     # Ensure we have latest ZODB information; prevents transaction conflicts between tasks:
     database_connection().sync()
 
@@ -64,9 +80,13 @@ def fetch_new_dashboard_info(dashboard_id):
     print(f"Dashboard {dashboard_id} updated.")
 
 
-def fetch_historic_dashboard_info(dashboard_id):
+def fetch_and_update_historic_dashboard_info(dashboard_id):
+    """
+    Updates the dashboard with the historic EndpointCall information that is fetched from the Dashboard's remote location.
+    """
     # Ensure we have latest ZODB information; prevents transaction conflicts between tasks:
     database_connection().sync()
+
     dashboard = dashboard_repository.find(dashboard_id)
     print("INSIDE INITIAL DASHBOARD FETCHING FUNCTION")
     fetch_and_add_endpoints(dashboard)
@@ -81,87 +101,6 @@ def fetch_historic_dashboard_info(dashboard_id):
     print(f'- {len(dashboard._endpoint_calls)} historical endpoint calls')
 
 
-# def initialize_dashboard_fetching(dashboard, interval=timedelta(hours=1), scheduler=periodic_tasks.default_task_scheduler):
-#     """
-#     Initialize a dashboard from its remote endpoints and add it to the scheduler, with the given interval.
-#     This also fetches and stores all historical data up to this point in time.
-#     :param dashboard: The Dashboard to initialize.
-#     :param interval: The interval at which the endpoints should be fetched. This should be a datetime.timedelta object.
-#      Defaults to 1 hour.
-#     :param scheduler: The scheduler to add the fetch calls to.
-#      Defaults to the default TaskScheduler provided in the pydash_app.impl.periodic_tasks package.
-#     """
-
-#     def initialize_dashboard(dashboard_id):
-#         dashboard = find_dashboard(dashboard_id)
-#         initialize_endpoints(dashboard)
-#         initialize_endpoint_calls(dashboard)
-#         print(f"FINISHED DASHBOARD TASK FOR {dashboard}")
-
-#     periodic_tasks.add_background_task(name=_dashboard_init_task_name(dashboard),
-#                            task=partial(initialize_dashboard, dashboard.id),
-#                            scheduler=scheduler
-#                            )
-
-#     _add_dashboard_to_fetch_from(dashboard, interval, scheduler)
-
-
-# def update_dashboard_fetching_interval(dashboard, interval=timedelta(hours=1), scheduler=periodic_tasks.default_task_scheduler):
-#     """
-#     Update the interval of the fetching of a dashboard w.r.t the scheduler, with the given interval.
-#     :param dashboard: The Dashboard in question.
-#     :param interval: The interval at which the endpoints should be fetched. This should be a datetime.timedelta object.
-#      Defaults to 1 hour.
-#     :param scheduler: The scheduler to update the interval of the fetching of.
-#      Defaults to the default TaskScheduler provided in the pydash_app.impl.periodic_tasks package.
-
-#     NOTE: If the fetching of the dashboard has not yet been registered with the given scheduler,
-#      this method will simply add the fetching of the dashboard data to the scheduler without initialising it with
-#      remote endpoints nor seeding it with historic data.
-#     """
-#     _add_dashboard_to_fetch_from(dashboard, interval, scheduler)
-
-# def schedule_periodic_dashboard_fetching(interval=timedelta(hours=1), scheduler=periodic_tasks.default_task_scheduler):
-#     for dashboard in pydash_app.dashboard.dashboard_repository.all():
-#         print(f'Creating periodic task for {dashboard}')
-#         _add_dashboard_to_fetch_from(dashboard=dashboard, interval=timedelta(seconds=5))
-
-
-# def _add_dashboard_to_fetch_from(dashboard, interval=timedelta(hours=1), scheduler=periodic_tasks.default_task_scheduler):
-#     """
-#     Adds the fetching of data from `endpoint` of `dashboard` to the given scheduler.
-#     :param dashboard: The Dashboard this Endpoint belongs to.
-#     :param interval: The datetime.timedelta object indicating the interval of the fetching.
-#      Defaults to 1 hour.
-#     :param scheduler: The TaskScheduler we want to add this Endpoint-fetching to.
-#      Defaults to the default scheduler that is provided in the pydash_app.impl.periodic_tasks package.
-#     """
-
-#     periodic_tasks.add_periodic_task(name=_dashboard_fetch_task_name(dashboard),
-#                          interval=interval,
-#                          task=partial(_update_endpoint_calls_task, str(dashboard.id)),
-#                          scheduler=scheduler
-#                          )
-
-
-# def _remove_dashboard_to_fetch_from(dashboard, scheduler=periodic_tasks.default_task_scheduler):
-#     """
-#     Removes an endpoint from the scheduler for that specific dashboard.
-#     :param dashboard: The Dashboard the endpoint belongs to.
-#     :param scheduler: The TaskScheduler to remove it from.
-#      Defaults to the default scheduler that is provided in the pydash_app.impl.periodic_tasks package.
-#     """
-#     periodic_tasks.remove_task(name=_dashboard_fetch_task_name(dashboard), scheduler=scheduler)
-
-
-# def _dashboard_fetch_task_name(dashboard):
-#     return f'fetch_{dashboard.id}'
-
-
-# def _dashboard_init_task_name(dashboard):
-#     return f'init_{dashboard.id}'
-
-
 def fetch_and_add_endpoints(dashboard):
     """
     For a given dashboard, initialize it with the endpoints it has registered.
@@ -171,12 +110,8 @@ def fetch_and_add_endpoints(dashboard):
 
     endpoints = _fetch_endpoints(dashboard)
 
-    if endpoints is None:
-        return None
-
     for endpoint in endpoints:
         dashboard.add_endpoint(endpoint)
-        update_dashboard(dashboard)
 
 
 
@@ -190,20 +125,20 @@ def _fetch_endpoints(dashboard):
     monitor_rules = get_monitor_rules(dashboard.url, dashboard.token)
 
     if monitor_rules is None:
-        return None
+        return []
 
     return [Endpoint(rule['endpoint'], rule['monitor']) for rule in monitor_rules]
 
 
 def fetch_and_add_historic_endpoint_calls(dashboard):
     """
-    For a given dashboard, retrieve all historical endpoint calls and store them in the database.
+    For a given dashboard, retrieve all historical endpoint calls and add them to it.
     :param dashboard: The dashboard to initialize with historical data.
     """
 
-    # Only run this function if no periodic fetching of latest information has happened yet.
+    # Only run this function if no periodic fetching of latest information has happened yet:
     if dashboard.last_fetch_time is not None:
-        return None
+        return
 
     details = get_details(dashboard.url)
     first_request = int(details['first_request'])
@@ -230,37 +165,22 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
         start_time = end_time
 
 
-
-# def _update_endpoint_calls_task(dashboard_id):
-#     """
-#     Function to be used as a periodic task to update endpoints.
-#     :param dashboard_id: The id of the dashboard to update.
-#     """
-#     print("update endpoint calls task starting...")
-
-#     # pydash_app.impl.database.initialize_db_connection()
-#     dashboard = find_dashboard(dashboard_id)
-#     print(f"FOUND DASHBOARD {dashboard}")
-#     update_endpoint_calls(dashboard)
-#     print("update endpoint calls task ending...")
-
-
 def fetch_and_add_endpoint_calls(dashboard):
     """
-    Retrieve the latest endpoint calls of the given dashboard and store them in the database.
+    Retrieve the latest endpoint calls of the given dashboard and add them to it.
     :param dashboard: The dashboard for which to update endpoint calls.
     """
     print(f"Updating endpoint calls for dashboard: {dashboard}")
 
     # Only run this function if historic fetching has happened.
     if dashboard.last_fetch_time is None:
-        return None
+        return
 
     new_calls = _fetch_endpoint_calls(dashboard, time_from=dashboard.last_fetch_time)
     print(f"New endpoint calls: {new_calls}")
 
-    if new_calls is None:
-        return None
+    if new_calls is []:
+        return []
 
     for call in new_calls:
         dashboard.add_endpoint_call(call)
@@ -281,7 +201,7 @@ def _fetch_endpoint_calls(dashboard, time_from=None, time_to=None):
     endpoint_requests = get_data(dashboard.url, dashboard.token, time_from, time_to)
 
     if endpoint_requests is None:
-        return None
+        return []
 
     endpoint_calls = []
     for request in endpoint_requests:
