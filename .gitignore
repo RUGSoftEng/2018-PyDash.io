@@ -113,3 +113,4 @@ ENV/
 .vscode
 #Directories
 /pydash/logs
+/pydash/.pytest_cache
