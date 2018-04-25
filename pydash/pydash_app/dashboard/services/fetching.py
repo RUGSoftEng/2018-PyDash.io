@@ -2,11 +2,11 @@ from functools import partial
 from datetime import datetime, timedelta, timezone
 
 import pydash_app.impl.database as database
-import pydash_app.flask_monitoring_dashboard_client as flask_monitoring_dashboard_client
+import flask_monitoring_dashboard_client
 from pydash_app.dashboard.endpoint import Endpoint
 from pydash_app.dashboard.endpoint_call import EndpointCall
 import pydash_app.dashboard.repository as dashboard_repository
-import pydash_app.impl.periodic_tasks as periodic_tasks
+import periodic_tasks
 
 
 def schedule_all_periodic_dashboards_tasks(

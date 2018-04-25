@@ -2,7 +2,7 @@
 The `pydash_app` package contains all business domain logic of the PyDash application: Everything that is not part of rendering a set of webpages.
 """
 
-import pydash_app.impl.periodic_tasks as periodic_tasks
+import periodic_tasks
 
 import pydash_app.user.services.seeding
 import pydash_app.user as user
