@@ -13,6 +13,23 @@ from .pqdict_iter_upto_priority import pqdict_iter_upto_priority
 from .queue_nonblocking_iter import queue_nonblocking_iter
 
 class _Task:
+    """
+    A task that can be run using the TaskScheduler.
+
+    Usually you'd want to use one of the more concrete instances of this class.
+
+    >>> def awesome_fun():
+    ...   print("Awesome!")
+    >>> task = _Task("mytask", awesome_fun)
+
+    >>>
+    >>> task = _Task("error_task", 10)
+    Traceback (most recent call last):
+      ...
+    ValueError
+
+    """
+
     def __init__(self, name, target):
         """
         :name: An identifier to find this task again later (and e.g. remove or alter it). Can be any hashable (using a string or a tuple of strings/integers is common.)
@@ -28,15 +45,50 @@ class _Task:
         self.next_run_dt = datetime.datetime.now()
 
     def __call__(self, *args, **kwargs):
+        """
+        It is possible to manually call this task using arguments, but usually the functions do not contain extra arguments
+
+        >>> def awesome_fun(text):
+        ...   print(text)
+        >>> task = _Task("mytask", awesome_fun)
+        >>> task("Awesome!")
+        Awesome!
+
+        """
         self.target(*args, **kwargs)
 
     def __hash__(self):
+        """
+        All tasks are hashed, such that two tasks with the same name are considered equal.
+        This is to ensure that new instances of tasks with the same name replace old instances of these tasks inside the scheduler.
+
+
+        >>> def awesome_fun1():
+        ...   print("foo")
+        >>> def awesome_fun2():
+        ...   print("bar")
+        >>> task = _Task("mytask", awesome_fun1)
+        >>> task2 = _Task("mytask", awesome_fun1)
+        >>> task == task2
+        True
+        >>> hash(task) == hash(task2)
+        True
+        """
         return hash(self.name)
 
     def __eq__(self, other):
         return isinstance(other, _Task) and other.name == self.name
 
     def __repr__(self):
+        """
+        Tasks have a special string representation for easy introspection.
+
+        >>> def awesome_fun():
+        ...   print("Awesome!")
+        >>> task = _Task("mytask", awesome_fun)
+        >>> f"{task}".startswith("<_Task name=mytask")
+        True
+        """
         return f"<{self.__class__.__name__} name={self.name}, target={self.target}, next_run_dt={self.next_run_dt}>"
 
 
