@@ -5,6 +5,7 @@
   "dependencies": {
     "@nivo/line": "^0.33.0",
     "axios": "^0.18.0",
+    "howler": "^2.0.9",
     "lodash-es": "^4.17.8",
     "material-ui": "^1.0.0-beta.36",
     "material-ui-icons": "^1.0.0-beta.36",
@@ -12,7 +13,7 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.1",
+    "@pydash/react-scripts": "^1.3.0",
     "react-vis": "^1.9.2"
   },
   "scripts": {

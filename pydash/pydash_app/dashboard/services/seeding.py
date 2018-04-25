@@ -45,8 +45,8 @@ def seed():
 
     # TEST
     # from pydash_app.fetching.fetching import fetch_and_add_endpoints, fetch_and_add_historic_endpoint_calls
-    #for user in user_repository.all():
-    for user in [user_repository.find_by_name('W-M'), user_repository.find_by_name('Koen')]:
+    # for user in [user_repository.find_by_name('W-M'), user_repository.find_by_name('Koen')]:
+    for user in user_repository.all():
         dashboard = Dashboard("http://136.243.248.188:9001/dashboard",
                               "cc83733cb0af8b884ff6577086b87909",
                               user.get_id())
