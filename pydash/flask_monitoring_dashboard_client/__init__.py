@@ -10,13 +10,13 @@ import requests
 import jwt
 import json
 
-import pydash_app.impl.logger as pylog
+import pydash_logger
 
 DETAILS_ENDPOINT = 0
 RULES_ENDPOINT = 1
 DATA_ENDPOINT = 2
 
-logger = pylog.Logger(__name__)
+logger = pydash_logger.Logger(__name__)
 
 def get_details(dashboard_url):
     """

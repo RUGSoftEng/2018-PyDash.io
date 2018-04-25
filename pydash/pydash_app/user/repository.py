@@ -14,7 +14,7 @@ It handles a subset of the following tasks
 import uuid
 import BTrees.OOBTree
 import transaction
-from ..impl.database import database_root, MultiIndexedPersistentCollection
+from pydash_database import database_root, MultiIndexedPersistentCollection
 
 from .user import User
 

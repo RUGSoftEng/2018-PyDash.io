@@ -14,17 +14,15 @@ It handles a subset of the following tasks
 import uuid
 import BTrees.OOBTree
 import transaction
-from ..impl.database import database_root, MultiIndexedPersistentCollection
-import pydash_app.impl.database
+from pydash_database import database_root, MultiIndexedPersistentCollection
 
 
 if not hasattr(database_root(), 'dashboards'):
+    print("CREATING DASHBOARDS OBJECT")
     transaction.begin()
     database_root().dashboards = MultiIndexedPersistentCollection({'id'})
     transaction.commit()
 
-
-print(f"DASHBOARDS: {list(database_root().dashboards.values())}")
 
 def find(dashboard_id):
     # Ensure that this is also callable with strings or integers:
