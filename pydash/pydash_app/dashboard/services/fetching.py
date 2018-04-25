@@ -62,9 +62,6 @@ def fetch_and_update_new_dashboard_info(dashboard_id):
     """
     Updates the dashboard with the new EndpointCall information that is fetched from the Dashboard's remote location.
     """
-    # Ensure we have latest ZODB information; prevents transaction conflicts between tasks:
-    pydash_database.database_connection().sync()
-
     dashboard = dashboard_repository.find(dashboard_id)
     print("INSIDE FETCH FUNCTION")
     fetch_and_add_endpoint_calls(dashboard)
@@ -84,9 +81,6 @@ def fetch_and_update_historic_dashboard_info(dashboard_id):
     """
     Updates the dashboard with the historic EndpointCall information that is fetched from the Dashboard's remote location.
     """
-    # Ensure we have latest ZODB information; prevents transaction conflicts between tasks:
-    pydash_database.database_connection().sync()
-
     dashboard = dashboard_repository.find(dashboard_id)
     print("INSIDE INITIAL DASHBOARD FETCHING FUNCTION")
     fetch_and_add_endpoints(dashboard)

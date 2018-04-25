@@ -60,6 +60,7 @@ def update(dashboard):
     for attempt in transaction.manager.attempts():
         with attempt:
             database_root().dashboards.update_item(dashboard)
+    transaction.begin()
 
 def clear_all():
     transaction.begin()
