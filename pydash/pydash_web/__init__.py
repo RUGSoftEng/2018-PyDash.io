@@ -31,8 +31,8 @@ pydash_app.schedule_periodic_tasks()
 
 # Don't autostart scheduler in the testing environment.
 print(os.environ)
-# if 'PYTEST_CURRENT_TEST' not in os.environ:
-    # pydash_app.start_task_scheduler()
+if 'TESTING' not in os.environ:
+    pydash_app.start_task_scheduler()
 
 login_manager = LoginManager(flask_webapp)
 @login_manager.user_loader

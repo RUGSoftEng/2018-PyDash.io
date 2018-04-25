@@ -20,16 +20,6 @@ The scheduler will be started by calling the `start()` function. It will stop sc
 This function will also (in most cases) be automatically called when the main process finishes execution.
 
 
-Example code with custom scheduler:
-
-    >>> import periodic_tasks as pt
-    >>> ts = pt.TaskScheduler()
-    >>> import datetime
-    >>> ts.start()
-    >>> ts.add_periodic_task('foo', datetime.timedelta(seconds=1), pt.foo)
-    >>> ts.add_periodic_task('bar', datetime.timedelta(seconds=5), pt.bar)
-
-
 Example code with default scheduler:
 
 
@@ -41,6 +31,16 @@ Example code with default scheduler:
     >>> pt.add_background_task('baz', pt.baz)
     >>> pt.add_periodic_task('bar', datetime.timedelta(seconds=1), pt.bar) # overrides previous `bar` task with new settings
     >>> pt.remove_task('foo')
+
+
+Example code with custom scheduler:
+
+    >>> import periodic_tasks as pt
+    >>> ts = pt.TaskScheduler()
+    >>> import datetime
+    >>> ts.start()
+    >>> ts.add_periodic_task('foo', datetime.timedelta(seconds=1), pt.foo)
+    >>> ts.add_periodic_task('bar', datetime.timedelta(seconds=5), pt.bar)
 """
 
 from .task_scheduler import TaskScheduler

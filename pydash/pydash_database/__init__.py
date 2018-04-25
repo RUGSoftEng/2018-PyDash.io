@@ -8,7 +8,7 @@ from multi_indexed_collection import MultiIndexedCollection
 
 
 def _decide_database_address():
-    if os.environ.get("TEST"):
+    if "TESTING" in os.environ:
         address, stop = ZEO.server() # <- in-memory server that's gone after closing of process.
         return address
     else:

@@ -19,6 +19,7 @@ pqdict = "*"
 pytest = "*"
 pytest-cov = "*"
 pytest-xdist = "*"
+pytest-env = "*"
 
 [requires]
 python_version = "3.6"
