@@ -13,22 +13,11 @@ logger = pylog.Logger(__name__)
 
 
 def delete_user():
-    if not current_user.is_authenticated():  # Note: Will this even happen?
-        result = {'message': 'User was not logged in.'}
-        logger.warning(f'Delete_user failed - {current_user} was not logged in.')
-        return jsonify(result), 401
-
     maybe_user = maybe_find_user(current_user.id)
     if maybe_user is None:
         result = {'message': 'User not found in database.'}
         logger.warning(f'Delete_user failed - {current_user} was not found in the database.')
         return jsonify(result), 500
-
-    for dashboard in dashboards_of_user(current_user.id):
-        try:
-            remove_from_dashboard_repository(dashboard)
-        except KeyError:
-            logger.warning(f'Dashboard {dashboard} from user {maybe_user} has already been removed.')
 
     try:  # In case the database has been updated right in between the previous check.
         remove_from_user_repository(maybe_user)
@@ -37,6 +26,13 @@ def delete_user():
         logger.warning(f'Delete_user failed - {maybe_user} was not found in the database.')
         return jsonify(result), 500
 
+    for dashboard in dashboards_of_user(current_user.id):
+        try:
+            remove_from_dashboard_repository(dashboard)
+        except KeyError:
+            logger.warning(f'Dashboard {dashboard} from user {maybe_user} has already been removed.')
+
     logger.info(f'{current_user} deleted themselves successfully.')
+
     result = {'message': 'User successfully deleted themselves.'}
-    jsonify(result), 200
+    return jsonify(result), 200
