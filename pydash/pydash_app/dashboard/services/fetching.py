@@ -2,17 +2,13 @@ import transaction
 from functools import partial
 from datetime import datetime, timedelta, timezone
 
-import pydash_app.impl.database
-from pydash_app.impl.fetch import get_monitor_rules, get_data, get_details
+import pydash_app.impl.database as database
+import pydash_app.impl.fetch as fetch
 from pydash_app.dashboard.endpoint import Endpoint
 from pydash_app.dashboard.endpoint_call import EndpointCall
-from pydash_app.dashboard.dashboard_repository import find as find_dashboard, update as update_dashboard
-
-import pydash_app.dashboard.dashboard_repository as dashboard_repository
-
+import pydash_app.dashboard.repository as dashboard_repository
 import pydash_app.impl.periodic_tasks as periodic_tasks
 
-from pydash_app.impl.database import database_connection
 
 
 def schedule_all_periodic_dashboards_tasks(interval=timedelta(hours=1), scheduler=periodic_tasks.default_task_scheduler):
@@ -21,7 +17,7 @@ def schedule_all_periodic_dashboards_tasks(interval=timedelta(hours=1), schedule
     (For now, that is only the EndpointCall fetching task.)
 
     """
-    for dashboard in pydash_app.dashboard.dashboard_repository.all():
+    for dashboard in dashboard_repository.all():
         if dashboard.last_fetch_time is None:
             schedule_historic_dashboard_fetching(dashboard, scheduler=scheduler)
         else:
@@ -63,7 +59,7 @@ def fetch_and_update_new_dashboard_info(dashboard_id):
     Updates the dashboard with the new EndpointCall information that is fetched from the Dashboard's remote location.
     """
     # Ensure we have latest ZODB information; prevents transaction conflicts between tasks:
-    database_connection().sync()
+    database.database_connection().sync()
 
     dashboard = dashboard_repository.find(dashboard_id)
     print("INSIDE FETCH FUNCTION")
@@ -85,7 +81,7 @@ def fetch_and_update_historic_dashboard_info(dashboard_id):
     Updates the dashboard with the historic EndpointCall information that is fetched from the Dashboard's remote location.
     """
     # Ensure we have latest ZODB information; prevents transaction conflicts between tasks:
-    database_connection().sync()
+    database.database_connection().sync()
 
     dashboard = dashboard_repository.find(dashboard_id)
     print("INSIDE INITIAL DASHBOARD FETCHING FUNCTION")
@@ -122,7 +118,7 @@ def _fetch_endpoints(dashboard):
     :return: A list of `Endpoint`s for the dashboard.
     """
 
-    monitor_rules = get_monitor_rules(dashboard.url, dashboard.token)
+    monitor_rules = fetch.get_monitor_rules(dashboard.url, dashboard.token)
 
     if monitor_rules is None:
         return []
@@ -140,7 +136,7 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
     if dashboard.last_fetch_time is not None:
         return
 
-    details = get_details(dashboard.url)
+    details = fetch.get_details(dashboard.url)
     first_request = int(details['first_request'])
 
     start_time = datetime.fromtimestamp(first_request, tz=timezone.utc)
@@ -198,7 +194,7 @@ def _fetch_endpoint_calls(dashboard, time_from=None, time_to=None):
     :return: A list of `EndpointCall`s containing the endpoint call data for this dashboard.
     """
 
-    endpoint_requests = get_data(dashboard.url, dashboard.token, time_from, time_to)
+    endpoint_requests = fetch.get_data(dashboard.url, dashboard.token, time_from, time_to)
 
     if endpoint_requests is None:
         return []

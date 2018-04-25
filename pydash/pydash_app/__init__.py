@@ -4,21 +4,22 @@ The `pydash_app` package contains all business domain logic of the PyDash applic
 import pydash_app.user
 import pydash_app.dashboard
 
-from pydash_app.impl.periodic_tasks import default_task_scheduler
-import pydash_app.fetching.dashboard_fetch as dashboard_fetch
+import pydash_app.impl.periodic_tasks as periodic_tasks
+import pydash_app.dashboard as dashboard
+import pydash_app.dashboard.services.fetching
 
 
 def start_task_scheduler():
-    default_task_scheduler.start()
+    periodic_tasks.default_task_scheduler.start()
 
 
 def stop_task_scheduler():
-    default_task_scheduler.stop()
+    periodic_tasks.default_task_scheduler.stop()
 
 
 def schedule_periodic_tasks():
     import datetime  # <- remove this line when custom interval no longer necessary for testing.
-    dashboard_fetch.schedule_all_periodic_dashboards_tasks(
+    dashboard.services.fetching.schedule_all_periodic_dashboards_tasks(
         interval=datetime.timedelta(seconds=1)
     )
 

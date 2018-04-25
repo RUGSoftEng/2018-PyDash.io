@@ -106,8 +106,8 @@ def seed_dashboards():
     #         add(dashboard)
 
     # TEST
-    # from pydash_app.fetching.dashboard_fetch import fetch_and_add_endpoints, fetch_and_add_historic_endpoint_calls
-    import pydash_app.fetching.dashboard_fetch as dashboard_fetch
+    # from pydash_app.fetching.fetching import fetch_and_add_endpoints, fetch_and_add_historic_endpoint_calls
+    import pydash_app.dashboard.services.fetching as fetching
     #for user in user_repository.all():
     for user in [user_repository.find_by_name('W-M'), user_repository.find_by_name('Koen')]:
         dashboard = Dashboard("http://136.243.248.188:9001/dashboard",
@@ -116,9 +116,9 @@ def seed_dashboards():
         print(f'Adding dashboard {dashboard}')
         add(dashboard)
         print(f'Fetching remote info for dashboard {dashboard}.')
-        dashboard_fetch.fetch_historic_dashboard_info(dashboard.id)
-        # dashboard_fetch.fetch_and_add_endpoints(dashboard)
-        # dashboard_fetch.fetch_and_add_historic_endpoint_calls(dashboard)
+        fetching.fetch_historic_dashboard_info(dashboard.id)
+        # fetching.fetch_and_add_endpoints(dashboard)
+        # fetching.fetch_and_add_historic_endpoint_calls(dashboard)
 
         print(f'- {len(dashboard.endpoints)} endpoints found')
         print(f'- {len(dashboard._endpoint_calls)} historical endpoint calls')

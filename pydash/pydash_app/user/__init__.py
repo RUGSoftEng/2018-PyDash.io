@@ -3,7 +3,7 @@ This module is the public interface (available to the web-application pydash_web
 for interacting with Users.
 """
 from .user import User
-import pydash_app.user.user_repository
+import pydash_app.user.repository
 
 
 def add_to_repository(user):
@@ -11,7 +11,7 @@ def add_to_repository(user):
     Adds the given User-entity to the user_repository.
     :param user: The User-entity in question.
     """
-    user_repository.add(user)
+    repository.add(user)
 
 
 def find(user_id):
@@ -26,7 +26,7 @@ def maybe_find_user(user_id):
     Returns the User entity, or `None` if it does not exist.
     """
     try:
-        return pydash_app.user.find(user_id)
+        return find(user_id)
     except KeyError:
         return None
 
@@ -36,7 +36,7 @@ def find_by_name(name):
 
     name -- Name of the user we hope to find.
     """
-    return user_repository.find_by_name(name)
+    return repository.find_by_name(name)
 
 
 def authenticate(name, password):
