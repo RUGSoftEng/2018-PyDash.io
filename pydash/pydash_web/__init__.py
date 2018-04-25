@@ -3,7 +3,7 @@ Entrypoint of `pydash_web`
 
 Initializes a Flask web application, and loads the relevant configuration settings.
 """
-
+import os
 
 from flask import Flask
 from flask_login import LoginManager
@@ -28,7 +28,11 @@ flask_webapp.register_blueprint(api_blueprint)
 flask_webapp.register_blueprint(static_blueprint)
 
 pydash_app.schedule_periodic_tasks()
-pydash_app.start_task_scheduler()
+
+# Don't autostart scheduler in the testing environment.
+print(os.environ)
+# if 'PYTEST_CURRENT_TEST' not in os.environ:
+    # pydash_app.start_task_scheduler()
 
 login_manager = LoginManager(flask_webapp)
 @login_manager.user_loader
