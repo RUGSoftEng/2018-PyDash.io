@@ -31,15 +31,28 @@ class EndpointCall(persistent.Persistent):
         self.ip = ip  # string
 
     def __repr__(self):
+        """
+        Returns a string representation of this EndpointCall, for easy debugging and logging:
+
+            >>> EndpointCall("foo", 0.5, datetime.strptime("2018-04-25 15:29:23", "%Y-%m-%d %H:%M:%S"), "0.1", "None", "127.0.0.1")
+            <EndpointCall
+                endpoint=foo
+                execution_time=0.5
+                time=2018-04-25 15:29:23
+                version=0.1
+                group_by=None
+                ip=127.0.0.1
+            >
+
+        """
         return f'''<{self.__class__.__name__}
-            endpoint={self.endpoint}
-            execution_time={self.execution_time}
-            time={self.time}
-            version={self.version}
-            group_by={self.group_by}
-            ip={self.ip}
-        >
-        '''
+    endpoint={self.endpoint}
+    execution_time={self.execution_time}
+    time={self.time}
+    version={self.version}
+    group_by={self.group_by}
+    ip={self.ip}
+>'''
 
 
     @staticmethod
