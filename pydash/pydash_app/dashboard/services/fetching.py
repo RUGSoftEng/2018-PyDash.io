@@ -47,7 +47,7 @@ def schedule_historic_dashboard_fetching(dashboard, scheduler=periodic_tasks.def
         schedule_periodic_dashboard_fetching(dashboard_id)
 
     periodic_tasks.add_background_task(
-        name=_dashboard_init_task_name(dashboard),
+        name=("dashboard", dashboard.id, "historic_fetching"),
         task=partial(task, dashboard.id),
         scheduler=scheduler
     )

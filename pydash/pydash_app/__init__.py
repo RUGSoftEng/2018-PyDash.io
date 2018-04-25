@@ -1,12 +1,15 @@
 """
 The `pydash_app` package contains all business domain logic of the PyDash application: Everything that is not part of rendering a set of webpages.
 """
-import pydash_app.user
-import pydash_app.dashboard
 
 import pydash_app.impl.periodic_tasks as periodic_tasks
-import pydash_app.dashboard as dashboard
+
+import pydash_app.user.services.seeding
+import pydash_app.user as user
+
 import pydash_app.dashboard.services.fetching
+import pydash_app.dashboard.services.seeding
+import pydash_app.dashboard as dashboard
 
 
 def start_task_scheduler():
@@ -28,5 +31,5 @@ def seed_datastructures():
     # Ensure no periodic tasks with old datastructures are run:
     stop_task_scheduler()
 
-    user.user_repository.seed_users()
-    dashboard.dashboard_repository.seed_dashboards()
+    user.services.seeding.seed()
+    dashboard.services.seeding.seed()

@@ -65,31 +65,7 @@ def update(user):
         transaction.abort()
         raise
 
-
-def seed_users():
-    """
-    Stores some preliminary debug users in the datastore,
-    to be used during development.
-    """
-
-    # Clear current DB.
+def clear_all():
     transaction.begin()
     database_root().users = MultiIndexedPersistentCollection({'id', 'name'})
     transaction.commit()
-
-    # Fill in users.
-    _development_users = [
-        User(name="Alberto", password="alberto"),
-        User(name="Arjan", password="arjan"),
-        User(name="JeroenO", password="jeroeno"),
-        User(name="JeroenL", password="jeroenl"),
-        User(name="Koen", password="koen"),
-        User(name="Lars", password="lars"),
-        User(name="Patrick", password="patrick"),
-        User(name="Tom", password="tom"),
-        User(name="W-M", password="topsecret")
-    ]
-    for user in _development_users:
-        print("Adding user {}".format(user))
-        add(user)
-    print("Seeding of users is done!")
