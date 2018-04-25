@@ -1,3 +1,11 @@
+"""
+Performs the remote requests to the flask-monitoring-dashboard.
+
+The method names in this module 1:1 reflect the names of the flask-monitoring-dashboard API
+(but without the word 'JSON' in them, because conversion from JSON to Python dictionaries/lists
+is one of the thing this module handles for you.)
+"""
+
 import requests
 import jwt
 import json

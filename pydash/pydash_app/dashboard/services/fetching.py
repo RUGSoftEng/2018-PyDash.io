@@ -1,17 +1,17 @@
-import transaction
 from functools import partial
 from datetime import datetime, timedelta, timezone
 
 import pydash_app.impl.database as database
-import pydash_app.impl.fetch as fetch
+import pydash_app.flask_monitoring_dashboard_client as flask_monitoring_dashboard_client
 from pydash_app.dashboard.endpoint import Endpoint
 from pydash_app.dashboard.endpoint_call import EndpointCall
 import pydash_app.dashboard.repository as dashboard_repository
 import pydash_app.impl.periodic_tasks as periodic_tasks
 
 
-
-def schedule_all_periodic_dashboards_tasks(interval=timedelta(hours=1), scheduler=periodic_tasks.default_task_scheduler):
+def schedule_all_periodic_dashboards_tasks(
+        interval=timedelta(hours=1),
+        scheduler=periodic_tasks.default_task_scheduler):
     """
     Sets up all tasks that should be run periodically for each of the dashboards.
     (For now, that is only the EndpointCall fetching task.)
@@ -19,12 +19,17 @@ def schedule_all_periodic_dashboards_tasks(interval=timedelta(hours=1), schedule
     """
     for dashboard in dashboard_repository.all():
         if dashboard.last_fetch_time is None:
-            schedule_historic_dashboard_fetching(dashboard, scheduler=scheduler)
+            schedule_historic_dashboard_fetching(
+                dashboard, scheduler=scheduler)
         else:
-            schedule_periodic_dashboard_fetching(dashboard, interval=interval, scheduler=scheduler)
+            schedule_periodic_dashboard_fetching(
+                dashboard, interval=interval, scheduler=scheduler)
 
 
-def schedule_periodic_dashboard_fetching(dashboard, interval=timedelta(hours=1), scheduler=periodic_tasks.default_task_scheduler):
+def schedule_periodic_dashboard_fetching(
+        dashboard,
+        interval=timedelta(hours=1),
+        scheduler=periodic_tasks.default_task_scheduler):
     """
     Schedules the periodic EndpointCall fetching task for this dashboard.
     """
@@ -33,15 +38,16 @@ def schedule_periodic_dashboard_fetching(dashboard, interval=timedelta(hours=1),
         name=("dashboard", dashboard.id, "fetch"),
         task=partial(fetch_and_update_new_dashboard_info, dashboard.id),
         interval=interval,
-        scheduler=scheduler
-    )
+        scheduler=scheduler)
 
 
-def schedule_historic_dashboard_fetching(dashboard, scheduler=periodic_tasks.default_task_scheduler):
+def schedule_historic_dashboard_fetching(
+        dashboard, scheduler=periodic_tasks.default_task_scheduler):
     """
     Schedules the fetching of historic EndpointCall information as a background task.
     The periodic fetching of new EndpointCall information is scheduled as soon as this task completes.
     """
+
     def task(dashboard_id):
         fetch_and_update_historic_dashboard_info(dashboard_id)
         schedule_periodic_dashboard_fetching(dashboard_id)
@@ -49,9 +55,7 @@ def schedule_historic_dashboard_fetching(dashboard, scheduler=periodic_tasks.def
     periodic_tasks.add_background_task(
         name=("dashboard", dashboard.id, "historic_fetching"),
         task=partial(task, dashboard.id),
-        scheduler=scheduler
-    )
-
+        scheduler=scheduler)
 
 
 def fetch_and_update_new_dashboard_info(dashboard_id):
@@ -110,7 +114,6 @@ def fetch_and_add_endpoints(dashboard):
         dashboard.add_endpoint(endpoint)
 
 
-
 def _fetch_endpoints(dashboard):
     """
     Fetches and returns a list of `Endpoint`s in the given dashboard.
@@ -118,12 +121,15 @@ def _fetch_endpoints(dashboard):
     :return: A list of `Endpoint`s for the dashboard.
     """
 
-    monitor_rules = fetch.get_monitor_rules(dashboard.url, dashboard.token)
+    monitor_rules = flask_monitoring_dashboard_client.get_monitor_rules(
+        dashboard.url, dashboard.token)
 
     if monitor_rules is None:
         return []
 
-    return [Endpoint(rule['endpoint'], rule['monitor']) for rule in monitor_rules]
+    return [
+        Endpoint(rule['endpoint'], rule['monitor']) for rule in monitor_rules
+    ]
 
 
 def fetch_and_add_historic_endpoint_calls(dashboard):
@@ -136,7 +142,7 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
     if dashboard.last_fetch_time is not None:
         return
 
-    details = fetch.get_details(dashboard.url)
+    details = flask_monitoring_dashboard_client.get_details(dashboard.url)
     first_request = int(details['first_request'])
 
     start_time = datetime.fromtimestamp(first_request, tz=timezone.utc)
@@ -172,7 +178,8 @@ def fetch_and_add_endpoint_calls(dashboard):
     if dashboard.last_fetch_time is None:
         return
 
-    new_calls = _fetch_endpoint_calls(dashboard, time_from=dashboard.last_fetch_time)
+    new_calls = _fetch_endpoint_calls(
+        dashboard, time_from=dashboard.last_fetch_time)
     print(f"New endpoint calls: {new_calls}")
 
     if new_calls is []:
@@ -194,7 +201,8 @@ def _fetch_endpoint_calls(dashboard, time_from=None, time_to=None):
     :return: A list of `EndpointCall`s containing the endpoint call data for this dashboard.
     """
 
-    endpoint_requests = fetch.get_data(dashboard.url, dashboard.token, time_from, time_to)
+    endpoint_requests = flask_monitoring_dashboard_client.get_data(
+        dashboard.url, dashboard.token, time_from, time_to)
 
     if endpoint_requests is None:
         return []
@@ -206,14 +214,9 @@ def _fetch_endpoint_calls(dashboard, time_from=None, time_to=None):
         time = datetime.strptime(request['time'], '%Y-%m-%d %H:%M:%S.%f')
         time.replace(tzinfo=timezone.utc)
 
-        call = EndpointCall(
-            request['endpoint'],
-            request['execution_time'],
-            time,
-            request['version'],
-            request['group_by'],
-            request['ip']
-        )
+        call = EndpointCall(request['endpoint'], request['execution_time'],
+                            time, request['version'], request['group_by'],
+                            request['ip'])
         endpoint_calls.append(call)
 
     return endpoint_calls
