@@ -13,6 +13,10 @@ logger = pylog.Logger(__name__)
 
 
 def delete_user():
+    """
+    Deletes the currently logged in user and all dashboards they own.
+    """
+
     maybe_user = maybe_find_user(current_user.id)
     if maybe_user is None:
         result = {'message': 'User not found in database.'}
