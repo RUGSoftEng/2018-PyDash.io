@@ -19,7 +19,7 @@ def add_to_repository(user):
 
 def remove_from_repository(user):
     """
-    Removes the given User-entity from the user_repository. Reises a KeyError if the user is not in the repository.
+    Removes the given User-entity from the user_repository. Raises a KeyError if the user is not in the repository.
     :param user: The user-entity in question.
     """
     try:
