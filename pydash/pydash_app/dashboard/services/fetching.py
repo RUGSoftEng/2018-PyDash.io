@@ -35,7 +35,7 @@ def schedule_periodic_dashboard_fetching(
     """
     print(f'Creating periodic fetching task for {dashboard}')
     periodic_tasks.add_periodic_task(
-        name=("dashboard", dashboard.id, "fetch"),
+        name=("dashboard", dashboard.id, "fetching"),
         task=partial(fetch_and_update_new_dashboard_info, dashboard.id),
         interval=interval,
         scheduler=scheduler)
