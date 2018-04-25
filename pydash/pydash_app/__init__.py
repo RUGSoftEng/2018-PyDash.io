@@ -5,7 +5,7 @@ import pydash_app.user
 import pydash_app.dashboard
 
 from pydash_app.impl.periodic_tasks import default_task_scheduler
-from pydash_app.fetching.dashboard_fetch import schedule_periodic_dashboard_fetching
+import pydash_app.fetching.dashboard_fetch as dashboard_fetch
 
 
 def start_task_scheduler():
@@ -18,8 +18,9 @@ def stop_task_scheduler():
 
 def schedule_periodic_tasks():
     import datetime  # <- remove this line when custom interval no longer necessary for testing.
-    schedule_periodic_dashboard_fetching(
-        interval=datetime.timedelta(seconds=15))
+    dashboard_fetch.schedule_all_periodic_dashboards_tasks(
+        interval=datetime.timedelta(seconds=1)
+    )
 
 
 def seed_datastructures():

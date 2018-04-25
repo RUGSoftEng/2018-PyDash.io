@@ -16,8 +16,21 @@ def _decide_database_address():
 
 
 _database_address = _decide_database_address()
-_database_root = None
+_database_connection = None
 _current_process_id = None
+
+
+
+def database_connection():
+    global _database_connection
+    global _current_process_id
+    if not _database_connection or os.getpid() != _current_process_id:
+        _database_connection = ZEO.connection(_database_address)
+        _current_process_id = os.getpid()
+        print(f"PID {os.getpid()}: Created new DB connection: {_database_connection} connecting to {_database_address}")
+    else:
+        print(f"PID {os.getpid()}: Returning old DB connection {_database_connection}")
+    return _database_connection
 
 def database_root():
     """
@@ -26,17 +39,7 @@ def database_root():
     on each multiprocessing.Process.
     (on all subsequent calls on this process, the connection is re-used.)
     """
-    global _database_root
-    global _current_process_id
-    if not _database_root or os.getpid() != _current_process_id:
-        _connection = ZEO.connection(_database_address)
-        _database_root = _connection.root
-        _current_process_id = os.getpid()
-        print(f"PID {os.getpid()}: Created new DB connection: {_connection} connecting to {_database_address} {_database_root}")
-    else:
-
-        print(f"PID {os.getpid()}: returning old connection {_database_root}")
-    return _database_root
+    return database_connection().root
 
 class MultiIndexedPersistentCollection(MultiIndexedCollection, persistent.Persistent):
     def __init__(self, properties):

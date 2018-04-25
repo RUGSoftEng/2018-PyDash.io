@@ -30,6 +30,18 @@ class EndpointCall(persistent.Persistent):
         self.group_by = group_by  # string
         self.ip = ip  # string
 
+    def __repr__(self):
+        return f'''<{self.__class__.__name__}
+            endpoint={self.endpoint}
+            execution_time={self.execution_time}
+            time={self.time}
+            version={self.version}
+            group_by={self.group_by}
+            ip={self.ip}
+        >
+        '''
+
+
     @staticmethod
     def __check_arg_types(endpoint, execution_time, time, version, group_by, ip):
         if not isinstance(endpoint, str):
