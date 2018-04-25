@@ -31,16 +31,19 @@ Example code with default scheduler:
     >>> pt.add_background_task('baz', pt.baz)
     >>> pt.add_periodic_task('bar', datetime.timedelta(seconds=1), pt.bar) # overrides previous `bar` task with new settings
     >>> pt.remove_task('foo')
+    >>> pt.default_task_scheduler.stop()
 
 
 Example code with custom scheduler:
 
     >>> import periodic_tasks as pt
     >>> ts = pt.TaskScheduler()
-    >>> import datetime
+    >>> import datetime, time
     >>> ts.start()
-    >>> ts.add_periodic_task('foo', datetime.timedelta(seconds=1), pt.foo)
-    >>> ts.add_periodic_task('bar', datetime.timedelta(seconds=5), pt.bar)
+    >>> ts.add_periodic_task('foo', datetime.timedelta(milliseconds=1), pt.foo)
+    >>> ts.add_periodic_task('bar', datetime.timedelta(milliseconds=5), pt.bar)
+    >>> time.sleep(2)
+    >>> ts.stop()
 """
 
 from .task_scheduler import TaskScheduler

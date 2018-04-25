@@ -4,6 +4,8 @@ and a couple of classes that it uses under the hood.
 
 """
 
+import os
+import signal
 import multiprocessing
 import atexit
 import datetime
@@ -11,6 +13,12 @@ from time import sleep
 from pqdict import pqdict
 from .pqdict_iter_upto_priority import pqdict_iter_upto_priority
 from .queue_nonblocking_iter import queue_nonblocking_iter
+
+from pytest_cov.embed import cleanup
+
+# import os
+# if "TESTING" in os.environ:
+#     multiprocessing.Process = threading.Thread
 
 class _Task:
     """
@@ -55,7 +63,9 @@ class _Task:
         Awesome!
 
         """
-        self.target(*args, **kwargs)
+        if "TESTING" in os.environ:
+            signal.signal(signal.SIGTERM, cleanup)
+        return self.target(*args, **kwargs)
 
     def __hash__(self):
         """
@@ -126,6 +136,17 @@ class _PeriodicTask(_Task):
         :target: A function (or other callable) that will perform this task's functionality.
         :interval: A datetime.timedelta representing how frequently to run the given target.
         :run_at_start: If true, runs task right after it was added to the scheduler, rather than only after the first interval has passed.
+
+        It is expected that `interval` is a datetime.timedelta.
+
+        >>> import periodic_tasks as pt
+        >>> def awesome_fun():
+        ...   print("Awesome!")
+        >>> _PeriodicTask("foo", awesome_fun, 42)
+        Traceback (most recent call last):
+           ...
+        ValueError
+
         """
         super().__init__(name, task)
 
@@ -174,7 +195,7 @@ class TaskScheduler:
     This function will also (in most cases) be automatically called when the main process finishes execution.
     """
 
-    def __init__(self, granularity=1.0, pool_settings={}):
+    def __init__(self, granularity=0.1, pool_settings={}):
         """
         :granularity: How often the scheduler should check if a periodic task's timeout has passed, in seconds. Defaults to `1.0`.
         :pool_settings: A dictionary of keyword-arguments to pass to the initialization of the multiprocessing.Pool that will be used to run the tasks on.
@@ -183,6 +204,7 @@ class TaskScheduler:
         self._pool = None
         self._granularity = granularity
         self._tasks_to_be_scheduled = multiprocessing.Queue()
+        self._graceful_shutdown = multiprocessing.Value('i', 0)
         self.pool_settings = pool_settings
 
     def add_periodic_task(self, name, interval, task, run_at_start=False):
@@ -226,6 +248,17 @@ class TaskScheduler:
         Starts the scheduler scheduling loop on a separate process.
 
         Should only be called once per scheduler.
+
+
+        >>> import periodic_tasks as pt
+        >>> ts = pt.TaskScheduler()
+        >>> ts.start()
+        >>> ts.start()
+        Traceback (most recent call last):
+           ...
+        Exception
+
+
         """
         if hasattr(self, '_scheduler_process'):
             raise Exception("TaskScheduler.start() called multiple times.")
@@ -243,9 +276,21 @@ class TaskScheduler:
         Should only be called once per scheduler, and only after `start()` was called.
         When the program exits suddenly, this function will (in most cases) automatically be called
         to clean up the scheduling process.
+
+
+        >>> import periodic_tasks as pt
+        >>> ts = pt.TaskScheduler()
+        >>> ts.stop()
+        Traceback (most recent call last):
+           ...
+        Exception
+
         """
         if not hasattr(self, '_scheduler_process'):
             raise Exception("`TaskScheduler.stop()` called before calling `TaskScheduler.start()`")
+
+        self._graceful_shutdown = 1
+        self._scheduler_process.join(self._granularity*5)
         self._scheduler_process.terminate()
 
     def _scheduling_loop(self):
@@ -253,8 +298,11 @@ class TaskScheduler:
         Executed in the separate process.
         It makes sure all tasks are run whenever their time has come.
         """
+        if "TESTING" in os.environ:
+            signal.signal(signal.SIGTERM, cleanup)
         with multiprocessing.Pool(**self.pool_settings) as pool:
-            while True:
+            while self._graceful_shutdown != 1:
+                print(f"SHUTDOWN VAL: {self._graceful_shutdown}")
                 self._add_tasks_to_be_scheduled()
                 current_time = datetime.datetime.now()
                 self._run_waiting_tasks(pool, current_time)
@@ -294,4 +342,4 @@ class TaskScheduler:
         Executes a single task in one of the pool's processes
         """
         res = pool.apply_async(task, ())
-        res.get() # <- Uncomment this line to debug tasks in an easy way. Serializes task execution however!
+        # res.get() # <- Uncomment this line to debug tasks in an easy way. Serializes task execution however!
