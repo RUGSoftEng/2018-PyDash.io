@@ -27,9 +27,9 @@ def database_connection():
     if not _database_connection or os.getpid() != _current_process_id:
         _database_connection = ZEO.connection(_database_address)
         _current_process_id = os.getpid()
-        print(f"PID {os.getpid()}: Created new DB connection: {_database_connection} connecting to {_database_address}")
-    else:
-        print(f"PID {os.getpid()}: Returning old DB connection {_database_connection}")
+        # print(f"PID {os.getpid()}: Created new DB connection: {_database_connection} connecting to {_database_address}")
+    # else:
+        # print(f"PID {os.getpid()}: Returning old DB connection {_database_connection}")
     return _database_connection
 
 def database_root():

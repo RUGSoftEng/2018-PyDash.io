@@ -1,6 +1,28 @@
 """
 This module is the public interface (available to the web-application pydash_web)
 for interacting with Users.
+
+
+Example Usage:
+
+>>> gandalf = User("Gandalf", "pass")
+>>> add_to_repository(gandalf)
+...
+>>> found_user = find(gandalf.id)
+>>> found_user.name == "Gandalf"
+True
+>>> found_user2 = find_by_name("Gandalf")
+>>> found_user2 == found_user
+True
+>>> find_by_name("Dumbledore")
+>>> # ^Returns nothing
+>>> res_user = authenticate("Gandalf", "pass")
+>>> res_user.name == "Gandalf"
+True
+>>> authenticate("Gandalf", "youshallnot")
+>>> # ^Returns nothing
+>>> authenticate("Dumbledore", "secrets")
+>>> # ^Returns nothing
 """
 from .user import User
 import pydash_app.user.repository
@@ -10,6 +32,8 @@ def add_to_repository(user):
     """
     Adds the given User-entity to the user_repository.
     :param user: The User-entity in question.
+
+
     """
     repository.add(user)
 
@@ -19,11 +43,23 @@ def find(user_id):
     Returns a single User-entity with the given UUID or None if it could not be found.
 
     user_id- UUID of the user we hope to find."""
-    return user_repository.find(user_id)
+    return repository.find(user_id)
 
 def maybe_find_user(user_id):
     """
     Returns the User entity, or `None` if it does not exist.
+
+    >>> user = User("Gandalf", "pass")
+    >>> add_to_repository(user)
+    ...
+    >>> found_user = maybe_find_user(user.id)
+    >>> found_user.name == "Gandalf"
+    True
+    >>> import uuid
+    >>> unexistent_uuid = uuid.UUID('ced84534-7a55-440f-ad77-9912466fe022')
+    >>> unexistent_user = maybe_find_user(unexistent_uuid)
+    >>> unexistent_user == None
+    True
     """
     try:
         return find(user_id)
