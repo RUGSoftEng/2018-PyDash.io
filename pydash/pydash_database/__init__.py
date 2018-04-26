@@ -4,6 +4,7 @@ import ZEO
 import persistent
 import BTrees.OOBTree
 from multi_indexed_collection import MultiIndexedCollection
+import transaction
 
 
 
@@ -27,6 +28,7 @@ def database_connection():
     if not _database_connection or os.getpid() != _current_process_id:
         _database_connection = ZEO.connection(_database_address)
         _current_process_id = os.getpid()
+        transaction.begin()
         # print(f"PID {os.getpid()}: Created new DB connection: {_database_connection} connecting to {_database_address}")
     # else:
         # print(f"PID {os.getpid()}: Returning old DB connection {_database_connection}")
