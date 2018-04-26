@@ -23,7 +23,7 @@ def stop_task_scheduler():
 def schedule_periodic_tasks():
     import datetime  # <- remove this line when custom interval no longer necessary for testing.
     dashboard.services.fetching.schedule_all_periodic_dashboards_tasks(
-        interval=datetime.timedelta(seconds=1)
+        interval=datetime.timedelta(minutes=1)
     )
 
 
