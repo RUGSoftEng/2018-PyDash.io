@@ -10,5 +10,3 @@ def testserver(request):
     server.start()
     request.addfinalizer(server.stop)
     return server
-
-

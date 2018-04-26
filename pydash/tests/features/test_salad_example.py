@@ -5,6 +5,7 @@ from pytest_bdd import (
     then,
     when,
 )
+import time
 
 @scenario("salad_example.feature", "Visiting the Log-In page")
 def test_salad_example():
