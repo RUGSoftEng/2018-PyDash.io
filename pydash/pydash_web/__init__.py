@@ -10,7 +10,7 @@ from flask_login import LoginManager
 from flask_cors import CORS
 
 from pydash_web.api import api as api_blueprint
-from pydash_web.static import static as static_blueprint
+from pydash_web.react_server import react_server as react_server_blueprint
 
 from config import Config
 
@@ -18,16 +18,19 @@ import pydash_app
 import pydash_app.user
 
 
-flask_webapp = Flask(__name__)
+flask_webapp = Flask(__name__,
+static_folder=None
+)
 flask_webapp.config.from_object(Config)
 
 flask_webapp.config['CORS_HEADERS'] = 'Content-Type'
 cors = CORS(flask_webapp, resources={r"/api/*": {"origins": "*"}}, allow_headers=['Content-Type'], supports_credentials=True) # Only keep this line during development!
 
 flask_webapp.register_blueprint(api_blueprint)
-flask_webapp.register_blueprint(static_blueprint)
+flask_webapp.register_blueprint(react_server_blueprint)
 
 pydash_app.schedule_periodic_tasks()
+
 
 # Don't autostart scheduler in the testing environment.
 print(os.environ)

@@ -302,7 +302,6 @@ class TaskScheduler:
             signal.signal(signal.SIGTERM, cleanup)
         with multiprocessing.Pool(**self.pool_settings) as pool:
             while self._graceful_shutdown != 1:
-                print(f"SHUTDOWN VAL: {self._graceful_shutdown}")
                 self._add_tasks_to_be_scheduled()
                 current_time = datetime.datetime.now()
                 self._run_waiting_tasks(pool, current_time)
