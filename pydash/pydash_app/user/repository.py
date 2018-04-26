@@ -55,6 +55,9 @@ def all():
     >>> add(dumbledore)
     >>> sorted([user.name for user in all()])
     ['Dumbledore', 'Gandalf']
+    >>> clear_all()
+    >>> sorted([user.name for user in all()])
+    []
     """
     return database_root().users.values()
 
@@ -70,6 +73,20 @@ def add(user):
 
 
 def update(user):
+    """
+    Changes the user's information
+
+
+    >>> gandalf = User("GandalfTheGrey", "pass")
+    >>> add(gandalf)
+    >>> gandalf.name = "GandalfTheWhite"
+    >>> update(gandalf)
+    >>> find_by_name("GandalfTheGrey") == gandalf
+    False
+    >>> find_by_name("GandalfTheWhite") == gandalf
+    True
+
+    """
     transaction.commit()
     for attempt in transaction.manager.attempts():
         with attempt:
@@ -77,6 +94,9 @@ def update(user):
     transaction.begin()
 
 def clear_all():
+    """
+    Flushes the database.
+    """
     transaction.begin()
     database_root().users = MultiIndexedPersistentCollection({'id', 'name'})
     transaction.commit()
