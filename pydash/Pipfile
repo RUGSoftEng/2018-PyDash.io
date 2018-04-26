@@ -21,6 +21,10 @@ pytest-cov = "*"
 pytest-xdist = "*"
 pytest-env = "*"
 pytest-bdd = "*"
+pytest-flask = "*"
+pytest-splinter = "*"
+selenium = "*"
+pytest-localserver = "*"
 
 [requires]
 python_version = "3.6"

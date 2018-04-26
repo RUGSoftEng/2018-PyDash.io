@@ -3,9 +3,8 @@ In order to make sure that lettuce works
 As a developer
 I open the Wieden+Kennedy website using lettuce
 
-Scenario: Opening the W+K website works
-	Given I visit the url "http://www.wk.com/"
-	When I look around
-	Then I should see "Wieden+Kennedy" somewhere in the page
+Scenario: Visiting the Log-In page
+	When I visit the Pydash website
+	Then I should see "Pydash" somewhere in the page
 
 
