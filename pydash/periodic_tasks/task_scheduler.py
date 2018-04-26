@@ -290,7 +290,7 @@ class TaskScheduler:
             raise Exception("`TaskScheduler.stop()` called before calling `TaskScheduler.start()`")
 
         self._graceful_shutdown = 1
-        self._scheduler_process.join(self._granularity*5)
+        self._scheduler_process.join(self._granularity)
         self._scheduler_process.terminate()
 
     def _scheduling_loop(self):

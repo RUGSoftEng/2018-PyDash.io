@@ -15,6 +15,7 @@ import uuid
 import BTrees.OOBTree
 import transaction
 from pydash_database import database_root, MultiIndexedPersistentCollection
+from multi_indexed_collection import DuplicateIndexError
 
 from .user import User
 
@@ -43,6 +44,18 @@ def find_by_name(name):
 
 
 def all():
+    """
+    Returns a (lazy) collection of all users (in no guaranteed order).
+
+    >>> list(all())
+    []
+    >>> gandalf = User("Gandalf", "pass")
+    >>> dumbledore = User("Dumbledore", "secret")
+    >>> add(gandalf)
+    >>> add(dumbledore)
+    >>> sorted([user.name for user in all()])
+    ['Dumbledore', 'Gandalf']
+    """
     return database_root().users.values()
 
 
@@ -51,7 +64,7 @@ def add(user):
         transaction.begin()
         database_root().users.add(user)
         transaction.commit()
-    except KeyError:
+    except (KeyError, DuplicateIndexError):
         transaction.abort()
         raise
 

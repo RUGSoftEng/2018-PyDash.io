@@ -11,6 +11,14 @@ Example Usage:
 >>> found_user = find(gandalf.id)
 >>> found_user.name == "Gandalf"
 True
+
+You can also use a string-version of the ID to find the user again:
+
+>>> found_user = find(str(gandalf.id))
+>>> found_user.name == "Gandalf"
+True
+
+
 >>> found_user2 = find_by_name("Gandalf")
 >>> found_user2 == found_user
 True
@@ -33,6 +41,15 @@ def add_to_repository(user):
     Adds the given User-entity to the user_repository.
     :param user: The User-entity in question.
 
+    Adding the same user twice with the same name is not allowed:
+
+    >>> gandalf1 = User("Gandalf", "pass")
+    >>> add_to_repository(gandalf1)
+    >>> gandalf2 = User("Gandalf", "balrog")
+    >>> add_to_repository(gandalf2)
+    Traceback (most recent call last):
+      ...
+    multi_indexed_collection.DuplicateIndexError
 
     """
     repository.add(user)
