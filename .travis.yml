@@ -21,6 +21,11 @@ install:
  # - mkdir geckodriver
  # - tar -xzf geckodriver-v0.11.1-linux64.tar.gz -C geckodriver
  # - export PATH=$PATH:$PWD/geckodriver
+ - wget http://chromedriver.storage.googleapis.com/2.24/chromedriver_linux64.zip
+ - mkdir chromedriver
+ - unzip chromedriver_linux64.zip -d chromedriver
+ - export CHROME_BIN=chromium-browser
+ - export PATH=$PATH:$PWD/chromedriver
  - cd pydash
  - mkdir -p logs
  - pip install pipenv
