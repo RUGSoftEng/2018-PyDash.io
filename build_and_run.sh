@@ -41,7 +41,8 @@ RunFlask()
 {
     PydashPrint "Finally: Starting flask webservice. Close with Ctrl+C"
     cd pydash
-    pipenv run "flask run --no-reload"
+    pipenv run flask run --no-reload
+    cd ..
 }
 
 BuildFrontend
