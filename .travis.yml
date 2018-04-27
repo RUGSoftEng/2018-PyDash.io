@@ -1,6 +1,6 @@
 # language and version specifications
 language: python
-rvm: 
+python: 
  - "3.4"
  - "3.5"
  - "3.6"
