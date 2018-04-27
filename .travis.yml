@@ -4,6 +4,12 @@ python:
 
 #install dependencies
 install:
+#frontend:
+ - cd pydash-front
+ - yarn
+ - yarn build
+ - cd ..
+#backend:
  - wget https://github.com/mozilla/geckodriver/releases/download/v0.11.1/geckodriver-v0.11.1-linux64.tar.gz
  - mkdir geckodriver
  - tar -xzf geckodriver-v0.11.1-linux64.tar.gz -C geckodriver
@@ -14,7 +20,9 @@ install:
  - export FLASK_APP=pydash.py
  - export FLASK_ENV=development
  - pipenv install --dev
+ - cd ..
 
 #run pytest
 script:
+ - cd pydash
  - pipenv run pytest
