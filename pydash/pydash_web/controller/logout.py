@@ -3,9 +3,9 @@ Allows a user to sign out again after finishing using the application
 """
 from flask import jsonify
 from flask_login import current_user, logout_user
-import pydash_app.impl.logger as pylog
+import pydash_logger
 
-logger = pylog.Logger(__name__)
+logger = pydash_logger.Logger(__name__)
 
 
 def logout():

@@ -9,6 +9,11 @@ class EndpointCall(persistent.Persistent):
     As with the other entity classes, it does not concern itself with the implementation of its persistence,
     as it doesn't exist on its own.
     If this were the case, the `endpointcall_repository` would handle this concern.
+
+    >>> endpoint_call = EndpointCall("foo", 0.5, datetime.strptime("2018-04-25 15:29:23", "%Y-%m-%d %H:%M:%S"), "0.1", "None", "127.0.0.1")
+    >>> endpoint_call.as_dict()
+    {'endpoint': 'foo', 'execution_time': 0.5, 'time': datetime.datetime(2018, 4, 25, 15, 29, 23), 'version': '0.1', 'group_by': 'None', 'ip': '127.0.0.1'}
+
     """
 
     def __init__(self, endpoint, execution_time, time, version, group_by, ip):
@@ -20,6 +25,34 @@ class EndpointCall(persistent.Persistent):
         :param version: String denoting the dashboard's version number.
         :param group_by: String denoting which user is calling the function (?).
         :param ip: String denoting the IP-address the endpoint call was made from.
+
+        The types entered are checked:
+        >>> endpoint_call = EndpointCall("foo", 0.5, datetime.strptime("2018-04-25 15:29:23", "%Y-%m-%d %H:%M:%S"), "0.1", "None", "127.0.0.1")
+        >>> EndpointCall(10, 0.5, datetime.strptime("2018-04-25 15:29:23", "%Y-%m-%d %H:%M:%S"), "0.1", "None", "127.0.0.1")
+        Traceback (most recent call last):
+           ...
+        TypeError
+        >>> EndpointCall("foo", "bar", datetime.strptime("2018-04-25 15:29:23", "%Y-%m-%d %H:%M:%S"), "0.1", "None", "127.0.0.1")
+        Traceback (most recent call last):
+           ...
+        TypeError
+        >>> EndpointCall("foo", 0.5, 10, "0.1", "None", "127.0.0.1")
+        Traceback (most recent call last):
+           ...
+        TypeError
+        >>> EndpointCall("foo", 0.5, datetime.strptime("2018-04-25 15:29:23", "%Y-%m-%d %H:%M:%S"), 1234, "None", "127.0.0.1")
+        Traceback (most recent call last):
+           ...
+        TypeError
+        >>> EndpointCall("foo", 0.5, datetime.strptime("2018-04-25 15:29:23", "%Y-%m-%d %H:%M:%S"), "0.1", 42, "127.0.0.1")
+        Traceback (most recent call last):
+           ...
+        TypeError
+        >>> EndpointCall("foo", 0.5, datetime.strptime("2018-04-25 15:29:23", "%Y-%m-%d %H:%M:%S"), "0.1", "None", 42)
+        Traceback (most recent call last):
+           ...
+        TypeError
+
         """
         EndpointCall.__check_arg_types(endpoint, execution_time, time, version, group_by, ip)
 
@@ -29,6 +62,31 @@ class EndpointCall(persistent.Persistent):
         self.version = version  # string
         self.group_by = group_by  # string
         self.ip = ip  # string
+
+    def __repr__(self):
+        """
+        Returns a string representation of this EndpointCall, for easy debugging and logging:
+
+            >>> EndpointCall("foo", 0.5, datetime.strptime("2018-04-25 15:29:23", "%Y-%m-%d %H:%M:%S"), "0.1", "None", "127.0.0.1")
+            <EndpointCall
+                endpoint=foo
+                execution_time=0.5
+                time=2018-04-25 15:29:23
+                version=0.1
+                group_by=None
+                ip=127.0.0.1
+            >
+
+        """
+        return f'''<{self.__class__.__name__}
+    endpoint={self.endpoint}
+    execution_time={self.execution_time}
+    time={self.time}
+    version={self.version}
+    group_by={self.group_by}
+    ip={self.ip}
+>'''
+
 
     @staticmethod
     def __check_arg_types(endpoint, execution_time, time, version, group_by, ip):

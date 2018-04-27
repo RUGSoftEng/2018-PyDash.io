@@ -14,18 +14,22 @@ It handles a subset of the following tasks
 import uuid
 import BTrees.OOBTree
 import transaction
-from ..impl.database import database_root, MultiIndexedPersistentCollection
+from pydash_database import database_root, MultiIndexedPersistentCollection
+from multi_indexed_collection import DuplicateIndexError
 
 from .user import User
 
 
 if not hasattr(database_root(), 'users'):
+    transaction.begin()
     database_root().users = MultiIndexedPersistentCollection({'id', 'name'})
+    transaction.commit()
 
 
 def find(user_id):
     # Ensure that also callable with strings or integers:
-    user_id = uuid.UUID(user_id)
+    if not isinstance(user_id, uuid.UUID):
+        user_id = uuid.UUID(user_id)
 
     return database_root().users['id', user_id]
 
@@ -40,49 +44,59 @@ def find_by_name(name):
 
 
 def all():
+    """
+    Returns a (lazy) collection of all users (in no guaranteed order).
+
+    >>> list(all())
+    []
+    >>> gandalf = User("Gandalf", "pass")
+    >>> dumbledore = User("Dumbledore", "secret")
+    >>> add(gandalf)
+    >>> add(dumbledore)
+    >>> sorted([user.name for user in all()])
+    ['Dumbledore', 'Gandalf']
+    >>> clear_all()
+    >>> sorted([user.name for user in all()])
+    []
+    """
     return database_root().users.values()
 
 
 def add(user):
     try:
+        transaction.begin()
         database_root().users.add(user)
         transaction.commit()
-    except KeyError:
+    except (KeyError, DuplicateIndexError):
         transaction.abort()
         raise
 
 
 def update(user):
-    try:
-        database_root().users.update_item(user)
-        transaction.commit()
-    except KeyError:
-        transaction.abort()
-        raise
-
-
-def seed_users():
     """
-    Stores some preliminary debug users in the datastore,
-    to be used during development.
-    """
+    Changes the user's information
 
-    # Clear current DB.
+
+    >>> gandalf = User("GandalfTheGrey", "pass")
+    >>> add(gandalf)
+    >>> gandalf.name = "GandalfTheWhite"
+    >>> update(gandalf)
+    >>> find_by_name("GandalfTheGrey") == gandalf
+    False
+    >>> find_by_name("GandalfTheWhite") == gandalf
+    True
+
+    """
+    transaction.commit()
+    for attempt in transaction.manager.attempts():
+        with attempt:
+            database_root().users.update_item(user)
+    transaction.begin()
+
+def clear_all():
+    """
+    Flushes the database.
+    """
+    transaction.begin()
     database_root().users = MultiIndexedPersistentCollection({'id', 'name'})
-
-    # Fill in users.
-    _development_users = [
-        User(name="Alberto", password="alberto"),
-        User(name="Arjan", password="arjan"),
-        User(name="JeroenO", password="jeroeno"),
-        User(name="JeroenL", password="jeroenl"),
-        User(name="Koen", password="koen"),
-        User(name="Lars", password="lars"),
-        User(name="Patrick", password="patrick"),
-        User(name="Tom", password="tom"),
-        User(name="W-M", password="topsecret")
-    ]
-    for user in _development_users:
-        print("Adding user {}".format(user))
-        add(user)
-    print("Seeding of users is done!")
+    transaction.commit()

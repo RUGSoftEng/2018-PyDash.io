@@ -1,12 +1,9 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [packages]
-
 Flask = "*"
 Flask-WTF = "*"
 flask-login = "*"
@@ -18,16 +15,14 @@ requests = "*"
 Flask-Cors = "*"
 pqdict = "*"
 
-
 [dev-packages]
-
-
+pytest = "*"
+pytest-cov = "*"
+pytest-xdist = "*"
+pytest-env = "*"
 
 [requires]
-
 python_version = "3.6"
 
-
 [pipenv]
-
 keep_outdated = true
