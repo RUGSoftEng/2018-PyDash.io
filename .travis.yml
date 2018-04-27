@@ -8,6 +8,7 @@ rvm:
 #install dependencies
 install:
  - cd pydash
+ - pip install pipenv
  - ./start_pipenv.sh
  - pipenv install --dev
 
