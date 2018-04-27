@@ -7,7 +7,7 @@ from flask_login import current_user
 
 from pydash_app.user import find, remove_from_repository as remove_from_user_repository
 from pydash_app.dashboard import dashboards_of_user, remove_from_repository as remove_from_dashboard_repository
-import pydash_app.impl.logger as pylog
+import pydash_logger as pylog
 
 logger = pylog.Logger(__name__)
 
