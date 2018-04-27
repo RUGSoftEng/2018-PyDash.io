@@ -114,3 +114,4 @@ ENV/
 #Directories
 /pydash/logs
 /pydash/.pytest_cache
+.pytest_cache

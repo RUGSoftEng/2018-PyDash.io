@@ -3,7 +3,7 @@ import './App.css';
 import Login from './login/Login';
 import Dashboard from './app/dashboard/Dashboard';
 import { Switch, Route } from 'react-router-dom';
-import ProtectedRoute from './login/ProtectedRoute'
+/* import ProtectedRoute from './login/ProtectedRoute'*/
 
 class App extends Component {
   state = {
