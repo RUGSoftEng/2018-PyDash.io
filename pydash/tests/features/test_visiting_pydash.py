@@ -7,7 +7,7 @@ from pytest_bdd import (
 )
 import time
 
-@scenario("salad_example.feature", "Visiting the Log-In page")
+@scenario("visiting_pydash.feature", "Visiting the Log-In page")
 def test_salad_example():
     """Visiting the Log-In Page"""
 
