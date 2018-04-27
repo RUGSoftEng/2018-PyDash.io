@@ -4,7 +4,13 @@ rvm:
  - "3.4"
  - "3.5"
  - "3.6"
-sudo: enabled
 
 #install dependencies
+install:
+ - cd pydash
+ - ./start_pipenv.sh
+ - pipenv install --dev
 
+#run pytest
+script:
+ - pytest
