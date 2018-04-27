@@ -9,9 +9,10 @@ python:
 install:
  - cd pydash
  - pip install pipenv
- - ./start_pipenv.sh
+ - export FLASK_APP=pydash.py
+ - export FLASK_ENV=development
  - pipenv install --dev
 
 #run pytest
 script:
- - pytest
+ - pipenv run pytest
