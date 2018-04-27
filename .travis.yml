@@ -40,11 +40,11 @@ install:
 
 # Setup virtual graphical interface.
 before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - sleep 3 # give xvfb some time to start
-  - export PATH=$PATH:/usr/lib/chromium-browser/
-   - nohup chromedriver & 
+ - "export DISPLAY=:99.0"
+ - "sh -e /etc/init.d/xvfb start"
+ - sleep 3 # give xvfb some time to start
+ - "export PATH=$PATH:/usr/lib/chromium-browser/"
+ - nohup chromedriver & 
 
 # run pytest
 script:
