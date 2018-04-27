@@ -6,7 +6,8 @@ python:
 # env:
 #   - MOZ_HEADLESS=1
 addons:
-  firefox: latest
+  # firefox: latest
+  chrome: stable
 
 # install dependencies
 install:
@@ -16,10 +17,10 @@ install:
  - yarn build
  - cd ..
 # build backend:
- - wget https://github.com/mozilla/geckodriver/releases/download/v0.11.1/geckodriver-v0.11.1-linux64.tar.gz
- - mkdir geckodriver
- - tar -xzf geckodriver-v0.11.1-linux64.tar.gz -C geckodriver
- - export PATH=$PATH:$PWD/geckodriver
+ # - wget https://github.com/mozilla/geckodriver/releases/download/v0.11.1/geckodriver-v0.11.1-linux64.tar.gz
+ # - mkdir geckodriver
+ # - tar -xzf geckodriver-v0.11.1-linux64.tar.gz -C geckodriver
+ # - export PATH=$PATH:$PWD/geckodriver
  - cd pydash
  - mkdir -p logs
  - pip install pipenv
