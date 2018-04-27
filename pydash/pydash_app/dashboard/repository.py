@@ -15,6 +15,7 @@ import uuid
 import BTrees.OOBTree
 import transaction
 from pydash_database import database_root, MultiIndexedPersistentCollection
+from multi_indexed_collection import DuplicateIndexError
 
 
 if not hasattr(database_root(), 'dashboards'):
@@ -45,7 +46,18 @@ def all():
 
 def add(dashboard):
     try:
+        transaction.begin()
         database_root().dashboards.add(dashboard)
+        transaction.commit()
+    except (KeyError, DuplicateIndexError):
+        transaction.abort()
+        raise
+
+
+def delete(dashboard):
+    try:
+        transaction.begin()
+        database_root().dashboards.remove(dashboard)
         transaction.commit()
     except KeyError:
         transaction.abort()
@@ -61,6 +73,7 @@ def update(dashboard):
         with attempt:
             database_root().dashboards.update_item(dashboard)
     transaction.begin()
+
 
 def clear_all():
     transaction.begin()

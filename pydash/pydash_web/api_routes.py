@@ -35,3 +35,9 @@ def get_dashboard(dashboard_id):
 @api.route("/api/user/register", methods=["POST"])
 def register_user():
     return controller.register_user()
+
+
+@api.route("/api/user/delete", methods=["POST"])
+@login_required
+def delete_user():
+    return controller.delete_user()

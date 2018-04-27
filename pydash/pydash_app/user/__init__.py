@@ -34,11 +34,12 @@ True
 """
 from .user import User
 import pydash_app.user.repository
+from multi_indexed_collection import DuplicateIndexError
 
 
 def add_to_repository(user):
     """
-    Adds the given User-entity to the user_repository.
+    Adds the given User-entity to the user_repository. Raises a KeyError if the user is already in the repository.
     :param user: The User-entity in question.
 
     Adding the same user twice with the same name is not allowed:
@@ -52,7 +53,23 @@ def add_to_repository(user):
     multi_indexed_collection.DuplicateIndexError
 
     """
-    repository.add(user)
+    try:
+        repository.add(user)
+    except (KeyError, DuplicateIndexError):
+        raise
+
+
+def remove_from_repository(user_id):
+    """
+    Removes the User-entity whose user_id is `user_id` from the repository.
+    Will raise a KeyError if said user is not in the repository.
+    :param user_id: The ID of the User-entity to be removed. This can be either a UUID-entity or the corresponding
+        string representation.
+    """
+    try:
+        repository.delete_by_id(user_id)
+    except KeyError:
+        raise
 
 
 def find(user_id):
@@ -61,6 +78,7 @@ def find(user_id):
 
     user_id- UUID of the user we hope to find."""
     return repository.find(user_id)
+
 
 def maybe_find_user(user_id):
     """
@@ -82,6 +100,7 @@ def maybe_find_user(user_id):
         return find(user_id)
     except KeyError:
         return None
+
 
 def find_by_name(name):
     """

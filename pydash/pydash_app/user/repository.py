@@ -63,6 +63,10 @@ def all():
 
 
 def add(user):
+    """
+    Adds the User-entity to the repository. Will raise a (KeyError, DuplicateIndexError) tuple on failure.
+    :param user: The User-entity to add.
+    """
     try:
         transaction.begin()
         database_root().users.add(user)
@@ -70,6 +74,44 @@ def add(user):
     except (KeyError, DuplicateIndexError):
         transaction.abort()
         raise
+
+
+def _delete(user):
+    """
+    Removes the provided User-entity from the repository. Will raise a KeyError if said user is not in the repository.
+    :param user: The User-entity to remove.
+    """
+    try:
+        transaction.begin()
+        database_root().users.remove(user)
+        transaction.commit()
+    except KeyError:
+        transaction.abort()
+        raise
+
+
+def delete_by_id(user_id):
+    """
+    Removes the User-entity whose user_id is `user_id` from the repository.
+    Will raise a KeyError if said user is not in the repository.
+    Note that this might also occur when delete_by_id(user_id) is called in the middle of the deletion,
+     in a multiprocessing environment.
+    :param user_id: The ID of the User-entity to be removed. This can be either a UUID-entity or the corresponding
+        string representation.
+    """
+    # Ensure that also callable with strings or integers:
+    if not isinstance(user_id, uuid.UUID):
+        user_id = uuid.UUID(user_id)
+
+    try:
+        user = find(user_id)
+    except KeyError:
+        raise
+    else:
+        try:  # In case user is already deleted due to potential multiprocessing issues.
+            _delete(user)
+        except KeyError:
+            raise
 
 
 def update(user):
@@ -92,6 +134,7 @@ def update(user):
         with attempt:
             database_root().users.update_item(user)
     transaction.begin()
+
 
 def clear_all():
     """
