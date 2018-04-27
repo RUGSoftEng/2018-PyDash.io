@@ -3,8 +3,8 @@ python:
  - "3.6"
 
 # Required to run Selenium tests:
-env:
-  - MOZ_HEADLESS=1
+# env:
+#   - MOZ_HEADLESS=1
 addons:
   firefox: latest
 
