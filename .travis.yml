@@ -1,0 +1,10 @@
+# language and version specifications
+language: python
+rvm: 
+ - "3.4"
+ - "3.5"
+ - "3.6"
+sudo: enabled
+
+#install dependencies
+
