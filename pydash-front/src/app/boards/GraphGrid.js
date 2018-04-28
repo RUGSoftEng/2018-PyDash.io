@@ -40,7 +40,7 @@ class GraphGrid extends Component {
     console.log("TEST")
     // TODO: Get dashboard_id from newProps
     const dashboard_id = this.props.id
-    axios('/api/dashboards/' + dashboard_id, {
+    axios(window.api_path + '/api/dashboards/' + dashboard_id, {
         method: 'get',
         withCredentials: true
     }).then((response) => {
