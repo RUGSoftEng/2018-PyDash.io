@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "ddcf7970f0c127cdc0efd85301c77867bed0164e225a6cfa949e1116e4c4fce2"
+            "sha256": "791679a5c1c370bd8ef566bee07cf19f7b4a96fa5bd0d28e64bfbe80865c6ff3"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -390,12 +390,6 @@
             "index": "pypi",
             "version": "==1.0"
         },
-        "glob2": {
-            "hashes": [
-                "sha256:f5b0a686ff21f820c4d3f0c4edd216704cea59d79d00fa337e244a2f2ff83ed6"
-            ],
-            "version": "==0.6"
-        },
         "itsdangerous": {
             "hashes": [
                 "sha256:cbb3fcf8d3e33df861709ecaf89d9e6629cff0a217bc2848f1b41cd30d360519"
@@ -408,12 +402,6 @@
                 "sha256:f84be1bb0040caca4cea721fcbbbbd61f9be9464ca236387158b0feea01914a4"
             ],
             "version": "==2.10"
-        },
-        "mako": {
-            "hashes": [
-                "sha256:4e02fde57bd4abb5ec400181e4c314f56ac3e49ba4fb8b0d50bba18cb27d25ae"
-            ],
-            "version": "==1.0.7"
         },
         "markupsafe": {
             "hashes": [
@@ -428,19 +416,6 @@
                 "sha256:c9ce7eccdcb901a2c75d326ea134e0886abfbea5f93e91cc95de9507c0816c44"
             ],
             "version": "==4.1.0"
-        },
-        "parse": {
-            "hashes": [
-                "sha256:8048dde3f5ca07ad7ac7350460952d83b63eaacecdac1b37f45fd74870d849d2"
-            ],
-            "version": "==1.8.2"
-        },
-        "parse-type": {
-            "hashes": [
-                "sha256:6e906a66f340252e4c324914a60d417d33a4bea01292ea9bbf68b4fc123be8c9",
-                "sha256:f596bdc75d3dd93036fbfe3d04127da9f6df0c26c36e01e76da85adef4336b3c"
-            ],
-            "version": "==0.4.2"
         },
         "pluggy": {
             "hashes": [
@@ -464,13 +439,6 @@
             ],
             "index": "pypi",
             "version": "==3.5.1"
-        },
-        "pytest-bdd": {
-            "hashes": [
-                "sha256:1420bafbba5a3fe3182b553beb28bc5ab68f0e438fa4369b4f0f590a7f18177f"
-            ],
-            "index": "pypi",
-            "version": "==2.21.0"
         },
         "pytest-cov": {
             "hashes": [
