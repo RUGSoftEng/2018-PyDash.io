@@ -8,12 +8,12 @@ from pytest_bdd import (
 import time
 
 @scenario("visiting_pydash.feature", "Visiting the Log-In page")
-def test_salad_example():
+def test_visiting_pydash():
     """Visiting the Log-In Page"""
 
 
 @when("I visit the Pydash website")
-def i_visit_the_pydash_website(browser, testserver):
+def _(browser, testserver):
     browser.visit(testserver.url)
 
 @then("I should see \"Pydash\" somewhere in the page")
