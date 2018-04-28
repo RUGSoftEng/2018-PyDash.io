@@ -6,7 +6,7 @@ The method names in this module 1:1 reflect the names of the flask-monitoring-da
 is one of the thing this module handles for you.)
 """
 
-import requests
+import requests, requests.exceptions
 import jwt
 import json
 
@@ -27,7 +27,11 @@ def get_details(dashboard_url):
     """
     endpoint = _endpoint_name(_DETAILS_ENDPOINT)
 
-    response = requests.get(f'{dashboard_url}/{endpoint}')
+    try:
+        response = requests.get(f'{dashboard_url}/{endpoint}')
+    except requests.exceptions.ConnectionError as e:
+        logger.error(f'Connection error in get_details: {e}')
+        raise
 
     if response.status_code != 200:
         logger.error(f'Bad response status code in get_details: {response.status_code}')
@@ -45,7 +49,11 @@ def get_monitor_rules(dashboard_url, dashboard_token):
     """
     endpoint = _endpoint_name(_RULES_ENDPOINT)
 
-    response = requests.get(f'{dashboard_url}/{endpoint}')
+    try:
+        response = requests.get(f'{dashboard_url}/{endpoint}')
+    except requests.exceptions.ConnectionError as e:
+        logger.error(f'Connection error in get_monitor_rules: {e}')
+        raise
 
     if response.status_code != 200:
         logger.error(f'Bad response status code in get_monitor_rules: {response.status_code}')
@@ -79,7 +87,11 @@ def get_data(dashboard_url, dashboard_token, time_from=None, time_to=None):
         time_to = int(time_to.timestamp())
         url = f'{url}/{time_to}'
 
-    response = requests.get(url)
+    try:
+        response = requests.get(url)
+    except requests.exceptions.ConnectionError:
+        logger.error(f'Connection error in get_data: {e}')
+        raise
 
     if response.status_code != 200:
         logger.error(f'Bad response status code in get_data: {response.status_code}')
