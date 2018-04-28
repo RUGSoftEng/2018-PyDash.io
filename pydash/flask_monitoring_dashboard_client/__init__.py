@@ -30,6 +30,7 @@ def get_details(dashboard_url):
     response = requests.get(f'{dashboard_url}/{endpoint}')
 
     if response.status_code != 200:
+        logger.error(f'Bad response status code in get_details: {response.status_code}')
         return None
 
     return json.loads(response.text)
@@ -47,6 +48,7 @@ def get_monitor_rules(dashboard_url, dashboard_token):
     response = requests.get(f'{dashboard_url}/{endpoint}')
 
     if response.status_code != 200:
+        logger.error(f'Bad response status code in get_monitor_rules: {response.status_code}')
         return None
 
     return _decode_jwt(response.text, dashboard_token)
@@ -80,7 +82,7 @@ def get_data(dashboard_url, dashboard_token, time_from=None, time_to=None):
     response = requests.get(url)
 
     if response.status_code != 200:
-        logger.error(f'Bad response status code: {response.status_code}')
+        logger.error(f'Bad response status code in get_data: {response.status_code}')
         return None
 
     return _decode_jwt(response.text, dashboard_token)
@@ -102,5 +104,15 @@ def _decode_jwt(payload, token):
     :param token: The secret token for the dashboard
     :return: A dict containing the data from the payload
     """
-    message = jwt.decode(payload, token, algorithms=['HS256'])
-    return json.loads(message['data'])
+    try:
+        message = jwt.decode(payload, token, algorithms=['HS256'])
+        return json.loads(message['data'])
+    except jwt.DecodeError as e:
+        logger.error(f'While decoding: {e}')
+        raise
+    except KeyError:
+        logger.error(f'After decoding: JWT-decoded message dict does not contain "data" entry')
+        raise
+    except json.JSONDecodeError:
+        logger.error(f'After decoding: data entry of JWT-decoded message dict contains malformed JSON')
+        raise
