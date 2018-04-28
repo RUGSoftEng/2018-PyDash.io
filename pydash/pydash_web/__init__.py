@@ -29,7 +29,7 @@ cors = CORS(flask_webapp, resources={r"/api/*": {"origins": "*"}}, allow_headers
 flask_webapp.register_blueprint(api_blueprint)
 flask_webapp.register_blueprint(react_server_blueprint)
 
-pydash_app.schedule_periodic_tasks()
+#pydash_app.schedule_periodic_tasks()
 
 
 # Don't autostart scheduler in the testing environment.
