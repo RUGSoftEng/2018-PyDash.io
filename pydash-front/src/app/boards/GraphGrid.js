@@ -67,9 +67,6 @@ class GraphGrid extends Component {
       <Grid container spacing={24} className={classes.root}>
         <Grid item xs={6}>
           <Card>
-            {/* <CardActions button component={NavLink} to={'/dashboard/settings'}>
-              <CreateIcon/>
-            </CardActions> */}
             <DashboardVisitsGraph data={this.state.visits_per_day} title="Visits per day:" tooltip_title="No. visits: "/>
           </Card>
         </Grid>
