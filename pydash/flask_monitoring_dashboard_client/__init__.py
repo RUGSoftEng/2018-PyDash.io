@@ -37,7 +37,11 @@ def get_details(dashboard_url):
         logger.error(f'Bad response status code in get_details: {response.status_code}')
         response.raise_for_status()
 
-    return json.loads(response.text)
+    try:
+        return json.loads(response.text)
+    except json.JSONDecodeError:
+        logger.error('Response to get_json_details contains malformed JSON')
+        raise
 
 
 def get_monitor_rules(dashboard_url, dashboard_token):
