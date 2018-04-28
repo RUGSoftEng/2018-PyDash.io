@@ -22,14 +22,14 @@ def schedule_all_periodic_dashboards_tasks(
     Sets up all tasks that should be run periodically for each of the dashboards.
     (For now, that is only the EndpointCall fetching task.)
     """
+    initialization_states = (
+        DashboardState.not_initialized,
+        DashboardState.initialized_endpoints,
+        DashboardState.initialize_endpoints_failure,
+        DashboardState.initialized_endpoint_calls,
+        DashboardState.initialize_endpoint_calls_failure
+    )
     for dashboard in dashboard_repository.all():
-        initialization_states = (
-            DashboardState.not_initialized,
-            DashboardState.initialized_endpoints,
-            DashboardState.initialize_endpoints_failure,
-            DashboardState.initialized_endpoint_calls,
-            DashboardState.initialize_endpoint_calls_failure
-        )
         if dashboard.state in initialization_states:
             schedule_historic_dashboard_fetching(
                 dashboard, scheduler=scheduler)
@@ -106,7 +106,7 @@ def fetch_and_update_historic_dashboard_info(dashboard_id):
     dashboard_repository.update(dashboard)
 
 
-# Endpoints
+# Initializing Endpoints
 
 
 def fetch_and_add_endpoints(dashboard):
@@ -138,6 +138,9 @@ def _fetch_endpoints(dashboard):
     return [
         Endpoint(rule['endpoint'], rule['monitor']) for rule in monitor_rules
     ]
+
+
+# Initializing EndpointCalls
 
 
 def fetch_and_add_historic_endpoint_calls(dashboard):
@@ -204,9 +207,6 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
             dashboard.last_fetch_time = call.time
 
         start_time = end_time
-
-
-# EndpointCalls
 
 
 def fetch_and_add_endpoint_calls(dashboard):
