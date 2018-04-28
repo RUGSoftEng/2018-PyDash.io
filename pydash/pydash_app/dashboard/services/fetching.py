@@ -126,6 +126,8 @@ def fetch_and_add_endpoints(dashboard):
     for endpoint in endpoints:
         dashboard.add_endpoint(endpoint)
 
+    dashboard.state = DashboardState.initialized_endpoints
+
 
 def _fetch_endpoints(dashboard):
     """
