@@ -77,7 +77,7 @@ def fetch_and_update_new_dashboard_info(dashboard_id):
     """
     dashboard = dashboard_repository.find(dashboard_id)
 
-    logger.info("INSIDE FETCH FUNCTION")
+    logger.info(f'INSIDE FETCH FUNCTION: {dashboard_id}')
 
     fetch_and_add_endpoint_calls(dashboard)
 
@@ -86,10 +86,7 @@ def fetch_and_update_new_dashboard_info(dashboard_id):
 
     dashboard_repository.update(dashboard)
 
-    logger.info(f'{len(dashboard.endpoints)} endpoints found')
-    logger.info(f'{len(dashboard._endpoint_calls)} endpoint calls')
-
-    logger.info(f"Dashboard {dashboard_id} updated.")
+    logger.info(f"Dashboard {dashboard_id} updated")
 
 
 def fetch_and_update_historic_dashboard_info(dashboard_id):
@@ -98,7 +95,7 @@ def fetch_and_update_historic_dashboard_info(dashboard_id):
     """
     dashboard = dashboard_repository.find(dashboard_id)
 
-    logger.info("INSIDE INITIAL DASHBOARD FETCHING FUNCTION")
+    logger.info(f'INSIDE INITIAL FETCHING FUNCTION: {dashboard_id}')
 
     fetch_and_add_endpoints(dashboard)
     fetch_and_add_historic_endpoint_calls(dashboard)
@@ -108,8 +105,8 @@ def fetch_and_update_historic_dashboard_info(dashboard_id):
 
     dashboard_repository.update(dashboard)
 
-    logger.info(f'{len(dashboard.endpoints)} endpoints found')
-    logger.info(f'{len(dashboard._endpoint_calls)} historical endpoint calls')
+
+# Endpoints
 
 
 def fetch_and_add_endpoints(dashboard):
@@ -207,6 +204,9 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
             dashboard.last_fetch_time = call.time
 
         start_time = end_time
+
+
+# EndpointCalls
 
 
 def fetch_and_add_endpoint_calls(dashboard):
