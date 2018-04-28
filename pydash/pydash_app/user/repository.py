@@ -30,11 +30,6 @@ def find(user_id):
     Finds a user in the database.
     :param user_id: UUID for the user to be retrieved.
     :return: User object or None if no user could be found.
-
-    >>> gandalf = User("Gandalf", "pass")
-    >>> add(gandalf)
-    >>> find(gandalf.get_id()) == gandalf
-    True
     """
     # Ensure that also callable with strings or integers:
     if not isinstance(user_id, uuid.UUID):
