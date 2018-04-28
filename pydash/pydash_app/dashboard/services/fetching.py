@@ -163,17 +163,20 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
     try:
         details = flask_monitoring_dashboard_client.get_details(dashboard.url)
     except requests.exceptions.ConnectionError as e:
-        logger.error(f'Connection error happened while initializing EndpointCalls: {e}')
+        logger.error(f'Connection error happened while initializing EndpointCalls: {e}\n'
+                     f'for dashboard: {dashboard}')
         dashboard.state = DashboardState.initialize_endpoint_calls_failure
         dashboard.error = str(e)
         return
     except requests.exceptions.HTTPError as e:
-        logger.error(f'HTTP error happened while initializing EndpointCalls: {e}')
+        logger.error(f'HTTP error happened while initializing EndpointCalls: {e}\n'
+                     f'for dashboard: {dashboard}')
         dashboard.state = DashboardState.initialize_endpoint_calls_failure
         dashboard.error = str(e)
         return
     except json.JSONDecodeError as e:
-        logger.error(f'JSON decode error happened while initializing EndpointCalls: {e}')
+        logger.error(f'JSON decode error happened while initializing EndpointCalls: {e}\n'
+                     f'for dashboard: {dashboard}')
         dashboard.state = DashboardState.initialize_endpoint_calls_failure
         dashboard.error = str(e)
         return
