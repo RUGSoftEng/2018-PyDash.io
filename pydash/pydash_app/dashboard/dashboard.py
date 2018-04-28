@@ -42,6 +42,26 @@ from pydash_app.dashboard.aggregator import Aggregator
 
 
 class DashboardState(Enum):
+    """
+    The DashboardState enum indicates the state in which a Dashboard can remain, regarding remote fetching:
+
+    - not_initialized indicates the dashboard is newly created and not initialized with Endpoints and
+      historic EndpointCalls;
+
+    - initialized_endpoints indicates the dashboard has successfully initialized Endpoints,
+      but not yet historical EndpointCalls;
+    - initialize_endpoints_failure indicates something went wrong while initializing Endpoints, which means
+      initialization of Endpoints needs to be retried;
+
+    - initialized_endpoint_calls indicates the dashboard has successfully initialized historical EndpointCalls,
+      and can start fetching new EndpointCalls in a periodic task;
+    - initialize_endpoint_calls_failure indicates something went wrong while initializing historical EndpointCalls,
+      which means this needs to be retried;
+
+    - fetched_endpoint_calls indicates last time new EndpointCalls were fetched, it was done successfully;
+    - fetch_endpoint_calls_failure indicates something went wrong while fetching new EndpointCalls,
+      which means this needs to be retried.
+    """
     not_initialized = 0
 
     initialized_endpoints = 10
