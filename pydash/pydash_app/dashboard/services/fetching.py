@@ -137,11 +137,12 @@ def _fetch_endpoints(dashboard):
     :return: A list of `Endpoint`s for the dashboard.
     """
 
+    # Note: exceptions raised by flask_monitoring_dashboard_client.get_monitor_rules
+    # are simply propagated upwards, since this is not the best place
+    # to handle them; this function is meant to be more or less "pure"
+
     monitor_rules = flask_monitoring_dashboard_client.get_monitor_rules(
         dashboard.url, dashboard.token)
-
-    if monitor_rules is None:
-        return []
 
     return [
         Endpoint(rule['endpoint'], rule['monitor']) for rule in monitor_rules
