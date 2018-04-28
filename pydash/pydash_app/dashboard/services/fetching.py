@@ -106,7 +106,7 @@ def fetch_and_update_historic_dashboard_info(dashboard_id):
     dashboard_repository.update(dashboard)
 
 
-# Initializing Endpoints
+# Endpoints
 
 
 def fetch_and_add_endpoints(dashboard):
@@ -145,7 +145,7 @@ def _fetch_endpoints(dashboard):
     ]
 
 
-# Initializing EndpointCalls
+# EndpointCalls
 
 
 def fetch_and_add_historic_endpoint_calls(dashboard):
