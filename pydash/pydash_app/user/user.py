@@ -31,6 +31,7 @@ class User(persistent.Persistent, flask_login.UserMixin):
         self.id = uuid.uuid4()
         self.name = name
         self.password_hash = generate_password_hash(password)
+        self.verification_code = uuid.uuid4()
 
     def __repr__(self):
         """
@@ -44,6 +45,9 @@ class User(persistent.Persistent, flask_login.UserMixin):
 
     def get_id(self):
         return str(self.id)
+
+    def get_verification_code(self):
+        return str(self.verification_code)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)

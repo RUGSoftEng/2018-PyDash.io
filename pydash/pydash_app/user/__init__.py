@@ -67,7 +67,7 @@ def remove_from_repository(user_id):
         string representation.
     """
     try:
-        repository.delete_by_id(user_id)
+        repository.delete(user_id)
     except KeyError:
         raise
 

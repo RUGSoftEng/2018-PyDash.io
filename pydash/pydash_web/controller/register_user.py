@@ -32,8 +32,12 @@ def register_user():
     else:
         user = pydash_app.user.User(username, password)
         pydash_app.user.add_to_repository(user)
-        message = {'message': 'User successfully registered.'}
-        logger.info(f'User successfully registered with username: {username}')
+        message = {'message': 'User successfully registered.',
+                   'verification_code': f'{user.get_verification_code()}'}
+        logger.info(f'User successfully registered with username: {username}'
+                    f' and verification code {user.get_verification_code()}')
+
+        # Todo: send verification email.
         return jsonify(message), 200
 
 

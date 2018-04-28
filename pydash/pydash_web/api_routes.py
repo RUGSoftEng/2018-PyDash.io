@@ -22,12 +22,14 @@ def logout():
 
 @api.route("/api/dashboards", methods=["GET"])
 @login_required
+@controller.verification_required
 def get_dashboards():
     return controller.dashboards()
 
 
 @api.route("/api/dashboards/<dashboard_id>", methods=["GET"])
 @login_required
+@controller.verification_required
 def get_dashboard(dashboard_id):
     return controller.dashboard(dashboard_id)
 
@@ -37,7 +39,14 @@ def register_user():
     return controller.register_user()
 
 
+@api.route("/api/user/verify/<verification_code>", methods=["POST"])
+@login_required
+def verify_user(verification_code):
+    return controller.verify_user(verification_code)
+
+
 @api.route("/api/user/delete", methods=["POST"])
 @login_required
+@controller.verification_required
 def delete_user():
     return controller.delete_user()
