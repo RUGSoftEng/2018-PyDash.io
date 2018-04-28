@@ -122,12 +122,43 @@ def fetch_and_add_endpoints(dashboard):
         logger.warning(f'Tried to add endpoints from a wrong state: {dashboard.state} for dashboard: {dashboard}')
         return
 
-    endpoints = _fetch_endpoints(dashboard)
+    try:
+        endpoints = _fetch_endpoints(dashboard)
+    except requests.exceptions.ConnectionError as e:
+        logger.error(f'Connection error in fetch_and_add_endpoints: {e}\n'
+                     f'from dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = str(e)
+        return
+    except requests.exceptions.HTTPError as e:
+        logger.error(f'HTTP error in fetch_and_add_endpoints: {e}\n'
+                     f'from dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = str(e)
+        return
+    except jwt.DecodeError as e:
+        logger.error(f'JWT decode error in fetch_and_add_endpoints: {e}\n'
+                     f'from dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = str(e)
+        return
+    except KeyError as e:
+        logger.error(f'Key error in fetch_and_add_endpoints: {e}\n'
+                     f'from dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = str(e)
+        return
+    except json.JSONDecodeError as e:
+        logger.error(f'JSON decode error in fetch_and_add_endpoints: {e}\n')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = str(e)
+        return
 
     for endpoint in endpoints:
         dashboard.add_endpoint(endpoint)
 
     dashboard.state = DashboardState.initialized_endpoints
+    dashboard.error = None
 
 
 def _fetch_endpoints(dashboard):
