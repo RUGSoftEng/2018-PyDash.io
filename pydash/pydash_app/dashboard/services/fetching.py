@@ -1,7 +1,6 @@
 from functools import partial
 from datetime import datetime, timedelta, timezone
 
-import pydash_database
 import flask_monitoring_dashboard_client
 from pydash_app.dashboard.endpoint import Endpoint
 from pydash_app.dashboard.endpoint_call import EndpointCall
