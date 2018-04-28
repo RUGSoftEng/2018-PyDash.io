@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 
 import json
 import requests.exceptions
+import jwt
 
 import flask_monitoring_dashboard_client
 from pydash_app.dashboard.endpoint import Endpoint
@@ -242,8 +243,43 @@ def fetch_and_add_endpoint_calls(dashboard):
             f'Tried to add new endpoint calls from a wrong state: {dashboard.state} for dashboard: {dashboard}')
         return
 
-    new_calls = _fetch_endpoint_calls(
-        dashboard, time_from=dashboard.last_fetch_time)
+    try:
+        new_calls = _fetch_endpoint_calls(
+            dashboard, time_from=dashboard.last_fetch_time)
+    except requests.exceptions.ConnectionError as e:
+        logger.error(f'Connection error in fetch_and_add_endpoint_calls: {e}\n'
+                     f'from dashboard {dashboard}')
+        dashboard.state = DashboardState.fetch_endpoint_calls_failure
+        dashboard.error = str(e)
+        return
+    except requests.exceptions.HTTPError as e:
+        logger.error(f'HTTP error in fetch_and_add_endpoint_calls: {e}\n'
+                     f'from dashboard {dashboard}')
+        dashboard.state = DashboardState.fetch_endpoint_calls_failure
+        dashboard.error = str(e)
+        return
+    except jwt.DecodeError as e:
+        logger.error(f'JWT decode error in fetch_and_add_endpoint_calls: {e}\n'
+                     f'from dashboard {dashboard}')
+        dashboard.state = DashboardState.fetch_endpoint_calls_failure
+        dashboard.error = str(e)
+        return
+    except KeyError as e:
+        logger.error(f'Key error in fetch_and_add_endpoint_calls: {e}\n'
+                     f'from dashboard {dashboard}')
+        dashboard.state = DashboardState.fetch_endpoint_calls_failure
+        dashboard.error = str(e)
+        return
+    except json.JSONDecodeError as e:
+        logger.error(f'JSON decode error in fetch_and_add_endpoint_calls: {e}\n')
+        dashboard.state = DashboardState.fetch_endpoint_calls_failure
+        dashboard.error = str(e)
+        return
+    except ValueError as e:
+        logger.error(f'Value error in fetch_and_add_endpoint_calls: {e}\n')
+        dashboard.state = DashboardState.fetch_endpoint_calls_failure
+        dashboard.error = str(e)
+        return
 
     if not new_calls:
         logger.info(f'No new calls for dashboard: {dashboard}')
