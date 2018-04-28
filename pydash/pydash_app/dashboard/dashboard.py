@@ -76,6 +76,7 @@ class Dashboard(persistent.Persistent):
 
         self.last_fetch_time = None
         self.status = DashboardStatus.not_initialized
+        self.error = None
 
         self._endpoint_calls = []  # list of unfiltered endpoint calls, for use with an aggregator.
         self._aggregator = Aggregator(self._endpoint_calls)
