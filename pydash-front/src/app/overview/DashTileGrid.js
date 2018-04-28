@@ -25,7 +25,7 @@ class DashTileGrid extends Component {
     }
     
     componentDidMount() {
-      axios('http://localhost:5000/api/dashboards', {
+      axios('/api/dashboards', {
         method: 'get',
         withCredentials: true
       }).then((response) => {
