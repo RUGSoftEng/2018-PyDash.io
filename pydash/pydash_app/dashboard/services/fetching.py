@@ -5,7 +5,10 @@ import flask_monitoring_dashboard_client
 from pydash_app.dashboard.endpoint import Endpoint
 from pydash_app.dashboard.endpoint_call import EndpointCall
 import pydash_app.dashboard.repository as dashboard_repository
+import pydash_logger
 import periodic_tasks
+
+logger = pydash_logger.Logger(__name__)
 
 
 def schedule_all_periodic_dashboards_tasks(
@@ -32,7 +35,8 @@ def schedule_periodic_dashboard_fetching(
     """
     Schedules the periodic EndpointCall fetching task for this dashboard.
     """
-    print(f'Creating periodic fetching task for {dashboard}')
+    logger.info(f'Creating periodic fetching task for {dashboard}')
+
     periodic_tasks.add_periodic_task(
         name=("dashboard", dashboard.id, "fetching"),
         task=partial(fetch_and_update_new_dashboard_info, dashboard.id),
@@ -62,18 +66,20 @@ def fetch_and_update_new_dashboard_info(dashboard_id):
     Updates the dashboard with the new EndpointCall information that is fetched from the Dashboard's remote location.
     """
     dashboard = dashboard_repository.find(dashboard_id)
-    print("INSIDE FETCH FUNCTION")
+
+    logger.info("INSIDE FETCH FUNCTION")
+
     fetch_and_add_endpoint_calls(dashboard)
 
-    print(f'- {len(dashboard.endpoints)} endpoints found')
-    print(f'- {len(dashboard._endpoint_calls)} endpoint calls')
+    logger.info(f'{len(dashboard.endpoints)} endpoints found')
+    logger.info(f'{len(dashboard._endpoint_calls)} endpoint calls')
 
     dashboard_repository.update(dashboard)
 
-    print(f'- {len(dashboard.endpoints)} endpoints found')
-    print(f'- {len(dashboard._endpoint_calls)} endpoint calls')
+    logger.info(f'{len(dashboard.endpoints)} endpoints found')
+    logger.info(f'{len(dashboard._endpoint_calls)} endpoint calls')
 
-    print(f"Dashboard {dashboard_id} updated.")
+    logger.info(f"Dashboard {dashboard_id} updated.")
 
 
 def fetch_and_update_historic_dashboard_info(dashboard_id):
@@ -81,17 +87,19 @@ def fetch_and_update_historic_dashboard_info(dashboard_id):
     Updates the dashboard with the historic EndpointCall information that is fetched from the Dashboard's remote location.
     """
     dashboard = dashboard_repository.find(dashboard_id)
-    print("INSIDE INITIAL DASHBOARD FETCHING FUNCTION")
+
+    logger.info("INSIDE INITIAL DASHBOARD FETCHING FUNCTION")
+
     fetch_and_add_endpoints(dashboard)
     fetch_and_add_historic_endpoint_calls(dashboard)
 
-    print(f'- {len(dashboard.endpoints)} endpoints found')
-    print(f'- {len(dashboard._endpoint_calls)} historical endpoint calls')
+    logger.info(f'{len(dashboard.endpoints)} endpoints found')
+    logger.info(f'{len(dashboard._endpoint_calls)} historical endpoint calls')
 
     dashboard_repository.update(dashboard)
 
-    print(f'- {len(dashboard.endpoints)} endpoints found')
-    print(f'- {len(dashboard._endpoint_calls)} historical endpoint calls')
+    logger.info(f'{len(dashboard.endpoints)} endpoints found')
+    logger.info(f'{len(dashboard._endpoint_calls)} historical endpoint calls')
 
 
 def fetch_and_add_endpoints(dashboard):
@@ -165,7 +173,8 @@ def fetch_and_add_endpoint_calls(dashboard):
     Retrieve the latest endpoint calls of the given dashboard and add them to it.
     :param dashboard: The dashboard for which to update endpoint calls.
     """
-    print(f"Updating endpoint calls for dashboard: {dashboard}")
+
+    logger.info(f"Updating endpoint calls for dashboard: {dashboard}")
 
     # Only run this function if historic fetching has happened.
     if dashboard.last_fetch_time is None:
@@ -173,7 +182,8 @@ def fetch_and_add_endpoint_calls(dashboard):
 
     new_calls = _fetch_endpoint_calls(
         dashboard, time_from=dashboard.last_fetch_time)
-    print(f"New endpoint calls: {new_calls}")
+
+    logger.info(f"New endpoint calls: {new_calls}")
 
     if new_calls is []:
         return []
@@ -182,7 +192,8 @@ def fetch_and_add_endpoint_calls(dashboard):
         dashboard.add_endpoint_call(call)
 
     dashboard.last_fetch_time = new_calls[-1].time
-    print(f"Saved to database: dashboard {dashboard}")
+
+    logger.info(f"Saved to database: dashboard {dashboard}")
 
 
 def _fetch_endpoint_calls(dashboard, time_from=None, time_to=None):
