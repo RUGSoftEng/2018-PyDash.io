@@ -1,14 +1,22 @@
+"""
+Performs the remote requests to the flask-monitoring-dashboard.
+
+The method names in this module 1:1 reflect the names of the flask-monitoring-dashboard API
+(but without the word 'JSON' in them, because conversion from JSON to Python dictionaries/lists
+is one of the thing this module handles for you.)
+"""
+
 import requests
 import jwt
 import json
 
-import pydash_app.impl.logger as pylog
+import pydash_logger
 
 DETAILS_ENDPOINT = 0
 RULES_ENDPOINT = 1
 DATA_ENDPOINT = 2
 
-logger = pylog.Logger(__name__)
+logger = pydash_logger.Logger(__name__)
 
 def get_details(dashboard_url):
     """
@@ -93,5 +101,4 @@ def _decode_jwt(payload, token):
     :return: A dict containing the data from the payload
     """
     message = jwt.decode(payload, token, algorithms=['HS256'])
-    print(message['data'])
     return json.loads(message['data'])

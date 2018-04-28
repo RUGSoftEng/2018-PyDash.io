@@ -25,7 +25,7 @@ class DashTileGrid extends Component {
     }
     
     componentDidMount() {
-      axios('http://localhost:5000/api/dashboards', {
+      axios('/api/dashboards', {
         method: 'get',
         withCredentials: true
       }).then((response) => {
@@ -49,11 +49,13 @@ class DashTileGrid extends Component {
         const {classes} = this.props;
         
         let tiles = [];
+        let counter = 0;
         
         for (let i in this.state.dashboards) {
           let id = this.state.dashboards[i].id;
           let url = this.state.dashboards[i].url;
-          tiles.push(<DashTile title={url} dashboard_id={id} xs={12} />);
+          tiles.push(<DashTile key={counter} title={url} dashboard_id={id} xs={12} />);
+          counter += 1;
         }
 
         return(

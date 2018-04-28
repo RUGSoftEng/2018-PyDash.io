@@ -5,35 +5,39 @@ The actual implementation of each of the routes' dispatching logic is handled by
 """
 
 from flask_login import login_required
-from flask_cors import cross_origin
 
-from pydash_web.blueprint import bp
+from pydash_web.api import api
 import pydash_web.controller as controller
 
 
-@bp.route("/api/login", methods=["POST"])
+@api.route("/api/login", methods=["POST"])
 def login():
     return controller.login()
 
 
-@bp.route("/api/logout", methods=["POST"])
+@api.route("/api/logout", methods=["POST"])
 def logout():
     return controller.logout()
 
 
-@bp.route("/api/dashboards", methods=["GET"])
+@api.route("/api/dashboards", methods=["GET"])
 @login_required
 def get_dashboards():
     return controller.dashboards()
 
 
-@bp.route("/api/dashboards/<dashboard_id>", methods=["GET"])
+@api.route("/api/dashboards/<dashboard_id>", methods=["GET"])
 @login_required
 def get_dashboard(dashboard_id):
     return controller.dashboard(dashboard_id)
 
 
-@bp.route("/", defaults={'path': ''})
-@bp.route("/<path:path>")
-def serve_react(path):
-    return bp.send_static_file("index.html")
+@api.route("/api/user/register", methods=["POST"])
+def register_user():
+    return controller.register_user()
+
+
+@api.route("/api/user/delete", methods=["POST"])
+@login_required
+def delete_user():
+    return controller.delete_user()
