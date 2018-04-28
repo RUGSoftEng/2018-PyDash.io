@@ -268,17 +268,24 @@ def _fetch_endpoint_calls(dashboard, time_from=None, time_to=None):
     :return: A list of `EndpointCall`s containing the endpoint call data for this dashboard.
     """
 
+    # Note: exceptions raised by flask_monitoring_dashboard_client.get_data
+    # are simply propagated upwards, since this is not the best place
+    # to handle them; this function is meant to be more or less "pure"
+
     endpoint_requests = flask_monitoring_dashboard_client.get_data(
         dashboard.url, dashboard.token, time_from, time_to)
-
-    if endpoint_requests is None:
-        return []
 
     endpoint_calls = []
     for request in endpoint_requests:
         # The raw endpoint call data contains a timestamp formatted
         # as "yyyy-mm-dd hh:mm:ss.micro" so we need to parse it
-        time = datetime.strptime(request['time'], '%Y-%m-%d %H:%M:%S.%f')
+        try:
+            time = datetime.strptime(request['time'], '%Y-%m-%d %H:%M:%S.%f')
+        except ValueError:
+            logger.error(f'Failed to parse the time of an endpoint call: {request}\n'
+                         f'from dashboard: {dashboard}')
+            raise
+
         time.replace(tzinfo=timezone.utc)
 
         call = EndpointCall(request['endpoint'], request['execution_time'],
