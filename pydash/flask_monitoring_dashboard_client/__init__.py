@@ -12,11 +12,12 @@ import json
 
 import pydash_logger
 
-DETAILS_ENDPOINT = 0
-RULES_ENDPOINT = 1
-DATA_ENDPOINT = 2
+_DETAILS_ENDPOINT = 0
+_RULES_ENDPOINT = 1
+_DATA_ENDPOINT = 2
 
 logger = pydash_logger.Logger(__name__)
+
 
 def get_details(dashboard_url):
     """
@@ -24,7 +25,7 @@ def get_details(dashboard_url):
     :param dashboard_url: The base URL for the deployed dashboard, without trailing slash
     :return: A dict containing details from the dashboard, or None if the request was unsuccessful
     """
-    endpoint = _endpoint_name(DETAILS_ENDPOINT)
+    endpoint = _endpoint_name(_DETAILS_ENDPOINT)
 
     response = requests.get(f'{dashboard_url}/{endpoint}')
 
@@ -41,7 +42,7 @@ def get_monitor_rules(dashboard_url, dashboard_token):
     :param dashboard_token: The secret token for the dashboard, used to decode the Json Web Token response
     :return: A dict containing monitor rules of the dashboard, or None if the request was unsuccessful
     """
-    endpoint = _endpoint_name(RULES_ENDPOINT)
+    endpoint = _endpoint_name(_RULES_ENDPOINT)
 
     response = requests.get(f'{dashboard_url}/{endpoint}')
 
@@ -57,15 +58,16 @@ def get_data(dashboard_url, dashboard_token, time_from=None, time_to=None):
     :param dashboard_url: The base URL for the deployed dashboard, without trailing slash
     :param dashboard_token: The secret token for the dashboard, used to decode the Json Web Token response
     :param time_from: An optional datetime indicating only data since that moment should be included
-    :param time_to: An optional datetime indicating only data up to that point should be included
-    :return: A dict containing all monitoring data or data since a given timestamp
+    :param time_to: An optional datetime indicating only data up to that point should be included;
+    only valid if time_from is also specified
+    :return: A dict containing all monitoring data, possibly limited to the given time range
     """
-    endpoint = _endpoint_name(DATA_ENDPOINT)
+    endpoint = _endpoint_name(_DATA_ENDPOINT)
 
     url = f'{dashboard_url}/{endpoint}'
 
     if time_from is None and time_to is not None:
-        logger.error('Invalid input paramater combination: when time_from is None, time_to may not be specified.')
+        logger.error('Invalid input parameter combination: when time_from is None, time_to may not be specified.')
         return None
 
     if time_from is not None:
