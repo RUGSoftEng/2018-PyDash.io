@@ -41,7 +41,7 @@ from pydash_app.dashboard.endpoint import Endpoint
 from pydash_app.dashboard.aggregator import Aggregator
 
 
-class DashboardStatus(Enum):
+class DashboardState(Enum):
     not_initialized = 0
 
     initialized_endpoints = 10
@@ -75,7 +75,7 @@ class Dashboard(persistent.Persistent):
         self.token = token
 
         self.last_fetch_time = None
-        self.status = DashboardStatus.not_initialized
+        self.state = DashboardState.not_initialized
         self.error = None
 
         self._endpoint_calls = []  # list of unfiltered endpoint calls, for use with an aggregator.
