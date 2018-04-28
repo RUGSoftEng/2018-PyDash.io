@@ -23,47 +23,38 @@ class DashTileGrid extends Component {
             dashboards: [],
         };
     }
-    
+ 
     componentDidMount() {
       axios(window.api_path + '/api/dashboards', {
         method: 'get',
         withCredentials: true
       }).then((response) => {
         console.log('found some data', response);
-        
-        
+
         this.setState(prevState => {
           let newState = prevState;
           newState.dashboards = response.data;
-          
           console.log(newState);
-          
           return newState;
         });
       }).catch((error) => {
-        console.log('error', error);
+        console.log('error while fetching dashboards information', error);
       });
     }
- 
+
     render() {
         const {classes} = this.props;
-        
-        let tiles = [];
-        let counter = 0;
-        
-        for (let i in this.state.dashboards) {
-          let id = this.state.dashboards[i].id;
-          let url = this.state.dashboards[i].url;
-          tiles.push(<DashTile key={counter} title={url} dashboard_id={id} xs={12} />);
-          counter += 1;
-        }
+
+        const tiles = this.state.dashboards.map((dashboard, index) => {
+            return <DashTile key={index} title={dashboard.url} dashboard_id={dashboard.id} />
+        })
 
         return(
             <Grid container spacing={24} className={classes.root}>
 
                 {/* For each found dashboard for username */}
                 {tiles}
-                    
+
             </Grid>
         );
     }

@@ -162,8 +162,6 @@ class ResponsiveDrawer extends React.Component {
             </div>
         );
     }
-
-    
 }
 
 const Db = ({match}) => {

@@ -51,7 +51,7 @@ class GraphGrid extends Component {
             newState.visits_per_day = dict_to_xy_arr(response.data.aggregates.visits_per_day)
             newState.unique_visitors_per_day = dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day)
             console.log(newState);
-  
+
             return newState;
         })
     }).catch((error) => {
