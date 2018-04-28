@@ -1,6 +1,9 @@
 from functools import partial
 from datetime import datetime, timedelta, timezone
 
+import json
+import requests.exceptions
+
 import flask_monitoring_dashboard_client
 from pydash_app.dashboard.endpoint import Endpoint
 from pydash_app.dashboard.endpoint_call import EndpointCall
@@ -18,7 +21,6 @@ def schedule_all_periodic_dashboards_tasks(
     """
     Sets up all tasks that should be run periodically for each of the dashboards.
     (For now, that is only the EndpointCall fetching task.)
-
     """
     for dashboard in dashboard_repository.all():
         initialization_states = (
@@ -152,8 +154,38 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
         logger.warning(f'Tried to add historic endpoint calls from a wrong state: {dashboard.state}')
         return
 
-    details = flask_monitoring_dashboard_client.get_details(dashboard.url)
-    first_request = int(details['first_request'])
+    try:
+        details = flask_monitoring_dashboard_client.get_details(dashboard.url)
+    except requests.exceptions.ConnectionError as e:
+        logger.error(f'Connection error happened while initializing EndpointCalls: {e}')
+        dashboard.state = DashboardState.initialize_endpoint_calls_failure
+        dashboard.error = str(e)
+        return
+    except requests.exceptions.HTTPError as e:
+        logger.error(f'HTTP error happened while initializing EndpointCalls: {e}')
+        dashboard.state = DashboardState.initialize_endpoint_calls_failure
+        dashboard.error = str(e)
+        return
+    except json.JSONDecodeError as e:
+        logger.error(f'JSON decode error happened while initializing EndpointCalls: {e}')
+        dashboard.state = DashboardState.initialize_endpoint_calls_failure
+        dashboard.error = str(e)
+        return
+
+    try:
+        first_request = int(details['first_request'])
+    except KeyError:
+        error_text = f'Dashboard details do not contain date of first request: {details}'
+        logger.error(error_text)
+        dashboard.state = DashboardState.initialize_endpoint_calls_failure
+        dashboard.error = error_text
+        return
+    except ValueError:
+        error_text = f"Dashboard details date of first request is not a timestamp: {details['first_request']}"
+        logger.error(error_text)
+        dashboard.state = DashboardState.initialize_endpoint_calls_failure
+        dashboard.error = error_text
+        return
 
     start_time = datetime.fromtimestamp(first_request, tz=timezone.utc)
     current_time = datetime.now(timezone.utc)
