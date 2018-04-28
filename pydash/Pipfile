@@ -25,6 +25,7 @@ pytest-splinter = "*"
 selenium = "*"
 pytest-localserver = "*"
 pytest-bdd = "*"
+pytest-random-order = "*"
 
 [requires]
 python_version = "3.6"
