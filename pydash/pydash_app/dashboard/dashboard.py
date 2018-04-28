@@ -35,9 +35,14 @@ Involved usage example:
 
 import uuid
 import persistent
+from enum import Enum
 
 from pydash_app.dashboard.endpoint import Endpoint
 from pydash_app.dashboard.aggregator import Aggregator
+
+
+class DashboardStatus(Enum):
+    not_initialized = 0
 
 
 class Dashboard(persistent.Persistent):
@@ -58,8 +63,10 @@ class Dashboard(persistent.Persistent):
         self.url = url
         self.user_id = uuid.UUID(user_id)
         self.endpoints = dict()  # name -> Endpoint
-        self.last_fetch_time = None
         self.token = token
+
+        self.last_fetch_time = None
+        self.last_fetch_status = DashboardStatus.not_initialized
 
         self._endpoint_calls = []  # list of unfiltered endpoint calls, for use with an aggregator.
         self._aggregator = Aggregator(self._endpoint_calls)
