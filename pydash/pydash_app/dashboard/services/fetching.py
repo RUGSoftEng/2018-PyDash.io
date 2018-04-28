@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 import flask_monitoring_dashboard_client
 from pydash_app.dashboard.endpoint import Endpoint
 from pydash_app.dashboard.endpoint_call import EndpointCall
+from pydash_app.dashboard.dashboard import DashboardState
 import pydash_app.dashboard.repository as dashboard_repository
 import pydash_logger
 import periodic_tasks
@@ -20,7 +21,14 @@ def schedule_all_periodic_dashboards_tasks(
 
     """
     for dashboard in dashboard_repository.all():
-        if dashboard.last_fetch_time is None:
+        initialization_states = (
+            DashboardState.not_initialized,
+            DashboardState.initialized_endpoints,
+            DashboardState.initialize_endpoints_failure,
+            DashboardState.initialized_endpoint_calls,
+            DashboardState.initialize_endpoint_calls_failure
+        )
+        if dashboard.state in initialization_states:
             schedule_historic_dashboard_fetching(
                 dashboard, scheduler=scheduler)
         else:
@@ -140,7 +148,8 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
     """
 
     # Only run this function if no periodic fetching of latest information has happened yet:
-    if dashboard.last_fetch_time is not None:
+    if dashboard.state != DashboardState.initialized_endpoints:
+        logger.warning(f'Tried to add historic endpoint calls from a wrong state: {dashboard.state}')
         return
 
     details = flask_monitoring_dashboard_client.get_details(dashboard.url)
@@ -176,8 +185,17 @@ def fetch_and_add_endpoint_calls(dashboard):
 
     logger.info(f"Updating endpoint calls for dashboard: {dashboard}")
 
-    # Only run this function if historic fetching has happened.
-    if dashboard.last_fetch_time is None:
+    # Only run this function if historic fetching has happened:
+    # - in the initialized_endpoint_calls state, we have just successfully fetched historic endpoint calls;
+    # - in the fetched_endpoint_calls state, we have just successfully fetched new endpoint calls;
+    # - in the fetch_endpoint_calls_failure state, we have failed to get the latest endpoint calls, so we will retry.
+    allowed_states = (
+        DashboardState.initialized_endpoint_calls,
+        DashboardState.fetched_endpoint_calls,
+        DashboardState.fetch_endpoint_calls_failure
+    )
+    if dashboard.state not in allowed_states:
+        logger.warning(f'Tried to add new endpoint calls from a wrong state: {dashboard.state}')
         return
 
     new_calls = _fetch_endpoint_calls(
