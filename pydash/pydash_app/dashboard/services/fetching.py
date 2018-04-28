@@ -291,6 +291,8 @@ def fetch_and_add_endpoint_calls(dashboard):
         dashboard.add_endpoint_call(call)
 
     dashboard.last_fetch_time = new_calls[-1].time
+    dashboard.state = DashboardState.fetched_endpoint_calls
+    dashboard.error = None
 
     logger.info(f'Saved to database: dashboard {dashboard}')
 
