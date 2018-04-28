@@ -118,7 +118,7 @@ def fetch_and_add_endpoints(dashboard):
 
     # Only run this function if no endpoints have been added yet
     if dashboard.state != DashboardState.not_initialized:
-        logger.warning(f'Tried to add endpoints from a wrong state: {dashboard.state}')
+        logger.warning(f'Tried to add endpoints from a wrong state: {dashboard.state} for dashboard: {dashboard}')
         return
 
     endpoints = _fetch_endpoints(dashboard)
@@ -156,7 +156,8 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
 
     # Only run this function if no periodic fetching of latest information has happened yet:
     if dashboard.state != DashboardState.initialized_endpoints:
-        logger.warning(f'Tried to add historic endpoint calls from a wrong state: {dashboard.state}')
+        logger.warning(
+            f'Tried to add historic endpoint calls from a wrong state: {dashboard.state} for dashboard: {dashboard}')
         return
 
     try:
@@ -232,7 +233,8 @@ def fetch_and_add_endpoint_calls(dashboard):
         DashboardState.fetch_endpoint_calls_failure
     )
     if dashboard.state not in allowed_states:
-        logger.warning(f'Tried to add new endpoint calls from a wrong state: {dashboard.state}')
+        logger.warning(
+            f'Tried to add new endpoint calls from a wrong state: {dashboard.state} for dashboard: {dashboard}')
         return
 
     new_calls = _fetch_endpoint_calls(
