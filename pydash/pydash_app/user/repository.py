@@ -12,7 +12,6 @@ It handles a subset of the following tasks
 - Deleting entities from the persistence layer.
 """
 import uuid
-import BTrees.OOBTree
 import transaction
 from pydash_database import database_root, MultiIndexedPersistentCollection
 from multi_indexed_collection import DuplicateIndexError
@@ -27,6 +26,16 @@ if not hasattr(database_root(), 'users'):
 
 
 def find(user_id):
+    """
+    Finds a user in the database.
+    :param user_id: UUID for the user to be retrieved.
+    :return: User object or None if no user could be found.
+
+    >>> gandalf = User("Gandalf", "pass")
+    >>> add(gandalf)
+    >>> find(gandalf.get_id()) == gandalf
+    True
+    """
     # Ensure that also callable with strings or integers:
     if not isinstance(user_id, uuid.UUID):
         user_id = uuid.UUID(user_id)
@@ -66,6 +75,15 @@ def add(user):
     """
     Adds the User-entity to the repository. Will raise a (KeyError, DuplicateIndexError) tuple on failure.
     :param user: The User-entity to add.
+
+    >>> list(all())
+    []
+    >>> gandalf = User("Gandalf", "pass")
+    >>> dumbledore = User("Dumbledore", "secret")
+    >>> add(gandalf)
+    >>> add(dumbledore)
+    >>> sorted([user.name for user in all()])
+    ['Dumbledore', 'Gandalf']
     """
     try:
         transaction.begin()
@@ -98,6 +116,14 @@ def delete_by_id(user_id):
      in a multiprocessing environment.
     :param user_id: The ID of the User-entity to be removed. This can be either a UUID-entity or the corresponding
         string representation.
+
+    >>> gandalf = User("Gandalf", "pass")
+    >>> add(gandalf)
+    >>> find_by_name("Gandalf") == gandalf
+    True
+    >>> delete_by_id(gandalf.get_id())
+    >>> find_by_name("Gandalf") == gandalf
+    False
     """
     # Ensure that also callable with strings or integers:
     if not isinstance(user_id, uuid.UUID):
@@ -139,6 +165,16 @@ def update(user):
 def clear_all():
     """
     Flushes the database.
+
+    >>> gandalf = User("Gandalf", "pass")
+    >>> dumbledore = User("Dumbledore", "secret")
+    >>> add(gandalf)
+    >>> add(dumbledore)
+    >>> sorted([user.name for user in all()])
+    ['Dumbledore', 'Gandalf']
+    >>> clear_all()
+    >>> list(all())
+    []
     """
     transaction.begin()
     database_root().users = MultiIndexedPersistentCollection({'id', 'name'})
