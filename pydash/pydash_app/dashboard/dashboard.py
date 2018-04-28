@@ -37,8 +37,7 @@ import uuid
 import persistent
 
 from pydash_app.dashboard.endpoint import Endpoint
-from .aggregator import Aggregator
-
+from pydash_app.dashboard.aggregator import Aggregator
 
 
 class Dashboard(persistent.Persistent):
