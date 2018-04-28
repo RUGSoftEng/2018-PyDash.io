@@ -78,7 +78,7 @@ def get_data(dashboard_url, dashboard_token, time_from=None, time_to=None):
 
     if time_from is None and time_to is not None:
         logger.error('Invalid input parameter combination: when time_from is None, time_to may not be specified.')
-        return None
+        raise ValueError('when time_from is None, time_to may not be specified')
 
     if time_from is not None:
         time_from = int(time_from.timestamp())
