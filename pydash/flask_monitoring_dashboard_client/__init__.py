@@ -35,7 +35,7 @@ def get_details(dashboard_url):
 
     if response.status_code != 200:
         logger.error(f'Bad response status code in get_details: {response.status_code}')
-        return None
+        response.raise_for_status()
 
     return json.loads(response.text)
 
@@ -57,7 +57,7 @@ def get_monitor_rules(dashboard_url, dashboard_token):
 
     if response.status_code != 200:
         logger.error(f'Bad response status code in get_monitor_rules: {response.status_code}')
-        return None
+        response.raise_for_status()
 
     return _decode_jwt(response.text, dashboard_token)
 
@@ -95,7 +95,7 @@ def get_data(dashboard_url, dashboard_token, time_from=None, time_to=None):
 
     if response.status_code != 200:
         logger.error(f'Bad response status code in get_data: {response.status_code}')
-        return None
+        response.raise_for_status()
 
     return _decode_jwt(response.text, dashboard_token)
 
