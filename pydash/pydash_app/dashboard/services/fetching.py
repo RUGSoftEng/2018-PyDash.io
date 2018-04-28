@@ -233,17 +233,18 @@ def fetch_and_add_endpoint_calls(dashboard):
     new_calls = _fetch_endpoint_calls(
         dashboard, time_from=dashboard.last_fetch_time)
 
-    logger.info(f"New endpoint calls: {new_calls}")
+    if not new_calls:
+        logger.info(f'No new calls for dashboard: {dashboard}')
+        return
 
-    if new_calls is []:
-        return []
+    logger.info(f'New endpoint calls: {new_calls}')
 
     for call in new_calls:
         dashboard.add_endpoint_call(call)
 
     dashboard.last_fetch_time = new_calls[-1].time
 
-    logger.info(f"Saved to database: dashboard {dashboard}")
+    logger.info(f'Saved to database: dashboard {dashboard}')
 
 
 def _fetch_endpoint_calls(dashboard, time_from=None, time_to=None):
