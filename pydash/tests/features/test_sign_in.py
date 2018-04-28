@@ -6,7 +6,6 @@ from pytest_bdd import (
     when,
 )
 from pytest_bdd import parsers
-import time
 
 from pydash_app.user.user import User
 import pydash_app.user as user
@@ -36,8 +35,6 @@ def test_sign_in_wrongpassword():
 def _(username, password):
     existing_user = User(username, password)
     user.add_to_repository(existing_user)
-    print(list(user_repository.all()))
-    print(existing_user.check_password(password))
 
 @when("I visit the Pydash sign in page")
 def i_visit_pydash_sign_in_page(browser, testserver):
@@ -65,16 +62,13 @@ def then_i_should_be_on_the_overview_page(browser):
 
 @then(parsers.cfparse("I should see the username \"{username}\" in the menu"))
 def then_i_should_see_my_username_in_the_menu(browser, username):
-    time.sleep(1)
-    assert browser.is_text_present(username, wait_time=1)
+    assert browser.is_text_present(username)
 
 @then("I should see the error 'both fields are required'")
 def then_i_should_see_error_both_fields_required(browser):
     # assert browser.find_by_id("#password-helper-text").visible
-    time.sleep(1)
     assert browser.is_text_present("Both fields are required!")
 
-@then("I should see an error message")
+@then("I should see the error 'incorrect credentials'")
 def then_i_should_see_error_message(browser):
-    time.sleep(1)
-    assert browser.is_text_present("Incorrect credentials 😱", wait_time=1)
+    assert browser.is_text_present("Incorrect credentials 😱")
