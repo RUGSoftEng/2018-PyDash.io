@@ -116,6 +116,11 @@ def fetch_and_add_endpoints(dashboard):
     :param dashboard: The dashboard to initialize with endpoints.
     """
 
+    # Only run this function if no endpoints have been added yet
+    if dashboard.state != DashboardState.not_initialized:
+        logger.warning(f'Tried to add endpoints from a wrong state: {dashboard.state}')
+        return
+
     endpoints = _fetch_endpoints(dashboard)
 
     for endpoint in endpoints:
