@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Login from './login/Login';
-import Dashboard from './app/dashboard/Dashboard';
+import MainInterface from './app/main_interface/MainInterface';
 import { Switch, Route } from 'react-router-dom';
 /* import ProtectedRoute from './login/ProtectedRoute'*/
 
@@ -22,7 +22,7 @@ class App extends Component {
         <Switch>
           {/* `exact` because its only one slash */}
           <Route exact path='/' render={(props) => <Login changeUsernameHandler={this.changeUsername} {...props} />} />
-          <Route path='/dashboard' render={(props) => <Dashboard username={this.state.username} {...props} />}/>
+          <Route path='/dashboard' render={(props) => <MainInterface username={this.state.username} {...props} />}/>
         </Switch>
       </div>
     );

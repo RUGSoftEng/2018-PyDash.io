@@ -19,7 +19,7 @@ import UserIcon from 'material-ui-icons/AccountCircle';
 import { mailFolderListItems, otherMailFolderListItems } from './Sidebar';
 import Overview from '../overview/Overview';
 import Statistics from '../statistics/Statistics';
-import Board from '../boards/Board';
+import DashboardPage from '../dashboard/DashboardPage';
 import Settings from '../settings/Settings';
 
 
@@ -79,6 +79,11 @@ const styles = theme => ({
         padding: theme.spacing.unit * 3,
     },
 });
+
+
+const MatchedDashboardPage = ({match}) => {
+    return <DashboardPage id={match.params.id} />
+}
 
 class ResponsiveDrawer extends React.Component {
     state = {
@@ -157,16 +162,13 @@ class ResponsiveDrawer extends React.Component {
                     <Route exact path='/dashboard' component={Overview} />
                     <Route exact path='/dashboard/settings' component={Settings} />
                     <Route exact path='/dashboard/statistics' component={Statistics} />
-                    <Route path='/dashboard/view/:id' component={Db} />                    
+                    <Route path='/dashboard/view/:id' component={MatchedDashboardPage} />
                 </main>
             </div>
         );
     }
 }
 
-const Db = ({match}) => {
-    return <Board id={match.params.id} />
-}
 
 ResponsiveDrawer.propTypes = {
     classes: PropTypes.object.isRequired,

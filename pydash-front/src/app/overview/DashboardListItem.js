@@ -15,7 +15,7 @@ const styles = {
 };
 
 
-class DashTile extends Component {
+class DashboardListItem extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -41,4 +41,4 @@ class DashTile extends Component {
     }
 }
 
-export default withStyles(styles)(DashTile);
+export default withStyles(styles)(DashboardListItem);
