@@ -22,6 +22,7 @@ class Board extends Component {
             dashboard: null,
             visits_per_day: [],
             unique_visitors_per_day: [],
+            error: "",
             width: 0,
         };
     }
@@ -38,19 +39,34 @@ class Board extends Component {
         method: 'get',
         withCredentials: true
       }).then((response) => {
+        //console.log(response);
+        if (response.data.hasOwnProperty('error')) {
+            this.setState(prevState => {
+                return {
+                    ...prevState,
 
-        this.setState(prevState => {
-            return {
-                ...prevState,
+                    dashboard: response.data,
+
+                    total_visits: response.data.aggregates.total_visits,
+                    visits_per_day: dict_to_xy_arr(response.data.aggregates.visits_per_day),
+                    unique_visitors_per_day: dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day),
+                    error: response.data.error,
+                }
+            });
+        } else {
+            this.setState(prevState => {
+                return {
+                    ...prevState,
 
 
-                dashboard: response.data,
+                    dashboard: response.data,
 
-                total_visits: response.data.aggregates.total_visits,
-                visits_per_day: dict_to_xy_arr(response.data.aggregates.visits_per_day),
-                unique_visitors_per_day: dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day),
-            }
-        });
+                    total_visits: response.data.aggregates.total_visits,
+                    visits_per_day: dict_to_xy_arr(response.data.aggregates.visits_per_day),
+                    unique_visitors_per_day: dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day),
+                };
+            });
+        }
       }).catch((error) => {
         console.log('error while fetching dashboard information', error);
       });
@@ -63,6 +79,7 @@ class Board extends Component {
         return (
             <div ref={this.divRef} >
                 <h2>Dashboard: {this.state.dashboard.url}</h2>
+                <h3>{this.state.error}</h3>
                 <div>
                     <VisitsPerDayPanel dashboard_id={this.props.id} />
                     <UniqueVisitorsPerDayPanel dashboard_id={this.props.id} />
