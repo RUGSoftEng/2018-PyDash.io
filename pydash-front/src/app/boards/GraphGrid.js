@@ -40,7 +40,7 @@ class GraphGrid extends Component {
     console.log("TEST")
     // TODO: Get dashboard_id from newProps
     const dashboard_id = this.props.id
-    axios('/api/dashboards/' + dashboard_id, {
+    axios(window.api_path + '/api/dashboards/' + dashboard_id, {
         method: 'get',
         withCredentials: true
     }).then((response) => {
@@ -51,7 +51,7 @@ class GraphGrid extends Component {
             newState.visits_per_day = dict_to_xy_arr(response.data.aggregates.visits_per_day)
             newState.unique_visitors_per_day = dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day)
             console.log(newState);
-  
+
             return newState;
         })
     }).catch((error) => {

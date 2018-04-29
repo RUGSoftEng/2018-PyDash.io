@@ -6,13 +6,11 @@ import Card, { CardContent } from 'material-ui/Card';
 import { withStyles } from 'material-ui/styles';
 
 import NavLink from 'react-router-dom/NavLink';
-import Button from 'material-ui/Button';
 
 const styles = {
     Card: {
         minWidth: 200,
         minHeight: 100,
-        'background-color': '#3f51b5',
     }
 };
 
@@ -28,15 +26,16 @@ class DashTile extends Component {
         };
     }
 
-    render() { 
+    render() {
         return(
-            <Grid item xs={2} sm={2}>
-                <Card>
+            <Grid item xs={12} sm={12}>
+                <NavLink to={'/dashboard/view/' + this.props.dashboard_id} className="DashboardTileLink">
+                <Card className="DashboardTile">
                     <CardContent>
                         <h2>{this.props.title}</h2>
-                        <Button component={NavLink} to={'/dashboard/view/' + this.props.dashboard_id} >View statistics</Button>
                     </CardContent>
                 </Card>
+                </NavLink>
             </Grid>
         );
     }

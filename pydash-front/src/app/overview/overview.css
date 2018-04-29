@@ -10,6 +10,16 @@
     minHeight: 100px;
 }
 
+a.DashboardTileLink {
+    color: black;
+    text-decoration: none;
+    transition-duration: 0.1s;
+}
+
+a.DashboardTileLink:hover {
+    color: grey;
+}
+
 /*.cardContent {
     min-height: 200px;
     min-width: 200px;

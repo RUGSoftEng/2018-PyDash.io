@@ -27,7 +27,7 @@ class Login extends Component {
         e.preventDefault()
 
         // Make a request for a user with a given ID
-        axios('/api/logout', {
+        axios(window.api_path + '/api/logout', {
             method: 'post',
             withCredentials: true
         }).then((response) => {
