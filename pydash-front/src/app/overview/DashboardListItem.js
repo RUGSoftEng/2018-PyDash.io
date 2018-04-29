@@ -33,6 +33,7 @@ class DashboardListItem extends Component {
                 <Card className="DashboardTile">
                     <CardContent>
                         <h2>{this.props.title}</h2>
+                        <h3>{this.props.error}</h3>
                     </CardContent>
                 </Card>
                 </NavLink>
