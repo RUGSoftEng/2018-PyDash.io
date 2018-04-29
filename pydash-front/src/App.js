@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Login from './login/Login';
-import MainInterface from './app/main_interface/MainInterface';
+// import MainInterface from './app/main_interface/MainInterface';
 import { Switch, Route } from 'react-router-dom';
 import Dashboard from './app/dashboard/DashboardPage'
 import AccountCreation from './accountCreation/AccountCreation';
