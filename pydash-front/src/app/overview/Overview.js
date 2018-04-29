@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import DashTileGrid from './DashTileGrid';
+import DashboardList from './DashboardList';
 
 class Overview extends Component {
     render() {
         return (
-            <DashTileGrid />
+            <DashboardList />
         );
     }
 }

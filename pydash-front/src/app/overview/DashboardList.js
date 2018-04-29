@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './overview.css';
 import Grid from 'material-ui/Grid';
-import DashTile from './DashTile';
+import DashboardListItem from './DashboardListItem';
 import { withStyles } from 'material-ui/styles';
 import axios from 'axios';
 
@@ -16,14 +16,14 @@ const styles = theme => ({
   },
 });
 
-class DashTileGrid extends Component {
+class DashboardList extends Component {
     constructor(props) {
         super(props);
         this.state = {
             dashboards: [],
         };
     }
- 
+
     componentDidMount() {
       axios(window.api_path + '/api/dashboards', {
         method: 'get',
@@ -46,7 +46,7 @@ class DashTileGrid extends Component {
         const {classes} = this.props;
 
         const tiles = this.state.dashboards.map((dashboard, index) => {
-            return <DashTile key={index} title={dashboard.url} dashboard_id={dashboard.id} />
+            return <DashboardListItem key={index} title={dashboard.url} dashboard_id={dashboard.id} />
         })
 
         return(
@@ -60,4 +60,4 @@ class DashTileGrid extends Component {
     }
 }
 
-export default withStyles(styles)(DashTileGrid);
+export default withStyles(styles)(DashboardList);
