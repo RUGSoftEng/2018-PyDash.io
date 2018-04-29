@@ -14,10 +14,10 @@ PyJWT = "*"
 requests = "*"
 Flask-Cors = "*"
 pqdict = "*"
+pytest-cov = "*"
 
 [dev-packages]
 pytest = "*"
-pytest-cov = "*"
 pytest-xdist = "*"
 pytest-env = "*"
 pytest-flask = "*"

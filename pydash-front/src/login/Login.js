@@ -52,7 +52,7 @@ class Login extends Component {
 
 
         // Make a request for a user with a given ID
-        axios.post('/api/login', {
+        axios.post(window.api_path + '/api/login', {
             username,
             password},
             {withCredentials: true}
@@ -69,11 +69,19 @@ class Login extends Component {
             }));
         }).catch((error) => {
             console.log(error);
-            this.setState(prevState => ({
-                error: true,
-                helperText: 'Incorrect credentials 😱',
-                loading: false,
-            }))
+            if(error.response && error.response.status === 401) {
+                this.setState(prevState => ({
+                    error: true,
+                    helperText: 'Incorrect credentials 😱',
+                    loading: false,
+                }))
+            } else {
+                this.setState(prevState => ({
+                    error: true,
+                    helperText: 'Unknown error returned:' + error,
+                    loading: false,
+                }))
+            }
         });
     }
 
