@@ -21,6 +21,7 @@ class DashboardList extends Component {
         super(props);
         this.state = {
             dashboards: [],
+            error: "",
         };
     }
 
@@ -30,13 +31,25 @@ class DashboardList extends Component {
         withCredentials: true
       }).then((response) => {
         console.log('found some data', response);
+        if (response.data.hasOwnProperty('error')) {
+          console.log("Error found");
+          this.setState(prevState => {
+            return {
+              ...prevState,
 
-        this.setState(prevState => {
-          let newState = prevState;
-          newState.dashboards = response.data;
-          console.log(newState);
-          return newState;
-        });
+              dashboards: response.data,
+              error: response.data.error,
+            };
+          });
+        } else { 
+          this.setState(prevState => {
+            return {
+              ...prevState,
+
+              dashboards: response.data,
+            };
+          });
+        }
       }).catch((error) => {
         console.log('error while fetching dashboards information', error);
       });
@@ -46,7 +59,7 @@ class DashboardList extends Component {
         const {classes} = this.props;
 
         const tiles = this.state.dashboards.map((dashboard, index) => {
-            return <DashboardListItem key={index} title={dashboard.url} dashboard_id={dashboard.id} />
+            return <DashboardListItem key={index} title={dashboard.url} dashboard_id={dashboard.id} error={dashboard.error} />
         })
 
         return(
