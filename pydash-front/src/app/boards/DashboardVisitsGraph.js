@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
-import { Line } from '@nivo/line'
+import { ResponsiveLine } from '@nivo/line'
 
 class DashboardVisitsGraph extends Component {
     render() {
-        return (<div>
-            <h4>{this.props.title}:</h4>
-            <Line
+        return (<div style={{width: "100%"}}>
+            <h4>{this.props.title}</h4>
+            <ResponsiveLine
                 data={[{id: this.props.tooltip_title, data: this.props.data}]}
-                width={500}
                 height={400}
                 curve="monotoneX"
                 axisBottom={{

@@ -44,16 +44,14 @@ class GraphGrid extends Component {
         method: 'get',
         withCredentials: true
     }).then((response) => {
-        console.log('success', response);
-        this.setState(prevState =>{
-            let newState = prevState;
-            newState.total_visits = "" + response.data.aggregates.total_visits;
-            newState.visits_per_day = dict_to_xy_arr(response.data.aggregates.visits_per_day)
-            newState.unique_visitors_per_day = dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day)
-            console.log(newState);
-
-            return newState;
-        })
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                total_visits: response.data.aggregates.total_visits,
+                visits_per_day: dict_to_xy_arr(response.data.aggregates.visits_per_day),
+                unique_visitors_per_day: dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day),
+            }
+        });
     }).catch((error) => {
         console.log('error', error);
     });
@@ -76,8 +74,6 @@ class GraphGrid extends Component {
       </Grid>
     );
   }
-
-    
 }
 
 export default withStyles(styles)(GraphGrid);
