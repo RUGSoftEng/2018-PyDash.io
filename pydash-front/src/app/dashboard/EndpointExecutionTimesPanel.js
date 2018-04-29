@@ -10,7 +10,7 @@ import ExpansionPanel, {
 } from 'material-ui/ExpansionPanel';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import {dict_to_xy_arr, api_to_bar_data} from "../../utils";
+import { api_to_bar_data} from "../../utils";
 
 // Dummy data for testing average endpoint execution time visualisation.
 const endpoints = {
@@ -43,6 +43,48 @@ const endpoints = {
             'average_execution_time': 2
         },
         'name': "overview"
+    }, 
+    '5': {
+        'aggregates': {
+            'average_execution_time': 2
+        },
+        'name': "overview4"
+    },
+    '6': {
+        'aggregates': {
+            'average_execution_time': 23
+        },
+        'name': "index2"
+    },
+    '7': {
+        'aggregates': {
+            'average_execution_time': 48
+        },
+        'name': "user2"
+    },
+    '8': {
+        'aggregates': {
+            'average_execution_time': 10
+        },
+        'name': "dashboard2"
+    },
+    '9': {
+        'aggregates': {
+            'average_execution_time': 25
+        },
+        'name': "testpage2"
+    },
+    '10': {
+        'aggregates': {
+            'average_execution_time': 2
+        },
+        'name': "overview2"
+    }, 
+    '11': {
+        'aggregates': {
+            'average_execution_time': 2
+        },
+        'name': "overview3"
     },
 
 };
@@ -77,10 +119,10 @@ class EndpointExecutionTimesPanel extends Component {
         return (
             <ExpansionPanel>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                    <h3>Average execution time per endpint</h3>
+                    <h3>Average execution time per endpoint</h3>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <ExecutionTimesGraph data={this.state.average_execution_times} title="Average execution time per endpoint" tooltip_title="Execution time: "/>
+                    <ExecutionTimesGraph data={this.state.average_execution_times} height={this.state.average_execution_times.length*80} title="Average execution time per endpoint" />
                 </ExpansionPanelDetails>
             </ExpansionPanel>
         )

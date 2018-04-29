@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
-import { ResponsiveBar } from '@nivo/bar';
+import { Bar } from '@nivo/bar';
 
 class ExecutionTimesGraph extends Component {
     render() {
         return (<div style={{width: "100%"}}>
         <h4>{this.props.title}</h4>
-        <ResponsiveBar
+        <Bar
+            width={1000}
+            height={this.props.height}
             data={this.props.data}
             keys={[
                 "average_execution_time",
@@ -13,9 +15,9 @@ class ExecutionTimesGraph extends Component {
             indexBy="name"
             margin={{
                 "top": 50,
-                "right": 130,
+                "right": 200,
                 "bottom": 50,
-                "left": 60
+                "left": 120
             }}
             padding={0.3}
             layout="horizontal"
@@ -27,18 +29,12 @@ class ExecutionTimesGraph extends Component {
                 "tickSize": 5,
                 "tickPadding": 5,
                 "tickRotation": 0,
-                "legend": "Endpoint",
-                "legendPosition": "center",
-                "legendOffset": 36
             }}
             axisLeft={{
                 "orient": "left",
                 "tickSize": 5,
                 "tickPadding": 5,
                 "tickRotation": 0,
-                "legend": "Time",
-                "legendPosition": "center",
-                "legendOffset": -40
             }}
             labelSkipWidth={12}
             labelSkipHeight={12}
@@ -52,7 +48,7 @@ class ExecutionTimesGraph extends Component {
                     "anchor": "bottom-right",
                     "direction": "column",
                     "translateX": 120,
-                    "itemWidth": 100,
+                    "itemWidth": 150,
                     "itemHeight": 20,
                     "itemsSpacing": 2,
                     "symbolSize": 20

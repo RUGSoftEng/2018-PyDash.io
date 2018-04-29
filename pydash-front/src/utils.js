@@ -23,6 +23,7 @@ function api_to_bar_data(endpoints) {
       res.push({'name': name, 'average_execution_time': average_execution_time});
     }
     console.log('bar data', res);
+    console.log('length: ' + res.length);
     return res;
 }
 
