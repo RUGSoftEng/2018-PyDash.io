@@ -7,7 +7,7 @@ class DashboardVisitsGraph extends Component {
             <h4>{this.props.title}</h4>
             <ResponsiveLine
                 data={[{id: this.props.tooltip_title, data: this.props.data}]}
-                height={400}
+                height={this.props.height ? this.props.height : 300}
                 curve="monotoneX"
                 axisBottom={{
                     "orient": "bottom",
@@ -29,9 +29,9 @@ class DashboardVisitsGraph extends Component {
                 }}
                 margin={{
                     "top": 50,
-                    "right": 100,
-                    "bottom": 150,
-                    "left": 100
+                    "right": 50,
+                    "bottom": 50,
+                    "left": 50
                 }}
                 colors={["aquamarine", "blue", "cyan"]}
                 dotSize={10}
