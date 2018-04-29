@@ -30,8 +30,9 @@ class DashboardList extends Component {
         method: 'get',
         withCredentials: true
       }).then((response) => {
-        //console.log('found some data', response);
+        console.log('found some data', response);
         if (response.data.hasOwnProperty('error')) {
+          console.log("Error found");
           this.setState(prevState => {
             return {
               ...prevState,
@@ -58,7 +59,7 @@ class DashboardList extends Component {
         const {classes} = this.props;
 
         const tiles = this.state.dashboards.map((dashboard, index) => {
-            return <DashboardListItem key={index} title={dashboard.url} dashboard_id={dashboard.id} error={this.state.error} />
+            return <DashboardListItem key={index} title={dashboard.url} dashboard_id={dashboard.id} error={dashboard.error} />
         })
 
         return(
