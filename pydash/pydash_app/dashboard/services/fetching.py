@@ -123,6 +123,47 @@ def fetch_and_add_endpoints(dashboard):
         return
 
     try:
+        details = flask_monitoring_dashboard_client.get_details(dashboard.url)
+    except requests.exceptions.ConnectionError as e:
+        logger.error(f'Connection error in fetch_and_add_endpoints: {e}\n'
+                     f'from dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = str(e)
+        return
+    except requests.exceptions.HTTPError as e:
+        logger.error(f'HTTP error in fetch_and_add_endpoints: {e}\n'
+                     f'from dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = str(e)
+        return
+    except jwt.DecodeError as e:
+        logger.error(f'JWT decode error in fetch_and_add_endpoints: {e}\n'
+                     f'from dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = str(e)
+        return
+    except KeyError as e:
+        logger.error(f'Key error in fetch_and_add_endpoints: {e}\n'
+                     f'from dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = str(e)
+        return
+    except json.JSONDecodeError as e:
+        logger.error(f'JSON decode error in fetch_and_add_endpoints: {e}\n')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = str(e)
+        return
+
+    try:
+        version = details['dashboard-version']
+    except KeyError:
+        error_text = f'Dashboard details do not contain version: {details}'
+        logger.error(error_text)
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = error_text
+        return
+
+    try:
         endpoints = _fetch_endpoints(dashboard)
     except requests.exceptions.ConnectionError as e:
         logger.error(f'Connection error in fetch_and_add_endpoints: {e}\n'
