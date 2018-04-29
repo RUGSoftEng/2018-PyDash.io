@@ -217,7 +217,7 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
         return
 
     try:
-        first_request = int(details['first_request'])
+        first_request = int(details['first-request'])
     except KeyError:
         error_text = f'Dashboard details do not contain date of first request: {details}'
         logger.error(error_text)
