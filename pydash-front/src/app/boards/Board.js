@@ -65,15 +65,15 @@ class Board extends Component {
         return (
             <div ref={this.divRef} >
                 <h2>Dashboard: {this.state.dashboard.url}</h2>
-                <ExpandableGraphRow classes={{heading: "h2"}} title="Visits per Day">
+                <ExpandableGraphRow title="Visits per Day">
                     <DashboardVisitsGraph width={this.state.width} data={this.state.visits_per_day} title="Visits per day:" tooltip_title="No. visits: "/>
                 </ExpandableGraphRow>
-                <ExpandableGraphRow classes={{heading: "h2"}} title="Unique Visitors Per Day">
-                    <DashboardVisitsGraph width={this.state.width} data={this.state.unique_visitors_per_day} title="Unique Visitors:" tooltip_title="No. visits: "/>
+                <ExpandableGraphRow title="Unique Visitors Per Day">
+                    <DashboardVisitsGraph width={this.state.width} data={this.state.unique_visitors_per_day} title="Unique Visitors:" tooltip_title="No. unique visitors: "/>
                 </ExpandableGraphRow>
-
-
-                {/* <GraphGrid id={this.props.id} /> */}
+                <ExpandableGraphRow title="Average Response Time">
+                    <DashboardVisitsGraph width={this.state.width} data={this.state.unique_visitors_per_day} title="Average Response Time" tooltip_title="Average Response Time:"/>
+                </ExpandableGraphRow>
             </div>
         );
     }

@@ -24,16 +24,8 @@ class ExpandableGraphRow extends Component {
     }
 
     render = () => {
-        const { classes } = this.props;
 
         return (
-            //     <Card>
-            //     <h2>{this.props.title}</h2>
-            //     {this.state.expanded ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
-            //     <div>
-            //         {this.state.expanded ? this.props.children : '' }
-            //     </div>
-            // </Card>
             <ExpansionPanel>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 <h3>{this.props.title}</h3>
