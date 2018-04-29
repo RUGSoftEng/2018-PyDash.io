@@ -13,4 +13,17 @@ function dict_to_xy_arr(dict){
     return res;
 }
 
-export {dict_to_xy_arr};
+// Transforms the returned endpoint data from the api into a form that can be
+// displayed in a nivo bar graph.
+function api_to_bar_data(endpoints) {
+    let res = [];
+    for (let i in endpoints) {
+      let name = endpoints[i].name;
+      let average_execution_time = endpoints[i].aggregates.average_execution_time;
+      res.push({'name': name, 'average_execution_time': average_execution_time});
+    }
+    console.log('bar data', res);
+    return res;
+}
+
+export {dict_to_xy_arr, api_to_bar_data};

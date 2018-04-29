@@ -3,16 +3,31 @@ import axios from 'axios';
 
 import VisitsPerDayPanel from './VisitsPerDayPanel';
 import UniqueVisitorsPerDayPanel from './UniqueVisitorsPerDayPanel';
+import {dict_to_xy_arr} from "../../utils";
+import EndpointExecutionTimesPanel from './EndpointExecutionTimesPanel';
 
 // Transforms a hashmap of key-value pairs into an array of {x: key, y: value} objects.
 // TODO move to a helper JS file.
-function dict_to_xy_arr(dict){
+/*function dict_to_xy_arr(dict){
   let res =  Object.entries(dict).map(function([key, value]){
       return {x: key, y: value}
   });
   console.log('dict_to_xy_array', res);
   return res;
-}
+}*/
+  
+/*const styles = theme => ({
+    root: {
+      flexGrow: 1,
+    },
+    paper: {
+      padding: theme.spacing.unit * 2,
+      textAlign: 'center',
+      color: theme.palette.text.secondary,
+    },
+});*/
+  
+  
 
 class Board extends Component {
     constructor(props) {
@@ -22,6 +37,7 @@ class Board extends Component {
             dashboard: null,
             visits_per_day: [],
             unique_visitors_per_day: [],
+            average_execution_times: [],
             width: 0,
         };
     }
@@ -51,6 +67,7 @@ class Board extends Component {
                 unique_visitors_per_day: dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day),
             }
         });
+        console.log(this.state);
       }).catch((error) => {
         console.log('error while fetching dashboard information', error);
       });
@@ -66,6 +83,7 @@ class Board extends Component {
                 <div>
                     <VisitsPerDayPanel dashboard_id={this.props.id} />
                     <UniqueVisitorsPerDayPanel dashboard_id={this.props.id} />
+                    <EndpointExecutionTimesPanel dashboard_id={this.props.id} />
                 </div>
             </div>
         );
