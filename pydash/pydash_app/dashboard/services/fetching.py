@@ -241,10 +241,38 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
         if end_time > current_time:
             end_time = current_time
 
-        endpoint_calls = _fetch_endpoint_calls(dashboard, start_time, end_time)
-
-        if endpoint_calls is None:
-            continue
+        try:
+            endpoint_calls = _fetch_endpoint_calls(dashboard, start_time, end_time)
+        except requests.exceptions.ConnectionError as e:
+            logger.error(f'Connection error happened while fetching historical EndpointCalls: {e}\n'
+                         f'for dashboard: {dashboard}')
+            dashboard.state = DashboardState.initialize_endpoint_calls_failure
+            dashboard.error = str(e)
+            return
+        except requests.exceptions.HTTPError as e:
+            logger.error(f'HTTP error happened while fetching historical EndpointCalls: {e}\n'
+                         f'for dashboard: {dashboard}')
+            dashboard.state = DashboardState.initialize_endpoint_calls_failure
+            dashboard.error = str(e)
+            return
+        except jwt.DecodeError as e:
+            logger.error(f'JWT decode error happened while fetching historical EndpointCalls: {e}\n'
+                         f'for dashboard {dashboard}')
+            dashboard.state = DashboardState.initialize_endpoint_calls_failure
+            dashboard.error = str(e)
+            return
+        except KeyError as e:
+            logger.error(f'Key error happened while fetching historical EndpointCalls: {e}\n'
+                         f'for dashboard: {dashboard}')
+            dashboard.state = DashboardState.initialize_endpoint_calls_failure
+            dashboard.error = str(e)
+            return
+        except json.JSONDecodeError as e:
+            logger.error(f'JSON decode error happened while fetching historical EndpointCalls: {e}\n'
+                         f'for dashboard: {dashboard}')
+            dashboard.state = DashboardState.initialize_endpoint_calls_failure
+            dashboard.error = str(e)
+            return
 
         for call in endpoint_calls:
             dashboard.add_endpoint_call(call)
