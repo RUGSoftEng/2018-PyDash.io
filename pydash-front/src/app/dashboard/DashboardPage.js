@@ -1,17 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import ExpandableGraphRow from './ExpandableGraphRow';
-import DashboardVisitsGraph from './DashboardVisitsGraph';
 import VisitsPerDayPanel from './VisitsPerDayPanel';
 import UniqueVisitorsPerDayPanel from './UniqueVisitorsPerDayPanel';
-
-import ExpansionPanel, {
-    ExpansionPanelSummary,
-    ExpansionPanelDetails,
-} from 'material-ui/ExpansionPanel';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
 
 // Transforms a hashmap of key-value pairs into an array of {x: key, y: value} objects.
 // TODO move to a helper JS file.
