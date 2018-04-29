@@ -31,8 +31,7 @@ class accountCreation extends Component {
             return;
         }
 
-        // Make a request for a user with a given ID
-        axios.post('http://localhost:5000/api/login', {
+        axios.post('http://localhost:5000/api/register_user', {
             username,
             password},
             {withCredentials: true}
@@ -71,7 +70,7 @@ class accountCreation extends Component {
                     <br />
                     <TextField
                         id="Email"
-                        label="email"
+                        label="Email"
                         value={this.state.email}
                         onChange={this.handleChange('email')}
                         margin="normal"
