@@ -5,6 +5,7 @@ import VisitsPerDayPanel from './VisitsPerDayPanel';
 import UniqueVisitorsPerDayPanel from './UniqueVisitorsPerDayPanel';
 import {dict_to_xy_arr} from "../../utils";
 import EndpointExecutionTimesPanel from './EndpointExecutionTimesPanel';
+import ExecutionTimesTable from './ExecutionTimesTable';
 
 // Transforms a hashmap of key-value pairs into an array of {x: key, y: value} objects.
 // TODO move to a helper JS file.
@@ -83,6 +84,7 @@ class Board extends Component {
                 <div>
                     <VisitsPerDayPanel dashboard_id={this.props.id} />
                     <UniqueVisitorsPerDayPanel dashboard_id={this.props.id} />
+                    <ExecutionTimesTable dashboard_id={this.props.id} />
                     <EndpointExecutionTimesPanel dashboard_id={this.props.id} />
                 </div>
             </div>
