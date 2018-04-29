@@ -124,7 +124,8 @@ def _decode_jwt(payload, token):
         message = jwt.decode(payload, token, algorithms=['HS256'])
         return json.loads(message['data'])
     except jwt.DecodeError as e:
-        logger.error(f'While decoding: {e}')
+        logger.error(f'While decoding: {e}\n'
+                     f'JWT payload: {payload}')
         raise
     except KeyError:
         logger.error(f'After decoding: JWT-decoded message dict does not contain "data" entry')
