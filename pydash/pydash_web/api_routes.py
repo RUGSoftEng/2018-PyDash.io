@@ -47,6 +47,5 @@ def verify_user(verification_code):
 
 @api.route("/api/user/delete", methods=["POST"])
 @login_required
-@controller.verification_required
 def delete_user():
     return controller.delete_user()

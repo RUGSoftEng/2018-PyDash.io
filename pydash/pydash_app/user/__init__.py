@@ -32,6 +32,7 @@ True
 >>> authenticate("Dumbledore", "secrets")
 >>> # ^Returns nothing
 """
+import uuid
 from .user import User
 import pydash_app.user.repository
 from multi_indexed_collection import DuplicateIndexError
@@ -123,3 +124,35 @@ def authenticate(name, password):
     if maybe_user is None or not maybe_user.check_password(password):
         return None
     return maybe_user
+
+
+def verify(user_id, verification_code):
+    """
+    Attempts to verify a user with the provided verification code.
+    This is intended as a one-time action per user after registration.
+    :param user_id: The ID of the User-entity to verify.
+    :param verification_code: The verification code that should match the User-entity's verification code.
+        Can be a string or UUID object.
+    :return: Returns True if both verification codes are equal, returns False otherwise.
+        Raises a KeyError when the user is not found in the repository.
+        Raises an AlreadyVerifiedException when the user is already verified.
+    """
+    try:
+        user = find(user_id)
+    except KeyError:
+        raise
+
+    if user.is_verified():
+        raise AlreadyVerifiedError(f"User {user} is already verified.")
+
+    # Ensure verification code can be a (capitalised) string or a UUID object.
+    if uuid.UUID(str(verification_code)) != uuid.UUID(user.get_verification_code()):
+        return False
+
+    user.verified = True
+    repository.update(user)
+    return True
+
+
+class AlreadyVerifiedError(Exception):
+    pass
