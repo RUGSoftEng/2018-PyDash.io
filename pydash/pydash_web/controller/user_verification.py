@@ -45,4 +45,4 @@ def verification_required(func):
         else:
             message = {'message': 'User has not been verified yet.'}
             return jsonify(message), 403  # Not sure if a jsonified message is the right return value for now.
-    return decorated_view(func)
+    return decorated_view
