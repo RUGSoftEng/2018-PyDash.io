@@ -25,11 +25,13 @@ class DashboardList extends Component {
     }
 
     componentDidMount() {
+        console.log("Before DashboardList endpoint call")
       axios(window.api_path + '/api/dashboards', {
         method: 'get',
         withCredentials: true
       }).then((response) => {
         console.log('found some data', response);
+        console.log("After DashboardList endpoint call")
 
         this.setState(prevState => {
           let newState = prevState;

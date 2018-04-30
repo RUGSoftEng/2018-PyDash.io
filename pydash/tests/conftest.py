@@ -5,7 +5,7 @@ from pytest_localserver.http import WSGIServer
 @pytest.fixture(scope='session')
 def splinter_driver_kwargs():
     """Webdriver kwargs."""
-    return {'headless': True}
+    return {'headless': False}
 
 
 @pytest.fixture
