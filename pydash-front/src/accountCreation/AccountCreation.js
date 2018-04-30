@@ -9,7 +9,7 @@ class accountCreation extends Component {
     state = {
         username: '',
         password: '',
-        confirm_password: '',
+        Confirmpassword: '',
         email: '',
         error: false,
         message: '',
@@ -92,8 +92,8 @@ class accountCreation extends Component {
                     <TextField
                         id="Confirmpassword"
                         label="Confirm password"
-                        value={this.state.confirm_password}
-                        onChange={this.handleChange('confirm_password')}
+                        value={this.state.Confirmpassword}
+                        onChange={this.handleChange('Confirmpassword')}
                         margin="normal"
                         type="password"
                         
