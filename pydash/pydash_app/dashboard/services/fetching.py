@@ -272,7 +272,9 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
         dashboard.error = error_text
         return
 
-    start_time = datetime.fromtimestamp(first_request, tz=timezone.utc)
+    # TODO: for now we start fetching simply one second before the first request because the lower bound
+    # TODO: of _fetch_endpoint_calls is exclusive
+    start_time = datetime.fromtimestamp(first_request - 1, tz=timezone.utc)
     current_time = datetime.now(timezone.utc)
 
     while start_time < current_time:
