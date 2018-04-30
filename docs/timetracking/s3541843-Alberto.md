@@ -26,4 +26,14 @@
 | *2018-04-5* | 11:30-13:00 | Updating front-end notes on architectural document |
 | *2018-04-16* | 13:00-15:00 | Meeting  |
 | *2018-04-16* | 18:45-19:45 | Specific dashboard design |
-
+| *2018-04-20* | 17:00-18:30 | Working on fixing 404 error #151 |
+| *2018-04-20* | 18:30-19:30 | Updating logo on web browser's tab |
+| *2018-04-21* | 19:00-21:00 | Working on account registration #147 |
+| *2018-04-22* | 9:00-10:30 | Working on fixing 404 error #151 |
+| *2018-04-22* | 10:30-14:00 | Working on account registration #147 |
+| *2018-04-23* | 15:00-17:00 | Weekly meeting |
+| *2018-04-24* | 10:00-12:30 | Working on adding seetings for every graph #170 |
+| *2018-04-25* | 10:00-12:00 | Adding new features #170 |
+| *2018-04-28* | 17:00-18:00 | Resolving conflicts with PR and merging branch #171 |
+| *2018-04-29* | 17:30-18:30 | Resolving conflicts and using register_user api #162 |
+| *2018-04-30* | 15:00-17:00 | Weekly meeting |
