@@ -11,10 +11,12 @@ import pydash_web.controller as controller
 
 
 @api.route("/api/login", methods=["POST"])
+@controller.verification_required
 def login():
     return controller.login()
 
 
+# No @login_required, because this is handled internally.
 @api.route("/api/logout", methods=["POST"])
 def logout():
     return controller.logout()
@@ -22,14 +24,12 @@ def logout():
 
 @api.route("/api/dashboards", methods=["GET"])
 @login_required
-@controller.verification_required
 def get_dashboards():
     return controller.dashboards()
 
 
 @api.route("/api/dashboards/<dashboard_id>", methods=["GET"])
 @login_required
-@controller.verification_required
 def get_dashboard(dashboard_id):
     return controller.dashboard(dashboard_id)
 
@@ -40,7 +40,6 @@ def register_user():
 
 
 @api.route("/api/user/verify/<verification_code>", methods=["POST"])
-@login_required
 def verify_user(verification_code):
     return controller.verify_user(verification_code)
 
