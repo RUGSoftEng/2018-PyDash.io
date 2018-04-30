@@ -272,6 +272,13 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
         dashboard.error = error_text
         return
 
+    if first_request == -1:
+        error_text = f'There are no endpoint calls yet'
+        logger.error(error_text)
+        dashboard.state = DashboardState.initialize_endpoint_calls_failure
+        dashboard.error = error_text
+        return
+
     # TODO: for now we start fetching simply one second before the first request because the lower bound
     # TODO: of _fetch_endpoint_calls is exclusive
     start_time = datetime.fromtimestamp(first_request - 1, tz=timezone.utc)
