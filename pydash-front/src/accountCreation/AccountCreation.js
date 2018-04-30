@@ -9,7 +9,7 @@ class accountCreation extends Component {
     state = {
         username: '',
         password: '',
-        Confirmpassword: '',
+        confirm_password: '',
         email: '',
         error: false,
         message: '',
@@ -31,7 +31,7 @@ class accountCreation extends Component {
             return;
         }
 
-        axios.post('http://localhost:5000/api/register_user', {
+        axios.post(window.api_path + '/api/register_user', {
             username,
             password},
             {withCredentials: true}
@@ -92,8 +92,8 @@ class accountCreation extends Component {
                     <TextField
                         id="Confirmpassword"
                         label="Confirm password"
-                        value={this.state.Confirmpassword}
-                        onChange={this.handleChange('password')}
+                        value={this.state.confirm_password}
+                        onChange={this.handleChange('confirm_password')}
                         margin="normal"
                         type="password"
                         
