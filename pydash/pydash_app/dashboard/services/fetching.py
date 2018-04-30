@@ -123,6 +123,47 @@ def fetch_and_add_endpoints(dashboard):
         return
 
     try:
+        details = flask_monitoring_dashboard_client.get_details(dashboard.url)
+    except requests.exceptions.ConnectionError as e:
+        logger.error(f'Connection error in fetch_and_add_endpoints: {e}\n'
+                     f'from dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = str(e)
+        return
+    except requests.exceptions.HTTPError as e:
+        logger.error(f'HTTP error in fetch_and_add_endpoints: {e}\n'
+                     f'from dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = str(e)
+        return
+    except jwt.DecodeError as e:
+        logger.error(f'JWT decode error in fetch_and_add_endpoints: {e}\n'
+                     f'from dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = str(e)
+        return
+    except KeyError as e:
+        logger.error(f'Key error in fetch_and_add_endpoints: {e}\n'
+                     f'from dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = str(e)
+        return
+    except json.JSONDecodeError as e:
+        logger.error(f'JSON decode error in fetch_and_add_endpoints: {e}\n')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = str(e)
+        return
+
+    try:
+        version = details['dashboard-version']
+    except KeyError:
+        error_text = f'Dashboard details do not contain version: {details}'
+        logger.error(error_text)
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = error_text
+        return
+
+    try:
         endpoints = _fetch_endpoints(dashboard)
     except requests.exceptions.ConnectionError as e:
         logger.error(f'Connection error in fetch_and_add_endpoints: {e}\n'
@@ -217,7 +258,7 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
         return
 
     try:
-        first_request = int(details['first_request'])
+        first_request = int(details['first-request'])
     except KeyError:
         error_text = f'Dashboard details do not contain date of first request: {details}'
         logger.error(error_text)
@@ -231,7 +272,16 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
         dashboard.error = error_text
         return
 
-    start_time = datetime.fromtimestamp(first_request, tz=timezone.utc)
+    if first_request == -1:
+        error_text = f'There are no endpoint calls yet'
+        logger.error(error_text)
+        dashboard.state = DashboardState.initialize_endpoint_calls_failure
+        dashboard.error = error_text
+        return
+
+    # TODO: for now we start fetching simply one second before the first request because the lower bound
+    # TODO: of _fetch_endpoint_calls is exclusive
+    start_time = datetime.fromtimestamp(first_request - 1, tz=timezone.utc)
     current_time = datetime.now(timezone.utc)
 
     while start_time < current_time:
