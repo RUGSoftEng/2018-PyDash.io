@@ -5,7 +5,7 @@ Initializes a Flask web application, and loads the relevant configuration settin
 """
 import os
 
-from flask import Flask
+from flask import Flask, jsonify
 from flask_login import LoginManager
 from flask_cors import CORS
 
@@ -37,6 +37,12 @@ login_manager = LoginManager(flask_webapp)
 def load_user(user_id):
     print("Loading user {}".format(user_id))
     return pydash_app.user.maybe_find_user(user_id)
+
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    response = {'message': 'You need to be logged in to access this endpoint'}
+    return jsonify(response), 401
 
 
 @flask_webapp.cli.command('seed', with_appcontext=False)
