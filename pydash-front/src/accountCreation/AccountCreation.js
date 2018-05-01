@@ -59,7 +59,6 @@ class accountCreation extends React.Component {
             {withCredentials: true}
         ).then((response) => {
             console.log(response);
-            this.props.changeUsernameHandler(username)
             this.setState(prevState => ({
                 error: false,
                 helperText: '',
@@ -74,19 +73,13 @@ class accountCreation extends React.Component {
                     helperText: 'User already exists',
                     loading: false,
                 }))
-            }else {
-                this.setState(prevState => ({
-                    error: true,
-                    helperText: 'Unknown error returned:' + error,
-                    loading: false,
-                }))
             }
         });
     }
 
     render() {
         return this.state.success ? (
-            <Redirect to="/dashboard" />
+            <Redirect to="/" />
         ) : (
             <div>
                 <header className="App-header">
