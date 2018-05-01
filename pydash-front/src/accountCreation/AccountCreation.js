@@ -9,7 +9,7 @@ class accountCreation extends Component {
     state = {
         username: '',
         password: '',
-        Confirmpassword: '',
+        Confirm_password: '',
         email: '',
         error: false,
         message: '',
@@ -26,8 +26,14 @@ class accountCreation extends Component {
         e.preventDefault()
         let username = this.state.username,
             password = this.state.password
-        
+            
         if (!(username.trim()) || !(password.trim())) {
+            this.setState(prevState => ({
+                ...prevState,
+                error: true,
+                helperText: 'These fields are required!',
+            }))
+
             return;
         }
 
@@ -74,7 +80,7 @@ class accountCreation extends Component {
                         value={this.state.email}
                         onChange={this.handleChange('email')}
                         margin="normal"
-                        
+                        error={this.state.error}
                     />
                     <br />
                     
@@ -86,7 +92,7 @@ class accountCreation extends Component {
                         margin="normal"
                         type="password"
                         error={this.state.error}
-                        helperText={this.state.helperText}
+
                     />
                     <br />
                     <TextField
@@ -96,12 +102,13 @@ class accountCreation extends Component {
                         onChange={this.handleChange('Confirmpassword')}
                         margin="normal"
                         type="password"
-                        
+                        error={this.state.error}
+                        helperText={this.state.helperText}
                     />
                     <br />
                     <p>
-                    <Button type="submit" variant="raised" color="primary" href="/dashboard">
-                        Register
+                    <Button type="submit" variant="raised" color="primary" disabled={this.state.loading}>
+                        {this.state.loading ? "Creating account" : "REGISTER"}
                     </Button>
                     </p>
                 </form>
