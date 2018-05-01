@@ -2,40 +2,60 @@
 Manages the logging in of a user into the application,
 and rejecting visitors that enter improper sign-in information.
 """
-from flask import render_template, flash, redirect, url_for, request
+from flask import jsonify
 from flask_login import current_user, login_user
-from werkzeug.urls import url_parse
-import pydash_app.user
+from flask_restplus.reqparse import RequestParser
 
-from pydash_web.forms import LoginForm
+import pydash_app.user
+import pydash_logger
+
+logger = pydash_logger.Logger(__name__)
 
 
 def login():
+    logger.info('Login requested')
     if current_user.is_authenticated:
-        return redirect(url_for("dashboard"))
+        result = {
+            "message": "User already logged in",
+            "user": _user_details(current_user)
+        }
+        logger.warning(f"Login failed - {current_user} already logged in")
+        return jsonify(result)
 
-    login_form = LoginForm()
-    if not login_form.validate_on_submit():
-        return __render_login_form(login_form)
+    args = _parse_arguments()
 
-    user = pydash_app.user.authenticate(login_form.username.data,
-                                        login_form.password.data)
+    if 'username' not in args or 'password' not in args:
+        result = {"message": "Username or password missing"}
+        logger.warning('Login failed - username or password missing')
+        return jsonify(result), 400
+
+    user = pydash_app.user.authenticate(args['username'],
+                                        args['password'])
+
     if not user:
-        flash("Wrong username or password!")
-        return __render_login_form(login_form)
+        result = {"message": "Username or password incorrect"}
+        logger.warning(f"Failed login request using {args['username']}, {args['password']}")
+        return jsonify(result), 401
 
-    login_user(user, remember=login_form.remember_me.data)
-    flash("User {} successfully logged in!".format(user.name))
-    return redirect(__next_page())
+    login_user(user)
+    logger.info(f"{current_user} successfully logged in")
+
+    result = {
+        "message": "User successfully logged in",
+        "user": _user_details(user)
+    }
+    return jsonify(result)
 
 
-def __next_page():
-    next = request.args.get('next')
-    if not next or url_parse.netloc(next) != '':
-        next = url_for("dashboard")
-    return next
+def _parse_arguments():
+    parser = RequestParser()
+    parser.add_argument('username')
+    parser.add_argument('password')
+    return parser.parse_args()
 
 
-def __render_login_form(login_form):
-    return render_template(
-        "login.html", title="Sign In", login_form=login_form)
+def _user_details(user):
+    return {
+        "id": user.id,
+        "username": user.name
+    }
