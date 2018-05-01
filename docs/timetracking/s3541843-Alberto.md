@@ -37,3 +37,4 @@
 | *2018-04-28* | 17:00-18:00 | Resolving conflicts with PR and merging branch #171 |
 | *2018-04-29* | 17:30-18:30 | Resolving conflicts and using register_user api #162 |
 | *2018-04-30* | 15:00-17:00 | Weekly meeting |
+| *2018-05-01* | 11:30-14:30 | Fixing problems with the registration functionality #147 |
