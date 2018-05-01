@@ -53,7 +53,7 @@ class accountCreation extends React.Component {
                 loading: true
             }))
 
-        axios.post(window.api_path + '/api/register_user', {
+        axios.post(window.api_path + '/api/register', {
             username,
             password},
             {withCredentials: true}
