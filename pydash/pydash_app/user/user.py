@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 import flask_login
 import persistent
-import pydash_app.user.verification as verification
+from .verification_code import VerificationCode
 
 
 class User(persistent.Persistent, flask_login.UserMixin):
@@ -33,7 +33,7 @@ class User(persistent.Persistent, flask_login.UserMixin):
         self.name = name
         self.password_hash = generate_password_hash(password)
         self.verified = False
-        self.smart_verification_code = verification.VerificationCode()
+        self.smart_verification_code = VerificationCode()
         self.verification_code = self.smart_verification_code.verification_code
 
     def __repr__(self):
@@ -60,7 +60,7 @@ class User(persistent.Persistent, flask_login.UserMixin):
         return check_password_hash(self.password_hash, password)
 
     def generate_new_verification_code(self):
-        self.smart_verification_code = verification.VerificationCode()
+        self.smart_verification_code = VerificationCode()
         self.verification_code = self.smart_verification_code.verification_code
 
     # Required because `multi_indexed_collection` puts users in a set, that needs to order its keys for fast lookup.

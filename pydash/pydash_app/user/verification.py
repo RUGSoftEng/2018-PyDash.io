@@ -1,5 +1,4 @@
 import uuid
-from datetime import datetime, timezone, timedelta
 import pydash_app.user.repository as repository
 import pydash_logger
 
@@ -17,6 +16,10 @@ def verify(verification_code):
         Raises an InvalidVerificationCodeError when the provided verification code is invalid.
         Raises an VerificationCodeExpiredError when the provided verification code has expired.
     """
+    # Ensure verification code can be a string, an integer or a UUID object.
+    if not isinstance(verification_code, uuid.UUID):
+        verification_code = uuid.UUID(verification_code)
+
     user = repository.find_by_verification_code(verification_code)
     if user is None:
         # Could not find user with matching verification code.
@@ -31,10 +34,6 @@ def verify(verification_code):
         logger.warning(f"Verification code {verification_code} has already expired.")
         raise VerificationCodeExpiredError(f"Verification code {verification_code} has already expired.")
 
-    # Ensure verification code can be a string, an integer or a UUID object.
-    if not isinstance(verification_code, uuid.UUID):
-        verification_code = uuid.UUID(verification_code)
-
     if verification_code != user.verification_code:
         logger.warning(f"Verification codes do not match.")
         return False
@@ -44,19 +43,6 @@ def verify(verification_code):
     user.verification_code = None
     repository.update(user)
     return True
-
-
-class VerificationCode:
-    """
-    A 'smart' randomly generated verification code that keeps track of whether it has expired.
-    Default expiration time is 7 days.
-    """
-    def __init__(self, expiration_time=timedelta(days=7)):
-        self.verification_code = uuid.uuid4()
-        self.expiration_datetime = datetime.now(tz=timezone.utc) + expiration_time
-
-    def is_expired(self):
-        return datetime.now(tz=timezone.utc) >= self.expiration_datetime
 
 
 class VerificationCodeExpiredError(Exception):

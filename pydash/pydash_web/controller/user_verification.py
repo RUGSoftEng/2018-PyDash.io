@@ -7,7 +7,7 @@ from functools import wraps
 from flask import jsonify
 from flask_login import current_user
 from flask_restplus.reqparse import RequestParser
-import pydash_app.user.verification as verification
+import pydash_app.user as user
 import pydash_logger
 
 logger = pydash_logger.Logger(__name__)
@@ -28,11 +28,11 @@ def verify_user():
     verification_code = args['verification_code']
 
     try:
-        verified = verification.verify(verification_code)
-    except verification.InvalidVerificationCodeError:
+        verified = user.verify(verification_code)
+    except user.verification.InvalidVerificationCodeError:
         result = {"message": "Invalid verification code."}
         return jsonify(result), 400
-    except verification.VerificationCodeExpiredError:
+    except user.verification.VerificationCodeExpiredError:
         result = {"message": "Verification code expired."}
         return jsonify(result), 400
 

@@ -32,10 +32,11 @@ True
 >>> authenticate("Dumbledore", "secrets")
 >>> # ^Returns nothing
 """
-import uuid
 from .user import User
 import pydash_app.user.repository
 from multi_indexed_collection import DuplicateIndexError
+import pydash_app.user.verification as verification
+# from .verification import InvalidVerificationCodeError, VerificationCodeExpiredError
 
 
 def add_to_repository(user):
@@ -134,4 +135,17 @@ def authenticate(name, password):
     return maybe_user
 
 
-
+def verify(verification_code):
+    """
+        Attempts to verify a user with the provided verification code.
+        This is intended as a one-time action per user after registration.
+        :param verification_code: The verification code that should match the User-entity's verification code.
+            Can be a string or UUID object.
+        :return: Returns True if both verification codes are equal, returns False otherwise.
+            Raises an InvalidVerificationCodeError when the provided verification code is invalid.
+            Raises an VerificationCodeExpiredError when the provided verification code has expired.
+        """
+    try:
+        verification.verify(verification_code)
+    except Exception:
+        raise

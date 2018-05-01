@@ -48,7 +48,7 @@ def find_by_verification_code(verification_code):
     Returns a single User-entity with the given `verification_code`, or None if it could not be found.
     The latter case might indicate that the user does not exist, or that the verification code has expired.
     :param verification_code: The verification code of the user we hope to find.
-    Should be a pydash_app.user.verification.VerificationCode object.
+    Should be a pydash_app.user.verification_code.VerificationCode object.
     """
     return database_root().users.get('verification_code', verification_code, default=None)
 
@@ -151,5 +151,5 @@ def clear_all():
     Flushes the database.
     """
     transaction.begin()
-    database_root().users = MultiIndexedPersistentCollection({'id', 'name'})
+    database_root().users = MultiIndexedPersistentCollection({'id', 'name', 'verification_code'})
     transaction.commit()
