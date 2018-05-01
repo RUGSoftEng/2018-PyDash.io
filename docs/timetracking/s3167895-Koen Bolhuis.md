@@ -64,3 +64,26 @@
 | *2018-04-16* | 15:30-17:00 | Internal meeting |
 | *2018-04-16* | 17:00-18:00 | Patching remote fetching with Tom |
 | *2018-04-17* | 20:00-21:10 | Updating requirements document: improving backlog, adding backend information to backlog |
+| *2018-04-20* | 18:00-19:00 | Filling in peer evaluation |
+| *2018-04-21* | 17:30-19:00 | Restructuring pydash_web |
+| *2018-04-21* | 19:00-19:30 | Fixing 404 errors (serving React app from every non-api route) |
+| *2018-04-21* | 19:45-20:00 | Fixing remote flask example app + dashboard |
+| *2018-04-21* | 20:40-21:00 | Reviewing pull requests #153 (account creation api routes) and #159 (creation of /logs at build time) |
+| *2018-04-22* | 17:00-17:15 | Creating some sample periodic fetch code (that hangs) for W-M to debug |
+| *2018-04-23* | 15:00-16:30 | Internal weekly meeting with the team |
+| *2018-04-23* | 16:30-17:00 | Backend discussion |
+| *2018-04-23* | 17:00-18:00 | Debugging periodic fetching with W-M and Tom |
+| *2018-04-24* | 12:00-13:00 | Debugging and fixing periodic fetching and database code |
+| *2018-04-25* | 14:30-15:15 | Meeting up with W-M to discuss and work on the backend refactoring |
+| *2018-04-28* | 12:30-15:00 | Improving error handling and logging in the Flask-MonitoringDashboard client |
+| *2018-04-28* | 15:00-22:45 | Improving error handling and logging in the dashboard fetching service |
+| *2018-04-28* | 22:45-22:50 | Removing mock_data folder |
+| *2018-04-28* | 22:50-23:00 | Organizing issues on GitHub |
+| *2018-04-28* | 23:00-23:30 | Updating the backlog in the requirements document with regards to email verification |
+| *2018-04-29* | 12:00-15:40 | Testing fetching error handling (configuring server to drop connection, serve 300/400/500 errors, etc.) |
+| *2018-04-29* | 15:50-16:00 | Adding minor style improvements to the ADD (Frontend technology stack, backend API spec) |
+| *2018-04-29* | 19:00-21:00 | Drawing a Sequence Diagram for the use case "Viewing the data of a certain dashboard" |
+| *2018-04-29* | 21:30-22:15 | Deploying Flask-MonitoringDashboard v1.12.0, as well as deploying a v1.11.5 for testing purposes |
+| *2018-04-29* | 22:15-23:10 | Making the fetching service compatible with FMD v1.12.0, and rejecting older versions |
+| *2018-04-30* | 15:00-15:30 | Weekly TA meeting |
+| *2018-04-30* | 15:30-17:00 | Internal meeting |
