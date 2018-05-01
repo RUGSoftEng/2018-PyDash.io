@@ -14,6 +14,16 @@ Push to this branch as soon as you've implemented a feature.
 
 # Running in Development
 
+### Side-Note: Seeding the database
+
+Before running your application for the first time (and possibly after a lot of changes have occurred in the development version), you will want to re-seed your application, using:
+
+1. Move into the `pydash` folder.
+2. Setup your virtual environment using `./start_pipenv.sh`.
+3. Make sure you have the latest versions of the dependencies using `pipenv install`.
+3. Start up the database using the `./start_database.sh` shell-script.
+4. In another tab (or after running above script in the background using `&`), run `flask seed`
+
 ## Running the application as a whole
 
 In this case, running `./build_and_run.sh` is enough. This will install front-end dependencies, build the front-end react application, install back-end dependencies, and then start the back-end (which serves the react app and the API) including the database.
@@ -30,10 +40,6 @@ In the event that the database does not properly close, use `killall runzeo`.
 3. Start up the database using the `./start_database.sh` shell-script.
 4. In another tab (or after running above script in the background using `&`), run `flask run --no-reload` to start up the web application on port 5000.
 
-If you get errors stating that some attribute of `database_root` does not exist, you might need to run `flask seed` beforehand, to
-ensure that the database is properly initialized and filled with some example data.
-
-(The `./start_pipenv.sh` script sets up `FLASK_APP=pydash.py` and `FLASK_DEBUG=1` for you)
 
 ## Building the React.js Front-End
 
