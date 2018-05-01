@@ -21,3 +21,16 @@
 | *2018-03-24* | 22:30-23:45 | Organization; GitHub Issues; react login authentication investigative work. |
 | *2018-03-26* | 15:00-16:00 | Team Meeting |
 | *2018-03-26* | 16:00-18:30 | Front-End pair-programming session with Lars, get login working! 🚀 |
+| *2018-03-29* | 11:00-13:00 | TA Team meeting |
+| *2018-03-29* | 13:15-15:00 | Restructure frontend folders; Fix some issues |
+| *2018-04-01* | 21:00-22:00 | GH issues / checkout graph branch by WM |
+| *2018-04-02* | 16:30-17:30 | Work on various branches > checking out graphs |
+| *2018-04-02* | 22:18-1:50 | Work on presentation |
+| *2018-04-03* | 9:05-10:50 | Rehearsal |
+| *2018-04-03* | 11:00-12:30 | Present the project! |
+| *2018-04-06* | 22:00-0:00 | Create a PR for /username-in-sidebar and work on /protected-pages branch |
+| *2018-04-09* | 15:00-16:00 | Team Meeting |
+| *2018-04-12* | 11:00-13:00 | TA Team meeting |
+| *2018-04-12* | 11:30-12:00 | Add a section on Front-End technology stack in the Architecture Document |
+| *2018-04-16* | 15:00-17:00 | (Last) Team Meeting. Also; update Arch. doc & protected pages. |
+| *2018-04-17* | 11:30-12:30 | Close some issues, comment some stuff, merge PR, etc. |
