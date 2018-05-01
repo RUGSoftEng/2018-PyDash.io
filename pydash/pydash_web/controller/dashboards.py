@@ -6,13 +6,14 @@ Currently only returns static mock data.
 
 from flask import jsonify
 from flask_login import current_user
+from pydash_app.dashboard.dashboard import DashboardState
 
 import pydash_app.dashboard
-import pydash_app.impl.logger as pylog
+import pydash_logger
 
-from pydash_app.fetching.dashboard_fetch import update_endpoint_calls, _fetch_endpoint_calls
+# from pydash_app.fetching.dashboard_fetch import update_endpoint_calls, _fetch_endpoint_calls
 
-logger = pylog.Logger(__name__)
+logger = pydash_logger.Logger(__name__)
 
 
 def dashboard(dashboard_id):
@@ -28,9 +29,9 @@ def dashboard(dashboard_id):
     try:
         db = pydash_app.dashboard.find(dashboard_id)
 
-        logger.debug(f'Amount of newly fetched endpoint calls: {len(_fetch_endpoint_calls(db, db.last_fetch_time))}')
+        # logger.debug(f'Amount of newly fetched endpoint calls: {len(_fetch_endpoint_calls(db, db.last_fetch_time))}')
 
-        update_endpoint_calls(db)
+        # update_endpoint_calls(db)
     except KeyError:
         logger.warning(f"Could not find dashboard matching with {dashboard_id}")
         return jsonify({"message": "Could not find a matching dashboard."}), 404
@@ -74,11 +75,16 @@ def _simple_dashboard_detail(dashboard):
         }
     endpoints = [endpoint_dict(endpoint) for endpoint in dashboard.endpoints.values()]
 
-    return {
+    dash_dict = {
         'id': dashboard.id,
         'url': dashboard.url,
         'endpoints': endpoints
     }
+
+    if str(dashboard.state.name).split("_")[-1] == "failure":
+        dash_dict['error'] = dashboard.error
+
+    return dash_dict
 
 
 def _dashboard_detail(dashboard):
@@ -96,9 +102,15 @@ def _dashboard_detail(dashboard):
         }
 
     endpoints_dict = [endpoint_dict(endpoint) for endpoint in dashboard.endpoints.values()]
-    return {
+
+    dash_dict = {
         'id': dashboard.id,
         'url': dashboard.url,
         'aggregates': dashboard.aggregated_data(),
         'endpoints': endpoints_dict
     }
+
+    if str(dashboard.state.name).split("_")[-1] == "failure":
+        dash_dict['error'] = dashboard.error
+
+    return dash_dict

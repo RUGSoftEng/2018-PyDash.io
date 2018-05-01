@@ -1,39 +1,77 @@
+"""
+
+Involved usage example:
+
+>>> from pydash_app.dashboard.dashboard import Dashboard
+>>> from pydash_app.user.user import User
+>>> from pydash_app.dashboard.endpoint import Endpoint
+>>> from pydash_app.dashboard.endpoint_call import EndpointCall
+>>> import uuid
+>>> from datetime import datetime, timedelta
+>>> user = User("Gandalf", "pass")
+>>> d = Dashboard("http://foo.io", str(uuid.uuid4()), str(user.id))
+>>> e1 = Endpoint("foo", True)
+>>> e2 = Endpoint("bar", True)
+>>> d.add_endpoint(e1)
+>>> d.add_endpoint(e2)
+>>> ec1 = EndpointCall("foo", 0.5, datetime.strptime("2018-04-25 15:29:23", "%Y-%m-%d %H:%M:%S"), "0.1", "None", "127.0.0.1")
+>>> ec2 = EndpointCall("foo", 0.1, datetime.strptime("2018-04-25 15:29:23", "%Y-%m-%d %H:%M:%S"), "0.1", "None", "127.0.0.2")
+>>> ec3 = EndpointCall("bar", 0.2, datetime.strptime("2018-04-25 15:29:23", "%Y-%m-%d %H:%M:%S"), "0.1", "None", "127.0.0.1")
+>>> ec4 = EndpointCall("bar", 0.2, datetime.strptime("2018-04-25 15:29:23", "%Y-%m-%d %H:%M:%S") - timedelta(days=1), "0.1", "None", "127.0.0.1")
+>>> ec5 = EndpointCall("bar", 0.2, datetime.strptime("2018-04-25 15:29:23", "%Y-%m-%d %H:%M:%S") - timedelta(days=2), "0.1", "None", "127.0.0.1")
+>>> d.add_endpoint_call(ec1)
+>>> d.add_endpoint_call(ec2)
+>>> d.add_endpoint_call(ec3)
+>>> d.add_endpoint_call(ec4)
+>>> d.add_endpoint_call(ec5)
+>>> d.aggregated_data()
+{'total_visits': 5, 'total_execution_time': 1.2, 'average_execution_time': 0.24, 'visits_per_day': {'2018-04-25': 3, '2018-04-24': 1, '2018-04-23': 1}, 'visits_per_ip': {'127.0.0.1': 4, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2, '2018-04-24': 1, '2018-04-23': 1}}
+>>> d.endpoints['foo'].aggregated_data()
+{'total_visits': 2, 'total_execution_time': 0.6, 'average_execution_time': 0.3, 'visits_per_day': {'2018-04-25': 2}, 'visits_per_ip': {'127.0.0.1': 1, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2}}
+>>> d.endpoints['bar'].aggregated_data()
+{'total_visits': 3, 'total_execution_time': 0.6000000000000001, 'average_execution_time': 0.20000000000000004, 'visits_per_day': {'2018-04-25': 1, '2018-04-24': 1, '2018-04-23': 1}, 'visits_per_ip': {'127.0.0.1': 3}, 'unique_visitors': 1, 'unique_visitors_per_day': {'2018-04-25': 1, '2018-04-24': 1, '2018-04-23': 1}}
+
+"""
+
 import uuid
 import persistent
+from enum import Enum
 
 from pydash_app.dashboard.endpoint import Endpoint
-from .aggregator import Aggregator
+from pydash_app.dashboard.aggregator import Aggregator
 
-"""
 
-Example testing code:
+class DashboardState(Enum):
+    """
+    The DashboardState enum indicates the state in which a Dashboard can remain, regarding remote fetching:
 
-```
-from pydash_app.dashboard.dashboard import Dashboard
-from pydash_app.dashboard.endpoint import Endpoint
-from pydash_app.dashboard.endpoint_call import EndpointCall
-import uuid
-from datetime import datetime, timedelta
-d = Dashboard("http://foo.io", str(uuid.uuid4()))
-e1 = Endpoint("foo", True)
-e2 = Endpoint("bar", True)
-d.add_endpoint(e1)
-d.add_endpoint(e2)
-ec1 = EndpointCall("foo", 0.5, datetime.now(), 0.1, "None", "127.0.0.1")
-ec2 = EndpointCall("foo", 0.1, datetime.now(), 0.1, "None", "127.0.0.2")
-ec3 = EndpointCall("bar", 0.2, datetime.now(), 0.1, "None", "127.0.0.1")
-ec4 = EndpointCall("bar", 0.2, datetime.now() - timedelta(days=1), 0.1, "None", "127.0.0.1")
-ec5 = EndpointCall("bar", 0.2, datetime.now() - timedelta(days=2), 0.1, "None", "127.0.0.1")
-d.add_endpoint_call(ec1)
-d.add_endpoint_call(ec2)
-d.add_endpoint_call(ec3)
-d.add_endpoint_call(ec4)
-d.add_endpoint_call(ec5)
-d.aggregated_data()
-d.endpoints['foo'].aggregated_data()
-d.endpoints['bar'].aggregated_data()
-```
-"""
+    - not_initialized indicates the dashboard is newly created and not initialized with Endpoints and
+      historic EndpointCalls;
+
+    - initialized_endpoints indicates the dashboard has successfully initialized Endpoints,
+      but not yet historical EndpointCalls;
+    - initialize_endpoints_failure indicates something went wrong while initializing Endpoints, which means
+      initialization of Endpoints needs to be retried;
+
+    - initialized_endpoint_calls indicates the dashboard has successfully initialized historical EndpointCalls,
+      and can start fetching new EndpointCalls in a periodic task;
+    - initialize_endpoint_calls_failure indicates something went wrong while initializing historical EndpointCalls,
+      which means this needs to be retried;
+
+    - fetched_endpoint_calls indicates last time new EndpointCalls were fetched, it was done successfully;
+    - fetch_endpoint_calls_failure indicates something went wrong while fetching new EndpointCalls,
+      which means this needs to be retried.
+    """
+    not_initialized = 0
+
+    initialized_endpoints = 10
+    initialize_endpoints_failure = 11
+
+    initialized_endpoint_calls = 20
+    initialize_endpoint_calls_failure = 21
+
+    fetched_endpoint_calls = 30
+    fetch_endpoint_calls_failure = 31
 
 
 class Dashboard(persistent.Persistent):
@@ -54,8 +92,11 @@ class Dashboard(persistent.Persistent):
         self.url = url
         self.user_id = uuid.UUID(user_id)
         self.endpoints = dict()  # name -> Endpoint
-        self.last_fetch_time = None
         self.token = token
+
+        self.last_fetch_time = None
+        self.state = DashboardState.not_initialized
+        self.error = None
 
         self._endpoint_calls = []  # list of unfiltered endpoint calls, for use with an aggregator.
         self._aggregator = Aggregator(self._endpoint_calls)

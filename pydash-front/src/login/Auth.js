@@ -6,7 +6,7 @@ class Auth{
     }
 
     doPeek() {
-        return axios('http://localhost:5000/api/login', {
+        return axios(window.api_path + '/api/login', {
             method: 'post',
             withCredentials: true
         }).then((response) => {
