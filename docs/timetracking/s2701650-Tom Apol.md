@@ -1,4 +1,4 @@
-# Timelog for Tom (s2701650)
+# Timelog for Tom Apol (s2701650)
 
 | Date         |   Timestamp | Description                                                       |
 | :---:        |       :---: | :---:                                                             |
@@ -45,3 +45,23 @@
 | *2018-04-16* | 15:00-17:00 | Team meeting (internal with TA) |
 | *2018-04-16* | 17:00-18:00 | Patch remote fetching (with Koen) |
 | *2018-04-16* | 19:45-22:35 | Patch remote fetching |
+| *2018-04-19* | 12:00-12:45 | Team meeting (internal, backend) |
+| *2018-04-20* | 8:45-9:25 | User registration #150 |
+| *2018-04-21* | 14:30-15:15 | User registration #150 |
+| *2018-04-23* | 15:00-16:50 | Team meeting (internal) |
+| *2018-04-23* | 16:50-19:00 | Periodic fetching fix |
+| *2018-04-24* | 15:30-17:10 | User deletion #161 |
+| *2018-04-25* | 15:45-17:30 | User deletion #161 |
+| *2018-04-26* | 16:30-19:00 | Periodic fetching fix/refactoring - review and testing |
+| *2018-04-27* | 17:00-19:00 | User deletion (account for changed project structure) #161 |
+| *2018-04-27* | 19:50-20:20 | User deletion (account for changed project structure) #161 |
+| *2018-04-27* | 21:20-21:50 | SD - User registration |
+| *2018-04-28* | 14:30-15:25 | SD - User registration |
+| *2018-04-28* | 16:30-18:55 | User registration - email verification #179 |
+| *2018-04-29* | 14:05-15:35 | User registration - email verification #179 |
+| *2018-04-29* | 15:55-17:50 | User registration - email verification #179 |
+| *2018-04-30* | 15:00-17:00 | Team meeting |
+| *2018-04-30* | 17:45-18:00 | Discussing testing with Wiebe |
+| *2018-04-30* | 19:35-21:55 | User registration - email verification #179 |
+| *2018-05-01* | 14:30-16:05 | User registration - email verification #179 |
+| *2018-05-01* | 16:15-16:40 | Password requirements checking |
