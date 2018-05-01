@@ -164,7 +164,7 @@ class ResponsiveDrawer extends React.Component {
                     <Route exact path='/dashboard/settings' component={Settings} />
                     <Route exact path='/dashboard/statistics' component={Statistics} />
                     <Route exact path='/dashboard/TestCards' component={TestCards} />
-                    <Route path='/dashboard/view/:id' component={Db} />                    
+                    <Route path='/dashboard/view/:id' component={MatchedDashboardPage} />                    
                 </main>
             </div>
         );
