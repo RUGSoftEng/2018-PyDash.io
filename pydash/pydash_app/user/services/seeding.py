@@ -7,10 +7,26 @@ from pydash_app.user.user import User
 import pydash_app.user.repository as repository
 
 
+# TODO test this not in docstring perhaps?
 def seed():
     """
     Stores some preliminary debug users in the datastore,
     to be used during development.
+
+    >>> seed() #doctest: +ELLIPSIS
+    Adding user <User id=... name=Alberto>
+    Adding user <User id=... name=Arjan>
+    Adding user <User id=... name=JeroenO>
+    Adding user <User id=... name=JeroenL>
+    Adding user <User id=... name=Koen>
+    Adding user <User id=... name=Lars>
+    Adding user <User id=... name=Patrick>
+    Adding user <User id=... name=Tom>
+    Adding user <User id=... name=W-M>
+    Seeding of users is done!
+    >>> found_user = repository.find_by_name("Alberto")
+    >>> found_user.name == "Alberto"
+    True
     """
 
     # Clear current DB.
