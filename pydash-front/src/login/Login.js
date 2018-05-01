@@ -60,7 +60,7 @@ class Login extends Component {
             console.log(response);
 
             login_sound.play()
-            this.props.changeUsernameHandler(username)
+            this.props.signInHandler(username)
             this.setState(prevState => ({
                 error: false,
                 helperText: '',
