@@ -21,7 +21,7 @@ BuildBackend()
     cd pydash
     mkdir -p logs
     export FLASK_APP=pydash.py
-    export FLASK_DEBUG=1
+    export FLASK_ENV=development
     pipenv install
     cd ..
     PydashPrint "Done!"
@@ -41,7 +41,8 @@ RunFlask()
 {
     PydashPrint "Finally: Starting flask webservice. Close with Ctrl+C"
     cd pydash
-    pipenv run "flask run"
+    pipenv run flask run --no-reload
+    cd ..
 }
 
 BuildFrontend

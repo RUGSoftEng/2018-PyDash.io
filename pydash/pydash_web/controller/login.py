@@ -7,9 +7,9 @@ from flask_login import current_user, login_user
 from flask_restplus.reqparse import RequestParser
 
 import pydash_app.user
-import pydash_app.impl.logger as pylog
+import pydash_logger
 
-logger = pylog.Logger(__name__)
+logger = pydash_logger.Logger(__name__)
 
 
 def login():

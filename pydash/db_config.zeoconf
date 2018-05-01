@@ -1,5 +1,6 @@
 <zeo>
-  address localhost:8090
+  address localhost:8091
+  transaction-timeout 1
 </zeo>
 
 <filestorage>
