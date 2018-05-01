@@ -6,17 +6,18 @@ The method names in this module 1:1 reflect the names of the flask-monitoring-da
 is one of the thing this module handles for you.)
 """
 
-import requests
+import requests, requests.exceptions
 import jwt
 import json
 
 import pydash_logger
 
-DETAILS_ENDPOINT = 0
-RULES_ENDPOINT = 1
-DATA_ENDPOINT = 2
+_DETAILS_ENDPOINT = 0
+_RULES_ENDPOINT = 1
+_DATA_ENDPOINT = 2
 
 logger = pydash_logger.Logger(__name__)
+
 
 def get_details(dashboard_url):
     """
@@ -24,14 +25,23 @@ def get_details(dashboard_url):
     :param dashboard_url: The base URL for the deployed dashboard, without trailing slash
     :return: A dict containing details from the dashboard, or None if the request was unsuccessful
     """
-    endpoint = _endpoint_name(DETAILS_ENDPOINT)
+    endpoint = _endpoint_name(_DETAILS_ENDPOINT)
 
-    response = requests.get(f'{dashboard_url}/{endpoint}')
+    try:
+        response = requests.get(f'{dashboard_url}/{endpoint}')
+    except requests.exceptions.ConnectionError as e:
+        logger.error(f'Connection error in get_details: {e}')
+        raise
 
     if response.status_code != 200:
-        return None
+        logger.error(f'Bad response status code in get_details: {response.status_code}')
+        response.raise_for_status()
 
-    return json.loads(response.text)
+    try:
+        return json.loads(response.text)
+    except json.JSONDecodeError:
+        logger.error('Response to get_json_details contains malformed JSON')
+        raise
 
 
 def get_monitor_rules(dashboard_url, dashboard_token):
@@ -41,12 +51,17 @@ def get_monitor_rules(dashboard_url, dashboard_token):
     :param dashboard_token: The secret token for the dashboard, used to decode the Json Web Token response
     :return: A dict containing monitor rules of the dashboard, or None if the request was unsuccessful
     """
-    endpoint = _endpoint_name(RULES_ENDPOINT)
+    endpoint = _endpoint_name(_RULES_ENDPOINT)
 
-    response = requests.get(f'{dashboard_url}/{endpoint}')
+    try:
+        response = requests.get(f'{dashboard_url}/{endpoint}')
+    except requests.exceptions.ConnectionError as e:
+        logger.error(f'Connection error in get_monitor_rules: {e}')
+        raise
 
     if response.status_code != 200:
-        return None
+        logger.error(f'Bad response status code in get_monitor_rules: {response.status_code}')
+        response.raise_for_status()
 
     return _decode_jwt(response.text, dashboard_token)
 
@@ -57,16 +72,17 @@ def get_data(dashboard_url, dashboard_token, time_from=None, time_to=None):
     :param dashboard_url: The base URL for the deployed dashboard, without trailing slash
     :param dashboard_token: The secret token for the dashboard, used to decode the Json Web Token response
     :param time_from: An optional datetime indicating only data since that moment should be included
-    :param time_to: An optional datetime indicating only data up to that point should be included
-    :return: A dict containing all monitoring data or data since a given timestamp
+    :param time_to: An optional datetime indicating only data up to that point should be included;
+    only valid if time_from is also specified
+    :return: A dict containing all monitoring data, possibly limited to the given time range
     """
-    endpoint = _endpoint_name(DATA_ENDPOINT)
+    endpoint = _endpoint_name(_DATA_ENDPOINT)
 
     url = f'{dashboard_url}/{endpoint}'
 
     if time_from is None and time_to is not None:
-        logger.error('Invalid input paramater combination: when time_from is None, time_to may not be specified.')
-        return None
+        logger.error('Invalid input parameter combination: when time_from is None, time_to may not be specified.')
+        raise ValueError('when time_from is None, time_to may not be specified')
 
     if time_from is not None:
         time_from = int(time_from.timestamp())
@@ -75,11 +91,15 @@ def get_data(dashboard_url, dashboard_token, time_from=None, time_to=None):
         time_to = int(time_to.timestamp())
         url = f'{url}/{time_to}'
 
-    response = requests.get(url)
+    try:
+        response = requests.get(url)
+    except requests.exceptions.ConnectionError:
+        logger.error(f'Connection error in get_data: {e}')
+        raise
 
     if response.status_code != 200:
-        logger.error(f'Bad response status code: {response.status_code}')
-        return None
+        logger.error(f'Bad response status code in get_data: {response.status_code}')
+        response.raise_for_status()
 
     return _decode_jwt(response.text, dashboard_token)
 
@@ -100,5 +120,16 @@ def _decode_jwt(payload, token):
     :param token: The secret token for the dashboard
     :return: A dict containing the data from the payload
     """
-    message = jwt.decode(payload, token, algorithms=['HS256'])
-    return json.loads(message['data'])
+    try:
+        message = jwt.decode(payload, token, algorithms=['HS256'])
+        return json.loads(message['data'])
+    except jwt.DecodeError as e:
+        logger.error(f'While decoding: {e}\n'
+                     f'JWT payload: {payload}')
+        raise
+    except KeyError:
+        logger.error(f'After decoding: JWT-decoded message dict does not contain "data" entry')
+        raise
+    except json.JSONDecodeError:
+        logger.error(f'After decoding: data entry of JWT-decoded message dict contains malformed JSON')
+        raise

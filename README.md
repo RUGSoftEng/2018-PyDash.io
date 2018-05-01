@@ -1,4 +1,7 @@
 # PyDash.io
+
+![PyDash on Travis](https://api.travis-ci.org/RUGSoftEng/2018-PyDash.io.svg?branch=development)
+
 A Flask Web-service for visualising Flask-Monitoring-Dashboards
 
 You can view a live deployment of this repository at [pydash.io](http://pydash.io)
