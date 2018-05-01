@@ -41,4 +41,17 @@
 | *2018-04-12* | 11:00-13:00 | Weekly and personal TA meeting |
 | *2018-04-16* | 15:30-17:00 | Weekly meeting + TA meeting |
 | *2018-04-16* | 20:00-22:00 | Working on documents |
-| *2018-04-17* | 15:15-16:15 | Timetracking + documents |
+| *2018-04-17* | 15:15-16:30 | Timetracking + documents |
+| *2018-04-19* | 20:00-20:30 | Survey three times |
+| *2018-04-23* | 10:00-11:30 | Catch up/update documents/endpoint page design |
+| *2018-04-23* | 12:00-13:00 | Endpoint page design |
+| *2018-04-23* | 15:00-17:00 | Weekly meeting |
+| *2018-04-24* | 20:30-22:00 | Github/endpoint page |
+| *2018-04-25* | 21:15-22:00 | Database/blank screen |
+| *2018-04-28* | 14:00-14:45 | Endpoint page, documents |
+| *2018-04-28* | 15:40-16:30 | Trying to add endpoint page |
+| *2018-04-29* | 13:30-14:30 | Endpoint page/database problems |
+| *2018-04-29* | 14:45-15:45 | Endpoint page |
+| *2018-04-29* | 17:05-17:40 | Updating use cases |
+| *2018-04-29* | 20:00-20:20 | Updating design/documents |
+| *2018-04-30* | 15:00-17:00 | Weekly meeting |
