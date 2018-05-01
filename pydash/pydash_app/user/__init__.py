@@ -112,6 +112,14 @@ def find_by_name(name):
     return repository.find_by_name(name)
 
 
+def find_by_verification_code(verification_code):
+    """
+    Returns a single User-entity with the given `verification_code`, or None if it could not be found.
+    :param verification_code: The verification code of the user we hope to find.
+    """
+    return repository.find_by_verification_code(verification_code)
+
+
 def authenticate(name, password):
     """
     Attempts to authenticate the user with name `name`
@@ -126,33 +134,4 @@ def authenticate(name, password):
     return maybe_user
 
 
-def verify(user_id, verification_code):
-    """
-    Attempts to verify a user with the provided verification code.
-    This is intended as a one-time action per user after registration.
-    :param user_id: The ID of the User-entity to verify.
-    :param verification_code: The verification code that should match the User-entity's verification code.
-        Can be a string or UUID object.
-    :return: Returns True if both verification codes are equal, returns False otherwise.
-        Raises a KeyError when the user is not found in the repository.
-        Raises an AlreadyVerifiedException when the user is already verified.
-    """
-    try:
-        user = find(user_id)
-    except KeyError:
-        raise
 
-    if user.is_verified():
-        raise AlreadyVerifiedError(f"User {user} is already verified.")
-
-    # Ensure verification code can be a (capitalised) string or a UUID object.
-    if uuid.UUID(str(verification_code)) != uuid.UUID(user.get_verification_code()):
-        return False
-
-    user.verified = True
-    repository.update(user)
-    return True
-
-
-class AlreadyVerifiedError(Exception):
-    pass

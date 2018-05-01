@@ -6,23 +6,34 @@ from functools import wraps
 
 from flask import jsonify
 from flask_login import current_user
-import pydash_app.user as user
+from flask_restplus.reqparse import RequestParser
+import pydash_app.user.verification as verification
+import pydash_logger
+
+logger = pydash_logger.Logger(__name__)
 
 
-def verify_user(verification_code):
+def verify_user():
     """
     Verifies the currently logged in User by comparing the given verification_code with the code assigned to the User.
     This is intended to be used only once, after the user has just registered their account in order to gain access to
     api-routes that have the `verification_required` decorator.
-    :param verification_code: The verification code used to verify whether this verification is valid.
     """
+
+    args = _parse_arguments()
+    if 'verification_code' not in args:
+        result = {"message": "Verification code missing"}
+        logger.warning('Verification failed - verification_code missing')
+        return jsonify(result), 400
+    verification_code = args['verification_code']
+
     try:
-        verified = user.verify(current_user.id, verification_code)
-    except KeyError:
-        result = {"message": "Corresponding user not found."}
-        return jsonify(result), 409
-    except user.AlreadyVerifiedError:
-        result = {"message": "User already verified."}
+        verified = verification.verify(verification_code)
+    except verification.InvalidVerificationCodeError:
+        result = {"message": "Invalid verification code."}
+        return jsonify(result), 400
+    except verification.VerificationCodeExpiredError:
+        result = {"message": "Verification code expired."}
         return jsonify(result), 400
 
     if not verified:
@@ -44,5 +55,11 @@ def verification_required(func):
             return func(*args, **kwargs)
         else:
             message = {'message': 'User has not been verified yet.'}
-            return jsonify(message), 403  # Not sure if a jsonified message is the right return value for now.
+            return jsonify(message), 403  # Not sure if returning a jsonified message might break the application.
     return decorated_view
+
+
+def _parse_arguments():
+    parser = RequestParser()
+    parser.add_argument('verification_code')
+    return parser.parse_args()

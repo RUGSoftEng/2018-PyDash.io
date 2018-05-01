@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 import flask_login
 import persistent
+import pydash_app.user.verification as verification
 
 
 class User(persistent.Persistent, flask_login.UserMixin):
@@ -32,7 +33,8 @@ class User(persistent.Persistent, flask_login.UserMixin):
         self.name = name
         self.password_hash = generate_password_hash(password)
         self.verified = False
-        self.verification_code = uuid.uuid4()
+        self.smart_verification_code = verification.VerificationCode()
+        self.verification_code = self.smart_verification_code.verification_code
 
     def __repr__(self):
         """
@@ -48,13 +50,18 @@ class User(persistent.Persistent, flask_login.UserMixin):
         return str(self.id)
 
     def get_verification_code(self):
-        return str(self.verification_code)
+        """Returns the VerificationCode-entity or None if it has expired, see pydash_app.user.verification.py"""
+        return self.verification_code
 
     def is_verified(self):
         return self.verified
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def generate_new_verification_code(self):
+        self.smart_verification_code = verification.VerificationCode()
+        self.verification_code = self.smart_verification_code.verification_code
 
     # Required because `multi_indexed_collection` puts users in a set, that needs to order its keys for fast lookup.
     # Because the IDs are unchanging integer values, use that.
