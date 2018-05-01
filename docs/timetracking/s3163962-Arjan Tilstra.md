@@ -33,3 +33,13 @@
 | *2018-04-16* | 19:00-22:00 | Work on separate pages for dashboards |
 | *2018-04-16* | 22:00-22:45 | Fixed wrong links, cleaned up code, timetracking |
 | *2018-04-17* | 12:45-12:55 | Fixed merge conflict |
+| *2018-04-22* | 12:00-14:00 | Debugging protected pages issue |
+| *2018-04-25* | 20:15-21:00 | Debugging protected pages issue |
+| *2018-04-26* | 19:15-19:35 | Debugging protected pages issue |
+| *2018-04-29* | 12:30-16:00 | Creating endpoint execution time graph |
+| *2018-04-29* | 16:30-17:30 | Creating endpoint execution time graph |
+| *2018-04-29* | 17:30-18:00 | Creating total execution time table |
+| *2018-04-29* | 20:00-20:30 | Added error display for offline dashboards |
+| *2018-04-29* | 20:30-20:45 | Administrative work |
+| *2018-04-30* | 10:00-10:30 | Debugging protected pages issue |
+| *2018-04-30* | 15:00-17:00 | Weekly TA meeting + regular meeting |
