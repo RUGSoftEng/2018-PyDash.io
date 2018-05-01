@@ -34,10 +34,12 @@ class Login extends Component {
             console.log(response);
             logout_sound.play();
             this.setState(prevState => ({success: true}))
+            this.props.signOutHandler();
         }).catch((error) => {
             console.log(error);
             // Also log out on error.
             this.setState(prevState => ({success: true}))
+            this.props.signOutHandler();
         });
     }
 
