@@ -11,7 +11,7 @@ import pydash_logger
 
 logger = pydash_logger.Logger(__name__)
 
-MINIMUM_PASSWORD_LENGTH = 7
+_MINIMUM_PASSWORD_LENGTH = 8
 
 
 def register_user():
@@ -54,8 +54,8 @@ def _parse_arguments():
 
 def _check_password_requirements(password):
     rules = [lambda xs: any(x.isupper() for x in xs),
-             lambda xs: any(x.isdigit() for x in xs),
-             lambda xs: len(xs) >= MINIMUM_PASSWORD_LENGTH
+             lambda xs: any(not x.isalpha() for x in xs),
+             lambda xs: len(xs) >= _MINIMUM_PASSWORD_LENGTH
              ]
 
     if all(rule(password) for rule in rules):
