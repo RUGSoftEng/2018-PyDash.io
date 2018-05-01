@@ -74,6 +74,12 @@ class accountCreation extends React.Component {
                     helperText: 'User already exists',
                     loading: false,
                 }))
+            }else {
+                this.setState(prevState => ({
+                    error: true,
+                    helperText: 'Unknown error returned:' + error,
+                    loading: false,
+                }))
             }
         });
     }
