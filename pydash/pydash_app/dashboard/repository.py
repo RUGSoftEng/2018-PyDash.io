@@ -7,15 +7,27 @@ from datastore-specific details.
 It handles a subset of the following tasks
 (specifically, it only actually contains functions for the tasks the application needs in its current state!):
 - Creating new entities of the specified type.
+
+>>> import pydash_app.dashboard.dashboard as dashboard
+>>> import uuid
+>>> dashboard = dashboard.Dashboard("", "", str(uuid.uuid4()))
+>>> add(dashboard)
+>>> found_dashboard = find(dashboard.get_id())
+>>> found_dashboard.get_id() == dashboard.get_id()
+True
+
 - Finding them based on certain attributes.
 - Persisting updated versions of existing entities.
 - Deleting entities from the persistence layer.
 """
 import uuid
-import BTrees.OOBTree
 import transaction
+import pydash_logger
 from pydash_database import database_root, MultiIndexedPersistentCollection
 from multi_indexed_collection import DuplicateIndexError
+
+
+logger = pydash_logger.Logger(__name__)
 
 
 if not hasattr(database_root(), 'dashboards'):
@@ -29,11 +41,11 @@ def find(dashboard_id):
     # Ensure that this is also callable with strings or integers:
     if not isinstance(dashboard_id, uuid.UUID):
         dashboard_id = uuid.UUID(dashboard_id)
-    print(f"Starting to look for dashboard {dashboard_id}")
+    logger.info(f"Starting to look for dashboard {dashboard_id}")
 
     try:
         res = database_root().dashboards['id', dashboard_id]
-        print(f"FOUND DASHBOARD in find_dashboard: {res}")
+        logger.info(f"FOUND DASHBOARD in find_dashboard: {res}")
         return res
     except Exception as e:
         print(f"EXCEPTION: {e}")
