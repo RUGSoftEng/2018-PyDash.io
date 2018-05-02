@@ -75,16 +75,16 @@ def _simple_dashboard_detail(dashboard):
         }
     endpoints = [endpoint_dict(endpoint) for endpoint in dashboard.endpoints.values()]
 
-    dash_dict = {
+    dashboard_data = {
         'id': dashboard.id,
         'url': dashboard.url,
         'endpoints': endpoints
     }
 
     if str(dashboard.state.name).split("_")[-1] == "failure":
-        dash_dict['error'] = dashboard.error
+        dashboard_data['error'] = dashboard.error
 
-    return dash_dict
+    return dashboard_data
 
 
 def _dashboard_detail(dashboard):
@@ -103,7 +103,7 @@ def _dashboard_detail(dashboard):
 
     endpoints_dict = [endpoint_dict(endpoint) for endpoint in dashboard.endpoints.values()]
 
-    dash_dict = {
+    dashboard_data = {
         'id': dashboard.id,
         'url': dashboard.url,
         'aggregates': dashboard.aggregated_data(),
@@ -111,6 +111,6 @@ def _dashboard_detail(dashboard):
     }
 
     if str(dashboard.state.name).split("_")[-1] == "failure":
-        dash_dict['error'] = dashboard.error
+        dashboard_data['error'] = dashboard.error
 
-    return dash_dict
+    return dashboard_data
