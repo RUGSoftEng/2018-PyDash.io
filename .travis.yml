@@ -1,6 +1,9 @@
 language: python
 python:
  - "3.6"
+cache:
+ - yarn
+ - pip
 
 # Required to run Selenium tests:
 # env:
@@ -10,7 +13,7 @@ addons:
   chrome: stable
 
 before_install:
- - sudo apt-get update
+ # - sudo apt-get update
  - sudo apt-get install chromium-chromedriver
 
 # install dependencies
