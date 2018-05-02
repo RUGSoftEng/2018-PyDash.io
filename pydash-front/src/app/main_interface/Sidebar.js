@@ -4,6 +4,8 @@ import { NavLink } from 'react-router-dom'
 import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import SettingsIcon from 'material-ui-icons/Settings';
 import HomeIcon from 'material-ui-icons/Home';
+import BuildIcon from 'material-ui-icons/Build'
+
 
 import Logout from './Logout'
 
@@ -18,6 +20,7 @@ const menu_sound = new Howl({
 function playMenuSound(){
     menu_sound.play();
 }
+
 
 export const mailFolderListItems = (props) => {
     return (
@@ -34,9 +37,17 @@ export const mailFolderListItems = (props) => {
                 </ListItemIcon>
                 <ListItemText primary="Settings" />
             </ListItem>
+
+        <ListItem button component={NavLink} to={'/dashboard/TestCards'}>
+            <ListItemIcon>
+                <BuildIcon />
+            </ListItemIcon>
+            <ListItemText primary="Test Cards" />
+        </ListItem>
         </div>
     );
 }
+
 
 export const otherMailFolderListItems = (props) => {
     return (
