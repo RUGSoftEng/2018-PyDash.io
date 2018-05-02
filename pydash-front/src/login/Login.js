@@ -121,7 +121,7 @@ class Login extends Component {
                     </Button>
                     </p>
                     <p>
-                    <Button bsStyle="submit" href="/accountCreation">Create an account?</Button>
+                    <Button bsStyle="submit" href="/register">Create an account?</Button>
                     </p>
                 </form>
             </div>

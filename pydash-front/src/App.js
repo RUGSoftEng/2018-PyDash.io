@@ -40,7 +40,7 @@ class App extends Component {
             return <Redirect to='/dashboard' />;
         }
 
-        if(!this.state.isAuthenticated && window.location.pathname !== "/"){
+        if(!this.state.isAuthenticated && (window.location.pathname !== "/" && window.location.pathname !== '/register')){
             return <Redirect to='/' />;
         }
     }
@@ -66,7 +66,7 @@ class App extends Component {
                             {...props}
                         />
                     }/>
-                    <Route exact path='/accountCreation' render={(props) =>
+                    <Route exact path='/register' render={(props) =>
                         <AccountCreation
                             username={this.state.username}
                             isAuthenticated={this.state.isAuthenticated}

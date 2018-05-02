@@ -3,8 +3,10 @@ import DashboardList from './DashboardList';
 
 class Overview extends Component {
     render() {
-        return (
+        return (<div>
+            <h2>Dashboards</h2>
             <DashboardList />
+        </div>
         );
     }
 }
