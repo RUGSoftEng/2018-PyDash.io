@@ -52,6 +52,14 @@
     react-motion "^0.5.2"
     recompose "^0.26.0"
 
+"@pydash/react-breadcrumbs@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@pydash/react-breadcrumbs/-/react-breadcrumbs-2.2.1.tgz#944a6d3934f15141fe8935e8ba223ab7a25e4695"
+  dependencies:
+    lodash.isequal "^4.5.0"
+    redux "^3.6.0"
+    uuid "^3.0.1"
+
 "@pydash/react-scripts@^1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@pydash/react-scripts/-/react-scripts-1.3.0.tgz#dcf553e5d5cef51f7cd7c85553134cd26d51b5df"
@@ -6039,14 +6047,6 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.1.7:
     ini "~1.3.0"
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
-
-react-breadcrumbs@^2.1.4:
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/react-breadcrumbs/-/react-breadcrumbs-2.1.4.tgz#6a73f30458dc7aa1314bff9945c0f04ffa33cc7e"
-  dependencies:
-    lodash.isequal "^4.5.0"
-    redux "^3.6.0"
-    uuid "^3.0.1"
 
 react-dev-utils@^5.0.1:
   version "5.0.1"
