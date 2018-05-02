@@ -36,7 +36,7 @@ class App extends Component {
 
     redirectBasedOnAuthentication = () => {
         if(this.state.isAuthenticated && window.location.pathname === "/"){
-            return <Redirect to='/dashboard' />;
+            return <Redirect to='/overview' />;
         }
 
         if(!this.state.isAuthenticated && (window.location.pathname !== "/" && window.location.pathname !== '/register')){

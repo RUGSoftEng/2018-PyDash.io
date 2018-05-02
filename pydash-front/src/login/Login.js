@@ -96,7 +96,7 @@ class Login extends Component {
 
     render() {
         return this.state.success ? (
-            <Redirect to="/dashboard" />
+            <Redirect to="/overview" />
         ) : (
             <div>
                 <header className="App-header">
