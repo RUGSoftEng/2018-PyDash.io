@@ -30,18 +30,18 @@ def delete_user():
         result = {'message': 'Deletion failed - password incorrect'}
         return jsonify(result), 401
 
+    for dash in dashboard.dashboards_of_user(current_user.id):
+        try:
+            dashboard.remove_from_repository(dash)
+        except KeyError:
+            logger.warning(f'Dashboard {dash} from user {current_user} has already been removed.')
+
     try:
         user.remove_from_repository(current_user.id)
     except KeyError:
         result = {'message': 'User not found in database.'}
         logger.warning(f'Delete_user failed - {current_user} was not found in the database.')
         return jsonify(result), 500
-
-    for dash in dashboard.dashboards_of_user(current_user.id):
-        try:
-            dashboard.remove_from_repository(dash)
-        except KeyError:
-            logger.warning(f'Dashboard {dash} from user {current_user} has already been removed.')
 
     logger.info(f'{current_user} deleted themselves successfully.')
 
