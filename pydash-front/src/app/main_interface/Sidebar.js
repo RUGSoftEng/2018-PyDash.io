@@ -37,7 +37,7 @@ export const mailFolderListItems = (props) => {
                 </ListItemIcon>
                 <ListItemText primary="Settings" />
             </ListItem>
-              </ListItem>
+
         <ListItem button component={NavLink} to={'/dashboard/TestCards'}>
             <ListItemIcon>
                 <BuildIcon />
