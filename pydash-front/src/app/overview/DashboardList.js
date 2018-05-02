@@ -64,10 +64,8 @@ class DashboardList extends Component {
 
         return(
             <Grid container spacing={24} className={classes.root}>
-
                 {/* For each found dashboard for username */}
-                {tiles}
-
+                {tiles.length > 0 ? tiles : <h4><em style={{color: "grey"}}>No Dashboards have been added to your account yet.</em></h4>}
             </Grid>
         );
     }

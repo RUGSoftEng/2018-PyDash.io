@@ -18,34 +18,41 @@ const menu_sound = new Howl({
 });
 
 function playMenuSound(){
-  menu_sound.play();
+    menu_sound.play();
 }
 
-export const mailFolderListItems = (
-    <div>
-        <ListItem button component={NavLink} to={'/dashboard/'} onClick={playMenuSound}>
-            <ListItemIcon>
-                <HomeIcon />
-            </ListItemIcon>
-            <ListItemText primary="Dashboards" />
-        </ListItem>
-        <ListItem button component={NavLink} to={'/dashboard/settings'} onClick={playMenuSound}>
-            <ListItemIcon>
-                <SettingsIcon />
-            </ListItemIcon>
-            <ListItemText primary="Settings" />
-        </ListItem>
+
+export const mailFolderListItems = (props) => {
+    return (
+        <div>
+            <ListItem button component={NavLink} to={'/dashboard/'} onClick={playMenuSound}>
+                <ListItemIcon>
+                    <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Dashboards" />
+            </ListItem>
+            <ListItem button component={NavLink} to={'/dashboard/settings'} onClick={playMenuSound}>
+                <ListItemIcon>
+                    <SettingsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Settings" />
+            </ListItem>
+              </ListItem>
         <ListItem button component={NavLink} to={'/dashboard/TestCards'}>
             <ListItemIcon>
                 <BuildIcon />
             </ListItemIcon>
             <ListItemText primary="Test Cards" />
         </ListItem>
-    </div>
-);
+        </div>
+    );
+}
 
-export const otherMailFolderListItems = (
-    <div>
-        <Logout />
-    </div>
-);
+
+export const otherMailFolderListItems = (props) => {
+    return (
+        <div>
+            <Logout signOutHandler={props.signOutHandler}/>
+        </div>
+    );
+}

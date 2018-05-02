@@ -108,9 +108,9 @@ class ResponsiveDrawer extends React.Component {
                     </div>
                 </div>
                 <Divider />
-                <List>{mailFolderListItems}</List>
+                <List>{mailFolderListItems()}</List>
                 <Divider />
-                <List>{otherMailFolderListItems}</List>
+                <List>{otherMailFolderListItems({signOutHandler: this.props.signOutHandler})}</List>
             </div>
         );
 
