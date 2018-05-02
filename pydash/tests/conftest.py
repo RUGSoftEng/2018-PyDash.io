@@ -2,6 +2,12 @@ import pytest
 from pytest_localserver.http import WSGIServer
 
 
+@pytest.fixture(scope='session')
+def splinter_driver_kwargs():
+    """Webdriver kwargs."""
+    return {'headless': True}
+
+
 @pytest.fixture
 def testserver(request):
     """Defines the testserver funcarg"""

@@ -1,48 +1,51 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Redirect } from 'react-router'
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import axios from 'axios';
-import Logo from '../images/logo.png';
-import {Howl} from 'howler';
+import Logo from '../images/logo.png'
 
-import login_soundfile from "./boot.mp3";
-
-const login_sound = new Howl({
-    src: [login_soundfile],
-});
-
-class Login extends Component {
-    state = {
+class accountCreation extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
         username: '',
+        email: '',
         password: '',
-        error: false,
+        Confirmpassword: '',
         message: '',
-        success: false,
-        loading: false
-    };
+        error: false,
+        loading: false,
+        success: false
+      }
 
+  }
+  onChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
     handleChange = key => event => {
         this.setState({
             [key]: event.target.value
         });
     };
 
+   
+   
+   
     tryLogin = (e) => {
         e.preventDefault()
         let username = this.state.username,
             password = this.state.password
-        
+            
         if (!(username.trim()) || !(password.trim())) {
             this.setState(prevState => ({
                 ...prevState,
                 error: true,
-                helperText: 'Both fields are required!',
+                helperText: 'These fields are required!',
             }))
 
             return;
         }
-
         this.setState(prevState => ({
             ...prevState,
                 error: false,
@@ -50,17 +53,12 @@ class Login extends Component {
                 loading: true
             }))
 
-
-        // Make a request for a user with a given ID
-        axios.post(window.api_path + '/api/login', {
+        axios.post(window.api_path + '/api/user/register', {
             username,
             password},
             {withCredentials: true}
         ).then((response) => {
             console.log(response);
-
-            login_sound.play()
-            this.props.signInHandler(username)
             this.setState(prevState => ({
                 error: false,
                 helperText: '',
@@ -69,16 +67,10 @@ class Login extends Component {
             }));
         }).catch((error) => {
             console.log(error);
-            if(error.response && error.response.status === 401) {
+            if(error.response && error.response.status === 409) {
                 this.setState(prevState => ({
                     error: true,
-                    helperText: 'Incorrect credentials 😱',
-                    loading: false,
-                }))
-            } else {
-                this.setState(prevState => ({
-                    error: true,
-                    helperText: 'Unknown error returned:' + error,
+                    helperText: 'User already exists',
                     loading: false,
                 }))
             }
@@ -87,7 +79,7 @@ class Login extends Component {
 
     render() {
         return this.state.success ? (
-            <Redirect to="/dashboard" />
+            <Redirect to="/" />
         ) : (
             <div>
                 <header className="App-header">
@@ -98,7 +90,7 @@ class Login extends Component {
                     <br />
                     <TextField
                         id="username"
-                        label="Username"
+                        label="Choose username"
                         value={this.state.username}
                         onChange={this.handleChange('username')}
                         margin="normal"
@@ -106,22 +98,41 @@ class Login extends Component {
                     />
                     <br />
                     <TextField
-                        id="password"
+                        id="Email"
+                        label="Email"
+                        value={this.state.email}
+                        onChange={this.handleChange('email')}
+                        margin="normal"
+                        error={this.state.error}
+                    />
+                    <br />
+                    
+                    <TextField
+                        id="Password"
                         label="Password"
                         value={this.state.password}
                         onChange={this.handleChange('password')}
                         margin="normal"
                         type="password"
                         error={this.state.error}
+
+                    />
+                    <br />
+                    <TextField
+                        id="Confirmpassword"
+                        label="Confirm password"
+                        value={this.state.Confirmpassword}
+                        onChange={this.handleChange('Confirmpassword')}
+                        margin="normal"
+                        type="password"
+                        error={this.state.error}
                         helperText={this.state.helperText}
                     />
+                    <br />
                     <p>
                     <Button type="submit" variant="raised" color="primary" disabled={this.state.loading}>
-                        {this.state.loading ? "Logging in..." : "Login"}
+                        {this.state.loading ? "Creating account" : "REGISTER"}
                     </Button>
-                    </p>
-                    <p>
-                    <Button bsStyle="submit" href="/accountCreation">Create an account?</Button>
                     </p>
                 </form>
             </div>
@@ -129,4 +140,4 @@ class Login extends Component {
     }
 }
 
-export default Login;
+export default accountCreation;

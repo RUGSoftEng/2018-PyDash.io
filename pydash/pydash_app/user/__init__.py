@@ -64,7 +64,24 @@ def add_to_repository(user):
 def remove_from_repository(user_id):
     """
     Removes the User-entity whose user_id is `user_id` from the repository.
+
+    >>> gandalf1 = User("Gandalf", "pass")
+    >>> add_to_repository(gandalf1)
+    >>> remove_from_repository(gandalf1.get_id())
+    >>> found_user = find_by_name("Gandalf")
+    >>> found_user == None
+    True
+
     Will raise a KeyError if said user is not in the repository.
+
+    >>> gandalf1 = User("Gandalf", "pass")
+    >>> add_to_repository(gandalf1)
+    >>> remove_from_repository(gandalf1.get_id())
+    >>> remove_from_repository(gandalf1.get_id())
+    Traceback (most recent call last):
+      ...
+    KeyError
+
     :param user_id: The ID of the User-entity to be removed. This can be either a UUID-entity or the corresponding
         string representation.
     """

@@ -14,17 +14,18 @@ PyJWT = "*"
 requests = "*"
 Flask-Cors = "*"
 pqdict = "*"
+pytest-cov = "*"
 
 [dev-packages]
 pytest = "*"
-pytest-cov = "*"
 pytest-xdist = "*"
 pytest-env = "*"
-pytest-bdd = "*"
 pytest-flask = "*"
 pytest-splinter = "*"
 selenium = "*"
 pytest-localserver = "*"
+pytest-bdd = "*"
+pytest-random-order = "*"
 
 [requires]
 python_version = "3.6"
