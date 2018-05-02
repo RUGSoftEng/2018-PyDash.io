@@ -112,7 +112,7 @@ def _dashboard_detail(dashboard):
         'id': dashboard.id,
         'url': dashboard.url,
         'aggregates': dashboard.aggregated_data(),
-        'endpoints': endpoints_dict
+        'endpoints': endpoints
     }
 
     if dashboard.name is not None:
