@@ -29,7 +29,7 @@ def register_user():
 
     if not _check_password_requirements(password):
         message = {'message': 'Password should consist of at least 7 characters, contain at least one capital letter'
-                              ' and at least one digit.'}
+                              ' and at least one non-alphabetic character.'}
         logger.warning('User registration failed - password does not conform to the requirements.')
         return jsonify(message), 400
 
