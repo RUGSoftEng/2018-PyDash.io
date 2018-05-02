@@ -28,13 +28,13 @@ function playMenuSound(){
 export const MainMenuItems = (props) => {
     return (
         <List>
-            <ListItem button component={NavLink} to={'/dashboard/'} onClick={playMenuSound}>
+            <ListItem button component={NavLink} to={'/overview/'} onClick={playMenuSound}>
                 <ListItemIcon>
                     <HomeIcon />
                 </ListItemIcon>
                 <ListItemText primary="Dashboards" />
             </ListItem>
-            <ListItem button component={NavLink} to={'/dashboard/settings'} onClick={playMenuSound}>
+            <ListItem button component={NavLink} to={'/overview/settings'} onClick={playMenuSound}>
                 <ListItemIcon>
                     <SettingsIcon />
                 </ListItemIcon>

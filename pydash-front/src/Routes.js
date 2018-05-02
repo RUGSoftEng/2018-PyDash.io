@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
 
 import Login from './login/Login';
-import AccountCreation from './accountCreation/AccountCreation';
+import Registration from './registration/Registration';
 import AuthenticatedApp from './authenticated_app/AuthenticatedApp';
 
 class Routes extends Component {
@@ -17,13 +17,13 @@ class Routes extends Component {
                     />
                     )}/>
                 <Route exact path='/register' render={(props) => (
-                    <AccountCreation
+                    <Registration
                         username={this.props.username}
                         isAuthenticated={this.props.isAuthenticated}
                         {...props}
                     />
                 )}/>
-                <Route path='/dashboard' render={(props) => (
+                <Route path='/overview' render={(props) => (
                     <AuthenticatedApp
                         username={this.props.username}
                         isAuthenticated={this.props.isAuthenticated}

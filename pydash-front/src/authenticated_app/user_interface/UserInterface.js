@@ -15,7 +15,7 @@ import UserIcon from 'material-ui-icons/AccountCircle';
 import Logo from '../../images/logo.png'
 
 // Contents:
-import { Breadcrumbs } from 'react-breadcrumbs';
+import { Breadcrumbs } from '@pydash/react-breadcrumbs';
 import { MainMenuItems, OtherMenuItems } from './Menu';
 
 

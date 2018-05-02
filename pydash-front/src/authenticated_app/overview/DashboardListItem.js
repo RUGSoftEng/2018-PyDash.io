@@ -30,7 +30,7 @@ class DashboardListItem extends Component {
     render() {
         return(
             <Grid item xs={12} sm={12}>
-                <NavLink to={'/dashboard/view/' + this.props.dashboard_id} className="DashboardTileLink">
+                <NavLink to={'/overview/dashboards/' + this.props.dashboard_id} className="DashboardTileLink">
                 <Card className="DashboardTile">
                     <CardContent>
                         <h2>{this.props.title}</h2>
