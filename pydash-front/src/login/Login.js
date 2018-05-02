@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router'
+import NavLink from 'react-router-dom/NavLink';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import axios from 'axios';
@@ -32,7 +33,7 @@ class Login extends Component {
         e.preventDefault()
         let username = this.state.username,
             password = this.state.password
-        
+
         if (!(username.trim()) || !(password.trim())) {
             this.setState(prevState => ({
                 ...prevState,
@@ -61,12 +62,12 @@ class Login extends Component {
 
             login_sound.play()
             this.props.signInHandler(username)
-            this.setState(prevState => ({
-                error: false,
-                helperText: '',
-                success: true,
-                loading: false
-            }));
+            /* this.setState(prevState => ({
+             *     error: false,
+             *     helperText: '',
+             *     success: true,
+             *     loading: false
+             * }));*/
         }).catch((error) => {
             console.log(error);
             if(error.response && error.response.status === 401) {
@@ -121,7 +122,7 @@ class Login extends Component {
                     </Button>
                     </p>
                     <p>
-                    <Button bsStyle="submit" href="/register">Create an account?</Button>
+                    <Button component={NavLink} to="/register">Create an account?</Button>
                     </p>
                 </form>
             </div>

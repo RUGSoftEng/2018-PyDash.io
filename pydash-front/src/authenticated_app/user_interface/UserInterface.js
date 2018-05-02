@@ -1,6 +1,5 @@
 import React from 'react';
-import axios from 'axios';
-import { Route } from 'react-router-dom'
+/* import { Route } from 'react-router-dom'*/
 import PropTypes from 'prop-types';
 
 // material-ui
@@ -19,14 +18,14 @@ import UserIcon from 'material-ui-icons/AccountCircle';
 // plugins
 import {Breadcrumbs} from 'react-breadcrumbs';
 /* import { Breadcrumb } from 'react-breadcrumbs'*/
-import BreadcrumbRoute from '../../common/BreadcrumbRoute';
+/* import BreadcrumbRoute from '../../common/BreadcrumbRoute';*/
 
 // APP
 import { mailFolderListItems, otherMailFolderListItems } from './Sidebar';
-import Overview from '../overview/Overview';
-import Statistics from '../statistics/Statistics';
-import DashboardPage from '../dashboard/DashboardPage';
-import Settings from '../settings/Settings';
+/* import Overview from '../overview/Overview';*/
+/* import Statistics from '../statistics/Statistics';*/
+/* import DashboardPage from '../dashboard/DashboardPage';
+ * import Settings from '../settings/Settings';*/
 
 
 
@@ -90,59 +89,23 @@ const styles = theme => ({
 /* const MatchedDashboardPage = ({match}) => {
  *     return <DashboardPage id={match.params.id} />
  * }*/
-const MatchedDashboardPage = (props) => {
-    console.log("MatchedDashboardPage props: ", props, props.dashboard)
-    if(props.dashboard === undefined){
-        return () => ('');
-    }
-    return () => (<DashboardPage dashboard={props.dashboard} />);
-}
+/* const MatchedDashboardPage = (props) => {
+ *     console.log("MatchedDashboardPage props: ", props, props.dashboard)
+ *     if(props.dashboard === undefined){
+ *         return () => ('');
+ *     }
+ *     return () => (<DashboardPage dashboard={props.dashboard} />);
+ * }*/
 
-class ResponsiveDrawer extends React.Component {
+class UserInterface extends React.Component {
     state = {
         mobileOpen: false,
-        dashboards: {},
     };
 
     handleDrawerToggle = () => {
         this.setState({ mobileOpen: !this.state.mobileOpen });
     };
 
-
-
-    componentDidMount() {
-        console.log("Before DashboardList endpoint call")
-      axios(window.api_path + '/api/dashboards', {
-        method: 'get',
-        withCredentials: true
-      }).then((response) => {
-        console.log('found some data', response);
-        if (response.data.hasOwnProperty('error')) {
-          console.log("Error found");
-          this.setState(prevState => {
-            return {
-              ...prevState,
-                dashboards: {},
-              error: response.data.error,
-            };
-          });
-        } else {
-            const dashboards = response.data.reduce((accum, dashboard) => {
-                accum[dashboard.id] = dashboard;
-                return accum;
-            }, {});
-            console.log("DASHBOARDS DATA:", dashboards);
-          this.setState(prevState => {
-            return {
-              ...prevState,
-              dashboards: dashboards,
-            };
-          });
-        }
-      }).catch((error) => {
-        console.log('error while fetching dashboards information', error);
-      });
-    }
 
     render() {
         const { classes, theme } = this.props;
@@ -210,29 +173,16 @@ class ResponsiveDrawer extends React.Component {
                 </Hidden>
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
-                    <BreadcrumbRoute path='/dashboard' title='Overview' render={ ({ match }) => (
-                        <div>
-                            <Route exact path={match.url + '/'} component={() => (<Overview dashboards={this.state.dashboards} />)} />
-                            <BreadcrumbRoute exact path={match.url + '/settings'} component={Settings} title='Settings' />
-                            <Route path={match.url + '/view/'} title='Dashboard' render={ ({ match }) => (
-                                    <Route path={match.url + '/:id'} render={ ({match}) => {
-                                        console.log("ROUTE MATCH:", match);
-                                        const dashboard_info = this.state.dashboards[match.params.id];
-                                        return <BreadcrumbRoute path={match.url + '/'} title={(dashboard_info ? dashboard_info.url : '')} component={MatchedDashboardPage({dashboard: dashboard_info})} />
-                                    }} />
-                            )}/>
-                        </div>
-                    )} />
+                    {this.props.children}
                 </main>
             </div>
         );
     }
 }
 
-
-ResponsiveDrawer.propTypes = {
+UserInterface.propTypes = {
     classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(ResponsiveDrawer);
+export default withStyles(styles, { withTheme: true })(UserInterface);

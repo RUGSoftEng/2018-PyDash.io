@@ -3,7 +3,6 @@ import './overview.css';
 import Grid from 'material-ui/Grid';
 import DashboardListItem from './DashboardListItem';
 import { withStyles } from 'material-ui/styles';
-import axios from 'axios';
 
 const styles = theme => ({
   root: {

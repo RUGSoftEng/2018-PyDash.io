@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import DashboardList from './DashboardList';
 
-import { Breadcrumb } from 'react-breadcrumbs'
 
 class Overview extends Component {
     render() {

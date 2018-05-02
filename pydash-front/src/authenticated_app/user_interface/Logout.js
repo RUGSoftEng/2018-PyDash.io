@@ -12,7 +12,7 @@ const logout_sound = new Howl({
 
 
 
-class Login extends Component {
+class Logout extends Component {
     state = {
         success: false
     };
@@ -58,4 +58,4 @@ class Login extends Component {
     }
 }
 
-export default Login;
+export default Logout;

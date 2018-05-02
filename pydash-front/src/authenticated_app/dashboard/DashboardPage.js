@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Breadcrumb } from 'react-breadcrumbs';
 import axios from 'axios';
 
 import VisitsPerDayPanel from './VisitsPerDayPanel';
@@ -8,30 +7,7 @@ import {dict_to_xy_arr} from "../../utils";
 import EndpointExecutionTimesPanel from './EndpointExecutionTimesPanel';
 import ExecutionTimesTable from './ExecutionTimesTable';
 
-// Transforms a hashmap of key-value pairs into an array of {x: key, y: value} objects.
-// TODO move to a helper JS file.
-/*function dict_to_xy_arr(dict){
-   let res =  Object.entries(dict).map(function([key, value]){
-   return {x: key, y: value}
-   });
-   console.log('dict_to_xy_array', res);
-   return res;
-   }*/
-
-/*const styles = theme => ({
-   root: {
-   flexGrow: 1,
-   },
-   paper: {
-   padding: theme.spacing.unit * 2,
-   textAlign: 'center',
-   color: theme.palette.text.secondary,
-   },
-   });*/
-
-
-
-class Board extends Component {
+class DashboardPage extends Component {
     constructor(props) {
         super(props);
         this.divRef = React.createRef();
@@ -110,4 +86,4 @@ class Board extends Component {
     }
 }
 
-export default Board;
+export default DashboardPage;
