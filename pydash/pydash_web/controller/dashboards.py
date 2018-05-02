@@ -68,11 +68,13 @@ def _simple_dashboard_detail(dashboard):
     :param dashboard: The Dashboard-entity in question.
     :return: A dict structured as the simple JSON-representation of the given dashboard.
     """
+    
     def endpoint_dict(endpoint):
         return {
             'name': endpoint.name,
             'enabled': endpoint.is_monitored
         }
+
     endpoints = [endpoint_dict(endpoint) for endpoint in dashboard.endpoints.values()]
 
     dashboard_data = {
@@ -101,7 +103,7 @@ def _dashboard_detail(dashboard):
             'enabled': endpoint.is_monitored
         }
 
-    endpoints_dict = [endpoint_dict(endpoint) for endpoint in dashboard.endpoints.values()]
+    endpoints = [endpoint_dict(endpoint) for endpoint in dashboard.endpoints.values()]
 
     dashboard_data = {
         'id': dashboard.id,
