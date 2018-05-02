@@ -1,8 +1,12 @@
 import React, {Component} from 'react';
+
+//Visual:
 import './overview.css';
 import Grid from 'material-ui/Grid';
-import DashboardListItem from './DashboardListItem';
 import { withStyles } from 'material-ui/styles';
+
+//Contents:
+import DashboardListItem from './DashboardListItem';
 
 const styles = theme => ({
   root: {

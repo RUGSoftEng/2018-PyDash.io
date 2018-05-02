@@ -1,13 +1,21 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
+import axios from 'axios';
+
+// Routing:
 import { Redirect } from 'react-router'
 import NavLink from 'react-router-dom/NavLink';
+
+// Visual:
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
-import axios from 'axios';
 import Logo from '../images/logo.png';
-import {Howl} from 'howler';
 
+// Sound:
+import {Howl} from 'howler';
 import login_soundfile from "./boot.mp3";
+
 
 const login_sound = new Howl({
     src: [login_soundfile],
@@ -129,5 +137,8 @@ class Login extends Component {
         );
     }
 }
+Login.propTypes = {
+    signInHandler: PropTypes.func.isRequired,
+};
 
 export default Login;

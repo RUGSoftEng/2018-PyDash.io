@@ -1,22 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+// Routing:
 import { Route } from 'react-router-dom';
-
-/* import { Breadcrumb } from 'react-breadcrumbs'*/
 import BreadcrumbRoute from '../common/BreadcrumbRoute';
 
+// Contents:
 import Overview from './overview/Overview';
-import DashboardPage from './dashboard/DashboardPage';
+import DashboardRoutes from './dashboard/DashboardRoutes';
 import Settings from './settings/Settings';
 
-const MatchedDashboardPage = (props) => {
-    console.log("MatchedDashboardPage props: ", props, props.dashboard)
-    if(props.dashboard === undefined){
-        return () => ('');
-    }
-    return () => (<DashboardPage dashboard={props.dashboard} />);
-}
 
 class AuthenticatedRoutes extends Component {
     render = () => {
@@ -29,11 +22,7 @@ class AuthenticatedRoutes extends Component {
                         <Route path={match.url + '/:id'} render={ ({match}) => {
                                 console.log("ROUTE MATCH:", match);
                                 const dashboard_info = this.props.dashboards[match.params.id];
-                                return (<BreadcrumbRoute
-                                        path={match.url + '/'}
-                                        title={(dashboard_info ? dashboard_info.url : '')}
-                                        component={MatchedDashboardPage({dashboard: dashboard_info})}
-                                />);
+                                return <DashboardRoutes match={match} dashboard={dashboard_info}/>
                         }} />
                     )}/>
                 </div>

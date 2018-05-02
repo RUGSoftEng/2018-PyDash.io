@@ -1,37 +1,23 @@
 import React from 'react';
-/* import { Route } from 'react-router-dom'*/
 import PropTypes from 'prop-types';
 
-// material-ui
+// Visual:
 import { withStyles } from 'material-ui/styles';
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
-import List from 'material-ui/List';
 import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import Hidden from 'material-ui/Hidden';
 import Divider from 'material-ui/Divider';
 import MenuIcon from 'material-ui-icons/Menu';
 import UserIcon from 'material-ui-icons/AccountCircle';
-
-// plugins
-import {Breadcrumbs} from 'react-breadcrumbs';
-/* import { Breadcrumb } from 'react-breadcrumbs'*/
-/* import BreadcrumbRoute from '../../common/BreadcrumbRoute';*/
-
-// APP
-import { mailFolderListItems, otherMailFolderListItems } from './Sidebar';
-/* import Overview from '../overview/Overview';*/
-/* import Statistics from '../statistics/Statistics';*/
-/* import DashboardPage from '../dashboard/DashboardPage';
- * import Settings from '../settings/Settings';*/
-
-
-
-
-// Styling
 import Logo from '../../images/logo.png'
+
+// Contents:
+import { Breadcrumbs } from 'react-breadcrumbs';
+import { MainMenuItems, OtherMenuItems } from './Menu';
+
 
 const drawerWidth = 240;
 
@@ -85,18 +71,6 @@ const styles = theme => ({
     },
 });
 
-
-/* const MatchedDashboardPage = ({match}) => {
- *     return <DashboardPage id={match.params.id} />
- * }*/
-/* const MatchedDashboardPage = (props) => {
- *     console.log("MatchedDashboardPage props: ", props, props.dashboard)
- *     if(props.dashboard === undefined){
- *         return () => ('');
- *     }
- *     return () => (<DashboardPage dashboard={props.dashboard} />);
- * }*/
-
 class UserInterface extends React.Component {
     state = {
         mobileOpen: false,
@@ -105,7 +79,6 @@ class UserInterface extends React.Component {
     handleDrawerToggle = () => {
         this.setState({ mobileOpen: !this.state.mobileOpen });
     };
-
 
     render() {
         const { classes, theme } = this.props;
@@ -120,9 +93,9 @@ class UserInterface extends React.Component {
                     </div>
                 </div>
                 <Divider />
-                <List>{mailFolderListItems()}</List>
+                <MainMenuItems />
                 <Divider />
-                <List>{otherMailFolderListItems({signOutHandler: this.props.signOutHandler})}</List>
+                <OtherMenuItems signOutHandler={this.props.signOutHandler} />
             </div>
         );
 

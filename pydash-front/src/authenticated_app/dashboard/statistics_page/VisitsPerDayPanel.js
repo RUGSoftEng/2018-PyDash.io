@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import axios from 'axios';
 
-import DashboardVisitsGraph from './DashboardVisitsGraph';
-
+// Visual:
 import ExpansionPanel, {
     ExpansionPanelSummary,
     ExpansionPanelDetails,
 } from 'material-ui/ExpansionPanel';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import {dict_to_xy_arr} from "../../utils";
+// Contents:
+import DashboardVisitsGraph from './DashboardVisitsGraph';
+
+// Utils:
+import {dict_to_xy_arr} from "../../../utils";
+
 
 class VisitsPerDayPanel extends Component {
     constructor(props) {
@@ -49,5 +55,9 @@ class VisitsPerDayPanel extends Component {
         )
     }
 }
+
+VisitsPerDayPanel.propTypes = {
+    dashboard_id: PropTypes.string.isRequired,
+};
 
 export default VisitsPerDayPanel;

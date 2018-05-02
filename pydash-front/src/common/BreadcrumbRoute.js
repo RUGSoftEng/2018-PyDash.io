@@ -1,12 +1,10 @@
-// Import External Dependencies
 import React from 'react';
 import { Route } from 'react-router-dom';
 
-// Import Components
+// Visual:
 import { Breadcrumb } from 'react-breadcrumbs';
 
-// Create and export the component
-export default ({
+const BreadcrumbRoute = ({
 	  component: Component,
 	  includeSearch = false,
 	  render,
@@ -22,3 +20,5 @@ export default ({
         </Breadcrumb>
     )} />
 )
+
+export default BreadcrumbRoute;

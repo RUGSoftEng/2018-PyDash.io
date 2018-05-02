@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import axios from 'axios';
 
+// Contents:
 import VisitsPerDayPanel from './VisitsPerDayPanel';
 import UniqueVisitorsPerDayPanel from './UniqueVisitorsPerDayPanel';
-import {dict_to_xy_arr} from "../../utils";
 import EndpointExecutionTimesPanel from './EndpointExecutionTimesPanel';
 import ExecutionTimesTable from './ExecutionTimesTable';
 
-class DashboardPage extends Component {
+// Helper:
+import {dict_to_xy_arr} from "../../../utils";
+
+class StatisticsPage extends Component {
     constructor(props) {
         super(props);
         this.divRef = React.createRef();
@@ -78,7 +83,7 @@ class DashboardPage extends Component {
                     <div>
                         <VisitsPerDayPanel dashboard_id={this.props.dashboard.id} />
                         <UniqueVisitorsPerDayPanel dashboard_id={this.props.dashboard.id} />
-                        <ExecutionTimesTable dashboard_id={this.props.id} />
+                        <ExecutionTimesTable dashboard_id={this.props.dashboard.id} />
                         <EndpointExecutionTimesPanel dashboard_id={this.props.dashboard.id} />
                     </div>
                 </div>
@@ -86,4 +91,12 @@ class DashboardPage extends Component {
     }
 }
 
-export default DashboardPage;
+StatisticsPage.propTypes = {
+    dashboard: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        url: PropTypes.string.isRequired,
+    }).isRequired,
+};
+
+
+export default StatisticsPage;

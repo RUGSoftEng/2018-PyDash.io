@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import axios from 'axios';
 
+// Contents:
 import UserInterface from './user_interface/UserInterface'
 import AuthenticatedRoutes from './AuthenticatedRoutes';
 
@@ -10,7 +11,6 @@ class AuthenticatedApp extends Component {
     state = {
         dashboards: {}
     };
-
 
     componentDidMount = () => {
         console.log("Before DashboardList endpoint call")

@@ -1,13 +1,15 @@
 import React, { Component } from "react";
-import { Table, TableBody, TableRow, TableCell } from "material-ui";
+import PropTypes from 'prop-types';
 
+import axios from 'axios';
+
+// Visual:
 import ExpansionPanel, {
     ExpansionPanelSummary,
     ExpansionPanelDetails,
 } from 'material-ui/ExpansionPanel';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import axios from 'axios';
-
+import { Table, TableBody, TableRow, TableCell } from "material-ui";
 
 
 class ExecutionTimesTable extends Component {
@@ -61,6 +63,10 @@ class ExecutionTimesTable extends Component {
         );
 
     }
+}
+
+ExecutionTimesTable.propTypes = {
+    dashboard_id: PropTypes.string.isRequired,
 }
 
 export default ExecutionTimesTable;

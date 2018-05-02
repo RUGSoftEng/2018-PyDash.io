@@ -1,5 +1,9 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
+// Contents:
 import { ResponsiveLine } from '@nivo/line'
+
 
 class DashboardVisitsGraph extends Component {
     render() {
@@ -48,5 +52,11 @@ class DashboardVisitsGraph extends Component {
         );
     }
 }
+
+DashboardVisitsGraph.propTypes = {
+    data: PropTypes.array.isRequired,
+    title: PropTypes.string.isRequired,
+    tooltip_title: PropTypes.string.isRequired,
+};
 
 export default DashboardVisitsGraph;

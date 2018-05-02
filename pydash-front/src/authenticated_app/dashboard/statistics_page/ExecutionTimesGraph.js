@@ -1,4 +1,7 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
+// Contents:
 import { Bar } from '@nivo/bar';
 
 class ExecutionTimesGraph extends Component {
@@ -55,11 +58,14 @@ class ExecutionTimesGraph extends Component {
                 }
             ]}
         />
-        
-        
         </div>
         );
     }
 }
+
+ExecutionTimesGraph.propTypes = {
+    data: PropTypes.array.isRequired,
+    title: PropTypes.string.isRequired,
+};
 
 export default ExecutionTimesGraph;
