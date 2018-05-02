@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import { Route } from 'react-router-dom'
 import PropTypes from 'prop-types';
 
@@ -14,6 +15,11 @@ import Hidden from 'material-ui/Hidden';
 import Divider from 'material-ui/Divider';
 import MenuIcon from 'material-ui-icons/Menu';
 import UserIcon from 'material-ui-icons/AccountCircle';
+
+// plugins
+import {Breadcrumbs} from 'react-breadcrumbs';
+/* import { Breadcrumb } from 'react-breadcrumbs'*/
+import BreadcrumbRoute from '../../common/BreadcrumbRoute';
 
 // APP
 import { mailFolderListItems, otherMailFolderListItems } from './Sidebar';
@@ -81,18 +87,53 @@ const styles = theme => ({
 });
 
 
-const MatchedDashboardPage = ({match}) => {
-    return <DashboardPage id={match.params.id} />
+/* const MatchedDashboardPage = ({match}) => {
+ *     return <DashboardPage id={match.params.id} />
+ * }*/
+const MatchedDashboardPage = (props) => {
+    return <DashboardPage dashboard={props.dashboard} />
 }
 
 class ResponsiveDrawer extends React.Component {
     state = {
         mobileOpen: false,
+        dashboards: [],
     };
 
     handleDrawerToggle = () => {
         this.setState({ mobileOpen: !this.state.mobileOpen });
     };
+
+
+    componentDidMount() {
+        console.log("Before DashboardList endpoint call")
+      axios(window.api_path + '/api/dashboards', {
+        method: 'get',
+        withCredentials: true
+      }).then((response) => {
+        console.log('found some data', response);
+        if (response.data.hasOwnProperty('error')) {
+          console.log("Error found");
+          this.setState(prevState => {
+            return {
+              ...prevState,
+              dashboards: response.data,
+              error: response.data.error,
+            };
+          });
+        } else {
+          this.setState(prevState => {
+            return {
+              ...prevState,
+
+              dashboards: response.data,
+            };
+          });
+        }
+      }).catch((error) => {
+        console.log('error while fetching dashboards information', error);
+      });
+    }
 
     render() {
         const { classes, theme } = this.props;
@@ -128,6 +169,7 @@ class ResponsiveDrawer extends React.Component {
                         <Typography variant="title" color="inherit" noWrap>
                             <img src={Logo} alt="PyDash.io logo" style={{marginTop: "15px", marginLeft: "20px", marginBottom: "10px", maxWidth: "150px"}} />
             </Typography>
+                        <Breadcrumbs hidden={false} />
                     </Toolbar>
                 </AppBar>
                 <Hidden mdUp>
@@ -159,10 +201,18 @@ class ResponsiveDrawer extends React.Component {
                 </Hidden>
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
-                    <Route exact path='/dashboard' component={Overview} />
-                    <Route exact path='/dashboard/settings' component={Settings} />
-                    <Route exact path='/dashboard/statistics' component={Statistics} />
-                    <Route path='/dashboard/view/:id' component={MatchedDashboardPage} />
+                    <BreadcrumbRoute path='/dashboard' title='Overview' render={ ({ match }) => (
+                        <div>
+                            <Route exact path={match.url + '/'} component={() => (<Overview dashboards={this.state.dashboards} />)} />
+                            <BreadcrumbRoute exact path={match.url + '/settings'} component={Settings} title='Settings' />
+                            <BreadcrumbRoute path={match.url + '/view/'} title='Dashboard' render={ ({ match }) => (
+                                this.state.dashboards.map((dashboard, index) => {
+                                    console.log("DASHBOARD: ", dashboard, dashboard.id, match.url + '/' + dashboard.id)
+                                    return <BreadcrumbRoute key={index} path={match.url + '/' + dashboard.id} title={dashboard.url} component={MatchedDashboardPage({dashboard: dashboard})} />
+                                })
+                            )}/>
+                        </div>
+                    )} />
                 </main>
             </div>
         );

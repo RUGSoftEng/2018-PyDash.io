@@ -25,40 +25,11 @@ class DashboardList extends Component {
         };
     }
 
-    componentDidMount() {
-        console.log("Before DashboardList endpoint call")
-      axios(window.api_path + '/api/dashboards', {
-        method: 'get',
-        withCredentials: true
-      }).then((response) => {
-        console.log('found some data', response);
-        if (response.data.hasOwnProperty('error')) {
-          console.log("Error found");
-          this.setState(prevState => {
-            return {
-              ...prevState,
-              dashboards: response.data,
-              error: response.data.error,
-            };
-          });
-        } else { 
-          this.setState(prevState => {
-            return {
-              ...prevState,
-
-              dashboards: response.data,
-            };
-          });
-        }
-      }).catch((error) => {
-        console.log('error while fetching dashboards information', error);
-      });
-    }
 
     render() {
         const {classes} = this.props;
 
-        const tiles = this.state.dashboards.map((dashboard, index) => {
+        const tiles = this.props.dashboards.map((dashboard, index) => {
             return <DashboardListItem key={index} title={dashboard.url} dashboard_id={dashboard.id} error={dashboard.error} />
         })
 

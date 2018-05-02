@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Breadcrumb } from 'react-breadcrumbs';
 import axios from 'axios';
 
 import VisitsPerDayPanel from './VisitsPerDayPanel';
@@ -10,25 +11,25 @@ import ExecutionTimesTable from './ExecutionTimesTable';
 // Transforms a hashmap of key-value pairs into an array of {x: key, y: value} objects.
 // TODO move to a helper JS file.
 /*function dict_to_xy_arr(dict){
-  let res =  Object.entries(dict).map(function([key, value]){
-      return {x: key, y: value}
-  });
-  console.log('dict_to_xy_array', res);
-  return res;
-}*/
-  
+   let res =  Object.entries(dict).map(function([key, value]){
+   return {x: key, y: value}
+   });
+   console.log('dict_to_xy_array', res);
+   return res;
+   }*/
+
 /*const styles = theme => ({
-    root: {
-      flexGrow: 1,
-    },
-    paper: {
-      padding: theme.spacing.unit * 2,
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
-    },
-});*/
-  
-  
+   root: {
+   flexGrow: 1,
+   },
+   paper: {
+   padding: theme.spacing.unit * 2,
+   textAlign: 'center',
+   color: theme.palette.text.secondary,
+   },
+   });*/
+
+
 
 class Board extends Component {
     constructor(props) {
@@ -52,41 +53,41 @@ class Board extends Component {
             return {...prevState, width: width}
         })
 
-      axios(window.api_path + '/api/dashboards/' + this.props.id, {
-        method: 'get',
-        withCredentials: true
-      }).then((response) => {
-        //console.log(response);
-        if (response.data.hasOwnProperty('error')) {
-            this.setState(prevState => {
-                return {
-                    ...prevState,
+        axios(window.api_path + '/api/dashboards/' + this.props.id, {
+            method: 'get',
+            withCredentials: true
+        }).then((response) => {
+            //console.log(response);
+            if (response.data.hasOwnProperty('error')) {
+                this.setState(prevState => {
+                    return {
+                        ...prevState,
 
-                    dashboard: response.data,
+                        dashboard: response.data,
 
-                    total_visits: response.data.aggregates.total_visits,
-                    visits_per_day: dict_to_xy_arr(response.data.aggregates.visits_per_day),
-                    unique_visitors_per_day: dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day),
-                    error: response.data.error,
-                }
-            });
-        } else {
-            this.setState(prevState => {
-                return {
-                    ...prevState,
+                        total_visits: response.data.aggregates.total_visits,
+                        visits_per_day: dict_to_xy_arr(response.data.aggregates.visits_per_day),
+                        unique_visitors_per_day: dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day),
+                        error: response.data.error,
+                    }
+                });
+            } else {
+                this.setState(prevState => {
+                    return {
+                        ...prevState,
 
 
-                    dashboard: response.data,
+                        dashboard: response.data,
 
-                    total_visits: response.data.aggregates.total_visits,
-                    visits_per_day: dict_to_xy_arr(response.data.aggregates.visits_per_day),
-                    unique_visitors_per_day: dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day),
-                };
-            });
-        }
-      }).catch((error) => {
-        console.log('error while fetching dashboard information', error);
-      });
+                        total_visits: response.data.aggregates.total_visits,
+                        visits_per_day: dict_to_xy_arr(response.data.aggregates.visits_per_day),
+                        unique_visitors_per_day: dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day),
+                    };
+                });
+            }
+        }).catch((error) => {
+            console.log('error while fetching dashboard information', error);
+        });
     }
 
     render() {
@@ -94,16 +95,17 @@ class Board extends Component {
             return (<h2>Loading...</h2>);
         }
         return (
-            <div ref={this.divRef} >
-                <h2>Dashboard: {this.state.dashboard.url}</h2>
-                <h3>{this.state.error}</h3>
-                <div>
-                    <VisitsPerDayPanel dashboard_id={this.props.id} />
-                    <UniqueVisitorsPerDayPanel dashboard_id={this.props.id} />
-                    <ExecutionTimesTable dashboard_id={this.props.id} />
-                    <EndpointExecutionTimesPanel dashboard_id={this.props.id} />
+
+                <div ref={this.divRef} >
+                    <h2>Dashboard: {this.state.dashboard.url}</h2>
+                    <h3>{this.state.error}</h3>
+                    <div>
+                        <VisitsPerDayPanel dashboard_id={this.props.id} />
+                        <UniqueVisitorsPerDayPanel dashboard_id={this.props.id} />
+                        <ExecutionTimesTable dashboard_id={this.props.id} />
+                        <EndpointExecutionTimesPanel dashboard_id={this.props.id} />
+                    </div>
                 </div>
-            </div>
         );
     }
 }
