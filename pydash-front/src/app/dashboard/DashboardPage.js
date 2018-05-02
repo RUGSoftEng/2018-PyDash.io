@@ -53,7 +53,7 @@ class Board extends Component {
             return {...prevState, width: width}
         })
 
-        axios(window.api_path + '/api/dashboards/' + this.props.id, {
+        axios(window.api_path + '/api/dashboards/' + this.props.dashboard.id, {
             method: 'get',
             withCredentials: true
         }).then((response) => {
@@ -91,7 +91,7 @@ class Board extends Component {
     }
 
     render() {
-        if(this.state.dashboard === null) {
+        if(this.props.dashboard === null || this.state.dashboard === null) {
             return (<h2>Loading...</h2>);
         }
         return (
@@ -100,10 +100,10 @@ class Board extends Component {
                     <h2>Dashboard: {this.state.dashboard.url}</h2>
                     <h3>{this.state.error}</h3>
                     <div>
-                        <VisitsPerDayPanel dashboard_id={this.props.id} />
-                        <UniqueVisitorsPerDayPanel dashboard_id={this.props.id} />
+                        <VisitsPerDayPanel dashboard_id={this.props.dashboard.id} />
+                        <UniqueVisitorsPerDayPanel dashboard_id={this.props.dashboard.id} />
                         <ExecutionTimesTable dashboard_id={this.props.id} />
-                        <EndpointExecutionTimesPanel dashboard_id={this.props.id} />
+                        <EndpointExecutionTimesPanel dashboard_id={this.props.dashboard.id} />
                     </div>
                 </div>
         );

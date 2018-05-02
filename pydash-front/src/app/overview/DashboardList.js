@@ -25,11 +25,10 @@ class DashboardList extends Component {
         };
     }
 
-
     render() {
         const {classes} = this.props;
 
-        const tiles = this.props.dashboards.map((dashboard, index) => {
+        const tiles = Object.values(this.props.dashboards).map((dashboard, index) => {
             return <DashboardListItem key={index} title={dashboard.url} dashboard_id={dashboard.id} error={dashboard.error} />
         })
 

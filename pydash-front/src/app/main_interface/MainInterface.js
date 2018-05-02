@@ -91,18 +91,23 @@ const styles = theme => ({
  *     return <DashboardPage id={match.params.id} />
  * }*/
 const MatchedDashboardPage = (props) => {
-    return <DashboardPage dashboard={props.dashboard} />
+    console.log("MatchedDashboardPage props: ", props, props.dashboard)
+    if(props.dashboard === undefined){
+        return () => ('');
+    }
+    return () => (<DashboardPage dashboard={props.dashboard} />);
 }
 
 class ResponsiveDrawer extends React.Component {
     state = {
         mobileOpen: false,
-        dashboards: [],
+        dashboards: {},
     };
 
     handleDrawerToggle = () => {
         this.setState({ mobileOpen: !this.state.mobileOpen });
     };
+
 
 
     componentDidMount() {
@@ -117,16 +122,20 @@ class ResponsiveDrawer extends React.Component {
           this.setState(prevState => {
             return {
               ...prevState,
-              dashboards: response.data,
+                dashboards: {},
               error: response.data.error,
             };
           });
         } else {
+            const dashboards = response.data.reduce((accum, dashboard) => {
+                accum[dashboard.id] = dashboard;
+                return accum;
+            }, {});
+            console.log("DASHBOARDS DATA:", dashboards);
           this.setState(prevState => {
             return {
               ...prevState,
-
-              dashboards: response.data,
+              dashboards: dashboards,
             };
           });
         }
@@ -205,11 +214,12 @@ class ResponsiveDrawer extends React.Component {
                         <div>
                             <Route exact path={match.url + '/'} component={() => (<Overview dashboards={this.state.dashboards} />)} />
                             <BreadcrumbRoute exact path={match.url + '/settings'} component={Settings} title='Settings' />
-                            <BreadcrumbRoute path={match.url + '/view/'} title='Dashboard' render={ ({ match }) => (
-                                this.state.dashboards.map((dashboard, index) => {
-                                    console.log("DASHBOARD: ", dashboard, dashboard.id, match.url + '/' + dashboard.id)
-                                    return <BreadcrumbRoute key={index} path={match.url + '/' + dashboard.id} title={dashboard.url} component={MatchedDashboardPage({dashboard: dashboard})} />
-                                })
+                            <Route path={match.url + '/view/'} title='Dashboard' render={ ({ match }) => (
+                                    <Route path={match.url + '/:id'} render={ ({match}) => {
+                                        console.log("ROUTE MATCH:", match);
+                                        const dashboard_info = this.state.dashboards[match.params.id];
+                                        return <BreadcrumbRoute path={match.url + '/'} title={(dashboard_info ? dashboard_info.url : '')} component={MatchedDashboardPage({dashboard: dashboard_info})} />
+                                    }} />
                             )}/>
                         </div>
                     )} />
