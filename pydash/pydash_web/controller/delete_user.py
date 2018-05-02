@@ -30,6 +30,7 @@ def delete_user():
         result = {'message': 'Deletion failed - password incorrect'}
         return jsonify(result), 401
 
+    # TODO: make sure to not delete the dashboard if it is shared between users
     for dash in dashboard.dashboards_of_user(current_user.id):
         try:
             dashboard.remove_from_repository(dash)
