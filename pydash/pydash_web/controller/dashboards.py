@@ -68,7 +68,7 @@ def _simple_dashboard_detail(dashboard):
     :param dashboard: The Dashboard-entity in question.
     :return: A dict structured as the simple JSON-representation of the given dashboard.
     """
-    
+
     def endpoint_dict(endpoint):
         return {
             'name': endpoint.name,
@@ -82,6 +82,9 @@ def _simple_dashboard_detail(dashboard):
         'url': dashboard.url,
         'endpoints': endpoints
     }
+
+    if dashboard.name is not None:
+        dashboard_data['name'] = dashboard.name
 
     if str(dashboard.state.name).split("_")[-1] == "failure":
         dashboard_data['error'] = dashboard.error
@@ -111,6 +114,9 @@ def _dashboard_detail(dashboard):
         'aggregates': dashboard.aggregated_data(),
         'endpoints': endpoints_dict
     }
+
+    if dashboard.name is not None:
+        dashboard_data['name'] = dashboard.name
 
     if str(dashboard.state.name).split("_")[-1] == "failure":
         dashboard_data['error'] = dashboard.error
