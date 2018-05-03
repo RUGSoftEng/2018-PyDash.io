@@ -94,12 +94,6 @@ const endpoints = {
 
 };
 
-class WidthShower extends Component {
-    render = () => (
-        <strong>Width: {this.props.width}</strong>
-    );
-}
-
 class EndpointExecutionTimesPanel extends Component {
     constructor(props) {
         super(props);

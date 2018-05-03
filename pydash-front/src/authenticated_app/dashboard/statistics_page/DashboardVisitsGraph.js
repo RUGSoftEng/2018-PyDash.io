@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 // Contents:
-import { Line, ResponsiveLine } from '@nivo/line'
+import { Line } from '@nivo/line'
 
 // Utils:
 import ResponsiveGraphWrapper from '../../../common/ResponsiveGraphWrapper';
