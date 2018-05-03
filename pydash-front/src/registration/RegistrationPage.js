@@ -5,7 +5,7 @@ import TextField from 'material-ui/TextField';
 import axios from 'axios';
 import Logo from '../images/logo.png'
 
-class Registration extends React.Component {
+class RegistrationPage extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
@@ -131,7 +131,7 @@ class Registration extends React.Component {
                     <br />
                     <p>
                     <Button type="submit" variant="raised" color="primary" disabled={this.state.loading}>
-                        {this.state.loading ? "Creating account" : "REGISTER"}
+                        {this.state.loading ? "Creating account" : "Register"}
                     </Button>
                     </p>
                 </form>
@@ -140,4 +140,4 @@ class Registration extends React.Component {
     }
 }
 
-export default Registration;
+export default RegistrationPage;

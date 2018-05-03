@@ -21,7 +21,7 @@ const login_sound = new Howl({
     src: [login_soundfile],
 });
 
-class Login extends Component {
+class LoginPage extends Component {
     state = {
         username: '',
         password: '',
@@ -137,8 +137,8 @@ class Login extends Component {
         );
     }
 }
-Login.propTypes = {
+LoginPage.propTypes = {
     signInHandler: PropTypes.func.isRequired,
 };
 
-export default Login;
+export default LoginPage;

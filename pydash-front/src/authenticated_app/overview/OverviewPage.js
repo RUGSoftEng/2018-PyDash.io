@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import DashboardList from './DashboardList';
 
 
-class Overview extends Component {
+class OverviewPage extends Component {
     render() {
         return (
 
@@ -16,4 +16,4 @@ class Overview extends Component {
     }
 }
 
-export default Overview;
+export default OverviewPage;

@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
 
-import Login from './login/Login';
-import Registration from './registration/Registration';
+import LoginPage from './login/LoginPage';
+import RegistrationPage from './registration/RegistrationPage';
 import AuthenticatedApp from './authenticated_app/AuthenticatedApp';
 
 class Routes extends Component {
@@ -11,13 +11,13 @@ class Routes extends Component {
         return (
             <Switch>
                 <Route exact path='/' render={(props) => (
-                    <Login
+                    <LoginPage
                         signInHandler={this.props.signInHandler}
                         {...props}
                     />
                     )}/>
                 <Route exact path='/register' render={(props) => (
-                    <Registration
+                    <RegistrationPage
                         username={this.props.username}
                         isAuthenticated={this.props.isAuthenticated}
                         {...props}
