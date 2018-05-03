@@ -3,3 +3,24 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+.breadcrumbs {
+    text-align: left;
+    font-size: 1.1em;
+    padding: 1em;
+    padding-bottom: 0em;
+    color: #444;
+}
+
+.breadcrumbs a {
+    color: #44f;
+    text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumbs .breadcrumbs__separator {
+    margin: 0 0.5em;
+}

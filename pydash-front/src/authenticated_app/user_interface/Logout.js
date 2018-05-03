@@ -1,18 +1,25 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router'
-import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
-import ExitToApp from 'material-ui-icons/ExitToApp';
+import PropTypes from 'prop-types';
+
 import axios from 'axios';
 
+// Routing:
+import { Redirect } from 'react-router'
+
+// Visual:
+import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import ExitToApp from 'material-ui-icons/ExitToApp';
+
+// Sound:
 import {Howl} from 'howler';
 import logout_soundfile from './pop.mp3';
+
+
 const logout_sound = new Howl({
     src: [ logout_soundfile],
 });
 
-
-
-class Login extends Component {
+class Logout extends Component {
     state = {
         success: false
     };
@@ -44,7 +51,6 @@ class Login extends Component {
     }
 
     render() {
-
         return this.state.success ? (
             <Redirect to="/" />
         ) : (
@@ -58,4 +64,8 @@ class Login extends Component {
     }
 }
 
-export default Login;
+Logout.propTypes = {
+    signOutHandler: PropTypes.func.isRequired,
+};
+
+export default Logout;
