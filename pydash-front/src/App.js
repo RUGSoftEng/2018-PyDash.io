@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import './App.css';
-import Login from './login/Login';
-// import MainInterface from './app/main_interface/MainInterface';
+import PropTypes from 'prop-types';
+
 import { Redirect } from 'react-router'
-import { Switch, Route } from 'react-router-dom';
-import MainInterface from './app/main_interface/MainInterface'
-import AccountCreation from './accountCreation/AccountCreation';
+
+import './App.css';
+import Routes from './Routes'
 
 
 class App extends Component {
@@ -37,10 +36,10 @@ class App extends Component {
 
     redirectBasedOnAuthentication = () => {
         if(this.state.isAuthenticated && window.location.pathname === "/"){
-            return <Redirect to='/dashboard' />;
+            return <Redirect to='/overview' />;
         }
 
-        if(!this.state.isAuthenticated && window.location.pathname !== "/"){
+        if(!this.state.isAuthenticated && (window.location.pathname !== "/" && window.location.pathname !== '/register')){
             return <Redirect to='/' />;
         }
     }
@@ -50,33 +49,20 @@ class App extends Component {
         return (
             <div className="App">
                 {this.redirectBasedOnAuthentication()}
-                <Switch>
-                    {/* `exact` because its only one slash */}
-                    <Route exact path='/' render={(props) =>
-                        <Login
-                            signInHandler={this.signInHandler}
-                            {...props}
-                        />}
-                    />
-                    <Route path='/dashboard' render={(props) =>
-                        <MainInterface
-                            username={this.state.username}
-                            isAuthenticated={this.state.isAuthenticated}
-                            signOutHandler={this.signOutHandler}
-                            {...props}
-                        />
-                    }/>
-                    <Route exact path='/accountCreation' render={(props) =>
-                        <AccountCreation
-                            username={this.state.username}
-                            isAuthenticated={this.state.isAuthenticated}
-                            {...props}
-                        />
-                    }/>
-                </Switch>
+                <Routes
+                    signInHandler={this.signInHandler}
+                    signOutHandler={this.signOutHandler}
+                    username={this.state.username}
+                    isAuthenticated={this.state.isAuthenticated}
+                />
             </div>
         );
     }
 }
+
+App.propTypes = {
+    username: PropTypes.string,
+    isAuthenticated: PropTypes.bool.isRequired,
+};
 
 export default App;
