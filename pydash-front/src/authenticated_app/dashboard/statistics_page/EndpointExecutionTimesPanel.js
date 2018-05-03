@@ -16,9 +16,6 @@ import ExpansionPanel, {
 
 // Utils:
 import { api_to_bar_data} from "../../../utils";
-import WidthAwareContainer from "../../../common/WidthAwareContainer";
-import ContainerDimensions from 'react-container-dimensions';
-
 
 // Dummy data for testing average endpoint execution time visualisation.
 const endpoints = {
@@ -136,10 +133,7 @@ class EndpointExecutionTimesPanel extends Component {
                     <h3>Average execution time per endpoint</h3>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    {/* <ExecutionTimesGraph data={this.state.average_execution_times} height={this.state.average_execution_times.length*80} title="Average execution time per endpoint" /> */}
-                    <ContainerDimensions>
-                        <WidthShower />
-                    </ContainerDimensions>
+                    <ExecutionTimesGraph data={this.state.average_execution_times} height={this.state.average_execution_times.length*80} title="Average execution time per endpoint" />
                 </ExpansionPanelDetails>
             </ExpansionPanel>
         )

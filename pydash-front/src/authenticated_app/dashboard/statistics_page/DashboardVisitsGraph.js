@@ -18,7 +18,7 @@ class DashboardVisitsGraph extends Component {
             <h4>{this.props.title}</h4>
             <Line
             data={[{id: this.props.tooltip_title, data: this.props.data}]}
-            height={this.props.height - 50}
+            height={this.props.height}
             curve="monotoneX"
             axisBottom={{
                 "orient": "bottom",
@@ -41,7 +41,7 @@ class DashboardVisitsGraph extends Component {
             margin={{
                 "top": 50,
                 "right": 50,
-                "bottom": 70,
+                "bottom": 130,
                 "left": 50
             }}
             colors={["aquamarine", "blue", "cyan"]}
