@@ -49,7 +49,7 @@ class UniqueVisitorsPerDayPanel extends Component {
                     <h3>Unique Visitors Per Day</h3>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <DashboardVisitsGraph data={this.state.unique_visitors_per_day} title="Unique visitors per day:" tooltip_title="No. visits: "/>
+                    <DashboardVisitsGraph data={this.state.unique_visitors_per_day} title="Unique visitors per day:" tooltip_title="No. visits: " height={400} />
                 </ExpansionPanelDetails>
             </ExpansionPanel>
         )

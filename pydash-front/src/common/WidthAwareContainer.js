@@ -37,7 +37,7 @@ class WidthAwareContainer extends Component {
             )
         );
         return (
-            <div ref={this.setElement} style={{width: "100%"}}>
+            <div ref={this.setElement} style={{width: "100%", overflow: 'hidden'}}>
                 {updatedChildren}
             </div>
         );
