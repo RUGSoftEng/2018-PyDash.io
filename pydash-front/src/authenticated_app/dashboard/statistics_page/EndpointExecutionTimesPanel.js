@@ -17,7 +17,6 @@ import ExpansionPanel, {
 // Utils:
 import { api_to_bar_data} from "../../../utils";
 
-
 // Dummy data for testing average endpoint execution time visualisation.
 const endpoints = {
     '0': {
@@ -121,6 +120,7 @@ class EndpointExecutionTimesPanel extends Component {
     }
 
     render = () => {
+
         return (
             <ExpansionPanel>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -137,6 +137,5 @@ class EndpointExecutionTimesPanel extends Component {
 EndpointExecutionTimesPanel.propTypes = {
     dashboard_id: PropTypes.string.isRequired,
 };
-
 
 export default EndpointExecutionTimesPanel;
