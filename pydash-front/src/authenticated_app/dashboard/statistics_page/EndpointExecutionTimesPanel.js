@@ -16,6 +16,7 @@ import ExpansionPanel, {
 
 // Utils:
 import { api_to_bar_data} from "../../../utils";
+import WidthAwareContainer from "../../../common/WidthAwareContainer"
 
 
 // Dummy data for testing average endpoint execution time visualisation.
@@ -95,6 +96,12 @@ const endpoints = {
 
 };
 
+class WidthShower extends Component {
+    render = () => (
+        <strong>Width: {this.props.containerWidth}</strong>
+    );
+}
+
 class EndpointExecutionTimesPanel extends Component {
     constructor(props) {
         super(props);
@@ -121,13 +128,18 @@ class EndpointExecutionTimesPanel extends Component {
     }
 
     render = () => {
+
         return (
             <ExpansionPanel>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                     <h3>Average execution time per endpoint</h3>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <ExecutionTimesGraph data={this.state.average_execution_times} height={this.state.average_execution_times.length*80} title="Average execution time per endpoint" />
+                    {/* <ExecutionTimesGraph data={this.state.average_execution_times} height={this.state.average_execution_times.length*80} title="Average execution time per endpoint" /> */}
+                    <WidthAwareContainer>
+                        <h2> TEST </h2>
+                        <WidthShower />
+                    </WidthAwareContainer>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
         )
