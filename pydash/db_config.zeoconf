@@ -1,0 +1,9 @@
+<zeo>
+  address localhost:8091
+  transaction-timeout 1
+</zeo>
+
+<filestorage>
+  path zeo_filestorage.fs
+</filestorage>
+

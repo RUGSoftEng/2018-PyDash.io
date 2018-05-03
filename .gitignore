@@ -99,3 +99,19 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# ZODB
+/**/*.fs
+/**/*.fs.index
+/**/*.fs.tmp
+/**/*.fs.lock
+
+#Pycharm
+.idea/
+
+# VSCode
+.vscode
+#Directories
+/pydash/logs
+/pydash/.pytest_cache
+.pytest_cache
