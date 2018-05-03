@@ -1,9 +1,6 @@
 language: python
 python:
  - "3.6"
-cache:
- - yarn
- - pip
 
 # Required to run Selenium tests:
 # env:
