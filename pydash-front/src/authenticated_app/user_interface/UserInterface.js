@@ -113,8 +113,7 @@ class UserInterface extends React.Component {
                         </IconButton>
                         <Typography variant="title" color="inherit" noWrap>
                             <img src={Logo} alt="PyDash.io logo" style={{marginTop: "15px", marginLeft: "20px", marginBottom: "10px", maxWidth: "150px"}} />
-            </Typography>
-                        <Breadcrumbs hidden={false} />
+                        </Typography>
                     </Toolbar>
                 </AppBar>
                 <Hidden mdUp>
@@ -146,6 +145,7 @@ class UserInterface extends React.Component {
                 </Hidden>
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
+                    <Breadcrumbs hidden={false} separator="/" />
                     {this.props.children}
                 </main>
             </div>
