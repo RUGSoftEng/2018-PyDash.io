@@ -1,6 +1,7 @@
 import uuid
 import pydash_app.user.repository as repository
 import pydash_logger
+from multi_indexed_collection import DuplicateIndexError
 
 
 logger = pydash_logger.Logger(__name__)
@@ -28,9 +29,19 @@ def verify(verification_code):
 
     if user.smart_verification_code.is_expired():
         # Throw away this verification code.
-        user.smart_verification_code = None
-        user.verification_code = None
-        repository.update(user)
+        # user.smart_verification_code = None
+        # user.verification_code = None
+        # # TODO: This won't work, as update(user) will now do nothing.
+        # try:
+        #     repository.update(user)
+        # except DuplicateIndexError:
+        #     pass  # We want to replace this on purpose. Sadly, this leaves the last verified user indexed with index 'None'.
+
+        # TODO: Check if this goes well, w.r.t. pickling/persistance.
+        delattr(user, 'verification_code')
+        delattr(user, 'smart_verificaton_code')
+        repository.update(user)  # TODO: check if repository.update() supports deleted attributes.
+
         logger.warning(f"Verification code {verification_code} has already expired.")
         raise VerificationCodeExpiredError(f"Verification code {verification_code} has already expired.")
 
@@ -39,9 +50,18 @@ def verify(verification_code):
         return False
 
     user.verified = True
-    user.smart_verification_code = None
-    user.verification_code = None
-    repository.update(user)
+    # user.smart_verification_code = None
+    # user.verification_code = None
+    # # TODO: This won't work, as update(user) will now do nothing.
+    # try:
+    #     repository.update(user)
+    # except DuplicateIndexError:
+    #     pass  # We want to replace this on purpose. Sadly, this leaves the last verified user indexed with index 'None'.
+    # Throw away this verification code.
+    # TODO: Check if this goes well, w.r.t. pickling/persistance.
+    delattr(user, 'verification_code')
+    delattr(user, 'smart_verificaton_code')
+    repository.update(user)  # TODO: check if repository.update() supports deleted attributes.
     return True
 
 

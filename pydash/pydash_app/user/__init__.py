@@ -32,10 +32,10 @@ True
 >>> authenticate("Dumbledore", "secrets")
 >>> # ^Returns nothing
 """
-from .user import User
-import pydash_app.user.repository
-from multi_indexed_collection import DuplicateIndexError
+from .entity import User
+import pydash_app.user.repository as repository
 import pydash_app.user.verification as verification
+from multi_indexed_collection import DuplicateIndexError
 # from .verification import InvalidVerificationCodeError, VerificationCodeExpiredError
 
 
