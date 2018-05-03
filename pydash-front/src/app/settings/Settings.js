@@ -1,26 +1,27 @@
 // import React, { Component } from 'react';
+// import PropTypes from 'prop-types'
 // import { Redirect } from 'react-router'
 // import Button from 'material-ui/Button';
 // import TextField from 'material-ui/TextField';
 // import axios from 'axios';
 // class Settings extends Component {
-//     render() {
-//         return (
-//             <p>Nothing here yet!</p>
-//         );
-//     }
+//   render(){
+//     return (
+//       <div>
+//         User: { this..username }
+//         </div>
+//     )
+//  }
 // }
 
 // export default Settings;
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import ExpansionPanel, {
-  ExpansionPanelDetails,
-  ExpansionPanelSummary,
-} from 'material-ui/ExpansionPanel';
+import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
 import Typography from 'material-ui/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
 
 const styles = theme => ({
   root: {
@@ -39,8 +40,16 @@ const styles = theme => ({
 
 class Settings extends React.Component {
   state = {
-    expanded: null,
-  };
+    username: this.props.username
+};
+
+componentWillMount = () => {
+    this.setState({
+        
+    })
+    console.log("App state: ", this.state, this.props);
+}
+
 
   handleChange = panel => (event, expanded) => {
     this.setState({
@@ -59,10 +68,7 @@ class Settings extends React.Component {
             <Typography className={classes.heading}>Personal data</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Typography>
-              Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer sit amet egestas
-              eros, vitae egestas augue. Duis vel est augue.
-            </Typography>
+              {this.state.username}
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
@@ -72,8 +78,7 @@ class Settings extends React.Component {
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
             <Typography>
-              Nulla facilisi. Phasellus sollicitudin nulla et quam mattis feugiat. Aliquam eget
-              maximus est, id dignissim quam.
+              { this.props.username }
             </Typography>
           </ExpansionPanelDetails>
         </ExpansionPanel>
@@ -91,7 +96,7 @@ class Settings extends React.Component {
             </Typography>
           </ExpansionPanelDetails>
         </ExpansionPanel>
-        
+
       </div>
     );
   }

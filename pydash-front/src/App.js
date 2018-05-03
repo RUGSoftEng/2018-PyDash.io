@@ -6,7 +6,7 @@ import { Redirect } from 'react-router'
 import { Switch, Route } from 'react-router-dom';
 import MainInterface from './app/main_interface/MainInterface'
 import AccountCreation from './accountCreation/AccountCreation';
-
+import Settings from './app/settings/Settings';
 
 class App extends Component {
     state = {
@@ -71,6 +71,14 @@ class App extends Component {
                             username={this.state.username}
                             isAuthenticated={this.state.isAuthenticated}
                             {...props}
+                        />
+                    }/>
+                    <Route exact path='/dashboard/settings' render={(props) =>
+                        <Settings
+                        username={this.state.username}
+                        isAuthenticated={this.state.isAuthenticated}
+                        {...props}
+                    
                         />
                     }/>
                 </Switch>
