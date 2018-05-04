@@ -1,3 +1,4 @@
+<<<<<<< HEAD:pydash-front/src/app/settings/Settings.js
 // import React, { Component } from 'react';
 // import PropTypes from 'prop-types'
 // import { Redirect } from 'react-router'
@@ -38,7 +39,7 @@ const styles = theme => ({
   },
 });
 
-class Settings extends React.Component {
+class SettingsPage extends React.Component {
   state = {
     username: this.props.username
 };
@@ -102,8 +103,22 @@ componentWillMount = () => {
   }
 }
 
-Settings.propTypes = {
+SettingsPage.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Settings);
+export default withStyles(styles)(SettingsPage);
+=======
+import React, { Component } from 'react';
+
+
+class SettingsPage extends Component {
+    render() {
+        return (
+            <p>Nothing here yet!</p>
+        );
+    }
+}
+
+export default SettingsPage;
+>>>>>>> development:pydash-front/src/authenticated_app/settings/SettingsPage.js
