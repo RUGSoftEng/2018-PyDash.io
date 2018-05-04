@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { withStyles } from 'material-ui/styles';
 
 import axios from 'axios';
 
@@ -11,6 +12,9 @@ import NavLink from 'react-router-dom/NavLink';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import Logo from '../images/logo.png';
+import Snackbar from 'material-ui/Snackbar';
+import IconButton from 'material-ui/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 // Sound:
 import {Howl} from 'howler';
@@ -21,6 +25,13 @@ const login_sound = new Howl({
     src: [login_soundfile],
 });
 
+const styles = theme => ({
+    close: {
+      width: theme.spacing.unit * 4,
+      height: theme.spacing.unit * 4,
+    },
+  });
+
 class LoginPage extends Component {
     state = {
         username: '',
@@ -28,7 +39,8 @@ class LoginPage extends Component {
         error: false,
         message: '',
         success: false,
-        loading: false
+        loading: false,
+        open: false
     };
 
     handleChange = key => event => {
@@ -36,6 +48,19 @@ class LoginPage extends Component {
             [key]: event.target.value
         });
     };
+    
+
+    handleClick = () => {
+        this.setState({ open: true });
+      };
+
+      handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+    
+        this.setState({ open: false });
+      };
 
     tryLogin = (e) => {
         e.preventDefault()
@@ -46,6 +71,7 @@ class LoginPage extends Component {
             this.setState(prevState => ({
                 ...prevState,
                 error: true,
+                open: false,
                 helperText: 'Both fields are required!',
             }))
 
@@ -95,6 +121,7 @@ class LoginPage extends Component {
     }
 
     render() {
+        const { classes } = this.props;
         return this.state.success ? (
             <Redirect to="/overview" />
         ) : (
@@ -125,13 +152,37 @@ class LoginPage extends Component {
                         helperText={this.state.helperText}
                     />
                     <p>
-                    <Button type="submit" variant="raised" color="primary" disabled={this.state.loading}>
-                        {this.state.loading ? "Logging in..." : "Login"}
+                    <Button  type="submit" variant="raised" color="primary" disabled={this.state.loading} onClick={ this.handleClick}>
+                        {this.state.loading ? "Logging in..." : "Login"} 
                     </Button>
                     </p>
                     <p>
                     <Button component={NavLink} to="/register">Create an account?</Button>
                     </p>
+                        <Snackbar
+                            anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                            }}
+                            open={this.state.open}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            SnackbarContentProps={{
+                            'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">Logging in</span>}
+                            action={[
+                            <IconButton
+                                key="close"
+                                aria-label="Close"
+                                color="inherit"
+                                className={classes.close}
+                                onClick={this.handleClose}
+                            >
+                                <CloseIcon />
+                            </IconButton>,
+                            ]}
+                />
                 </form>
             </div>
         );
@@ -139,6 +190,7 @@ class LoginPage extends Component {
 }
 LoginPage.propTypes = {
     signInHandler: PropTypes.func.isRequired,
+    classes: PropTypes.object.isRequired,
 };
 
-export default LoginPage;
+export default withStyles(styles)(LoginPage);

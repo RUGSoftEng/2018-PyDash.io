@@ -1,21 +1,3 @@
-<<<<<<< HEAD:pydash-front/src/app/settings/Settings.js
-// import React, { Component } from 'react';
-// import PropTypes from 'prop-types'
-// import { Redirect } from 'react-router'
-// import Button from 'material-ui/Button';
-// import TextField from 'material-ui/TextField';
-// import axios from 'axios';
-// class Settings extends Component {
-//   render(){
-//     return (
-//       <div>
-//         User: { this..username }
-//         </div>
-//     )
-//  }
-// }
-
-// export default Settings;
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
@@ -108,17 +90,3 @@ SettingsPage.propTypes = {
 };
 
 export default withStyles(styles)(SettingsPage);
-=======
-import React, { Component } from 'react';
-
-
-class SettingsPage extends Component {
-    render() {
-        return (
-            <p>Nothing here yet!</p>
-        );
-    }
-}
-
-export default SettingsPage;
->>>>>>> development:pydash-front/src/authenticated_app/settings/SettingsPage.js

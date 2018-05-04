@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+import { withStyles } from 'material-ui/styles';
+import Button from 'material-ui/Button';
+import Snackbar from 'material-ui/Snackbar';
+import IconButton from 'material-ui/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import axios from 'axios';
 
 // Routing:
@@ -18,10 +22,21 @@ import logout_soundfile from './pop.mp3';
 const logout_sound = new Howl({
     src: [ logout_soundfile],
 });
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+const styles = theme => ({
+    close: {
+      width: theme.spacing.unit * 4,
+      height: theme.spacing.unit * 4,
+    },
+  });
+
 
 class Logout extends Component {
     state = {
-        success: false
+        success: false,
+        open: false,
     };
 
     handleChange = key => event => {
@@ -29,6 +44,19 @@ class Logout extends Component {
             [key]: event.target.value
         });
     };
+
+    handleClick = () => {
+        this.setState({ open: true });
+      };
+
+
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+    
+        this.setState({ open: false });
+      };
 
     logout = (e) => {
         e.preventDefault()
@@ -51,21 +79,50 @@ class Logout extends Component {
     }
 
     render() {
+        const { classes } = this.props;
         return this.state.success ? (
-            <Redirect to="/" />
-        ) : (
+         <Redirect to="/" />
+             ) : (
+
+            <div  button onClick={ this.handleClick}>
             <ListItem button onClick={this.logout}>
-                <ListItemIcon>
+                <ListItemIcon >
                     <ExitToApp />
                 </ListItemIcon>
-                <ListItemText primary="Logout" />
+               <ListItemText primary="Logout" />
             </ListItem>
-        );
+              <Snackbar
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                open={this.state.open}
+                autoHideDuration={6000}
+                onClose={this.handleClose}
+                SnackbarContentProps={{
+                  'aria-describedby': 'message-id',
+                }}
+                message={<span id="message-id">Logging out</span>}
+                action={[
+                  <IconButton
+                    key="close"
+                    aria-label="Close"
+                    color="inherit"
+                    className={classes.close}
+                    onClick={this.handleClose}
+                  >
+                    <CloseIcon />
+                  </IconButton>,
+                ]}
+              />
+            </div>
+          );
     }
 }
 
 Logout.propTypes = {
     signOutHandler: PropTypes.func.isRequired,
+    classes: PropTypes.object.isRequired,
 };
 
-export default Logout;
+export default withStyles(styles)(Logout);
