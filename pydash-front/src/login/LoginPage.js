@@ -82,7 +82,7 @@ class LoginPage extends Component {
             ...prevState,
                 error: false,
                 helperText: '',
-                loading: true
+                loading: true,
             }))
 
 
@@ -90,10 +90,9 @@ class LoginPage extends Component {
         axios.post(window.api_path + '/api/login', {
             username,
             password},
-            {withCredentials: true}
+            {withCredentials: true},
         ).then((response) => {
             console.log(response);
-
             login_sound.play()
             this.props.signInHandler(username)
             /* this.setState(prevState => ({
