@@ -28,6 +28,7 @@ class AddDashboardDialog extends Component {
                             label="Dashboard URL"
                             type="url"
                             fullWidth
+                            required
                         />
                         <TextField
                             id="name"
@@ -40,6 +41,7 @@ class AddDashboardDialog extends Component {
                             label="Security code"
                             type="password"
                             fullWidth 
+                            required
                         />
                     </DialogContent>
                     <DialogActions>
