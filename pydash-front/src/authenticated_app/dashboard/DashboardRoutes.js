@@ -22,7 +22,7 @@ class DashboardRoutes extends Component {
             <Switch>
             <BreadcrumbRoute
                 path={this.props.match.url + '/'}
-                title={(this.props.dashboard ? this.props.dashboard.url : '')}
+                title={(this.props.dashboard ? this.props.dashboard.name : '')}
                 component={MatchedStatisticsPage({dashboard: this.props.dashboard})}
             />
             </Switch>
