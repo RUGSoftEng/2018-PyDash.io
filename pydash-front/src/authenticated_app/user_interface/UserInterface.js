@@ -13,6 +13,7 @@ import Divider from 'material-ui/Divider';
 import MenuIcon from 'material-ui-icons/Menu';
 import UserIcon from 'material-ui-icons/AccountCircle';
 import Logo from '../../images/logo.png'
+import { Link } from 'react-router-dom'
 
 // Contents:
 import { Breadcrumbs } from '@pydash/react-breadcrumbs';
@@ -87,12 +88,14 @@ class UserInterface extends React.Component {
             <div>
 
                 <div className={classes.toolbar} >
-                <UserIcon className={classes.accounticon} />
-                <a href={'/overview/settings'}>
-                    <div className={classes.accountname}>
+                <UserIcon className={classes.accounticon}  />
+                
+                <Link to={'/overview/settings'}>
+                    <div className={classes.accountname} >
                         {this.props.username || 'Username'}
                     </div>
-                </a>
+                </Link>
+                
                 </div>
                 <Divider />
                 <MainMenuItems />
