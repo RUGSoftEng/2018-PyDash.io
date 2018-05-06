@@ -86,11 +86,13 @@ class UserInterface extends React.Component {
         const drawer = (
             <div>
 
-                <div className={classes.toolbar}>
-                    <UserIcon className={classes.accounticon} />
+                <div className={classes.toolbar} >
+                <UserIcon className={classes.accounticon} />
+                <a href={'/overview/settings'}>
                     <div className={classes.accountname}>
                         {this.props.username || 'Username'}
                     </div>
+                </a>
                 </div>
                 <Divider />
                 <MainMenuItems />
