@@ -12,17 +12,27 @@ if(window.location.host === "localhost:3000") {
     window.api_path = window.location.protocol + "//localhost:5000";
 }
 
-function tryLogin(){
+async function tryLogin(){
+    return new Promise(resolve => {
         // Make a request for a user with a given ID
-        axios.post(window.api_path + '/api/login', {},
-            {withCredentials: true}
-        ).then((response) => {
-            console.log('person logged in', response);
-            renderReact({isAuthenticated: true, username: response.data.user.username});
-        }).catch((error) => {
-            console.log('person not logged in', error);
-            renderReact({isAuthenticated: false});
-        });
+        axios.post(window.api_path + '/api/login', {}, {withCredentials: true})
+             .then((response) => {
+                 console.log('person logged in', response);
+                 resolve({
+                     isAuthenticated: true,
+                     username: response.data.user.username
+                 })
+                 /* renderReact({isAuthenticated: true, username: response.data.user.username});*/
+             })
+             .catch((error) => {
+                 console.log('person not logged in', error);
+                 resolve({
+                     isAuthenticated: false,
+                     username: null
+                 })
+                 /* renderReact({isAuthenticated: false});*/
+             });
+    })
 }
 
 function renderReact(startup_props){
@@ -33,8 +43,9 @@ function renderReact(startup_props){
     ), document.getElementById('root'));
 }
 
-function startApplication(){
-    tryLogin();
+async function startApplication(){
+    const login_result = await tryLogin();
+    renderReact(login_result);
 }
 
 startApplication();

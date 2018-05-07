@@ -11,6 +11,8 @@ import pydash_logger
 
 logger = pydash_logger.Logger(__name__)
 
+_MINIMUM_PASSWORD_LENGTH = 8
+
 
 def register_user():
     args = _parse_arguments()
@@ -23,6 +25,12 @@ def register_user():
     if not username or not password:
         message = {'message': 'Username or password missing'}
         logger.warning('User registration failed - username or password missing')
+        return jsonify(message), 400
+
+    if not _check_password_requirements(password):
+        message = {'message': 'Password should consist of at least 8 characters, contain at least one capital letter'
+                              ' and at least one non-alphabetic character.'}
+        logger.warning('User registration failed - password does not conform to the requirements.')
         return jsonify(message), 400
 
     if pydash_app.user.find_by_name(username) is not None:
@@ -42,3 +50,15 @@ def _parse_arguments():
     parser.add_argument('username')
     parser.add_argument('password')
     return parser.parse_args()
+
+
+def _check_password_requirements(password):
+    rules = [lambda xs: any(x.isupper() for x in xs),
+             lambda xs: any(not x.isalpha() for x in xs),
+             lambda xs: len(xs) >= _MINIMUM_PASSWORD_LENGTH
+             ]
+
+    if all(rule(password) for rule in rules):
+        return True
+    else:
+        return False

@@ -38,7 +38,7 @@ const styles = theme => ({
   },
 });
 
-class Settings extends React.Component {
+class SettingsPage extends React.Component {
   state = {
     username: this.props.username
 };
@@ -102,8 +102,8 @@ componentWillMount = () => {
   }
 }
 
-Settings.propTypes = {
+SettingsPage.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Settings);
+export default withStyles(styles)(SettingsPage);

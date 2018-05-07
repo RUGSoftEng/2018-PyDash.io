@@ -68,23 +68,28 @@ def _simple_dashboard_detail(dashboard):
     :param dashboard: The Dashboard-entity in question.
     :return: A dict structured as the simple JSON-representation of the given dashboard.
     """
+
     def endpoint_dict(endpoint):
         return {
             'name': endpoint.name,
             'enabled': endpoint.is_monitored
         }
+
     endpoints = [endpoint_dict(endpoint) for endpoint in dashboard.endpoints.values()]
 
-    dash_dict = {
+    dashboard_data = {
         'id': dashboard.id,
         'url': dashboard.url,
         'endpoints': endpoints
     }
 
-    if str(dashboard.state.name).split("_")[-1] == "failure":
-        dash_dict['error'] = dashboard.error
+    if dashboard.name is not None:
+        dashboard_data['name'] = dashboard.name
 
-    return dash_dict
+    if str(dashboard.state.name).split("_")[-1] == "failure":
+        dashboard_data['error'] = dashboard.error
+
+    return dashboard_data
 
 
 def _dashboard_detail(dashboard):
@@ -101,16 +106,19 @@ def _dashboard_detail(dashboard):
             'enabled': endpoint.is_monitored
         }
 
-    endpoints_dict = [endpoint_dict(endpoint) for endpoint in dashboard.endpoints.values()]
+    endpoints = [endpoint_dict(endpoint) for endpoint in dashboard.endpoints.values()]
 
-    dash_dict = {
+    dashboard_data = {
         'id': dashboard.id,
         'url': dashboard.url,
         'aggregates': dashboard.aggregated_data(),
-        'endpoints': endpoints_dict
+        'endpoints': endpoints
     }
 
-    if str(dashboard.state.name).split("_")[-1] == "failure":
-        dash_dict['error'] = dashboard.error
+    if dashboard.name is not None:
+        dashboard_data['name'] = dashboard.name
 
-    return dash_dict
+    if str(dashboard.state.name).split("_")[-1] == "failure":
+        dashboard_data['error'] = dashboard.error
+
+    return dashboard_data
