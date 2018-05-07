@@ -12,7 +12,7 @@ def date_dict(dict):
     return {k.strftime("%Y-%m-%d"): v for (k, v) in dict.items()}
 
 
-class Statistic(persistent.Persistent, metaclass=abc.ABCMeta):
+class Statistic(persistent.Persistent, abc.ABC):
     dependencies = []
 
     def __init__(self):
