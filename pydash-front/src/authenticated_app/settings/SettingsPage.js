@@ -24,20 +24,12 @@ const styles = theme => ({
 class SettingsPage extends React.Component {
   state = {
     username: this.props.username
-};
+  };
 
-componentWillMount = () => {
-    this.setState({
-        
-    })
-    console.log("App state: ", this.state, this.props);
-}
-
-
-  handleChange = panel => (event, expanded) => {
-    this.setState({
-      expanded: expanded ? panel : false,
-    });
+  handleChange = panel => (event) => {
+    this.setState(({expanded}) => ({
+      expanded: expanded === panel ? false : panel,
+    }));
   };
 
   render() {
