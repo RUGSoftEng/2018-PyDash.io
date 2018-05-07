@@ -28,12 +28,12 @@ class OverviewPage extends Component {
         return (
 
             <div>
-                <h2>Dashboards</h2>
-                <Button onClick={this.handleClickOpen} classname="NewDashboardButton" variant="raised" color="primary">
+                <Button onClick={this.handleClickOpen} className="NewDashboardButton" variant="raised" color="primary">
                     Add dashboard
                     <Add />
                 </Button>
-                <AddDashboardDialog 
+                <h2>Dashboards</h2>
+                <AddDashboardDialog
                     open={this.state.open}
                     onClose={this.handleClose}
                 />
