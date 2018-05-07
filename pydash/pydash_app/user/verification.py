@@ -1,5 +1,5 @@
 import uuid
-import pydash_app.user.repository as repository
+from . import repository
 import pydash_logger
 from multi_indexed_collection import DuplicateIndexError
 

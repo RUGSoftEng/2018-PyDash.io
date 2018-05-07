@@ -33,8 +33,8 @@ True
 >>> # ^Returns nothing
 """
 from .entity import User
-import pydash_app.user.repository as repository
-import pydash_app.user.verification as verification
+from . import repository
+from . import verification
 from multi_indexed_collection import DuplicateIndexError
 # from .verification import InvalidVerificationCodeError, VerificationCodeExpiredError
 
