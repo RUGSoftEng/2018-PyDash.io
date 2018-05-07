@@ -13,6 +13,7 @@ def date_dict(dict):
 
 class Statistic(persistent.Persistent):
     dependencies = []
+
     def __init__(self):
         self.value = self.empty()
 
@@ -29,7 +30,7 @@ class Statistic(persistent.Persistent):
         return self.value
 
 
-class TotalVisitsStatistic(Statistic):
+class TotalVisits(Statistic):
     def empty(self):
         return 0
 
@@ -40,7 +41,7 @@ class TotalVisitsStatistic(Statistic):
         self.value += 1
 
 
-class TotalExecutionTimeStatistic(Statistic):
+class TotalExecutionTime(Statistic):
     def empty(self):
         return 0
 
@@ -50,8 +51,10 @@ class TotalExecutionTimeStatistic(Statistic):
     def append(self, endpoint_call, dependencies):
         self.value += endpoint_call.execution_time
 
-class ExecutionTimeStatistic(Statistic):
-    dependencies = [TotalVisitsStatistic, TotalExecutionTimeStatistic]
+
+class ExecutionTime(Statistic):
+    dependencies = [TotalVisits, TotalExecutionTime]
+
     def empty(self):
         return 0
 
@@ -59,13 +62,17 @@ class ExecutionTimeStatistic(Statistic):
         return 'average_execution_time'
 
     def append(self, endpoint_call, dependencies):
-        if dependencies[TotalVisitsStatistic].value == 0:
+        if dependencies[TotalVisits].value == 0:
             self.value = 0
         else:
-            self.value = dependencies[TotalExecutionTimeStatistic].value / dependencies[TotalVisitsStatistic].value
+            self.value = dependencies[
+                TotalExecutionTime].value / dependencies[
+                    TotalVisits].value
 
-class VisitsPerDayStatistic(Statistic):
+
+class VisitsPerDay(Statistic):
     dependencies = []
+
     def empty(self):
         return defaultdict(int)
 
@@ -80,8 +87,9 @@ class VisitsPerDayStatistic(Statistic):
         return date_dict(self.value)
 
 
-class VisitsPerIPStatistic(Statistic):
+class VisitsPerIP(Statistic):
     dependencies = []
+
     def empty(self):
         return defaultdict(int)
 
@@ -94,8 +102,10 @@ class VisitsPerIPStatistic(Statistic):
     def rendered_value(self):
         return dict(self.value)
 
-class UniqueVisitorsAllTimeStatistic(Statistic):
+
+class UniqueVisitorsAllTime(Statistic):
     dependencies = []
+
     def empty(self):
         return set()
 
@@ -108,8 +118,10 @@ class UniqueVisitorsAllTimeStatistic(Statistic):
     def rendered_value(self):
         return len(self.value)
 
-class UniqueVisitorsPerDayStatistic(Statistic):
+
+class UniqueVisitorsPerDay(Statistic):
     dependencies = []
+
     def empty(self):
         return defaultdict(set)
 
@@ -122,34 +134,3 @@ class UniqueVisitorsPerDayStatistic(Statistic):
 
     def rendered_value(self):
         return {k: len(v) for k, v in self.value.items()}
-
-
-class Aggregator2(persistent.Persistent):
-    contained_statistics_classes = OrderedSet([
-        TotalVisitsStatistic,
-        ExecutionTimeStatistic,
-        VisitsPerDayStatistic,
-        VisitsPerIPStatistic,
-        UniqueVisitorsPerDayStatistic,
-        UniqueVisitorsAllTimeStatistic,
-    ])
-    statistics_classes_with_dependencies = OrderedSet()
-    for statistic in contained_statistics_classes:
-        for dependency in statistic.dependencies:
-            statistics_classes_with_dependencies.add(dependency)
-        statistics_classes_with_dependencies.add(statistic)
-
-    def __init__(self, endpoint_calls=[]):
-        self.endpoint_calls = []
-        self.statistics = OrderedDict({statistic: statistic() for statistic in Aggregator2.statistics_classes_with_dependencies})
-        for endpoint_call in endpoint_calls:
-            self.add_endpoint_call(endpoint_call)
-
-    def add_endpoint_call(self, endpoint_call):
-        for statistic, value in self.statistics.items():
-            value.append(endpoint_call, self.statistics)
-
-        self.endpoint_calls.append(endpoint_call)
-
-    def as_dict(self):
-        return {statistic.field_name(): statistic.rendered_value() for statistic in self.statistics.values()}
