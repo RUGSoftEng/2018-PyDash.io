@@ -69,9 +69,7 @@ class ExecutionTime(Statistic):
         if dependencies[TotalVisits].value == 0:
             self.value = 0
         else:
-            self.value = dependencies[
-                TotalExecutionTime].value / dependencies[
-                    TotalVisits].value
+            self.value = dependencies[TotalExecutionTime].value / dependencies[TotalVisits].value
 
 
 class VisitsPerDay(Statistic):
