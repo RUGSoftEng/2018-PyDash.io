@@ -1,6 +1,7 @@
 from ordered_set import OrderedSet
 from collections import OrderedDict
 from collections import defaultdict
+import abc
 import datetime
 
 import persistent
@@ -11,18 +12,21 @@ def date_dict(dict):
     return {k.strftime("%Y-%m-%d"): v for (k, v) in dict.items()}
 
 
-class Statistic(persistent.Persistent):
+class Statistic(persistent.Persistent, metaclass=abc.ABCMeta):
     dependencies = []
 
     def __init__(self):
         self.value = self.empty()
 
+    @abc.abstractmethod
     def empty(self):
-        return 0
+        return None
 
+    @abc.abstractmethod
     def append(self, endpoint_call):
         pass
 
+    @abc.abstractmethod
     def field_name(self):
         pass
 

@@ -17,8 +17,8 @@ class Aggregator(persistent.Persistent):
         statistics.ExecutionTime,
         statistics.VisitsPerDay,
         statistics.VisitsPerIP,
-        statistics.UniqueVisitorsPerDay,
         statistics.UniqueVisitorsAllTime,
+        statistics.UniqueVisitorsPerDay,
     ])
     statistics_classes_with_dependencies = OrderedSet()
     for statistic in contained_statistics_classes:
