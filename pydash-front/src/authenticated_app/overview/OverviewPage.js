@@ -26,7 +26,6 @@ class OverviewPage extends Component {
 
     render() {
         return (
-
             <div>
                 <Button onClick={this.handleClickOpen} className="NewDashboardButton" variant="raised" color="primary">
                     Add dashboard
@@ -37,7 +36,16 @@ class OverviewPage extends Component {
                     open={this.state.open}
                     onClose={this.handleClose}
                 />
-                <DashboardList dashboards={this.props.dashboards} />
+
+                {((this.props.dashboards == null) ?
+                    <h4>
+                        <em>
+                            Loading...
+                        </em>
+                    </h4>
+                :
+                  <DashboardList dashboards={this.props.dashboards} />
+                )}
             </div>
         );
     }

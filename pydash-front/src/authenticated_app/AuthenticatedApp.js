@@ -9,8 +9,8 @@ import AuthenticatedRoutes from './AuthenticatedRoutes';
 
 class AuthenticatedApp extends Component {
     state = {
-        dashboards: {}
-    };
+        dashboards: null
+    }
 
     componentDidMount = () => {
         console.log("Before DashboardList endpoint call")
@@ -24,7 +24,7 @@ class AuthenticatedApp extends Component {
           this.setState(prevState => {
             return {
               ...prevState,
-                dashboards: {},
+                dashboards: null,
               error: response.data.error,
             };
           });
