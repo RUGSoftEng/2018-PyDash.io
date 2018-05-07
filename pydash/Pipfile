@@ -15,6 +15,7 @@ requests = "*"
 Flask-Cors = "*"
 pqdict = "*"
 pytest-cov = "*"
+ordered-set = "*"
 
 [dev-packages]
 pytest = "*"
