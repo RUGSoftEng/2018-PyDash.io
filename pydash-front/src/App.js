@@ -1,36 +1,68 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
+import { Redirect } from 'react-router'
+
 import './App.css';
-import Login from './login/Login';
-// import MainInterface from './app/main_interface/MainInterface';
-import { Switch, Route } from 'react-router-dom';
-import MainInterface from './app/main_interface/MainInterface'
-import AccountCreation from './accountCreation/AccountCreation';
+import Routes from './Routes'
 
 
 class App extends Component {
-  state = {
-      username: ''
-  };
+    state = {
+        username: ''
+    };
 
-  changeUsername = (username) => {
-      this.setState({
-          username: username
-      });
-  };
+    componentWillMount = () => {
+        this.setState({
+            isAuthenticated: this.props.isAuthenticated,
+            username: this.props.username
+        })
+        console.log("App state: ", this.state, this.props);
+    }
 
-  render() {
-    return (
-      <div className="App">
-        <Switch>
-          {/* `exact` because its only one slash */}
-          <Route exact path='/' render={(props) => <Login changeUsernameHandler={this.changeUsername} {...props} />} />
-          <Route path='/dashboard' render={(props) => <MainInterface username={this.state.username} {...props} />}/> 
-          <Route exact path='/accountCreation' render={(props) => <AccountCreation username={this.state.username} {...props} />}/> 
+    signInHandler = (username) => {
+        this.setState({
+            username: username,
+            isAuthenticated: true
+        });
+    };
 
-        </Switch>
-      </div>
-    );
-  }
+    signOutHandler = () => {
+        this.setState({
+            username: '',
+            isAuthenticated: false
+        })
+    }
+
+    redirectBasedOnAuthentication = () => {
+        if(this.state.isAuthenticated && window.location.pathname === "/"){
+            return <Redirect to='/overview' />;
+        }
+
+        if(!this.state.isAuthenticated && (window.location.pathname !== "/" && window.location.pathname !== '/register')){
+            return <Redirect to='/' />;
+        }
+    }
+
+    render() {
+
+        return (
+            <div className="App">
+                {this.redirectBasedOnAuthentication()}
+                <Routes
+                    signInHandler={this.signInHandler}
+                    signOutHandler={this.signOutHandler}
+                    username={this.state.username}
+                    isAuthenticated={this.state.isAuthenticated}
+                />
+            </div>
+        );
+    }
 }
+
+App.propTypes = {
+    username: PropTypes.string,
+    isAuthenticated: PropTypes.bool.isRequired,
+};
 
 export default App;

@@ -25,3 +25,35 @@
 | *2018-03-26* | 22:00-1:00 | Working on Background Tasks scheduler (#48, #71) |
 | *2018-03-27* | 8:30-11:00 | Working on Background Tasks scheduler (#48, #71) |
 | *2018-03-27* | 18:00-19:00 | Working on Background Tasks scheduler (#48, #71) |
+| *2018-03-26* | 11:00-13:00 | Team meeting with Patrick |
+| *2018-03-29* | 12:30-13:30 | Aggregator functionality |
+| *2018-03-30* | 21:00-0:00 | CORS fixing, Frontend Graph rendering with mock data (#103) |
+| *2018-03-30* | 16:00-18:00 | Frontend Graph rendering with mock data (#103) |
+| *2018-03-31* | 16:00-19:00 | Frontend Graph rendering with mock data (#103) |
+| *2018-04-01* | 21:00-22:00 | Frontend Graph rendering with mock data (#103) |
+| *2018-04-02* | 13:30-16:00 | Frontend Graph rendering with mock data (#103) |
+| *2018-04-05* | 12:30-13:00 | Working on Frontend/Sounds2 (#134) |
+| *2018-04-12* | 11:00-12:30 | Team meeting with Patrick |
+| *2018-04-12* | 12:30-13:00 | Working on Frontend/Sounds2 (#134) |
+| *2018-04-12* | 13:00-13:20 | Individual meeting with Patrick |
+| *2018-04-12* | 13:30-15:15 | Working on Frontend/Sounds2 (#134) |
+| *2018-04-12* | 15:15-16:35 | Improving Architecture Document (backend stack, database design) |
+| *2018-04-23* | 15:00-17:00 | Weekly meeting |
+| *2018-04-23* | 21:00-23:00 | Fixing Periodic Fetching |
+| *2018-04-24* | 16:00-18:00 | Fixing Periodic Fetching |
+| *2018-04-25* | 11:00-14:00 | Fixing Periodic Fetching; Refactoring |
+| *2018-04-25* | 14:30-15:00 | Fixing Flask-Monitoring-Dashboard off-by-one error with PR there |
+| *2018-04-25* | 15:30-18:20 | Fixing Periodic Fetching; Refactoring |
+| *2018-04-26* | 12:00-13:00 | Testing/Continuous Integration |
+| *2018-04-26* | 14:15-15:45 | Testing/Continuous Integration |
+| *2018-04-27* | 0:00-0:30 | Fixing serving of React app |
+| *2018-04-28* | 0:00-0:30 | Testing/Continuous Integration |
+| *2018-04-28* | 10:00-12:00 | Testing/Continuous Integration |
+| *2018-04-29* | 0:00-0:30 | Testing/Continuous Integration |
+| *2018-04-29* | 6:00-7:30 | Frontend Refactoring |
+| *2018-04-29* | 14:00-15:15 | Frontend Cards + Graph |
+| *2018-04-30* | 15:00-17:00 | Weekly Meeting (with Patrick for first part) |
+| *2018-04-30* | 17:00-17:45 | Debugging Account Creation |
+| *2018-04-30* | 19:00-19:18 | Writing out timetracking for Sprint #4 |
+| *2018-05-01* | 21:00-21:30 | Fixing signing in in Frontend (#193/#223) |
+| *2018-05-01* | 21:30-21:45 | Frontend: Showing message if no dashboards (#224) |
