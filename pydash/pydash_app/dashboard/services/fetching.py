@@ -128,39 +128,26 @@ def fetch_and_add_endpoints(dashboard):
         logger.error(f'Connection error in fetch_and_add_endpoints: {e}\n'
                      f'from dashboard: {dashboard}')
         dashboard.state = DashboardState.initialize_endpoints_failure
-        dashboard.error = str(e)
+        dashboard.error = "Could not connect to the remote application"
         return
     except requests.exceptions.HTTPError as e:
         logger.error(f'HTTP error in fetch_and_add_endpoints: {e}\n'
                      f'from dashboard: {dashboard}')
         dashboard.state = DashboardState.initialize_endpoints_failure
-        dashboard.error = str(e)
-        return
-    except jwt.DecodeError as e:
-        logger.error(f'JWT decode error in fetch_and_add_endpoints: {e}\n'
-                     f'from dashboard: {dashboard}')
-        dashboard.state = DashboardState.initialize_endpoints_failure
-        dashboard.error = str(e)
-        return
-    except KeyError as e:
-        logger.error(f'Key error in fetch_and_add_endpoints: {e}\n'
-                     f'from dashboard: {dashboard}')
-        dashboard.state = DashboardState.initialize_endpoints_failure
-        dashboard.error = str(e)
+        dashboard.error = "Could not connect to the remote application"
         return
     except json.JSONDecodeError as e:
         logger.error(f'JSON decode error in fetch_and_add_endpoints: {e}\n')
         dashboard.state = DashboardState.initialize_endpoints_failure
-        dashboard.error = str(e)
+        dashboard.error = "Could not read the remote dashboard details"
         return
 
     try:
         version = details['dashboard-version']
     except KeyError:
-        error_text = f'Dashboard details do not contain version: {details}'
-        logger.error(error_text)
+        logger.error(f'Dashboard details do not contain version: {details}')
         dashboard.state = DashboardState.initialize_endpoints_failure
-        dashboard.error = error_text
+        dashboard.error = "You are running an unsupported version of Flask-MonitoringDashboard (<1.12.0)"
         return
 
     try:
