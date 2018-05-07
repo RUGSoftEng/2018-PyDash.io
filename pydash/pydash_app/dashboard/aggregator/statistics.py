@@ -135,4 +135,4 @@ class UniqueVisitorsPerDay(Statistic):
         self.value[date].add(endpoint_call.ip)
 
     def rendered_value(self):
-        return {k: len(v) for k, v in self.value.items()}
+        return date_dict({k: len(v) for k, v in self.value.items()})
