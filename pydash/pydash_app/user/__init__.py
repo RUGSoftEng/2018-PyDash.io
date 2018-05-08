@@ -162,7 +162,4 @@ def verify(verification_code):
             Raises an InvalidVerificationCodeError when the provided verification code is invalid.
             Raises an VerificationCodeExpiredError when the provided verification code has expired.
         """
-    try:
-        verification.verify(verification_code)
-    except Exception:
-        raise
+    verification.verify(verification_code)

@@ -19,50 +19,32 @@ def verify(verification_code):
     """
     # Ensure verification code can be a string, an integer or a UUID object.
     if not isinstance(verification_code, uuid.UUID):
-        verification_code = uuid.UUID(verification_code)
+        try:
+            verification_code = uuid.UUID(verification_code)
+        except ValueError:
+            # Invalid input format
+            logger.warning(f"Verification code {verification_code} is invalid - Invalid input format.")
+            raise InvalidVerificationCodeError(f"Verification code {verification_code} is invalid.")
 
     user = repository.find_by_verification_code(verification_code)
     if user is None:
         # Could not find user with matching verification code.
-        logger.warning(f"Verification code {verification_code} is invalid.")
+        logger.warning(f"Verification code {verification_code} is invalid - Unable to find connected user.")
         raise InvalidVerificationCodeError(f"Verification code {verification_code} is invalid.")
 
     if user.smart_verification_code.is_expired():
         # Throw away this verification code.
-        # user.smart_verification_code = None
-        # user.verification_code = None
-        # # TODO: This won't work, as update(user) will now do nothing.
-        # try:
-        #     repository.update(user)
-        # except DuplicateIndexError:
-        #     pass  # We want to replace this on purpose. Sadly, this leaves the last verified user indexed with index 'None'.
-
-        # TODO: Check if this goes well, w.r.t. pickling/persistance.
         delattr(user, 'verification_code')
-        delattr(user, 'smart_verificaton_code')
-        repository.update(user)  # TODO: check if repository.update() supports deleted attributes.
-
+        delattr(user, 'smart_verification_code')
+        repository.update(user)
         logger.warning(f"Verification code {verification_code} has already expired.")
         raise VerificationCodeExpiredError(f"Verification code {verification_code} has already expired.")
 
-    if verification_code != user.verification_code:
-        logger.warning(f"Verification codes do not match.")
-        return False
-
     user.verified = True
-    # user.smart_verification_code = None
-    # user.verification_code = None
-    # # TODO: This won't work, as update(user) will now do nothing.
-    # try:
-    #     repository.update(user)
-    # except DuplicateIndexError:
-    #     pass  # We want to replace this on purpose. Sadly, this leaves the last verified user indexed with index 'None'.
     # Throw away this verification code.
-    # TODO: Check if this goes well, w.r.t. pickling/persistance.
     delattr(user, 'verification_code')
-    delattr(user, 'smart_verificaton_code')
-    repository.update(user)  # TODO: check if repository.update() supports deleted attributes.
-    return True
+    delattr(user, 'smart_verification_code')
+    repository.update(user)
 
 
 class VerificationCodeExpiredError(Exception):

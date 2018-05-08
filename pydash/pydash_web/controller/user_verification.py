@@ -28,16 +28,12 @@ def verify_user(verification_code):
     # verification_code = args['verification_code']
 
     try:
-        verified = user.verify(verification_code)
+        user.verify(verification_code)
     except user.verification.InvalidVerificationCodeError:
         result = {"message": "Invalid verification code."}
         return jsonify(result), 400
     except user.verification.VerificationCodeExpiredError:
         result = {"message": "Verification code expired."}
-        return jsonify(result), 400
-
-    if not verified:
-        result = {"message": "Invalid verification code."}
         return jsonify(result), 400
 
     result = {"message": "User successfully verified."}
