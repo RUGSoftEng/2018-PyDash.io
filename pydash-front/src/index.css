@@ -28,3 +28,7 @@ body {
 .errorMessage {
     color: #f44336;
 }
+
+.sidebar {
+    position: fixed;
+}
