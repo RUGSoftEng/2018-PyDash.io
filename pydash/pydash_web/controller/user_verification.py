@@ -12,20 +12,20 @@ import pydash_logger
 
 logger = pydash_logger.Logger(__name__)
 
-
-def verify_user():
+# For now verify_user will have input parameters, until the verification link points to a front-end page that can do a post-request.
+def verify_user(verification_code):
     """
     Verifies the currently logged in User by comparing the given verification_code with the code assigned to the User.
     This is intended to be used only once, after the user has just registered their account in order to gain access to
     api-routes that have the `verification_required` decorator.
     """
 
-    args = _parse_arguments()
-    if 'verification_code' not in args:
-        result = {"message": "Verification code missing"}
-        logger.warning('Verification failed - verification_code missing')
-        return jsonify(result), 400
-    verification_code = args['verification_code']
+    # args = _parse_arguments()
+    # if 'verification_code' not in args:
+    #     result = {"message": "Verification code missing"}
+    #     logger.warning('Verification failed - verification_code missing')
+    #     return jsonify(result), 400
+    # verification_code = args['verification_code']
 
     try:
         verified = user.verify(verification_code)

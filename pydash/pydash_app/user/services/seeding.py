@@ -45,6 +45,7 @@ def seed():
         User(name="W-M", password="topsecret")
     ]
     for user in _development_users:
+        user.verified = True
         print("Adding user {}".format(user))
         repository.add(user)
     print("Seeding of users is done!")

@@ -5,6 +5,8 @@ Manages the registration of a new user.
 from flask import jsonify
 from flask_restplus.reqparse import RequestParser
 
+from flask_ext.mail import Mail
+
 import pydash_app.user
 import pydash_logger
 
@@ -37,7 +39,8 @@ def register_user():
         logger.info(f'User successfully registered with username: {username}'
                     f' and verification code {user.get_verification_code()}')
 
-        # Todo: send verification email.
+        _send_verification_email(user.smart_verification_code.verification_code,
+                                 user.smart_verification_code.expiration_datetime)
         return jsonify(message), 200
 
 
@@ -46,3 +49,7 @@ def _parse_arguments():
     parser.add_argument('username')
     parser.add_argument('password')
     return parser.parse_args()
+
+
+def _send_verification_email(verification_code, expiration_date):
+    pass
