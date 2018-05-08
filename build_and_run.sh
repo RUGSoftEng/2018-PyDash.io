@@ -2,7 +2,7 @@
 
 PydashPrint()
 {
-    echo -e "\e[1m\e[92m[PyDash.io]: \e[0m\e[1m$1\e[0m"
+    echo -e '\e[1m\e[92m[PyDash.io]: \e[0m\e[1m$1\e[0m'
 }
 
 BuildFrontend()
