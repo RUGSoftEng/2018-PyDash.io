@@ -5,7 +5,6 @@ import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'ma
 import Typography from 'material-ui/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Button } from 'material-ui';
-import Icon from 'material-ui/Icon';
 import CreateIcon from 'material-ui-icons/Create'
 import DeleteIcon from 'material-ui-icons/Delete'
 import Dialog, { DialogActions, DialogContent, DialogContentText, DialogTitle,} from 'material-ui/Dialog';
@@ -127,7 +126,7 @@ signInHandler = (username) => {
               label="New username"
               type="username"
             />
-            <Button>OK</Button>
+            <Button variant="raised">OK</Button><br/>
             <TextField
               autoFocus
               margin="dense"
@@ -135,6 +134,15 @@ signInHandler = (username) => {
               label="New password"
               type="password"           
             />
+            
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Confirm new password"
+              type="password"           
+            />
+            <Button variant="raised">OK</Button><br/>
             <TextField
               autoFocus
               margin="dense"
@@ -142,6 +150,7 @@ signInHandler = (username) => {
               label="New email"
               type="email"     
             />
+             <Button variant="raised">OK</Button><br/>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
