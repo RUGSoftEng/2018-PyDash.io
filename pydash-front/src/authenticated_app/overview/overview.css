@@ -29,3 +29,7 @@ a.DashboardTileLink:hover {
 .NewDashboardButton {
     float: right;
 }
+
+.placeholder {
+    width: 240px;
+}
