@@ -2,17 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { Redirect } from 'react-router'
-<<<<<<< HEAD
-import { Switch, Route } from 'react-router-dom';
-import MainInterface from './app/main_interface/MainInterface'
-import AccountCreation from './accountCreation/AccountCreation';
-import Settings from './app/settings/Settings';
-=======
 
 import './App.css';
 import Routes from './Routes'
 
->>>>>>> development
 
 class App extends Component {
     state = {
@@ -56,47 +49,12 @@ class App extends Component {
         return (
             <div className="App">
                 {this.redirectBasedOnAuthentication()}
-<<<<<<< HEAD
-                <Switch>
-                    {/* `exact` because its only one slash */}
-                    <Route exact path='/' render={(props) =>
-                        <Login
-                            signInHandler={this.signInHandler}
-                            {...props}
-                        />}
-                    />
-                    <Route path='/dashboard' render={(props) =>
-                        <MainInterface
-                            username={this.state.username}
-                            isAuthenticated={this.state.isAuthenticated}
-                            signOutHandler={this.signOutHandler}
-                            {...props}
-                        />
-                    }/>
-                    <Route exact path='/register' render={(props) =>
-                        <AccountCreation
-                            username={this.state.username}
-                            isAuthenticated={this.state.isAuthenticated}
-                            {...props}
-                        />
-                    }/>
-                    <Route exact path='/dashboard/settings' render={(props) =>
-                        <Settings
-                        username={this.state.username}
-                        isAuthenticated={this.state.isAuthenticated}
-                        {...props}
-                    
-                        />
-                    }/>
-                </Switch>
-=======
                 <Routes
                     signInHandler={this.signInHandler}
                     signOutHandler={this.signOutHandler}
                     username={this.state.username}
                     isAuthenticated={this.state.isAuthenticated}
                 />
->>>>>>> development
             </div>
         );
     }

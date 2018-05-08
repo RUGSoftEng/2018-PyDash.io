@@ -1,26 +1,13 @@
-// import React, { Component } from 'react';
-// import PropTypes from 'prop-types'
-// import { Redirect } from 'react-router'
-// import Button from 'material-ui/Button';
-// import TextField from 'material-ui/TextField';
-// import axios from 'axios';
-// class Settings extends Component {
-//   render(){
-//     return (
-//       <div>
-//         User: { this..username }
-//         </div>
-//     )
-//  }
-// }
-
-// export default Settings;
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
 import Typography from 'material-ui/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { Button } from 'material-ui';
+import Icon from 'material-ui/Icon';
+import CreateIcon from 'material-ui-icons/Create'
+import DeleteIcon from 'material-ui-icons/Delete'
 
 
 const styles = theme => ({
@@ -38,17 +25,27 @@ const styles = theme => ({
   },
 });
 
-class SettingsPage extends React.Component {
+class SettingsPage extends Component {
+
+
   state = {
-    username: this.props.username
+    username: ''
 };
 
 componentWillMount = () => {
     this.setState({
-        
+        isAuthenticated: this.props.isAuthenticated,
+        username: this.props.username
     })
     console.log("App state: ", this.state, this.props);
 }
+
+signInHandler = (username) => {
+    this.setState({
+        username: username,
+        isAuthenticated: true
+    });
+};
 
 
   handleChange = panel => (event, expanded) => {
@@ -60,15 +57,27 @@ componentWillMount = () => {
   render() {
     const { classes } = this.props;
     const { expanded } = this.state;
+    //const { user } = this.props;
 
     return (
+
       <div className={classes.root}>
         <ExpansionPanel expanded={expanded === 'panel4'} onChange={this.handleChange('panel4')}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography className={classes.heading}>Personal data</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-              {this.state.username}
+            <div className={classes.heading}>
+            <Typography>
+              Username: {this.props.username}
+          <Button  variant="fab" float="right" >
+              <CreateIcon/>
+          </Button>
+          <Button  variant="fab" color="secondary" >
+              <DeleteIcon/>
+          </Button>
+          </Typography>
+          </div>
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
