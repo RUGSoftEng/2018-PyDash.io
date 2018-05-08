@@ -18,7 +18,7 @@ import SwipeableViews from 'react-swipeable-views';
 import AppBar from 'material-ui/AppBar';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
-
+import { Link } from 'react-router-dom'
 function TabContainer({ children, dir }) {
   return (
     <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
@@ -153,7 +153,11 @@ class StatisticsPage extends Component {
                 <h2>Names of endpoints:</h2>
                     <List>
                     {this.state.dashboard.endpoints.map((userData) => {
-                        return <ListItem>{userData.name}</ListItem>
+                        return (
+                            <Link  to={'/overview/dashboards/'+this.props.dashboard.id+'/endpoint/'+userData.name}>
+                                <ListItem>{userData.name}</ListItem>
+                            </Link>
+                        )
                     })}
                     </List>
                     

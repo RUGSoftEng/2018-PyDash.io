@@ -6,7 +6,7 @@ import { Switch } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 import BreadcrumbRoute from '../../common/BreadcrumbRoute';
 import Endpoint from '../endpoint/Endpoint';
-
+import { Link } from 'react-router-dom'
 // Contents:
 import StatisticsPage from './statistics_page/StatisticsPage';
 
@@ -21,21 +21,21 @@ const MatchedStatisticsPage = (props) => {
 class DashboardRoutes extends Component {
     render = () => {
         return (
-            <BreadcrumbRoute path='/overview' title='Overview' render={ ({ match }) => (
-                <div>
-                    <Switch>
-                        <BreadcrumbRoute
-                            path={this.props.match.url + '/'}
-                            title={(this.props.dashboard ? (this.props.dashboard.name ? this.props.dashboard.name : this.props.dashboard.url) : '')}
-                            component={MatchedStatisticsPage({dashboard: this.props.dashboard})}
-                            
-                        />
-                        <BreadcrumbRoute exact path={match.url + '/endpoint'} component={Endpoint} title='end' />
-                    </Switch>
-                </div>
-            )} />
+            <Switch>
+             <BreadcrumbRoute path={this.props.match.url + '/endpoint/'} isLink={false} title='Endpoint' render={ ({match}) => (
+                        <Route path={match.url + '/:id'} render={ ({match}) => {
+                                
+                                return <Endpoint/>
+                        }} />
+                    )}/>
+            <BreadcrumbRoute
+                path={this.props.match.url + '/'}
+                title={(this.props.dashboard ? (this.props.dashboard.name ? this.props.dashboard.name : this.props.dashboard.url) : '')}
+                component={MatchedStatisticsPage({dashboard: this.props.dashboard})}
+            />
+            </Switch>
         );
-    }
+}
 }
 
 DashboardRoutes.propTypes = {
