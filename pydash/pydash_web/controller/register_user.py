@@ -29,10 +29,7 @@ def register_user():
         return jsonify(message), 400
 
     if not _check_password_requirements(password):
-        message = {'message': 'Password should consist of at least 12 characters,'
-                              ' or consist of at least 8 characters,'
-                              ' contain at least one capital letter'
-                              ' and at least one non-alphabetic character.'}
+        message = {'message': 'User registration failed - password does not conform to the requirements.'}
         logger.warning('User registration failed - password does not conform to the requirements.')
         return jsonify(message), 400
 
