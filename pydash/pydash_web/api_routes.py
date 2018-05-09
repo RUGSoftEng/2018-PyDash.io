@@ -11,7 +11,6 @@ import pydash_web.controller as controller
 
 
 @api.route("/api/login", methods=["POST"])
-@controller.verification_required
 def login():
     return controller.login()
 

@@ -8,4 +8,4 @@ from .dashboards import dashboards
 from .dashboards import dashboard
 from .register_user import register_user
 from .delete_user import delete_user
-from .user_verification import verify_user, verification_required
+from .user_verification import verify_user

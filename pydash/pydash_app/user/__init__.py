@@ -36,7 +36,6 @@ from .entity import User
 from . import repository
 from . import verification
 from multi_indexed_collection import DuplicateIndexError
-# from .verification import InvalidVerificationCodeError, VerificationCodeExpiredError
 
 
 def add_to_repository(user):

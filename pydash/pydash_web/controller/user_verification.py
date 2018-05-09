@@ -2,10 +2,7 @@
 Manages the verification of a User.
 """
 
-from functools import wraps
-
 from flask import jsonify
-from flask_login import current_user
 from flask_restplus.reqparse import RequestParser
 import pydash_app.user as user
 import pydash_logger
@@ -38,21 +35,6 @@ def verify_user(verification_code):
 
     result = {"message": "User successfully verified."}
     return jsonify(result), 200
-
-
-def verification_required(func):
-    """
-    Decorator for checking whether the currently logged in user has been verified.
-    :param func: The function to decorate.
-    """
-    @wraps(func)
-    def decorated_view(*args, **kwargs):
-        if current_user.is_verified():
-            return func(*args, **kwargs)
-        else:
-            message = {'message': 'User has not been verified yet.'}
-            return jsonify(message), 403  # Not sure if returning a jsonified message might break the application.
-    return decorated_view
 
 
 def _parse_arguments():
