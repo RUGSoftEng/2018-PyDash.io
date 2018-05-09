@@ -11,6 +11,8 @@ import Dialog, { DialogActions, DialogContent, DialogContentText, DialogTitle,} 
 import TextField from 'material-ui/TextField';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
 import Switch from 'material-ui/Switch';
+import { Redirect } from 'react-router'
+import axios from 'axios';
 
 const styles = theme => ({
   root: {
@@ -55,6 +57,7 @@ class SettingsPage extends Component {
   state = {
     username: '',
     open: false,
+    openDeletion: false,
     checked: true,
   };
 componentWillMount = () => {
@@ -71,6 +74,21 @@ signInHandler = (username) => {
         isAuthenticated: true
     });
 };
+handleDelete = (e) => {
+  e.preventDefault()
+
+  // Make a request for deletion
+  axios(window.api_path + '/api/delete', {
+      method: 'post',
+      withCredentials: true
+  }).then((response) => {
+      console.log(response);
+      <Redirect to="/" />
+  }).catch((error) => {
+      console.log('Deletion failed');
+      this.handleCloseDeletion;
+  });
+}
 
   handleClickOpen = () => {
     this.setState({ open: true });
@@ -78,6 +96,14 @@ signInHandler = (username) => {
 
   handleClose = () => {
     this.setState({ open: false });
+  };
+
+  handleClickOpenDeletion = () => {
+    this.setState({ openDeletion: true });
+  };
+
+  handleCloseDeletion = () => {
+    this.setState({ openDeletion: false });
   };
 
   handleChange = name => event => {
@@ -185,7 +211,7 @@ signInHandler = (username) => {
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel >
-        <Button className={classes.button} variant="raised" color="secondary">
+        <Button className={classes.button} variant="raised" color="secondary" onClick={this.handleClickOpenDeletion}>
         Delete account?
         <DeleteIcon className={classes.rightIcon} />
       </Button>
@@ -195,8 +221,46 @@ signInHandler = (username) => {
           <ExpansionPanelDetails>
           </ExpansionPanelDetails>
         </ExpansionPanel>
+        <div>
+        <Dialog
+          open={this.state.openDeletion}
+          onClose={this.handleCloseDeletion}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Account deletion</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              WARNING: This will permanently delete your account!
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Password"
+              type="password"
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Confirm password"
+              type="passwordConfirm"           
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleCloseDeletion} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={this.handleDelete} color="primary">
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+        
 
       </div>
+      
     );
   }
 }
