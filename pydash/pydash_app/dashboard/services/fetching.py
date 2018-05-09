@@ -330,6 +330,9 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
 
         start_time = end_time
 
+    dashboard.state = DashboardState.initialized_endpoint_calls
+    dashboard.error = None
+
 
 def fetch_and_add_endpoint_calls(dashboard):
     """
