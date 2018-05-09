@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import axios from 'axios';
 
-//import DashboardVisitsGraph from './DashboardVisitsGraph';
-import ExecutionTimesGraph from './ExecutionTimesGraph';
+// Visual:
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
+// Contents:
+import ExecutionTimesGraph from './ExecutionTimesGraph';
 import ExpansionPanel, {
     ExpansionPanelSummary,
     ExpansionPanelDetails,
 } from 'material-ui/ExpansionPanel';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import { api_to_bar_data} from "../../utils";
+
+// Utils:
+import { api_to_bar_data} from "../../../utils";
 
 // Dummy data for testing average endpoint execution time visualisation.
 const endpoints = {
@@ -96,7 +101,6 @@ class EndpointExecutionTimesPanel extends Component {
             average_execution_times: [],
         };
     }
-    
 
     componentDidMount() {
         // TODO Once back-end has proper API endpoints, use that one instead of the overall one.
@@ -116,6 +120,7 @@ class EndpointExecutionTimesPanel extends Component {
     }
 
     render = () => {
+
         return (
             <ExpansionPanel>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -128,5 +133,9 @@ class EndpointExecutionTimesPanel extends Component {
         )
     }
 }
+
+EndpointExecutionTimesPanel.propTypes = {
+    dashboard_id: PropTypes.string.isRequired,
+};
 
 export default EndpointExecutionTimesPanel;

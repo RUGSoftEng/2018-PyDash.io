@@ -1,21 +1,27 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import axios from 'axios';
 
-import DashboardVisitsGraph from './DashboardVisitsGraph';
-
+// Visual:
 import ExpansionPanel, {
     ExpansionPanelSummary,
     ExpansionPanelDetails,
 } from 'material-ui/ExpansionPanel';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import {dict_to_xy_arr} from "../../utils";
+// Contents:
+import DashboardVisitsGraph from './DashboardVisitsGraph';
 
-class VisitsPerDayPanel extends Component {
+// Utils:
+import {dict_to_xy_arr} from "../../../utils";
+
+
+class UniqueVisitorsPerDayPanel extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            visits_per_day: [],
+            unique_visitors_per_day: [],
         };
     }
 
@@ -28,7 +34,7 @@ class VisitsPerDayPanel extends Component {
             this.setState(prevState => {
                 return {
                     ...prevState,
-                    visits_per_day: dict_to_xy_arr(response.data.aggregates.visits_per_day),
+                    unique_visitors_per_day: dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day),
                 }
             });
         }).catch((error) => {
@@ -40,14 +46,18 @@ class VisitsPerDayPanel extends Component {
         return (
             <ExpansionPanel>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                    <h3>Visits Per Day</h3>
+                    <h3>Unique Visitors Per Day</h3>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <DashboardVisitsGraph data={this.state.visits_per_day} title="Visits per day:" tooltip_title="No. visits: "/>
+                    <DashboardVisitsGraph data={this.state.unique_visitors_per_day} title="Unique visitors per day:" tooltip_title="No. visits: " height={400} />
                 </ExpansionPanelDetails>
             </ExpansionPanel>
         )
     }
 }
 
-export default VisitsPerDayPanel;
+UniqueVisitorsPerDayPanel.propTypes = {
+    dashboard_id: PropTypes.string.isRequired,
+};
+
+export default UniqueVisitorsPerDayPanel;

@@ -1,32 +1,24 @@
 import React from 'react';
-import { Route } from 'react-router-dom'
 import PropTypes from 'prop-types';
 
-// material-ui
+// Visual:
 import { withStyles } from 'material-ui/styles';
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
-import List from 'material-ui/List';
 import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import Hidden from 'material-ui/Hidden';
 import Divider from 'material-ui/Divider';
 import MenuIcon from 'material-ui-icons/Menu';
 import UserIcon from 'material-ui-icons/AccountCircle';
-
-// APP
-import { mailFolderListItems, otherMailFolderListItems } from './Sidebar';
-import Overview from '../overview/Overview';
-import Statistics from '../statistics/Statistics';
-import DashboardPage from '../dashboard/DashboardPage';
-import Settings from '../settings/Settings';
-
-
-
-
-// Styling
 import Logo from '../../images/logo.png'
+import { Link } from 'react-router-dom'
+
+// Contents:
+import { Breadcrumbs } from '@pydash/react-breadcrumbs';
+import { MainMenuItems, OtherMenuItems } from './Menu';
+
 
 const drawerWidth = 240;
 
@@ -80,12 +72,7 @@ const styles = theme => ({
     },
 });
 
-
-const MatchedDashboardPage = ({match}) => {
-    return <DashboardPage id={match.params.id} />
-}
-
-class ResponsiveDrawer extends React.Component {
+class UserInterface extends React.Component {
     state = {
         mobileOpen: false,
     };
@@ -100,16 +87,20 @@ class ResponsiveDrawer extends React.Component {
         const drawer = (
             <div>
 
-                <div className={classes.toolbar}>
-                    <UserIcon className={classes.accounticon} />
-                    <div className={classes.accountname}>
+                <div className={classes.toolbar} >
+                <UserIcon className={classes.accounticon}  />
+                
+                <Link to={'/overview/settings'}>
+                    <div className={classes.accountname} >
                         {this.props.username || 'Username'}
                     </div>
+                </Link>
+                
                 </div>
                 <Divider />
-                <List>{mailFolderListItems()}</List>
+                <MainMenuItems />
                 <Divider />
-                <List>{otherMailFolderListItems({signOutHandler: this.props.signOutHandler})}</List>
+                <OtherMenuItems signOutHandler={this.props.signOutHandler} />
             </div>
         );
 
@@ -127,7 +118,7 @@ class ResponsiveDrawer extends React.Component {
                         </IconButton>
                         <Typography variant="title" color="inherit" noWrap>
                             <img src={Logo} alt="PyDash.io logo" style={{marginTop: "15px", marginLeft: "20px", marginBottom: "10px", maxWidth: "150px"}} />
-            </Typography>
+                        </Typography>
                     </Toolbar>
                 </AppBar>
                 <Hidden mdUp>
@@ -159,20 +150,17 @@ class ResponsiveDrawer extends React.Component {
                 </Hidden>
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
-                    <Route exact path='/dashboard' component={Overview} />
-                    <Route exact path='/dashboard/settings' component={Settings} />
-                    <Route exact path='/dashboard/statistics' component={Statistics} />
-                    <Route path='/dashboard/view/:id' component={MatchedDashboardPage} />
+                    <Breadcrumbs hidden={false} separator="/" />
+                    {this.props.children}
                 </main>
             </div>
         );
     }
 }
 
-
-ResponsiveDrawer.propTypes = {
+UserInterface.propTypes = {
     classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(ResponsiveDrawer);
+export default withStyles(styles, { withTheme: true })(UserInterface);

@@ -22,10 +22,12 @@ def seed():
     for user in user_repository.all():
         dashboard_new = Dashboard('http://flask-sample.koenbolhuis.nl/dashboard',
                                   'cc83733cb0af8b884ff6577086b87909',
-                                  user.get_id())
+                                  user.get_id(),
+                                  'Testing Dashboard (FMD v1.12.0)')
         dashboard_old = Dashboard('http://flask-sample-old.koenbolhuis.nl/dashboard',
                                   'cc83733cb0af8b884ff6577086b87909',
-                                  user.get_id())
+                                  user.get_id(),
+                                  'Unsupported Dashboard (FMD v1.11.5)')
         for dashboard in [dashboard_new, dashboard_old]:
             print(f'Adding dashboard {dashboard}')
             repository.add(dashboard)
