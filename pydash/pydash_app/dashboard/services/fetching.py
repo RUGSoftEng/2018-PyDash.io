@@ -147,6 +147,12 @@ def fetch_and_add_endpoints(dashboard):
         dashboard.state = DashboardState.initialize_endpoints_failure
         dashboard.error = "Could not read the remote dashboard's details while initializing endpoint information."
         return
+    except Exception as e:
+        logger.error(f'Unexpected error in fetch_and_add_endpoints while initializing: {e}\n'
+                     f'from dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = str(e)
+        return
 
     try:
         version = details['dashboard-version']
@@ -197,6 +203,12 @@ def fetch_and_add_endpoints(dashboard):
         logger.error(f'JSON decode error in fetch_and_add_endpoints while fetching: {e}\n')
         dashboard.state = DashboardState.initialize_endpoints_failure
         dashboard.error = "Could not read the remote dashboard's endpoint information."
+        return
+    except Exception as e:
+        logger.error(f'Unexpected error in fetch_and_add_endpoints while fetching: {e}\n'
+                     f'from dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = str(e)
         return
 
     for endpoint in endpoints:
@@ -265,6 +277,12 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
                      f'for dashboard: {dashboard}')
         dashboard.state = DashboardState.initialize_endpoint_calls_failure
         dashboard.error = "Could not read the remote dashboard's details while initializing historical data."
+        return
+    except Exception as e:
+        logger.error(f'Unexpected error happened while initializing EndpointCalls: {e}\n'
+                     f'from dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoint_calls_failure
+        dashboard.error = str(e)
         return
 
     try:
@@ -336,6 +354,12 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
                          f'for dashboard: {dashboard}')
             dashboard.state = DashboardState.initialize_endpoint_calls_failure
             dashboard.error = "Could not read the remote dashboard's historical data."
+            return
+        except Exception as e:
+            logger.error(f'Unexpected error happened while fetching historical EndpointCalls: {e}\n'
+                         f'from dashboard: {dashboard}')
+            dashboard.state = DashboardState.initialize_endpoints_failure
+            dashboard.error = str(e)
             return
 
         for call in endpoint_calls:
@@ -409,6 +433,12 @@ def fetch_and_add_endpoint_calls(dashboard):
         logger.error(f'Value error in fetch_and_add_endpoint_calls: {e}\n')
         dashboard.state = DashboardState.fetch_endpoint_calls_failure
         dashboard.error = "Could not read the remote dashboard's new data."
+        return
+    except Exception as e:
+        logger.error(f'Unexpected error in fetch_and_add_endpoint_calls: {e}\n'
+                     f'from dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = str(e)
         return
 
     if not new_calls:
