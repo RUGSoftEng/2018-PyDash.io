@@ -134,7 +134,7 @@ def fetch_and_add_endpoints(dashboard):
         logger.error(f'Timeout in fetch_and_add_endpoints while initializing: {e}\n'
                      f'from dashboard: {dashboard}')
         dashboard.state = DashboardState.initialize_endpoints_failure
-        dashboard.error = "Could not connect to the remote application while initializing endpoint information."
+        dashboard.error = "The connection to the remote application timed out while initializing endpoint information."
         return
     except requests.exceptions.HTTPError as e:
         logger.error(f'HTTP error in fetch_and_add_endpoints while initializing: {e}\n'
@@ -173,7 +173,7 @@ def fetch_and_add_endpoints(dashboard):
         logger.error(f'Timeout in fetch_and_add_endpoints while fetching: {e}\n'
                      f'from dashboard: {dashboard}')
         dashboard.state = DashboardState.initialize_endpoints_failure
-        dashboard.error = "Could not connect to the remote application while fetching endpoint information."
+        dashboard.error = "The connection to the remote application timed out while fetching endpoint information."
         return
     except requests.exceptions.HTTPError as e:
         logger.error(f'HTTP error in fetch_and_add_endpoints while fetching: {e}\n'
@@ -252,7 +252,7 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
         logger.error(f'Timeout happened while initializing EndpointCalls: {e}\n'
                      f'for dashboard: {dashboard}')
         dashboard.state = DashboardState.initialize_endpoint_calls_failure
-        dashboard.error = "Could not connect to the remote application while initializing historical data."
+        dashboard.error = "The connection to the remote application timed out while initializing historical data."
         return
     except requests.exceptions.HTTPError as e:
         logger.error(f'HTTP error happened while initializing EndpointCalls: {e}\n'
@@ -311,7 +311,7 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
             logger.error(f'Timeout happened while fetching EndpointCalls: {e}\n'
                          f'for dashboard: {dashboard}')
             dashboard.state = DashboardState.initialize_endpoint_calls_failure
-            dashboard.error = "Could not connect to the remote application while fetching historical data."
+            dashboard.error = "The connection to the remote application timed out while fetching historical data."
             return
         except requests.exceptions.HTTPError as e:
             logger.error(f'HTTP error happened while fetching historical EndpointCalls: {e}\n'
@@ -380,7 +380,7 @@ def fetch_and_add_endpoint_calls(dashboard):
         logger.error(f'Timeout in fetch_and_add_endpoint_calls: {e}\n'
                      f'for dashboard: {dashboard}')
         dashboard.state = DashboardState.initialize_endpoint_calls_failure
-        dashboard.error = "Could not connect to the remote application while fetching new data."
+        dashboard.error = "The connection to the remote application timed out while fetching new data."
         return
     except requests.exceptions.HTTPError as e:
         logger.error(f'HTTP error in fetch_and_add_endpoint_calls: {e}\n'
