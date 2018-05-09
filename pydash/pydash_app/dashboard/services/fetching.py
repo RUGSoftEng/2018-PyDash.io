@@ -125,19 +125,25 @@ def fetch_and_add_endpoints(dashboard):
     try:
         details = flask_monitoring_dashboard_client.get_details(dashboard.url)
     except requests.exceptions.ConnectionError as e:
-        logger.error(f'Connection error in fetch_and_add_endpoints: {e}\n'
+        logger.error(f'Connection error in fetch_and_add_endpoints while initializing: {e}\n'
+                     f'from dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = "Could not connect to the remote application while initializing endpoint information."
+        return
+    except requests.exceptions.Timeout as e:
+        logger.error(f'Timeout in fetch_and_add_endpoints while initializing: {e}\n'
                      f'from dashboard: {dashboard}')
         dashboard.state = DashboardState.initialize_endpoints_failure
         dashboard.error = "Could not connect to the remote application while initializing endpoint information."
         return
     except requests.exceptions.HTTPError as e:
-        logger.error(f'HTTP error in fetch_and_add_endpoints: {e}\n'
+        logger.error(f'HTTP error in fetch_and_add_endpoints while initializing: {e}\n'
                      f'from dashboard: {dashboard}')
         dashboard.state = DashboardState.initialize_endpoints_failure
         dashboard.error = "Could not connect to the remote application while initializing endpoint information."
         return
     except json.JSONDecodeError as e:
-        logger.error(f'JSON decode error in fetch_and_add_endpoints: {e}\n')
+        logger.error(f'JSON decode error in fetch_and_add_endpoints while initializing: {e}\n')
         dashboard.state = DashboardState.initialize_endpoints_failure
         dashboard.error = "Could not read the remote dashboard's details while initializing endpoint information."
         return
@@ -158,31 +164,37 @@ def fetch_and_add_endpoints(dashboard):
     try:
         endpoints = _fetch_endpoints(dashboard)
     except requests.exceptions.ConnectionError as e:
-        logger.error(f'Connection error in fetch_and_add_endpoints: {e}\n'
+        logger.error(f'Connection error in fetch_and_add_endpoints while fetching: {e}\n'
+                     f'from dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoints_failure
+        dashboard.error = "Could not connect to the remote application while fetching endpoint information."
+        return
+    except requests.exceptions.Timeout as e:
+        logger.error(f'Timeout in fetch_and_add_endpoints while fetching: {e}\n'
                      f'from dashboard: {dashboard}')
         dashboard.state = DashboardState.initialize_endpoints_failure
         dashboard.error = "Could not connect to the remote application while fetching endpoint information."
         return
     except requests.exceptions.HTTPError as e:
-        logger.error(f'HTTP error in fetch_and_add_endpoints: {e}\n'
+        logger.error(f'HTTP error in fetch_and_add_endpoints while fetching: {e}\n'
                      f'from dashboard: {dashboard}')
         dashboard.state = DashboardState.initialize_endpoints_failure
         dashboard.error = "Could not connect to the remote application while fetching endpoint information."
         return
     except jwt.DecodeError as e:
-        logger.error(f'JWT decode error in fetch_and_add_endpoints: {e}\n'
+        logger.error(f'JWT decode error in fetch_and_add_endpoints while fetching: {e}\n'
                      f'from dashboard: {dashboard}')
         dashboard.state = DashboardState.initialize_endpoints_failure
         dashboard.error = "Could not read the remote dashboard's endpoint information."
         return
     except KeyError as e:
-        logger.error(f'Key error in fetch_and_add_endpoints: {e}\n'
+        logger.error(f'Key error in fetch_and_add_endpoints while fetching: {e}\n'
                      f'from dashboard: {dashboard}')
         dashboard.state = DashboardState.initialize_endpoints_failure
         dashboard.error = "Could not read the remote dashboard's endpoint information."
         return
     except json.JSONDecodeError as e:
-        logger.error(f'JSON decode error in fetch_and_add_endpoints: {e}\n')
+        logger.error(f'JSON decode error in fetch_and_add_endpoints while fetching: {e}\n')
         dashboard.state = DashboardState.initialize_endpoints_failure
         dashboard.error = "Could not read the remote dashboard's endpoint information."
         return
@@ -236,6 +248,12 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
         dashboard.state = DashboardState.initialize_endpoint_calls_failure
         dashboard.error = "Could not connect to the remote application while initializing historical data."
         return
+    except requests.exceptions.Timeout as e:
+        logger.error(f'Timeout happened while initializing EndpointCalls: {e}\n'
+                     f'for dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoint_calls_failure
+        dashboard.error = "Could not connect to the remote application while initializing historical data."
+        return
     except requests.exceptions.HTTPError as e:
         logger.error(f'HTTP error happened while initializing EndpointCalls: {e}\n'
                      f'for dashboard: {dashboard}')
@@ -285,6 +303,12 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
             endpoint_calls = _fetch_endpoint_calls(dashboard, start_time, end_time)
         except requests.exceptions.ConnectionError as e:
             logger.error(f'Connection error happened while fetching historical EndpointCalls: {e}\n'
+                         f'for dashboard: {dashboard}')
+            dashboard.state = DashboardState.initialize_endpoint_calls_failure
+            dashboard.error = "Could not connect to the remote application while fetching historical data."
+            return
+        except requests.exceptions.Timeout as e:
+            logger.error(f'Timeout happened while fetching EndpointCalls: {e}\n'
                          f'for dashboard: {dashboard}')
             dashboard.state = DashboardState.initialize_endpoint_calls_failure
             dashboard.error = "Could not connect to the remote application while fetching historical data."
@@ -350,6 +374,12 @@ def fetch_and_add_endpoint_calls(dashboard):
         logger.error(f'Connection error in fetch_and_add_endpoint_calls: {e}\n'
                      f'from dashboard {dashboard}')
         dashboard.state = DashboardState.fetch_endpoint_calls_failure
+        dashboard.error = "Could not connect to the remote application while fetching new data."
+        return
+    except requests.exceptions.Timeout as e:
+        logger.error(f'Timeout in fetch_and_add_endpoint_calls: {e}\n'
+                     f'for dashboard: {dashboard}')
+        dashboard.state = DashboardState.initialize_endpoint_calls_failure
         dashboard.error = "Could not connect to the remote application while fetching new data."
         return
     except requests.exceptions.HTTPError as e:
