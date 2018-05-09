@@ -9,6 +9,8 @@ import CreateIcon from 'material-ui-icons/Create'
 import DeleteIcon from 'material-ui-icons/Delete'
 import Dialog, { DialogActions, DialogContent, DialogContentText, DialogTitle,} from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
+import { FormGroup, FormControlLabel } from 'material-ui/Form';
+import Switch from 'material-ui/Switch';
 
 const styles = theme => ({
   root: {
@@ -44,6 +46,7 @@ const styles = theme => ({
   iconSmall: {
     fontSize: 20,
   },
+
 });
 
 class SettingsPage extends Component {
@@ -52,6 +55,7 @@ class SettingsPage extends Component {
   state = {
     username: '',
     open: false,
+    checked: true,
   };
 componentWillMount = () => {
     this.setState({
@@ -76,10 +80,8 @@ signInHandler = (username) => {
     this.setState({ open: false });
   };
 
-  handleChange = panel => (event, expanded) => {
-    this.setState({
-      expanded: expanded ? panel : false,
-    });
+  handleChange = name => event => {
+    this.setState({ [name]: event.target.checked });
   };
 
   render() {
@@ -89,7 +91,7 @@ signInHandler = (username) => {
     return (
 
       <div className={classes.root}>
-        <ExpansionPanel expanded={expanded === 'panel4'} onChange={this.handleChange('panel4')}>
+        <ExpansionPanel>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography className={classes.heading}>Personal data
             </Typography>
@@ -164,18 +166,25 @@ signInHandler = (username) => {
       </div>
 
         </ExpansionPanel>
-        <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
+        <ExpansionPanel>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography className={classes.heading}>General settings</Typography>
-            <Typography className={classes.secondaryHeading}></Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Typography>
-              
-            </Typography>
+          <FormControlLabel
+          control={
+            <Switch
+              checked={this.state.checked}
+              onChange={this.handleChange('checked')}
+              value="checked"
+              color="primary"
+            />
+          }
+          label="Sound ON/OFF"
+        />
           </ExpansionPanelDetails>
         </ExpansionPanel>
-        <ExpansionPanel expanded={expanded === 'panel3'} onChange={this.handleChange('panel3')}>
+        <ExpansionPanel >
         <Button className={classes.button} variant="raised" color="secondary">
         Delete account?
         <DeleteIcon className={classes.rightIcon} />
