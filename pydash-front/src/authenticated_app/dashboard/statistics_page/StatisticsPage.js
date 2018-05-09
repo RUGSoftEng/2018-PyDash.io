@@ -154,7 +154,7 @@ class StatisticsPage extends Component {
                     <List>
                     {this.state.dashboard.endpoints.map((userData) => {
                         return (
-                            <Link  to={'/overview/dashboards/'+this.props.dashboard.id+'/endpoint/'+userData.name}>
+                            <Link  to={'/overview/dashboards/'+this.props.dashboard.id+'/endpoints/'+userData.name}>
                                 <ListItem>{userData.name}</ListItem>
                             </Link>
                         )

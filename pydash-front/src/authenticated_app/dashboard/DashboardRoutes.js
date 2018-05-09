@@ -22,9 +22,18 @@ class DashboardRoutes extends Component {
     render = () => {
         return (
             <Switch>
-             <BreadcrumbRoute path={this.props.match.url + '/endpoint/'} isLink={false} title='Endpoint' render={ ({match}) => (
-                        <Route path={match.url + '/:id'} render={ ({match}) => {
-                                
+             <BreadcrumbRoute path={this.props.match.url + '/endpoints/'} isLink={false} title='Endpoints' render={ ({match}) => (
+                        <Route path={match.url + '/:name'} render={ ({match}) => {
+                                if(this.props.dashboard!=null){
+                                    for(var i = 0;i<this.props.dashboard.endpoints.length;i++){
+                                        if(match.params.id===this.props.dashboard.endpoints[i].name){
+                                            const endpoint_info = this.props.dashboard.endpoints[i];
+                                            console.log(endpoint_info);
+                                            return <Endpoint endpointData={endpoint_info}/>
+                                        }
+                                    }
+                                }
+                                console.log('Endpoint not found');
                                 return <Endpoint/>
                         }} />
                     )}/>
