@@ -41,3 +41,9 @@ def register_user():
 @login_required
 def delete_user():
     return controller.delete_user()
+
+
+@api.route("/api/user/change_settings", methods=["POST"])
+@login_required
+def update_settings():
+    return controller.change_settings()
