@@ -39,7 +39,7 @@ def login():
 
     if not user.is_verified():
         result = {"message": "User has not yet been verified"}
-        logger.warning(f"Login failed - {current_user} has not yet been verified")
+        logger.warning(f"Login failed - {user} has not yet been verified")
         return jsonify(result), 403
 
     login_user(user)
