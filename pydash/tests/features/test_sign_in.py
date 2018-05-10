@@ -36,8 +36,15 @@ def test_sign_in_wrongpassword():
 
 
 @given(parsers.cfparse("PyDash contains the user \"{username}\" with password \"{password}\""))
-def _(username, password):
+def _unverified_user(username, password):
     existing_user = User(username, password)
+    user.add_to_repository(existing_user)
+
+
+@given(parsers.cfparse("PyDash contains the verified \"{username}\" with password \"{password}\""))
+def _verified_user(username, password):
+    existing_user = User(username, password)
+    existing_user.verified = True
     user.add_to_repository(existing_user)
 
 
