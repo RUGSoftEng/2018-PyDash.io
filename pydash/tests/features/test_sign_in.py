@@ -12,7 +12,7 @@ import pydash_app.user as user
 
 @scenario("sign_in.feature", "Signing in successfully as existent verified user")
 def test_sign_in_successful():
-    "Signing in successfully as existent user"
+    "Signing in successfully as existent verified user"
 
 
 @scenario("sign_in.feature", "Signing in without entering anything")
