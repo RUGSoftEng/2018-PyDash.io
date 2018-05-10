@@ -16,7 +16,7 @@ import transaction
 from pydash_database import database_root, MultiIndexedPersistentCollection
 from multi_indexed_collection import DuplicateIndexError
 
-from .user import User
+from .entity import User
 
 
 if not hasattr(database_root(), 'users'):

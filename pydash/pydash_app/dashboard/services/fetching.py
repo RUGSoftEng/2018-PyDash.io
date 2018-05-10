@@ -8,7 +8,7 @@ import jwt
 import flask_monitoring_dashboard_client
 from pydash_app.dashboard.endpoint import Endpoint
 from pydash_app.dashboard.endpoint_call import EndpointCall
-from pydash_app.dashboard.dashboard import DashboardState
+from pydash_app.dashboard.entity import DashboardState
 import pydash_app.dashboard.repository as dashboard_repository
 import pydash_logger
 import periodic_tasks
