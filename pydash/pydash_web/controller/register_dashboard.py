@@ -4,7 +4,7 @@ from flask_restplus.reqparse import RequestParser
 
 import pydash_app.dashboard
 import pydash_logger
-import pydash_app.dashboard.services.fetching as fetching
+import pydash_app.dashboard.services.fetching
 
 
 logger = pydash_logger.Logger(__name__)
@@ -29,7 +29,7 @@ def register_dashboard():
     message = {'message': 'Dashboard successfully registered to user.'}
     logger.info(f"Dashboard {name} ({url}) successfully registered to user {current_user.id} ")
 
-    _schedule_dashboard_fetching(dashboard)
+    pydash_app.dashboard.services.fetching.schedule_historic_dashboard_fetching(dashboard)
 
     return jsonify(message), 200
 
@@ -40,8 +40,3 @@ def _parse_arguments():
     parser.add_argument('url')
     parser.add_argument('token')
     return parser.parse_args()
-
-
-def _schedule_dashboard_fetching(dashboard):
-    fetching.schedule_historic_dashboard_fetching(dashboard)
-    fetching.schedule_periodic_dashboard_fetching(dashboard)
