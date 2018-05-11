@@ -48,6 +48,15 @@ RunDatabase()
     PydashPrint "Done!"
 }
 
+RunDatabaseForeground()
+{
+    PydashPrint "Starting database in foreground..."
+    cd pydash
+    pipenv run "./start_database.sh"
+    cd ..
+    PydashPrint "Done!"
+}
+
 RunFlask()
 {
     PydashPrint "Finally: Starting flask webservice. Close with Ctrl+C"
@@ -92,6 +101,10 @@ then
         fi
         if [ $i == "database" ];
         then
+            RunDatabaseForeground
+        fi
+        if [ $i == "databasebg" ];
+        then
             RunDatabase
         fi
         if [ $i == "server" ];
@@ -110,5 +123,5 @@ then
     done;
     PydashPrint "Done! Goodbye :-)"
 else
-    ./$0 seed build database server
+    ./$0 build databasebg server
 fi
