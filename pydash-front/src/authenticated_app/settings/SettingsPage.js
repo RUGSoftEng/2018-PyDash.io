@@ -14,6 +14,7 @@ import Switch from 'material-ui/Switch';
 import { Redirect } from 'react-router'
 import axios from 'axios';
 
+
 const styles = theme => ({
   root: {
     width: '100%',
@@ -51,11 +52,25 @@ const styles = theme => ({
 
 });
 
+function DiffText(props) {
+  if(props.pass===props.passC){
+    return null;
+  } else {
+    return (
+      <DialogContentText>
+      Passwords do not match!
+     </DialogContentText>
+    );
+  }
+}
+
 class SettingsPage extends Component {
 
 
   state = {
     username: '',
+    password: '',
+    passConfirm: '',
     open: false,
     openDeletion: false,
     checked: true,
@@ -68,6 +83,13 @@ componentWillMount = () => {
     console.log("App state: ", this.state, this.props);
 }
 
+handleType = key => event => {
+  this.setState({
+      [key]: event.target.value
+  });
+};
+
+
 signInHandler = (username) => {
     this.setState({
         username: username,
@@ -76,17 +98,20 @@ signInHandler = (username) => {
 };
 
 handleDelete = (e) => {
+  let password = this.state.password
+
   e.preventDefault()
   // Make a request for deletion
-  axios(window.api_path + '/api/delete', {
-      method: 'post',
-      withCredentials: true
-  }).then((response) => {
-      console.log(response);
+  axios.post(window.api_path + '/api/user/delete', {
+    password},
+    {withCredentials: true}
+  ).then((response) => {
+      
       this.setState({
         username: '',
         isAuthenticated: false
      });
+     this.props.username = '';
       <Redirect to="/" />
   }).catch((error) => {
       console.log('Deletion failed');
@@ -238,6 +263,8 @@ handleDelete = (e) => {
             </DialogContentText>
             <TextField
               autoFocus
+              value={this.state.password}
+              onChange={this.handleType('password')}
               margin="dense"
               id="name"
               label="Password"
@@ -245,10 +272,12 @@ handleDelete = (e) => {
             />
             <TextField
               autoFocus
+              value={this.state.passConfirm}
+              onChange={this.handleType('passConfirm')}
               margin="dense"
               id="name"
               label="Confirm password"
-              type="passwordConfirm"           
+              type="password"           
             />
           </DialogContent>
           <DialogActions>
@@ -259,6 +288,8 @@ handleDelete = (e) => {
               Delete
             </Button>
           </DialogActions>
+          <DiffText pass={this.state.password} passC={this.state.passConfirm}/>
+          
         </Dialog>
       </div>
         
