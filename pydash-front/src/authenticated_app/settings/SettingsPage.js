@@ -74,15 +74,19 @@ signInHandler = (username) => {
         isAuthenticated: true
     });
 };
+
 handleDelete = (e) => {
   e.preventDefault()
-
   // Make a request for deletion
   axios(window.api_path + '/api/delete', {
       method: 'post',
       withCredentials: true
   }).then((response) => {
       console.log(response);
+      this.setState({
+        username: '',
+        isAuthenticated: false
+     });
       <Redirect to="/" />
   }).catch((error) => {
       console.log('Deletion failed');
