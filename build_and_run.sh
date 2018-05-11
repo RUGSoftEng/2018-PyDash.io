@@ -20,8 +20,6 @@ BuildBackend()
     PydashPrint "building backend..."
     cd pydash
     mkdir -p logs
-    export FLASK_APP=pydash.py
-    export FLASK_ENV=development
     pipenv install
     cd ..
     PydashPrint "Done!"
@@ -35,7 +33,7 @@ SeedBackend()
     export FLASK_APP=pydash.py
     export FLASK_ENV=development
     rm -f ./zeo_filestorage.fs*
-    flask seed
+    pipenv run flask seed
     cd ..
     cd ..
     PydashPrint "Done!"
@@ -54,6 +52,8 @@ RunFlask()
 {
     PydashPrint "Finally: Starting flask webservice. Close with Ctrl+C"
     cd pydash
+    export FLASK_APP=pydash.py
+    export FLASK_ENV=development
     pipenv run flask run --no-reload --host=0.0.0.0
     cd ..
 }
