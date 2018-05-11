@@ -32,6 +32,8 @@ class User(persistent.Persistent, flask_login.UserMixin):
         self.name = name
         self.password_hash = generate_password_hash(password)
 
+        self.play_sounds = False
+
     def __repr__(self):
         """
         The user has a string representation to be easily introspectable:
