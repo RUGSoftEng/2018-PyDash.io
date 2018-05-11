@@ -3,7 +3,7 @@ Fills the application with some preliminary users
 to make it easier to test code in development and staging environments.
 """
 
-from pydash_app.user.user import User
+from pydash_app.user.entity import User
 import pydash_app.user.repository as repository
 
 

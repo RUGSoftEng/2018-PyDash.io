@@ -6,7 +6,7 @@ from pytest_bdd import (
 )
 from pytest_bdd import parsers
 
-from pydash_app.user.user import User
+from pydash_app.user.entity import User
 import pydash_app.user as user
 
 
