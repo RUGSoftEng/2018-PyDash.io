@@ -12,9 +12,16 @@ logger = pydash_logger.Logger(__name__)
 def register_dashboard():
     args = _parse_arguments()
 
-    name = args['name']
+    if not args['name'] or not args['url'] or not args['token']:
+        logger.warning("Dashboard registration failed - name, url or token are missing.")
+        result = {'message': 'Name, url or token are missing.'}
+        return jsonify(result), 400
+
+    logger.warning(f'{args}')
+
+    name = str(args['name'])
     url = str(args['url'])
-    token = args['token']
+    token = str(args['token'])
 
     dashboard = pydash_app.dashboard.Dashboard(url, token, str(current_user.id), name)
     pydash_app.dashboard.add_to_repository(dashboard)

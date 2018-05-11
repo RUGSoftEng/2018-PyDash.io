@@ -85,12 +85,19 @@ class Dashboard(persistent.Persistent):
     """
 
     def __init__(self, url, token, user_id, name=None):
-        if not isinstance(url, str) or not isinstance(user_id, str):
-            raise TypeError("Dashboard expects both url and user_id to be strings.")
+        if not isinstance(url, str) or not isinstance(token, str):
+            raise TypeError("Dashboard expects both url and token to be strings.")
+
+        if name is not None and not isinstance(name, str):
+            raise TypeError("Dashboard expects name to be a string.")
+
+        # Make sure integers and strings are allowed as well.
+        if not isinstance(user_id, uuid.UUID):
+            user_id = uuid.UUID(user_id)
 
         self.id = uuid.uuid4()
         self.url = url
-        self.user_id = uuid.UUID(user_id)
+        self.user_id = user_id
         self.token = token
         self.name = name
 
