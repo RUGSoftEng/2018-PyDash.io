@@ -24,6 +24,10 @@ def register_dashboard():
     url = str(args['url'])
     token = str(args['token'])
 
+    is_valid, result = _is_valid_dashboard(url)
+    if not is_valid:
+        return jsonify(result), 400
+
     dashboard = pydash_app.dashboard.Dashboard(url, token, str(current_user.id), name)
     pydash_app.dashboard.add_to_repository(dashboard)
     message = {'message': 'Dashboard successfully registered to user.'}
@@ -40,3 +44,27 @@ def _parse_arguments():
     parser.add_argument('url')
     parser.add_argument('token')
     return parser.parse_args()
+
+
+def _is_valid_dashboard(url):
+    import requests.exceptions
+    import json
+    import flask_monitoring_dashboard_client
+
+    try:
+        details = flask_monitoring_dashboard_client.get_details(url)
+        version = details['dashboard-version']
+    except requests.exceptions.ConnectionError:
+        return False, {'message': 'Could not connect to the dashboard'}
+    except requests.exceptions.Timeout:
+        return False, {'message': 'Timeout while connecting to the dashboard'}
+    except requests.exceptions.HTTPError as e:
+        if e.response:
+            return False, {'message': f'HTTP {e.response.status_code} error while connecting to the dashboard'}
+        return False, {'message': 'HTTP error while connecting to the dashboard'}
+    except json.JSONDecodeError:
+        return False, {'message': f'{url} does not seem to host a valid dashboard'}
+    except KeyError:
+        return False, {'message': 'Unsupported version of Flask-MonitoringDashboard'}
+
+    return True, None
