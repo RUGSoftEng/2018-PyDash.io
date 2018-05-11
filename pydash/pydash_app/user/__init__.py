@@ -32,7 +32,7 @@ True
 >>> authenticate("Dumbledore", "secrets")
 >>> # ^Returns nothing
 """
-from .user import User
+from .entity import User
 import pydash_app.user.repository
 from multi_indexed_collection import DuplicateIndexError
 

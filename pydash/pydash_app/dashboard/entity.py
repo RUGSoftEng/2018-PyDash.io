@@ -2,8 +2,8 @@
 
 Involved usage example:
 
->>> from pydash_app.dashboard.dashboard import Dashboard
->>> from pydash_app.user.user import User
+>>> from pydash_app.dashboard.entity import Dashboard
+>>> from pydash_app.user.entity import User
 >>> from pydash_app.dashboard.endpoint import Endpoint
 >>> from pydash_app.dashboard.endpoint_call import EndpointCall
 >>> import uuid

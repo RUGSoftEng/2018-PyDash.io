@@ -47,3 +47,15 @@ def delete_user():
 @login_required
 def register_dashboard():
     return controller.register_dashboard()
+
+
+@api.route("/api/user/change_settings", methods=["POST"])
+@login_required
+def change_settings():
+    return controller.change_settings()
+
+
+@api.route("/api/user/change_password", methods=["POST"])
+@login_required
+def change_password():
+    return controller.change_password()
