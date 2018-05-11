@@ -105,7 +105,7 @@ def get_data(dashboard_url, dashboard_token, time_from=None, time_to=None, timeo
 
     try:
         response = requests.get(url, timeout=timeout)
-    except requests.exceptions.ConnectionError:
+    except requests.exceptions.ConnectionError as e:
         logger.error(f'Connection error in get_data: {e}')
         raise
     except requests.exceptions.Timeout as e:
