@@ -33,8 +33,9 @@ class User(persistent.Persistent, flask_login.UserMixin):
         self.name = name
         self.password_hash = generate_password_hash(password)
         self.verified = False
-        self.smart_verification_code = VerificationCode()
-        self.verification_code = self.smart_verification_code.verification_code
+        self._smart_verification_code = VerificationCode()
+        # Needed for the database to search for users by verification code
+        self._verification_code = self._smart_verification_code.verification_code
 
     def __repr__(self):
         """
@@ -50,8 +51,20 @@ class User(persistent.Persistent, flask_login.UserMixin):
         return str(self.id)
 
     def get_verification_code(self):
-        """Returns the VerificationCode-entity or None if it has expired, see pydash_app.user.verification.py"""
-        return self.verification_code
+        """Returns this User's verification code or None if it has expired or this User has already been verified"""
+        if hasattr(self, 'verification_code'):
+            return self._verification_code
+        else:
+            return None
+
+    def get_verification_code_expiration_date(self):
+        """Returns a datetime object of when this User's verification code is about to expire,
+            or None if it has already expired or this User has already been verified
+        """
+        if hasattr(self, '_smart_verification_code'):
+            return self._smart_verification_code.expiration_datetime
+        else:
+            return None
 
     def is_verified(self):
         return self.verified
@@ -60,8 +73,8 @@ class User(persistent.Persistent, flask_login.UserMixin):
         return check_password_hash(self.password_hash, password)
 
     def generate_new_verification_code(self):
-        self.smart_verification_code = VerificationCode()
-        self.verification_code = self.smart_verification_code.verification_code
+        self._smart_verification_code = VerificationCode()
+        self._verification_code = self._smart_verification_code.verification_code
 
     # Required because `multi_indexed_collection` puts users in a set, that needs to order its keys for fast lookup.
     # Because the IDs are unchanging integer values, use that.

@@ -1,7 +1,6 @@
 import uuid
 from . import repository
 import pydash_logger
-from multi_indexed_collection import DuplicateIndexError
 
 
 logger = pydash_logger.Logger(__name__)

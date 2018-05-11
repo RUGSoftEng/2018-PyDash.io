@@ -18,7 +18,7 @@ def verify_user(verification_code):
     """
 
     # args = _parse_arguments()
-    # if 'verification_code' not in args:
+    # if not args['verification_code']:
     #     result = {"message": "Verification code missing"}
     #     logger.warning('Verification failed - verification_code missing')
     #     return jsonify(result), 400

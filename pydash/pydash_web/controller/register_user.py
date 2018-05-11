@@ -49,7 +49,8 @@ def register_user():
         logger.info(f'User successfully registered with username: {username}'
                     f' and verification code {user.get_verification_code()}')
 
-        _send_verification_email(user.smart_verification_code,
+        _send_verification_email(user.get_verification_code(),
+                                 user.get_verification_code_expiration_date(),
                                  email_address,
                                  user.name)
         return jsonify(message), 200
@@ -63,7 +64,7 @@ def _parse_arguments():
     return parser.parse_args()
 
 
-def _send_verification_email(smart_verification_code, recipient_email_address, username):
+def _send_verification_email(verification_code, expiration_date, recipient_email_address, username):
     """
     Sends a verification email to the user with a link to the appropriate front-end page.
     For now the backend-api is directly given though.
@@ -73,8 +74,7 @@ def _send_verification_email(smart_verification_code, recipient_email_address, u
     """
     message_subject = 'PyDash.io - Account verification'
     message_recipients = [recipient_email_address]
-    expiration_date = smart_verification_code.expiration_datetime.ctime() + ' GMT+0000'
-    verification_code = smart_verification_code.verification_code
+    expiration_date = expiration_date.ctime() + ' GMT+0000'
 
     protocol = 'http'  # this or https  #Todo: change to https once that has been set up.
     host = 'localhost:5000'  # Todo: change from localhost to deployment server once that has been set up.
@@ -89,13 +89,11 @@ def _send_verification_email(smart_verification_code, recipient_email_address, u
                    f' {verification_url} )</p>' \
                    f'<p>The link will expire at {expiration_date}.</p>'
 
-    message_sender = 'no-reply_PyDashTestMail@gmail.com'
-
+    # No sender is specified, such that we use DEFAULT_MAIL_SENDER as specified in config.py
     message = Message(subject=message_subject,
                       recipients=message_recipients,
                       # body=message_body,
-                      html=message_html,
-                      sender=message_sender
+                      html=message_html
                       )
 
     mail.send(message)
