@@ -11,6 +11,7 @@ import atexit
 import datetime
 from time import sleep
 from pqdict import pqdict
+logger = multiprocessing.log_to_stderr()
 from .pqdict_iter_upto_priority import pqdict_iter_upto_priority
 from .queue_nonblocking_iter import queue_nonblocking_iter
 
@@ -65,7 +66,21 @@ class _Task:
         """
         if "TESTING" in os.environ:
             signal.signal(signal.SIGTERM, cleanup)
-        return self.target(*args, **kwargs)
+
+        try:
+            return self.target(*args, **kwargs)
+        except Exception as exception:
+            import traceback
+            logger.error(f"""---
+            Task execution failed.
+            Task: {self}
+            Exception: {exception}
+            Traceback:
+            {traceback.format_exc()}
+            ---
+            """
+            )
+
 
     def __hash__(self):
         """
