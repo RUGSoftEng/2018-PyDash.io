@@ -111,7 +111,7 @@ handleDelete = (e) => {
         username: '',
         isAuthenticated: false
      });
-     this.props.username = '';
+
       <Redirect to="/" />
   }).catch((error) => {
       console.log('Deletion failed');
