@@ -20,9 +20,9 @@ def register_dashboard():
 
     logger.warning(f'{args}')
 
-    name = str(args['name'])
-    url = str(args['url'])
-    token = str(args['token'])
+    name = args['name']
+    url = args['url']
+    token = args['token']
 
     is_valid, result = _is_valid_dashboard(url)
     if not is_valid:
