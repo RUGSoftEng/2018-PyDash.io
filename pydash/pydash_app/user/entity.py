@@ -32,6 +32,8 @@ class User(persistent.Persistent, flask_login.UserMixin):
         self.name = name
         self.password_hash = generate_password_hash(password)
 
+        self.play_sounds = True
+
     def __repr__(self):
         """
         The user has a string representation to be easily introspectable:
@@ -47,6 +49,9 @@ class User(persistent.Persistent, flask_login.UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
 
     # Required because `multi_indexed_collection` puts users in a set, that needs to order its keys for fast lookup.
     # Because the IDs are unchanging integer values, use that.
