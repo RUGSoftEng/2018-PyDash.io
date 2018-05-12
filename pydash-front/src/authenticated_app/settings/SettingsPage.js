@@ -112,7 +112,7 @@ handlePasswords = (e) => {
   e.preventDefault()
 
   // Make a request for deletion
-  axios(window.api_path + '/api/password', {
+  axios(window.api_path + '/api/change_password', {
       method: 'post',
       withCredentials: true
   }).then((response) => {
