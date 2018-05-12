@@ -1,11 +1,26 @@
-import React from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from 'material-ui/styles';
+
 import { Redirect } from 'react-router'
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import axios from 'axios';
 import Logo from '../images/logo.png'
+import Snackbar from 'material-ui/Snackbar';
+import IconButton from 'material-ui/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
-class RegistrationPage extends React.Component {
+
+
+const styles = theme => ({
+    close: {
+      width: theme.spacing.unit * 4,
+      height: theme.spacing.unit * 4,
+    },
+  });
+
+class RegistrationPage extends Component {
     constructor(props) {
       super(props);
       this.state = {
@@ -29,7 +44,17 @@ class RegistrationPage extends React.Component {
         });
     };
 
-   
+    handleClick = () => {
+        this.setState({ open: true });
+      };
+
+      handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+    
+        this.setState({ open: false });
+      };
    
    
     tryLogin = (e) => {
@@ -41,6 +66,7 @@ class RegistrationPage extends React.Component {
             this.setState(prevState => ({
                 ...prevState,
                 error: true,
+                open: false,
                 helperText: 'These fields are required!',
             }))
 
@@ -78,6 +104,7 @@ class RegistrationPage extends React.Component {
     }
 
     render() {
+        const { classes } = this.props;
         return this.state.success ? (
             <Redirect to="/" />
         ) : (
@@ -130,14 +157,43 @@ class RegistrationPage extends React.Component {
                     />
                     <br />
                     <p>
-                    <Button type="submit" variant="raised" color="primary" disabled={this.state.loading}>
+                    <Button type="submit" variant="raised" color="primary" disabled={this.state.loading}  onClick={ this.handleClick}>
                         {this.state.loading ? "Creating account" : "Register"}
                     </Button>
                     </p>
+                    <Snackbar
+                            anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                            }}
+                            open={this.state.open}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            SnackbarContentProps={{
+                            'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">User registered</span>}
+                            action={[
+                            <IconButton
+                                key="close"
+                                aria-label="Close"
+                                color="inherit"
+                                className={classes.close}
+                                onClick={this.handleClose}
+                            >
+                                <CloseIcon />
+                            </IconButton>,
+                            ]}
+                />
                 </form>
             </div>
         );
     }
 }
 
-export default RegistrationPage;
+RegistrationPage.propTypes = {
+    signInHandler: PropTypes.func.isRequired,
+    classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(RegistrationPage);

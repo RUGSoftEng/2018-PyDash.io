@@ -37,6 +37,8 @@ class User(persistent.Persistent, flask_login.UserMixin):
         # Needed for the database to search for users by verification code
         self._verification_code = self._smart_verification_code.verification_code
 
+        self.play_sounds = True
+
     def __repr__(self):
         """
         The user has a string representation to be easily introspectable:
@@ -75,6 +77,9 @@ class User(persistent.Persistent, flask_login.UserMixin):
     def generate_new_verification_code(self):
         self._smart_verification_code = VerificationCode()
         self._verification_code = self._smart_verification_code.verification_code
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
 
     # Required because `multi_indexed_collection` puts users in a set, that needs to order its keys for fast lookup.
     # Because the IDs are unchanging integer values, use that.
