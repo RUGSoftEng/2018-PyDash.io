@@ -46,7 +46,7 @@ class VisitsFetcher extends Component {
         axios({
             method: 'get',
             withCredentials: true,
-            url: window.api_path + '/api/dashboards/' + this.props.dashboard_id,
+            url: window.api_path + '/api/dashboards/' + this.props.dashboard_id + '?timeslice=' + this.props.timeslice,
             data: {
                 timeslice: this.props.timeslice,
             },

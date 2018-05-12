@@ -25,6 +25,7 @@ class TimesliceTabs extends Component {
     }
 
     changeTab = (_event, timeslice) => {
+        console.log("Changing tab to:", timeslice);
         this.setState({timeslice: timeslice})
     }
 
