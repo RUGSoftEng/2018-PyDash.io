@@ -31,10 +31,9 @@ class TimesliceTabs extends Component {
     render = () => {
         let children = this.props.children
         let updatedChildren;
-        if(typeof children === 'object' ){
+        if(typeof(children) === 'object' ){
             children = [children]
         }
-        console.log("CHILDREN: ", children)
         updatedChildren = React.Children.map(
             children,
             (child) => (
@@ -62,7 +61,7 @@ class TimesliceTabs extends Component {
 }
 
 TimesliceTabs.propTypes = {
-    children: PropTypes.arrayOf(PropTypes.element).isRequired,
+    children: PropTypes.objectOf(PropTypes.element).isRequired,
 };
 
 export default TimesliceTabs;

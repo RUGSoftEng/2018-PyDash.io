@@ -23,21 +23,25 @@ class VisitsFetcher extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            loading: false,
+            loading: true,
             timeslice: "hour",
             visits: [],
         }
     }
 
     componentWillReceiveProps = (newProps) => {
-        if(newProps.timeslice !== this.state.timeslice){
-            this.setState(prevState => ({...prevState, loading: true, visits: [], timeslice: newProps.timeslice}));
+        if(newProps.timeslice !== this.state.timeslice && this.state.visits[newProps.timeslice] === undefined){
+            this.setState(prevState =>
+                ({...prevState, loading: true, timeslice: newProps.timeslice}));
             this.requestVisitsData();
         }
     }
 
-    requestVisitsData = () => {
+    componentDidMount = () => {
+        this.requestVisitsData();
+    }
 
+    requestVisitsData = () => {
         // TODO Once back-end has proper API endpoints, use that one instead of the overall one.
         axios({
             method: 'get',
@@ -48,10 +52,13 @@ class VisitsFetcher extends Component {
             },
         }).then((response) => {
             this.setState(prevState => {
+                const timeslice_visits = dict_to_xy_arr(response.data.aggregates.visits_per_day)
+                let new_visits = prevState.visits
+                new_visits[prevState.timeslice] = timeslice_visits;
                 return {
                     ...prevState,
                     loading: false,
-                    visits: dict_to_xy_arr(response.data.aggregates.visits_per_day),
+                    visits: new_visits,
                 }
             });
         }).catch((error) => {
@@ -64,7 +71,7 @@ class VisitsFetcher extends Component {
             return (<em>Loading...</em>);
         }
         return (
-            <DashboardVisitsGraph data={this.state.visits} title="Visits per" tooltip_title="No. visits: " height={400} timeslice={this.state.timeslice} />
+            <DashboardVisitsGraph data={this.state.visits[this.state.timeslice]} title="Visits per" tooltip_title="No. visits: " height={400} timeslice={this.state.timeslice} />
         )
     }
 }
