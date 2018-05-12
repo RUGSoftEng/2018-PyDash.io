@@ -19,6 +19,7 @@ flask-cors = "*"
 pqdict = "*"
 pytest-cov = "*"
 flask-mail = "*"
+ordered-set = "*"
 
 
 [dev-packages]
