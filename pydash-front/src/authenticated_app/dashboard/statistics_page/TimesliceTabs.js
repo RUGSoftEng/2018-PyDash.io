@@ -29,8 +29,14 @@ class TimesliceTabs extends Component {
     }
 
     render = () => {
-        let updatedChildren = React.Children.map(
-            this.props.children,
+        let children = this.props.children
+        let updatedChildren;
+        if(typeof children === 'object' ){
+            children = [children]
+        }
+        console.log("CHILDREN: ", children)
+        updatedChildren = React.Children.map(
+            children,
             (child) => (
                 React.cloneElement(child, { timeslice: this.state.timeslice })
             )
