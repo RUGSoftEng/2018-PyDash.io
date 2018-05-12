@@ -11,10 +11,12 @@ import ExpansionPanel, {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 // Contents:
+import TimesliceTabs from './TimesliceTabs';
 import DashboardVisitsGraph from './DashboardVisitsGraph';
 
 // Utils:
 import {dict_to_xy_arr} from "../../../utils";
+
 
 
 class VisitsPerDayPanel extends Component {
@@ -49,7 +51,9 @@ class VisitsPerDayPanel extends Component {
                     <h3>Visits Per Day</h3>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <DashboardVisitsGraph data={this.state.visits_per_day} title="Visits per day:" tooltip_title="No. visits: " height={400} />
+                    <TimesliceTabs>
+                        <DashboardVisitsGraph data={this.state.visits_per_day} title="Visits" tooltip_title="No. visits: " height={400} />
+                    </TimesliceTabs>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
         )

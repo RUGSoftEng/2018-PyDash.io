@@ -15,7 +15,7 @@ class DashboardVisitsGraph extends Component {
         }
         return (
             <ResponsiveGraphWrapper height={this.props.height} >
-            <h4>{this.props.title}</h4>
+            <h4>{this.props.title} {this.props.timeslice}</h4>
             <Line
             data={[{id: this.props.tooltip_title, data: this.props.data}]}
             height={this.props.height}
@@ -65,6 +65,7 @@ DashboardVisitsGraph.propTypes = {
     title: PropTypes.string.isRequired,
     tooltip_title: PropTypes.string.isRequired,
     height: PropTypes.number.isRequired,
+    timeslice: PropTypes.string.isRequired
 };
 
 export default DashboardVisitsGraph;
