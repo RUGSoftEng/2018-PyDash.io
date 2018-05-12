@@ -56,6 +56,8 @@ class SettingsPage extends Component {
 
   state = {
     username: '',
+    password:'',
+    Confirmpassword:'',
     open: false,
     openDeletion: false,
     checked: true,
@@ -87,6 +89,38 @@ handleDelete = (e) => {
   }).catch((error) => {
       console.log('Deletion failed');
       this.handleCloseDeletion;
+  });
+}
+
+handleSettings = (e) => {
+  e.preventDefault()
+
+  // Make a request for deletion
+  axios(window.api_path + '/api/change_settings', {
+      method: 'post',
+      withCredentials: true
+  }).then((response) => {
+      console.log(response);
+      <Redirect to="/" />
+  }).catch((error) => {
+      console.log('changing settings failed');
+      this.handleClose;
+  });
+}
+
+handlePasswords = (e) => {
+  e.preventDefault()
+
+  // Make a request for deletion
+  axios(window.api_path + '/api/password', {
+      method: 'post',
+      withCredentials: true
+  }).then((response) => {
+      console.log(response);
+      <Redirect to="/" />
+  }).catch((error) => {
+      console.log('changing password failed');
+      this.handleClose;
   });
 }
 
@@ -154,23 +188,27 @@ handleDelete = (e) => {
               label="New username"
               type="username"
             />
-            <Button variant="raised">OK</Button><br/>
+            <Button variant="raised" onClick={this.handleSettings} >OK</Button><br/>
             <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="New password"
-              type="password"           
+              id="Password"
+              label="Password"
+              value={this.state.password}
+              onChange={this.handleChange('password')}
+              margin="normal"
+              type="password"
+              error={this.state.error}          
             />
             
             <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Confirm new password"
-              type="password"           
+              id="Confirmpassword"
+              label="Confirm password"
+              value={this.state.Confirmpassword}
+              onChange={this.handleChange('Confirmpassword')}
+              margin="normal"
+              type="password"
+              error={this.state.error}        
             />
-            <Button variant="raised">OK</Button><br/>
+            <Button variant="raised" onClick={this.handlePasswords}>OK</Button><br/>
             <TextField
               autoFocus
               margin="dense"
@@ -178,7 +216,7 @@ handleDelete = (e) => {
               label="New email"
               type="email"     
             />
-             <Button variant="raised">OK</Button><br/>
+             <Button variant="raised" onClick={this.handleSettings}>OK</Button><br/>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
