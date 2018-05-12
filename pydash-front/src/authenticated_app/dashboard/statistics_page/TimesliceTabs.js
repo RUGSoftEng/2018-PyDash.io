@@ -42,8 +42,7 @@ class TimesliceTabs extends Component {
             )
         );
         return (
-            <div ref={this.setElement} style={{width: "100%", overflow: 'hidden'}}>
-                <AppBar position="static">
+            <div>
                 <Tabs value={this.state.timeslice} onChange={this.changeTab}>
                     <Tab label="hour" value="hour" />
                     <Tab label="day" value="day" />
@@ -52,7 +51,6 @@ class TimesliceTabs extends Component {
                     <Tab label="year" value="year" />
                     <Tab label="all time" value="all_time" />
                 </Tabs>
-            </AppBar>
             <TabContainer>
                 {updatedChildren}
             </TabContainer>
@@ -60,9 +58,5 @@ class TimesliceTabs extends Component {
         );
     }
 }
-
-TimesliceTabs.propTypes = {
-    children: PropTypes.objectOf(PropTypes.element).isRequired,
-};
 
 export default TimesliceTabs;

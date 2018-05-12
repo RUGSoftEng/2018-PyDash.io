@@ -22,15 +22,13 @@ class UniqueVisitsFetcher extends Component {
         super(props)
         this.state = {
             loading: true,
-            timeslice: "hour",
+            timeslice: "day",
             visits: [],
         }
     }
 
     componentDidUpdate = (prevProps, _prevState, snapshot) => {
-        console.log("NEW PROPS:", this.props);
         if(this.props.timeslice === this.state.timeslice){
-            console.log("Nothing changed", this.props, this.state)
             return
         }
         if(this.state.visits[this.props.timeslice] === undefined){
@@ -69,7 +67,7 @@ class UniqueVisitsFetcher extends Component {
     }
 
     render = () => {
-        if(this.state.loading){
+        if(this.state.loading) {
             return (<em>Loading...</em>);
         }
         return (
@@ -79,7 +77,7 @@ class UniqueVisitsFetcher extends Component {
 }
 
 UniqueVisitsFetcher.propTypes = {
-    timeslice: PropTypes.string.isRequired,
+    timeslice: PropTypes.string,
 }
 
 class UniqueVisitorsPerDayPanel extends Component {
