@@ -78,8 +78,8 @@ class StatisticsPage extends Component {
         return (
 
                 <div ref={this.divRef} >
-                    <h2>Dashboard: {this.state.dashboard.url}</h2>
-                    <h3>{this.state.error}</h3>
+                    <h2>Dashboard: {this.state.dashboard.name ? this.state.dashboard.name : this.state.dashboard.url}</h2>
+                    <h3 className="errorMessage">{this.state.error}</h3>
                     <div>
                         <VisitsPerDayPanel dashboard_id={this.props.dashboard.id} />
                         <UniqueVisitorsPerDayPanel dashboard_id={this.props.dashboard.id} />

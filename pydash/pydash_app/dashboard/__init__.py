@@ -2,7 +2,7 @@
 This module is the public interface (available to the web-application pydash_web)
 for interacting with Dashboards.
 """
-from .dashboard import Dashboard
+from .entity import Dashboard
 import pydash_app.dashboard.repository
 
 

@@ -6,7 +6,7 @@ Currently only returns static mock data.
 
 from flask import jsonify
 from flask_login import current_user
-from pydash_app.dashboard.dashboard import DashboardState
+from pydash_app.dashboard.entity import DashboardState
 
 import pydash_app.dashboard
 import pydash_logger
@@ -80,14 +80,10 @@ def _simple_dashboard_detail(dashboard):
     dashboard_data = {
         'id': dashboard.id,
         'url': dashboard.url,
+        'name': dashboard.name,
+        'error': dashboard.error,
         'endpoints': endpoints
     }
-
-    if dashboard.name is not None:
-        dashboard_data['name'] = dashboard.name
-
-    if str(dashboard.state.name).split("_")[-1] == "failure":
-        dashboard_data['error'] = dashboard.error
 
     return dashboard_data
 
@@ -111,14 +107,10 @@ def _dashboard_detail(dashboard):
     dashboard_data = {
         'id': dashboard.id,
         'url': dashboard.url,
+        'name': dashboard.name,
+        'error': dashboard.error,
         'aggregates': dashboard.aggregated_data(),
         'endpoints': endpoints
     }
-
-    if dashboard.name is not None:
-        dashboard_data['name'] = dashboard.name
-
-    if str(dashboard.state.name).split("_")[-1] == "failure":
-        dashboard_data['error'] = dashboard.error
 
     return dashboard_data

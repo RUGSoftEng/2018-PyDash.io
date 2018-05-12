@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, {Component} from 'react';
+=======
+import React from 'react';
+>>>>>>> development
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
@@ -51,6 +55,7 @@ const styles = theme => ({
 
 });
 
+<<<<<<< HEAD
 class SettingsPage extends Component {
 
 
@@ -142,6 +147,17 @@ handlePasswords = (e) => {
 
   handleChange = name => event => {
     this.setState({ [name]: event.target.checked });
+=======
+class SettingsPage extends React.Component {
+  state = {
+    username: this.props.username
+  };
+
+  handleChange = panel => (event) => {
+    this.setState(({expanded}) => ({
+      expanded: expanded === panel ? false : panel,
+    }));
+>>>>>>> development
   };
 
   render() {
