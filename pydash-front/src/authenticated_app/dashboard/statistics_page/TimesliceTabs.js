@@ -42,8 +42,8 @@ class TimesliceTabs extends Component {
             )
         );
         return (
-            <div>
-                <Tabs value={this.state.timeslice} onChange={this.changeTab}>
+            <div style={{width: "100%"}}>
+                <Tabs value={this.state.timeslice} onChange={this.changeTab} centered>
                     <Tab label="hour" value="hour" />
                     <Tab label="day" value="day" />
                     <Tab label="week" value="week" />
