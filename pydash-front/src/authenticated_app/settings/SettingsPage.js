@@ -61,6 +61,7 @@ class SettingsPage extends Component {
     open: false,
     openDeletion: false,
     checked: true,
+    SoundSettings: true,
   };
 componentWillMount = () => {
     this.setState({
@@ -76,6 +77,8 @@ signInHandler = (username) => {
         isAuthenticated: true
     });
 };
+
+
 handleDelete = (e) => {
   e.preventDefault()
 
@@ -89,21 +92,22 @@ handleDelete = (e) => {
   }).catch((error) => {
       console.log('Deletion failed');
       this.handleCloseDeletion;
+
   });
 }
 
-handleSettings = (e) => {
-  e.preventDefault()
+  handleSettings = (e) => {
+    e.preventDefault()
+    let username = this.state.username
 
-  // Make a request for deletion
-  axios(window.api_path + '/api/change_settings', {
+    axios.post(window.api_path + '/api/user/change_settings', {
       method: 'post',
       withCredentials: true
   }).then((response) => {
       console.log(response);
       <Redirect to="/" />
   }).catch((error) => {
-      console.log('changing settings failed');
+      console.log('changing password failed');
       this.handleClose;
   });
 }
@@ -113,7 +117,7 @@ handlePasswords = (e) => {
 
   // Make a request for deletion
   axios(window.api_path + '/api/change_password', {
-      method: 'post',
+      method: 'POST',
       withCredentials: true
   }).then((response) => {
       console.log(response);
@@ -142,6 +146,9 @@ handlePasswords = (e) => {
 
   handleChange = name => event => {
     this.setState({ [name]: event.target.checked });
+  };
+  handleSoundSettings = ()=>{
+    this.setState({SoundSettings: false});
   };
 
   render() {
@@ -187,22 +194,21 @@ handlePasswords = (e) => {
               id="name"
               label="New username"
               type="username"
+              onChange={this.handleChange('username')}
             />
-            <Button variant="raised" onClick={this.handleSettings} >OK</Button><br/>
+            <Button type="submit" variant="raised" onClick={this.handleSettings} >OK</Button><br/>
             <TextField
               id="Password"
               label="Password"
-              value={this.state.password}
               onChange={this.handleChange('password')}
-              margin="normal"
+              margin="dense"
               type="password"
-              error={this.state.error}          
+              error={this.state.error}         
             />
             
             <TextField
               id="Confirmpassword"
               label="Confirm password"
-              value={this.state.Confirmpassword}
               onChange={this.handleChange('Confirmpassword')}
               margin="normal"
               type="password"
@@ -219,11 +225,8 @@ handlePasswords = (e) => {
              <Button variant="raised" onClick={this.handleSettings}>OK</Button><br/>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={this.handleClose} color="primary">
-              Submit changes
+            <Button onClick={this.handleClose}  color="primary">
+              Close
             </Button>
           </DialogActions>
         </Dialog>
@@ -240,6 +243,7 @@ handlePasswords = (e) => {
             <Switch
               checked={this.state.checked}
               onChange={this.handleChange('checked')}
+              onClick={this.handleSettings}
               value="checked"
               color="primary"
             />
@@ -282,14 +286,14 @@ handlePasswords = (e) => {
               margin="dense"
               id="name"
               label="Confirm password"
-              type="passwordConfirm"           
+              type="password"           
             />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleCloseDeletion} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.handleDelete} color="primary">
+            <Button type="submit" onClick={this.handleDelete} onSubmit color="primary">
               Delete
             </Button>
           </DialogActions>
