@@ -34,7 +34,7 @@ VisitsFetcher.propTypes = {
 }
 
 
-function VisitsPerDayPanel(props) {
+function VisitsPanel(props) {
     return (
         <ExpansionPanel>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -49,8 +49,8 @@ function VisitsPerDayPanel(props) {
     )
 }
 
-VisitsPerDayPanel.propTypes = {
+VisitsPanel.propTypes = {
     dashboard_id: PropTypes.string.isRequired,
 };
 
-export default VisitsPerDayPanel;
+export default VisitsPanel;
