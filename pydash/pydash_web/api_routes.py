@@ -70,7 +70,7 @@ def register_dashboard():
     return controller.register_dashboard()
 
 
-@api.route("/api/dashboards/<dashboard_id>/delete")
+@api.route("/api/dashboards/<dashboard_id>/delete", methods=["POST"])
 @login_required
 def delete_dashboard(dashboard_id):
     return controller.delete_dashboard(dashboard_id)
