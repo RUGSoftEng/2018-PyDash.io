@@ -9,9 +9,9 @@ import CreateIcon from 'material-ui-icons/Create'
 import DeleteIcon from 'material-ui-icons/Delete'
 import Dialog, { DialogActions, DialogContent, DialogContentText, DialogTitle,} from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
-import { FormGroup, FormControlLabel } from 'material-ui/Form';
+import { FormControlLabel } from 'material-ui/Form';
 import Switch from 'material-ui/Switch';
-import { Redirect } from 'react-router'
+//import { Redirect } from 'react-router'
 import axios from 'axios';
 
 
@@ -100,13 +100,13 @@ handleDelete = (e) => {
   ).then((response) => {
     if(this.state.password===this.state.passConfirm){     
       this.props.signOutHandler();
-      <Redirect to="/" />
+     // <Redirect to="/" />
     } else {
       console.log('Passwords do not match!');
     }
   }).catch((error) => {
       console.log('Deletion failed');
-      this.handleCloseDeletion;
+      this.handleCloseDeletion();
   });
 }
 
@@ -134,7 +134,7 @@ handleDelete = (e) => {
 
   render() {
     const { classes } = this.props;
-    const { expanded } = this.state;
+    //const { expanded } = this.state;
 
     return (
 
