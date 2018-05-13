@@ -11,7 +11,7 @@ import Dialog, { DialogActions, DialogContent, DialogContentText, DialogTitle,} 
 import TextField from 'material-ui/TextField';
 import { FormControlLabel } from 'material-ui/Form';
 import Switch from 'material-ui/Switch';
-//import { Redirect } from 'react-router'
+import { Redirect } from 'react-router'
 import axios from 'axios';
 
 
@@ -100,7 +100,7 @@ handleDelete = (e) => {
   ).then((response) => {
     if(this.state.password===this.state.passConfirm){     
       this.props.signOutHandler();
-     // <Redirect to="/" />
+      return <Redirect to="/" />;
     } else {
       console.log('Passwords do not match!');
     }
@@ -109,6 +109,7 @@ handleDelete = (e) => {
       this.handleCloseDeletion();
   });
 }
+
 
   handleClickOpen = () => {
     this.setState({ open: true });
