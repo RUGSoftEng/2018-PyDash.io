@@ -34,14 +34,14 @@ def seed():
 
     # Fill in users.
     _development_users = [
-        # User(name="Alberto", password="alberto"),
-        # User(name="Arjan", password="arjan"),
-        # User(name="JeroenO", password="jeroeno"),
-        # User(name="JeroenL", password="jeroenl"),
-        # User(name="Koen", password="koen"),
-        # User(name="Lars", password="lars"),
-        # User(name="Patrick", password="patrick"),
-        # User(name="Tom", password="tom"),
+        User(name="Alberto", password="alberto"),
+        User(name="Arjan", password="arjan"),
+        User(name="JeroenO", password="jeroeno"),
+        User(name="JeroenL", password="jeroenl"),
+        User(name="Koen", password="koen"),
+        User(name="Lars", password="lars"),
+        User(name="Patrick", password="patrick"),
+        User(name="Tom", password="tom"),
         User(name="W-M", password="topsecret")
     ]
     for user in _development_users:
