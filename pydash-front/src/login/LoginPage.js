@@ -49,7 +49,7 @@ class LoginPage extends Component {
         let target_val = event.target.value;
         this.setState((prevState) => {
             let isPasswordUnsafe = prevState.isPasswordUnsafe;
-            if(key == 'password') {
+            if(key === 'password') {
                 console.log("TETS")
                 // Only bug person once password is longer than eight characters
                 // because that is a requirement in any case.
