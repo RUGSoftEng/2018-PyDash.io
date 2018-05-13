@@ -9,7 +9,7 @@ logger = pydash_logger.Logger(__name__)
 
 def endpoint_boxplots(dashboard_id):
     dashboard = pydash_app.dashboard.find(dashboard_id)
-    endpoint_boxplot_list = [_boxplot_data(endpoint) for endpoint in dashboard.endpoints]
+    endpoint_boxplot_list = [_boxplot_data(endpoint) for endpoint in dashboard.endpoints.values()]
     logger.info(f'Endpoint boxplots from dashboard {dashboard} requested')
     return jsonify(endpoint_boxplot_list), 200
 

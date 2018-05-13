@@ -1,12 +1,8 @@
-from ordered_set import OrderedSet
-from collections import OrderedDict
 from collections import defaultdict
 import abc
-import datetime
 from tdigest import tdigest
 
 import persistent
-
 
 
 def date_dict(dict):
@@ -157,15 +153,33 @@ class FastestExecutionTime(Statistic):
         return self.value
 
 
+class SlowestExecutionTime(Statistic):
+    dependencies = []
+
+    def empty(self):
+        return -1
+
+    def field_name(self):
+        return 'slowest_measured_execution_time'
+
+    def append(self, endpoint_call, dependencies):
+        if self.value < endpoint_call.execution_time:
+            self.value = endpoint_call.execution_time
+
+    def rendered_value(self):
+        return self.value
+
+
 class TDigestStatistic(Statistic):
     dependencies = []
 
     def __init__(self):
-        self._digest = tdigest.TDigest()
         super().__init__()
+        self.value = self.empty()
+        self._digest = tdigest.TDigest()
 
     def empty(self):
-        return 0
+        return -1
 
     @abc.abstractmethod
     def field_name(self):
@@ -220,21 +234,4 @@ class NinetyNinthPercentileExecutionTime(TDigestStatistic):
 
     def append(self, endpoint_call, dependencies):
         super().append(endpoint_call, dependencies)
-        self.value = self._digest.percentile(90)
-
-
-class SlowestExecutionTime(Statistic):
-    dependencies = []
-
-    def empty(self):
-        return -1
-
-    def field_name(self):
-        return 'slowest_measured_execution_time'
-
-    def append(self, endpoint_call, dependencies):
-        if self.value < endpoint_call.execution_time:
-            self.value = endpoint_call.execution_time
-
-    def rendered_value(self):
-        return self.value
+        self.value = self._digest.percentile(99)
