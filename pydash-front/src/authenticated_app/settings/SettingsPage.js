@@ -99,20 +99,19 @@ signInHandler = (username) => {
 
 handleDelete = (e) => {
   let password = this.state.password
-
+  
   e.preventDefault()
   // Make a request for deletion
   axios.post(window.api_path + '/api/user/delete', {
     password},
     {withCredentials: true}
   ).then((response) => {
-      
-      this.setState({
-        username: '',
-        isAuthenticated: false
-     });
-
+    if(this.state.password===this.state.passConfirm){     
+      this.props.signOutHandler();
       <Redirect to="/" />
+    } else {
+      console.log('Passwords do not match!');
+    }
   }).catch((error) => {
       console.log('Deletion failed');
       this.handleCloseDeletion;

@@ -52,7 +52,7 @@ class AuthenticatedApp extends Component {
                 username={this.props.username}
                 signOutHandler={this.props.signOutHandler}
             >
-                <AuthenticatedRoutes dashboards={this.state.dashboards} username={this.props.username}/>
+                <AuthenticatedRoutes dashboards={this.state.dashboards} username={this.props.username} signOutHandler={this.props.signOutHandler}/>
             </UserInterface>
         );
     };
