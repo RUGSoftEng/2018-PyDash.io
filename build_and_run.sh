@@ -20,8 +20,6 @@ BuildBackend()
     PydashPrint "building backend..."
     cd pydash
     mkdir -p logs
-    export FLASK_APP=pydash.py
-    export FLASK_ENV=development
     pipenv install
     cd ..
     PydashPrint "Done!"
@@ -35,7 +33,7 @@ SeedBackend()
     export FLASK_APP=pydash.py
     export FLASK_ENV=development
     rm -f ./zeo_filestorage.fs*
-    flask seed
+    pipenv run flask seed
     cd ..
     cd ..
     PydashPrint "Done!"
@@ -50,10 +48,21 @@ RunDatabase()
     PydashPrint "Done!"
 }
 
+RunDatabaseForeground()
+{
+    PydashPrint "Starting database in foreground..."
+    cd pydash
+    pipenv run "./start_database.sh"
+    cd ..
+    PydashPrint "Done!"
+}
+
 RunFlask()
 {
     PydashPrint "Finally: Starting flask webservice. Close with Ctrl+C"
     cd pydash
+    export FLASK_APP=pydash.py
+    export FLASK_ENV=development
     pipenv run flask run --no-reload --host=0.0.0.0
     cd ..
 }
@@ -92,6 +101,10 @@ then
         fi
         if [ $i == "database" ];
         then
+            RunDatabaseForeground
+        fi
+        if [ $i == "databasebg" ];
+        then
             RunDatabase
         fi
         if [ $i == "server" ];
@@ -110,5 +123,5 @@ then
     done;
     PydashPrint "Done! Goodbye :-)"
 else
-    ./$0 seed build database server
+    ./$0 build databasebg server
 fi

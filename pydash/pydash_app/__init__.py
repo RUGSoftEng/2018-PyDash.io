@@ -4,12 +4,12 @@ The `pydash_app` package contains all business domain logic of the PyDash applic
 
 import periodic_tasks
 
+import pydash_app.user
 import pydash_app.user.services.seeding
-import pydash_app.user as user
 
 import pydash_app.dashboard.services.fetching
 import pydash_app.dashboard.services.seeding
-import pydash_app.dashboard as dashboard
+import pydash_app.dashboard
 
 
 def start_task_scheduler():
