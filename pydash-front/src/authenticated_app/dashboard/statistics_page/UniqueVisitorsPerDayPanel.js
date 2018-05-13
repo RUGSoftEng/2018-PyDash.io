@@ -12,7 +12,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 // Contents:
 import TimesliceTabs from './TimesliceTabs';
-import DashboardVisitsGraph from './DashboardVisitsGraph';
+import VisitsGraph from './VisitsGraph';
 
 // Utils:
 import {dict_to_xy_arr} from "../../../utils";
@@ -71,7 +71,7 @@ class UniqueVisitsFetcher extends Component {
             return (<em>Loading...</em>);
         }
         return (
-            <DashboardVisitsGraph data={this.state.visits[this.state.timeslice]} title="Unique visitors per" tooltip_title="No. unique visits: " height={400} timeslice={this.state.timeslice} />
+            <VisitsGraph data={this.state.visits[this.state.timeslice]} title="Unique visitors per" tooltip_title="No. unique visits: " height={400} timeslice={this.state.timeslice} />
         )
     }
 }

@@ -12,7 +12,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 // Contents:
 import TimesliceTabs from './TimesliceTabs';
-import DashboardVisitsGraph from './DashboardVisitsGraph';
+import VisitsGraph from './VisitsGraph';
 
 // Utils:
 import {dict_to_xy_arr} from "../../../utils";
@@ -72,7 +72,7 @@ class VisitsFetcher extends Component {
             return (<em>Loading...</em>);
         }
         return (
-            <DashboardVisitsGraph data={this.state.visits[this.state.timeslice]} title="Visits per" tooltip_title="No. visits: " height={400} timeslice={this.state.timeslice} />
+            <VisitsGraph data={this.state.visits[this.state.timeslice]} title="Visits per" tooltip_title="No. visits: " height={400} timeslice={this.state.timeslice} />
         )
     }
 }
@@ -82,30 +82,19 @@ VisitsFetcher.propTypes = {
 }
 
 
-class VisitsPerDayPanel extends Component {
-    constructor(props) {
-        super(props);
-        /* this.state = {
-         *     visits: [],
-         * }; */
-    }
-
-
-
-    render = () => {
-        return (
-            <ExpansionPanel>
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                    <h3>No. Visitors</h3>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                    <TimesliceTabs>
-                        <VisitsFetcher dashboard_id={this.props.dashboard_id}/>
-                    </TimesliceTabs>
-                </ExpansionPanelDetails>
-            </ExpansionPanel>
-        )
-    }
+function VisitsPerDayPanel(props) {
+    return (
+        <ExpansionPanel>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <h3>No. Visitors</h3>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+                <TimesliceTabs>
+                    <VisitsFetcher dashboard_id={props.dashboard_id}/>
+                </TimesliceTabs>
+            </ExpansionPanelDetails>
+        </ExpansionPanel>
+    )
 }
 
 VisitsPerDayPanel.propTypes = {
