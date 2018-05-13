@@ -9,8 +9,9 @@ async function requestStatisticData(dashboard_id, statistic, timeslice) {
         withCredentials: true,
         url: window.api_path + '/api/dashboards/' + dashboard_id + '?statistic=' + statistic + '&timeslice=' + timeslice,
     }).then((response) => {
-            const timeslice_visits = dict_to_xy_arr(response.data.aggregates['unique_visitors_per_day']);
-            return timeslice_visits;
+            const timeslice_statistics_data = dict_to_xy_arr(response.data.aggregates[statistic]);
+        console.log("timeslice_statistics_data", statistic, timeslice_statistics_data)
+            return timeslice_statistics_data || [];
     }).catch((error) => {
         console.log('error while fetching dashboard statistics data', error);
     });

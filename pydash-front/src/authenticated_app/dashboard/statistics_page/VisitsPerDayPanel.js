@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import StatisticFetcher from "./StatisticFetcher"
@@ -14,19 +14,17 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TimesliceTabs from './TimesliceTabs';
 import VisitsGraph from './VisitsGraph';
 
-// Utils:
-import {requestStatisticData} from "./statistics_utils"
-
 
 class VisitsFetcher extends StatisticFetcher {
     statistic_name = "visits_per_day";
 
     render = () => {
+        console.log("statistic data:", this.state.statistic_data);
         if(this.state.loading){
             return (<em>Loading...</em>);
         }
         return (
-            <VisitsGraph data={this.state.visits[this.state.timeslice]} title="Visits per" tooltip_title="No. visits: " height={400} timeslice={this.state.timeslice} />
+            <VisitsGraph data={this.state.statistic_data[this.state.timeslice] || []} title="Visits per" tooltip_title="No. visits: " height={400} timeslice={this.state.timeslice} />
         )
     }
 }

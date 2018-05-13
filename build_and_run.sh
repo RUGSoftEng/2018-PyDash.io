@@ -59,12 +59,23 @@ RunDatabaseForeground()
 
 RunFlask()
 {
-    PydashPrint "Finally: Starting flask webservice. Close with Ctrl+C"
+    PydashPrint "Starting flask webservice. Close with Ctrl+C"
     cd pydash
     export FLASK_APP=pydash.py
     export FLASK_ENV=development
     pipenv run flask run --no-reload --host=0.0.0.0
     cd ..
+}
+
+RunFlaskConsole()
+{
+    PydashPrint "Starting flask webservice as shell."
+    cd pydash
+    export FLASK_APP=pydash.py
+    export FLASK_ENV=development
+    pipenv run flask shell
+    cd ..
+
 }
 
 RunFrontend()
@@ -119,6 +130,10 @@ then
         if [ $i == "test" ];
         then
             RunTests
+        fi
+        if [ $i == "shell" ];
+        then
+            RunFlaskConsole
         fi
     done;
     PydashPrint "Done! Goodbye :-)"

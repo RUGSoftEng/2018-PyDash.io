@@ -1,18 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-
-// Visual:
-import ExpansionPanel, {
-    ExpansionPanelSummary,
-    ExpansionPanelDetails,
-} from 'material-ui/ExpansionPanel';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
-// Contents:
-import TimesliceTabs from './TimesliceTabs';
-import VisitsGraph from './VisitsGraph';
-
 // Utils:
 import {requestStatisticData} from "./statistics_utils"
 
