@@ -3,8 +3,10 @@ from collections import OrderedDict
 from collections import defaultdict
 import abc
 import datetime
+from tdigest import tdigest
 
 import persistent
+
 
 
 def date_dict(dict):
@@ -136,3 +138,103 @@ class UniqueVisitorsPerDay(Statistic):
 
     def rendered_value(self):
         return date_dict({k: len(v) for k, v in self.value.items()})
+
+
+class FastestExecutionTime(Statistic):
+    dependencies = []
+
+    def empty(self):
+        return -1
+
+    def field_name(self):
+        return 'fastest_measured_execution_time'
+
+    def append(self, endpoint_call, dependencies):
+        if self.value < 0 or self.value > endpoint_call.execution_time:
+            self.value = endpoint_call.execution_time
+
+    def rendered_value(self):
+        return self.value
+
+
+class TDigestStatistic(Statistic):
+    dependencies = []
+
+    def __init__(self):
+        self._digest = tdigest.TDigest()
+        super().__init__()
+
+    def empty(self):
+        return 0
+
+    @abc.abstractmethod
+    def field_name(self):
+        pass
+
+    @abc.abstractmethod
+    def append(self, endpoint_call, dependencies):
+        self._digest.update(endpoint_call.execution_time)
+
+    def rendered_value(self):
+        return self.value
+
+
+class FastestQuartileExecutionTime(TDigestStatistic):
+    dependencies = []
+
+    def field_name(self):
+        return 'fastest_quartile_execution_time'
+
+    def append(self, endpoint_call, dependencies):
+        super().append(endpoint_call, dependencies)
+        self.value = self._digest.percentile(25)
+
+
+class SlowestQuartileExecutionTime(TDigestStatistic):
+    dependencies = []
+
+    def field_name(self):
+        return 'slowest_quartile_execution_time'
+
+    def append(self, endpoint_call, dependencies):
+        super().append(endpoint_call, dependencies)
+        self.value = self._digest.percentile(75)
+
+
+class NinetiethPercentileExecutionTime(TDigestStatistic):
+    dependencies = []
+
+    def field_name(self):
+        return 'ninetieth_percentile_execution_time'
+
+    def append(self, endpoint_call, dependencies):
+        super().append(endpoint_call, dependencies)
+        self.value = self._digest.percentile(90)
+
+
+class NinetyNinthPercentileExecutionTime(TDigestStatistic):
+    dependencies = []
+
+    def field_name(self):
+        return 'ninety-ninth_percentile_execution_time'
+
+    def append(self, endpoint_call, dependencies):
+        super().append(endpoint_call, dependencies)
+        self.value = self._digest.percentile(90)
+
+
+class SlowestExecutionTime(Statistic):
+    dependencies = []
+
+    def empty(self):
+        return -1
+
+    def field_name(self):
+        return 'slowest_measured_execution_time'
+
+    def append(self, endpoint_call, dependencies):
+        if self.value < endpoint_call.execution_time:
+            self.value = endpoint_call.execution_time
+
+    def rendered_value(self):
+        return self.value

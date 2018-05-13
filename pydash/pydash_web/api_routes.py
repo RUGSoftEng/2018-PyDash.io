@@ -21,18 +21,6 @@ def logout():
     return controller.logout()
 
 
-@api.route("/api/dashboards", methods=["GET"])
-@login_required
-def get_dashboards():
-    return controller.dashboards()
-
-
-@api.route("/api/dashboards/<dashboard_id>", methods=["GET"])
-@login_required
-def get_dashboard(dashboard_id):
-    return controller.dashboard(dashboard_id)
-
-
 @api.route("/api/user/register", methods=["POST"])
 def register_user():
     return controller.register_user()
@@ -68,3 +56,21 @@ def change_settings():
 @login_required
 def change_password():
     return controller.change_password()
+
+
+@api.route("/api/dashboards", methods=["GET"])
+@login_required
+def get_dashboards():
+    return controller.dashboards()
+
+
+@api.route("/api/dashboards/<dashboard_id>", methods=["GET"])
+@login_required
+def get_dashboard(dashboard_id):
+    return controller.dashboard(dashboard_id)
+
+
+@api.route("/api/dashboards/<dashboard_id>/endpoint_boxplots", methods=["GET"])
+@login_required
+def get_endpoint_boxplots(dashboard_id):
+    return controller.endpoint_boxplots(dashboard_id)

@@ -20,6 +20,7 @@ pqdict = "*"
 pytest-cov = "*"
 flask-mail = "*"
 ordered-set = "*"
+tdigest = "*"
 
 
 [dev-packages]

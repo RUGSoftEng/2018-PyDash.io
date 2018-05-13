@@ -19,6 +19,12 @@ class Aggregator(persistent.Persistent):
         statistics.VisitsPerIP,
         statistics.UniqueVisitorsAllTime,
         statistics.UniqueVisitorsPerDay,
+        statistics.FastestExecutionTime,
+        statistics.FastestQuartileExecutionTime,
+        statistics.SlowestQuartileExecutionTime,
+        statistics.NinetiethPercentileExecutionTime,
+        statistics.NinetyNinthPercentileExecutionTime,
+        statistics.SlowestExecutionTime,
     ])
     statistics_classes_with_dependencies = OrderedSet()
     for statistic in contained_statistics_classes:
