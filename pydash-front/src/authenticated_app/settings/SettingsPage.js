@@ -89,14 +89,6 @@ handleType = key => event => {
   });
 };
 
-
-signInHandler = (username) => {
-    this.setState({
-        username: username,
-        isAuthenticated: true
-    });
-};
-
 handleDelete = (e) => {
   let password = this.state.password
   
