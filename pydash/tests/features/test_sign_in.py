@@ -6,13 +6,13 @@ from pytest_bdd import (
 )
 from pytest_bdd import parsers
 
-from pydash_app.user.user import User
+from pydash_app.user.entity import User
 import pydash_app.user as user
 
 
-@scenario("sign_in.feature", "Signing in successfully as existent user")
+@scenario("sign_in.feature", "Signing in successfully as existent verified user")
 def test_sign_in_successful():
-    "Signing in successfully as existent user"
+    "Signing in successfully as existent verified user"
 
 
 @scenario("sign_in.feature", "Signing in without entering anything")
@@ -36,8 +36,15 @@ def test_sign_in_wrongpassword():
 
 
 @given(parsers.cfparse("PyDash contains the user \"{username}\" with password \"{password}\""))
-def _(username, password):
+def _unverified_user(username, password):
     existing_user = User(username, password)
+    user.add_to_repository(existing_user)
+
+
+@given(parsers.cfparse("PyDash contains the verified user \"{username}\" with password \"{password}\""))
+def _verified_user(username, password):
+    existing_user = User(username, password)
+    existing_user.verified = True
     user.add_to_repository(existing_user)
 
 
