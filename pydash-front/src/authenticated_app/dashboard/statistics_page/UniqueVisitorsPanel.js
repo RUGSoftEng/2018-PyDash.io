@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 
@@ -15,8 +15,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TimesliceTabs from './TimesliceTabs';
 import VisitsGraph from './VisitsGraph';
 
-// Utils:
-import {dict_to_xy_arr} from "../../../utils";
 
 class UniqueVisitsFetcher extends StatisticFetcher {
     statistic_name = "unique_visitors_per_day";
