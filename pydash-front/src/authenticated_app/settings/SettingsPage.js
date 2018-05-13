@@ -1,9 +1,18 @@
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
 import Typography from 'material-ui/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { Button } from 'material-ui';
+import CreateIcon from 'material-ui-icons/Create'
+import DeleteIcon from 'material-ui-icons/Delete'
+import Dialog, { DialogActions, DialogContent, DialogContentText, DialogTitle,} from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
+import { FormGroup, FormControlLabel } from 'material-ui/Form';
+import Switch from 'material-ui/Switch';
+import { Redirect } from 'react-router'
+import axios from 'axios';
 
 
 const styles = theme => ({
@@ -11,19 +20,110 @@ const styles = theme => ({
     width: '100%',
   },
   heading: {
-    fontSize: theme.typography.pxToRem(15),
-    flexBasis: '33.33%',
+    fontSize: theme.typography.pxToRem(23),
+
     flexShrink: 0,
   },
   secondaryHeading: {
     fontSize: theme.typography.pxToRem(15),
     color: theme.palette.text.secondary,
   },
+  Textpanel: {
+    textAlign: 'left',
+    marginLeft:'200px',
+    fontSize: theme.typography.pxToRem(17),
+  },
+
+  EditDeleteIcons: {
+    float:"right",
+  },
+  button: {
+    margin: theme.spacing.unit,
+  },
+  leftIcon: {
+    marginRight: theme.spacing.unit,
+  },
+  rightIcon: {
+    marginLeft: theme.spacing.unit,
+  },
+  iconSmall: {
+    fontSize: 20,
+  },
+
 });
 
-class SettingsPage extends React.Component {
+function DiffText(props) {
+  if(props.pass===props.passC){
+    return null;
+  } else {
+    return (
+      <DialogContentText>
+      Passwords do not match!
+     </DialogContentText>
+    );
+  }
+}
+
+class SettingsPage extends Component {
+
+
   state = {
-    username: this.props.username
+    username: '',
+    password: '',
+    passConfirm: '',
+    open: false,
+    openDeletion: false,
+    checked: true,
+  };
+componentWillMount = () => {
+    this.setState({
+        isAuthenticated: this.props.isAuthenticated,
+        username: this.props.username
+    })
+    console.log("App state: ", this.state, this.props);
+}
+
+handleType = key => event => {
+  this.setState({
+      [key]: event.target.value
+  });
+};
+
+handleDelete = (e) => {
+  let password = this.state.password
+  
+  e.preventDefault()
+  // Make a request for deletion
+  axios.post(window.api_path + '/api/user/delete', {
+    password},
+    {withCredentials: true}
+  ).then((response) => {
+    if(this.state.password===this.state.passConfirm){     
+      this.props.signOutHandler();
+      <Redirect to="/" />
+    } else {
+      console.log('Passwords do not match!');
+    }
+  }).catch((error) => {
+      console.log('Deletion failed');
+      this.handleCloseDeletion;
+  });
+}
+
+  handleClickOpen = () => {
+    this.setState({ open: true });
+  };
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
+  handleClickOpenDeletion = () => {
+    this.setState({ openDeletion: true });
+  };
+
+  handleCloseDeletion = () => {
+    this.setState({ openDeletion: false });
   };
 
   handleChange = panel => (event) => {
@@ -37,42 +137,158 @@ class SettingsPage extends React.Component {
     const { expanded } = this.state;
 
     return (
+
       <div className={classes.root}>
-        <ExpansionPanel expanded={expanded === 'panel4'} onChange={this.handleChange('panel4')}>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography className={classes.heading}>Personal data</Typography>
+        <ExpansionPanel>
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography className={classes.heading}>Personal data
+            </Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-              {this.state.username}
-          </ExpansionPanelDetails>
+          
+        <Button variant="raised" color="primary" className={classes.EditDeleteIcons} onClick={this.handleClickOpen} >
+              Edit information?
+              <CreateIcon className={classes.rightIcon}/>
+          </Button>
+          <Typography className={classes.Textpanel}>
+          Username: {this.props.username}
+          <br/>
+
+          Email: 
+          <br/>
+
+          Registration date:
+          </Typography>
+          <div>
+        <Dialog
+          open={this.state.open}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Updating personal data</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              This form allows you to update your information
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="New username"
+              type="username"
+            />
+            <Button variant="raised">OK</Button><br/>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="New password"
+              type="password"           
+            />
+            
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Confirm new password"
+              type="password"           
+            />
+            <Button variant="raised">OK</Button><br/>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="New email"
+              type="email"     
+            />
+             <Button variant="raised">OK</Button><br/>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={this.handleClose} color="primary">
+              Submit changes
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+
         </ExpansionPanel>
-        <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
+        <ExpansionPanel>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography className={classes.heading}>General settings</Typography>
-            <Typography className={classes.secondaryHeading}>Test</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Typography>
-              { this.props.username }
-            </Typography>
+          <FormControlLabel
+          control={
+            <Switch
+              checked={this.state.checked}
+              onChange={this.handleChange('checked')}
+              value="checked"
+              color="primary"
+            />
+          }
+          label="Sound ON/OFF"
+        />
           </ExpansionPanelDetails>
         </ExpansionPanel>
-        <ExpansionPanel expanded={expanded === 'panel3'} onChange={this.handleChange('panel3')}>
+        <ExpansionPanel >
+        <Button className={classes.button} variant="raised" color="secondary" onClick={this.handleClickOpenDeletion}>
+        Delete account?
+        <DeleteIcon className={classes.rightIcon} />
+      </Button>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography className={classes.heading}>Advanced settings</Typography>
-            <Typography className={classes.secondaryHeading}>
-              Test
-            </Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Typography>
-              Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer sit amet egestas
-              eros, vitae egestas augue. Duis vel est augue.
-            </Typography>
           </ExpansionPanelDetails>
         </ExpansionPanel>
+        <div>
+        <Dialog
+          open={this.state.openDeletion}
+          onClose={this.handleCloseDeletion}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Account deletion</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              WARNING: This will permanently delete your account!
+            </DialogContentText>
+            <TextField
+              autoFocus
+              value={this.state.password}
+              onChange={this.handleType('password')}
+              margin="dense"
+              id="name"
+              label="Password"
+              type="password"
+            />
+            <TextField
+              autoFocus
+              value={this.state.passConfirm}
+              onChange={this.handleType('passConfirm')}
+              margin="dense"
+              id="name"
+              label="Confirm password"
+              type="password"           
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleCloseDeletion} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={this.handleDelete} color="primary">
+              Delete
+            </Button>
+          </DialogActions>
+          <DiffText pass={this.state.password} passC={this.state.passConfirm}/>
+          
+        </Dialog>
+      </div>
+        
 
       </div>
+      
     );
   }
 }

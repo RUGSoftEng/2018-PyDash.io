@@ -98,7 +98,7 @@ class UserInterface extends React.Component {
                 
                 </div>
                 <Divider />
-                <MainMenuItems />
+                <MainMenuItems signOutHandler={this.props.signOutHandler}/>
                 <Divider />
                 <OtherMenuItems signOutHandler={this.props.signOutHandler} />
             </div>
