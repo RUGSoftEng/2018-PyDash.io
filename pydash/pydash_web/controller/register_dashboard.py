@@ -66,5 +66,7 @@ def _is_valid_dashboard(url):
         return False, {'message': f'{url} does not seem to host a valid dashboard'}
     except KeyError:
         return False, {'message': 'Unsupported version of Flask-MonitoringDashboard'}
+    except requests.exceptions.RequestException:
+        return False, {'message': f'{url} seems to be an invalid url'}
 
     return True, None
