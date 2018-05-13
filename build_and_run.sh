@@ -32,7 +32,7 @@ SeedBackend()
     mkdir -p logs
     export FLASK_APP=pydash.py
     export FLASK_ENV=development
-    rm -f ./zeo_filestorage.fs*
+    #rm -f ./zeo_filestorage.fs*
     pipenv run flask seed
     cd ..
     cd ..

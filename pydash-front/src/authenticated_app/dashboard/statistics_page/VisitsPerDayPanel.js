@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import axios from 'axios';
+import StatisticFetcher from "./StatisticFetcher"
 
 // Visual:
 import ExpansionPanel, {
@@ -15,57 +15,11 @@ import TimesliceTabs from './TimesliceTabs';
 import VisitsGraph from './VisitsGraph';
 
 // Utils:
-import {dict_to_xy_arr} from "../../../utils";
+import {requestStatisticData} from "./statistics_utils"
 
 
-
-class VisitsFetcher extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            loading: true,
-            timeslice: "hour",
-            visits: [],
-        }
-    }
-    componentDidUpdate = (prevProps, _prevState, snapshot) => {
-        if(this.props.timeslice === this.state.timeslice){
-            return
-        }
-        if(this.state.visits[this.props.timeslice] === undefined){
-            this.requestVisitsData(this.props);
-            this.setState(prevState =>
-                ({...prevState, loading: true, timeslice: this.props.timeslice}));
-        } else {
-            this.setState(prevState => ({...prevState, timeslice: this.props.timeslice}))
-        }
-    }
-
-    componentDidMount = () => {
-        this.requestVisitsData(this.props);
-    }
-
-    requestVisitsData = (props) => {
-        // TODO Once back-end has proper API endpoints, use that one instead of the overall one.
-        axios({
-            method: 'get',
-            withCredentials: true,
-            url: window.api_path + '/api/dashboards/' + props.dashboard_id + '?timeslice=' + props.timeslice,
-        }).then((response) => {
-            this.setState(prevState => {
-                const timeslice_visits = dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day)
-                let new_visits = prevState.visits
-                new_visits[prevState.timeslice] = timeslice_visits;
-                return {
-                    ...prevState,
-                    loading: false,
-                    visits: new_visits,
-                }
-            });
-        }).catch((error) => {
-            console.log('error while fetching dashboard information', error);
-        });
-    }
+class VisitsFetcher extends StatisticFetcher {
+    statistic_name = "visits_per_day";
 
     render = () => {
         if(this.state.loading){
