@@ -24,3 +24,8 @@ a.DashboardTileLink:hover {
     min-height: 200px;
     min-width: 200px;
 }*/
+
+
+.NewDashboardButton {
+    float: right;
+}

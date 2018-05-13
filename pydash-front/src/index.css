@@ -24,3 +24,7 @@ body {
 .breadcrumbs .breadcrumbs__separator {
     margin: 0 0.5em;
 }
+
+.errorMessage {
+    color: #f44336;
+}
