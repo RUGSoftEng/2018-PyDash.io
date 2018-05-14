@@ -32,8 +32,9 @@ True
 >>> authenticate("Dumbledore", "secrets")
 >>> # ^Returns nothing
 """
-from .user import User
-import pydash_app.user.repository
+from .entity import User
+from . import repository
+from . import verification
 from multi_indexed_collection import DuplicateIndexError
 
 
@@ -128,6 +129,14 @@ def find_by_name(name):
     return repository.find_by_name(name)
 
 
+def find_by_verification_code(verification_code):
+    """
+    Returns a single User-entity with the given `verification_code`, or None if it could not be found.
+    :param verification_code: The verification code of the user we hope to find.
+    """
+    return repository.find_by_verification_code(verification_code)
+
+
 def authenticate(name, password):
     """
     Attempts to authenticate the user with name `name`
@@ -140,3 +149,16 @@ def authenticate(name, password):
     if maybe_user is None or not maybe_user.check_password(password):
         return None
     return maybe_user
+
+
+def verify(verification_code):
+    """
+        Attempts to verify a user with the provided verification code.
+        This is intended as a one-time action per user after registration.
+        :param verification_code: The verification code that should match the User-entity's verification code.
+            Can be a string or UUID object.
+        :return: Returns True if both verification codes are equal, returns False otherwise.
+            Raises an InvalidVerificationCodeError when the provided verification code is invalid.
+            Raises an VerificationCodeExpiredError when the provided verification code has expired.
+        """
+    verification.verify(verification_code)

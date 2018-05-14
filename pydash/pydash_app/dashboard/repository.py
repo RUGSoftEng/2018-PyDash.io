@@ -8,7 +8,7 @@ It handles a subset of the following tasks
 (specifically, it only actually contains functions for the tasks the application needs in its current state!):
 
 - Creating new entities of the specified type and finding them based on id.
->>> import pydash_app.dashboard.dashboard as dashboard
+>>> import pydash_app.dashboard.entity as dashboard
 >>> import uuid
 >>> dashboard = dashboard.Dashboard("", "", str(uuid.uuid4()))
 >>> add(dashboard)
@@ -22,7 +22,7 @@ True
 
 - Adding multiple instances of the same dashboard will return a KeyError or a DuplicateIndexError
 TODO fix it so that it actually errors??
->>> import pydash_app.dashboard.dashboard as dashboard
+>>> import pydash_app.dashboard.entity as dashboard
 >>> import uuid
 >>> dashboard = dashboard.Dashboard("", "", str(uuid.uuid4()))
 >>> add(dashboard)
@@ -30,7 +30,7 @@ TODO fix it so that it actually errors??
 
 
 - Persisting updated versions of existing entities.
->>> import pydash_app.dashboard.dashboard as dashboard
+>>> import pydash_app.dashboard.entity as dashboard
 >>> import uuid
 >>> dashboard = dashboard.Dashboard("", "", str(uuid.uuid4()))
 >>> add(dashboard)
@@ -48,7 +48,7 @@ Traceback (most recent call last):
 KeyError
 
 - Deleting non-existent dashboards will result in a KeyError.
->>> import pydash_app.dashboard.dashboard as dashboard
+>>> import pydash_app.dashboard.entity as dashboard
 >>> import uuid
 >>> dashboard = dashboard.Dashboard("", "", str(uuid.uuid4()))
 >>> add(dashboard)
