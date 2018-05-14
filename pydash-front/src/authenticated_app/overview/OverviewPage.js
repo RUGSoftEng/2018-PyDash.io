@@ -26,18 +26,26 @@ class OverviewPage extends Component {
 
     render() {
         return (
-
             <div>
-                <h2>Dashboards</h2>
-                <Button onClick={this.handleClickOpen} classname="NewDashboardButton" variant="raised" color="primary">
+                <Button onClick={this.handleClickOpen} className="NewDashboardButton" variant="raised" color="primary">
                     Add dashboard
                     <Add />
                 </Button>
-                <AddDashboardDialog 
+                <h2>Dashboards</h2>
+                <AddDashboardDialog
                     open={this.state.open}
                     onClose={this.handleClose}
                 />
-                <DashboardList dashboards={this.props.dashboards} />
+
+                {((this.props.dashboards == null) ?
+                    <h4>
+                        <em>
+                            Loading...
+                        </em>
+                    </h4>
+                :
+                  <DashboardList dashboards={this.props.dashboards} />
+                )}
             </div>
         );
     }

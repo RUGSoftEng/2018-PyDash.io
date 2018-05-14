@@ -80,8 +80,8 @@ class Logout extends Component {
          <Redirect to="/" />
              ) : (
 
-            <div  button onClick={ this.handleClick}>
-            <ListItem button onClick={this.logout}>
+            <div onClick={this.handleClick}>
+            <ListItem button={true} onClick={this.logout}>
                 <ListItemIcon >
                     <ExitToApp />
                 </ListItemIcon>

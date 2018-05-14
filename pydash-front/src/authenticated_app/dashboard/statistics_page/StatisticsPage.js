@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 
 // Contents:
-import VisitsPerDayPanel from './VisitsPerDayPanel';
-import UniqueVisitorsPerDayPanel from './UniqueVisitorsPerDayPanel';
+import VisitsPanel from './VisitsPanel';
+import UniqueVisitorsPanel from './UniqueVisitorsPanel';
 import EndpointExecutionTimesPanel from './EndpointExecutionTimesPanel';
 import ExecutionTimesTable from './ExecutionTimesTable';
 
@@ -141,8 +141,8 @@ class StatisticsPage extends Component {
                     <h2>Dashboard: {this.state.dashboard.url}</h2>
                     <h3>{this.state.error}</h3>
                     <div>
-                        <VisitsPerDayPanel dashboard_id={this.props.dashboard.id} />
-                        <UniqueVisitorsPerDayPanel dashboard_id={this.props.dashboard.id} />
+                        <VisitsPanel dashboard_id={this.props.dashboard.id} />
+                        <UniqueVisitorsPanel dashboard_id={this.props.dashboard.id} />
                         <ExecutionTimesTable dashboard_id={this.props.dashboard.id} />
                         <EndpointExecutionTimesPanel dashboard_id={this.props.dashboard.id} />
                     </div>

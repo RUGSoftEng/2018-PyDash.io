@@ -23,7 +23,7 @@ class DashboardList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dashboards: [],
+            dashboards: null,
             error: "",
         };
     }
