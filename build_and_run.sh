@@ -85,6 +85,17 @@ RunTests()
     PydashPrint "Done!"
 }
 
+RunShell()
+{
+    PydashPrint "Starting Flask shell"
+    cd pydash
+    export FLASK_APP=pydash.py
+    export FLASK_ENV=development
+    pipenv run flask shell
+    cd ..
+    PydashPrint "Done!"
+}
+
 
 if [ $# -gt 0 ];
 then
@@ -119,6 +130,10 @@ then
         if [ $i == "test" ];
         then
             RunTests
+        fi
+        if [ $i == "shell" ];
+        then
+            RunShell
         fi
     done;
     PydashPrint "Done! Goodbye :-)"
