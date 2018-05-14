@@ -8,6 +8,7 @@ import VisitsPanel from './VisitsPanel';
 import UniqueVisitorsPanel from './UniqueVisitorsPanel';
 import EndpointExecutionTimesPanel from './EndpointExecutionTimesPanel';
 import ExecutionTimesTable from './ExecutionTimesTable';
+import EndpointsTable from '../../endpoint/EndpointsTable';
 
 // Helper:
 import {dict_to_xy_arr} from "../../../utils";
@@ -150,7 +151,9 @@ class StatisticsPage extends Component {
               </TabContainer>
               <TabContainer dir={theme.direction}>
                 <div>
-                <h2>Names of endpoints:</h2>
+
+                    <EndpointsTable data={this.state.dashboard.endpoints} />
+                {/*<h2>Names of endpoints:</h2>
                     <List>
                     {this.state.dashboard.endpoints.map((userData) => {
                         return (
@@ -159,7 +162,7 @@ class StatisticsPage extends Component {
                             </Link>
                         )
                     })}
-                    </List>
+                    </List>*/}
                     
                     
                  </div>
