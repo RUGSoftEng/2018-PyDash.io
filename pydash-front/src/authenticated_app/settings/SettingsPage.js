@@ -9,7 +9,7 @@ import CreateIcon from 'material-ui-icons/Create'
 import DeleteIcon from 'material-ui-icons/Delete'
 import Dialog, { DialogActions, DialogContent, DialogContentText, DialogTitle,} from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
-import { FormGroup, FormControlLabel } from 'material-ui/Form';
+import { FormControlLabel } from 'material-ui/Form';
 import Switch from 'material-ui/Switch';
 import { Redirect } from 'react-router'
 import axios from 'axios';
@@ -57,6 +57,8 @@ class SettingsPage extends Component {
   state = {
     username: '',
     password:'',
+    new_password:'',
+    current_password:'',
     passConfirm:'',
     open: false,
     openDeletion: false,
@@ -125,12 +127,16 @@ handleDelete = (e) => {
 
 handlePasswords = (e) => {
   e.preventDefault()
-
+  let new_password = this.state.new_password,
+      current_password = this.state.current_password
   // Make a request for deletion
-  axios(window.api_path + '/api/change_password', {},{
+  axios(window.api_path + '/api/user/change_password', {
+      new_password,
+      current_password,
+  },{
       method: 'post',
       withCredentials: true
-  }).then((response) => {
+    }).then((response) => {
       console.log(response);
       <Redirect to="/" />
   }).catch((error) => {
@@ -170,7 +176,6 @@ handlePasswords = (e) => {
 
   render() {
     const { classes } = this.props;
-    const { expanded } = this.state;
 
     return (
 
@@ -216,17 +221,17 @@ handlePasswords = (e) => {
             <Button type="submit" variant="raised" onClick={this.handleSettings} >OK</Button><br/>
             <TextField
               id="Password"
-              label="Password"
-              onChange={this.handleChange('password')}
+              label="New password"
+              onChange={this.handleType('new_password')}
               margin="dense"
               type="password"
               error={this.state.error}         
             />
             
             <TextField
-              id="Confirmpassword"
-              label="Confirm password"
-              onChange={this.handleChange('passConfirm')}
+              id="currentPassword"
+              label="Old password"
+              onChange={this.handleType('current_password')}
               margin="normal"
               type="password"
               error={this.state.error}        
