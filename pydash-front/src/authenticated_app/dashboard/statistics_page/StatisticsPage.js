@@ -12,6 +12,34 @@ import ExecutionTimesTable from './ExecutionTimesTable';
 // Helper:
 import {dict_to_xy_arr} from "../../../utils";
 
+import List, { ListItem } from 'material-ui/List';
+import { withStyles } from 'material-ui/styles';
+import SwipeableViews from 'react-swipeable-views';
+import AppBar from 'material-ui/AppBar';
+import Tabs, { Tab } from 'material-ui/Tabs';
+import Typography from 'material-ui/Typography';
+import { Link } from 'react-router-dom'
+function TabContainer({ children, dir }) {
+  return (
+    <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
+      {children}
+    </Typography>
+  );
+}
+
+TabContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+  dir: PropTypes.string.isRequired,
+};
+
+const styles = theme => ({
+  root: {
+    backgroundColor: theme.palette.background.paper,
+    width: 500,
+  },
+});
+
+
 class StatisticsPage extends Component {
     constructor(props) {
         super(props);
@@ -28,6 +56,7 @@ class StatisticsPage extends Component {
 
     componentDidMount() {
         console.log(this.divRef);
+        
         this.setState(prevState => {
             /* const width =  this.divRef.current.clientWidth;*/
             const width = window.screen.width;
@@ -45,6 +74,7 @@ class StatisticsPage extends Component {
                         ...prevState,
 
                         dashboard: response.data,
+                        
 
                         total_visits: response.data.aggregates.total_visits,
                         visits_per_day: dict_to_xy_arr(response.data.aggregates.visits_per_day),
@@ -71,15 +101,45 @@ class StatisticsPage extends Component {
         });
     }
 
+    handleChange = (event, value) => {
+        this.setState({ value });
+      };
+    
+      handleChangeIndex = index => {
+        this.setState({ value: index });
+      };
     render() {
+        const { theme } = this.props;
         if(this.props.dashboard === null || this.state.dashboard === null) {
             return (<h2>Loading...</h2>);
         }
+        
         return (
+            
 
-                <div ref={this.divRef} >
-                    <h2>Dashboard: {this.state.dashboard.name ? this.state.dashboard.name : this.state.dashboard.url}</h2>
-                    <h3 className="errorMessage">{this.state.error}</h3>
+            <div className={"Name"}>
+            <AppBar position="static" color="default">
+              <Tabs
+                value={this.state.value}
+                onChange={this.handleChange}
+                indicatorColor="primary"
+                textColor="primary"
+                centered
+              >
+                <Tab label="Statistics" />
+                <Tab label="Endpoints" />
+                <Tab label="Settings" />
+              </Tabs>
+            </AppBar>
+            <SwipeableViews
+              axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+              index={this.state.value}
+              onChangeIndex={this.handleChangeIndex}
+            >
+              <TabContainer dir={theme.direction}>
+                 <div ref={this.divRef} >
+                    <h2>Dashboard: {this.state.dashboard.url}</h2>
+                    <h3>{this.state.error}</h3>
                     <div>
                         <VisitsPanel dashboard_id={this.props.dashboard.id} />
                         <UniqueVisitorsPanel dashboard_id={this.props.dashboard.id} />
@@ -87,11 +147,34 @@ class StatisticsPage extends Component {
                         <EndpointExecutionTimesPanel dashboard_id={this.props.dashboard.id} />
                     </div>
                 </div>
+              </TabContainer>
+              <TabContainer dir={theme.direction}>
+                <div>
+                <h2>Names of endpoints:</h2>
+                    <List>
+                    {this.state.dashboard.endpoints.map((userData) => {
+                        return (
+                            <Link  to={'/overview/dashboards/'+this.props.dashboard.id+'/endpoints/'+userData.name}>
+                                <ListItem>{userData.name}</ListItem>
+                            </Link>
+                        )
+                    })}
+                    </List>
+                    
+                    
+                 </div>
+              </TabContainer>
+              <TabContainer dir={theme.direction}>
+                  <p>Nothing here yet!</p>
+              </TabContainer>
+            </SwipeableViews>
+          </div>
         );
     }
 }
 
 StatisticsPage.propTypes = {
+    theme: PropTypes.object.isRequired,
     dashboard: PropTypes.shape({
         id: PropTypes.string.isRequired,
         url: PropTypes.string.isRequired,
@@ -99,4 +182,4 @@ StatisticsPage.propTypes = {
 };
 
 
-export default StatisticsPage;
+export default withStyles(styles, { withTheme: true })(StatisticsPage);
