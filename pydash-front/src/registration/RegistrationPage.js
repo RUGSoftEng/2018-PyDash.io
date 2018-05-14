@@ -113,8 +113,8 @@ class RegistrationPage extends Component {
     tryLogin = (e) => {
         e.preventDefault()
         let username = this.state.username,
-            password = this.state.password
-            
+            password = this.state.password,
+            email = this.state.email
         if (!(username.trim()) || !(password.trim())) {
             this.setState(prevState => ({
                 ...prevState,
@@ -134,7 +134,9 @@ class RegistrationPage extends Component {
 
         axios.post(window.api_path + '/api/user/register', {
             username,
-            password},
+            password,
+            email
+          },
             {withCredentials: true}
         ).then((response) => {
             console.log(response);
