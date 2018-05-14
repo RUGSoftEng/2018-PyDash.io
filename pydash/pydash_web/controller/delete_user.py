@@ -2,9 +2,8 @@
 Manages deletion of a user.
 """
 
-from flask import jsonify
+from flask import jsonify, request
 from flask_login import current_user
-from flask_restplus.reqparse import RequestParser
 
 import pydash_app.user as user
 import pydash_app.dashboard as dashboard
@@ -18,14 +17,14 @@ def delete_user():
     Deletes the currently logged in user and all dashboards they own.
     """
 
-    args = _parse_arguments()
+    password = request.args.get('password')
 
-    if 'password' not in args:
+    if password is None:
         logger.error('Delete_user failed - no password provided')
         result = {'message': 'Deletion failed - no password provided'}
         return jsonify(result), 400
 
-    if not current_user.check_password(args['password']):
+    if not current_user.check_password(password):
         logger.error('Delete_user failed - wrong password provided')
         result = {'message': 'Deletion failed - password incorrect'}
         return jsonify(result), 401
@@ -48,9 +47,3 @@ def delete_user():
 
     result = {'message': f'User {current_user} successfully deleted themselves.'}
     return jsonify(result), 200
-
-
-def _parse_arguments():
-    parser = RequestParser()
-    parser.add_argument('password')
-    return parser.parse_args()
