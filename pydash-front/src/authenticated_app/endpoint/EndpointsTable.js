@@ -1,17 +1,7 @@
 import React, { Component} from 'react';
 
-import { TableHead, Table, TableBody, TableRow, TableCell, TableRowColumn } from "material-ui";
 import Button from 'material-ui/Button';
-import { withStyles } from 'material-ui/styles';
 import { Link } from 'react-router-dom';
-
-const WideTableCell = withStyles(theme => ({
-    head: {
-        colSpan: '3',
-    }
-}))(TableCell);
-
-
 
 class EndpointsTable extends Component {
     render = () => {

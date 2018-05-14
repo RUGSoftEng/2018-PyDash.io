@@ -13,13 +13,11 @@ import EndpointsTable from '../../endpoint/EndpointsTable';
 // Helper:
 import {dict_to_xy_arr} from "../../../utils";
 
-import List, { ListItem } from 'material-ui/List';
 import { withStyles } from 'material-ui/styles';
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from 'material-ui/AppBar';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
-import { Link } from 'react-router-dom'
 function TabContainer({ children, dir }) {
   return (
     <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
