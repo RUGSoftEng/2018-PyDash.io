@@ -10,6 +10,7 @@ import Logo from '../images/logo.png'
 import Snackbar from 'material-ui/Snackbar';
 import IconButton from 'material-ui/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import HelpIcon from '@material-ui/icons/Help';
 import Tooltip from 'material-ui/Tooltip';
 
 
@@ -186,7 +187,6 @@ class RegistrationPage extends Component {
                     />
                     <br />
 
-                    <Tooltip id='password-tooltip' title='Test'>
                     <TextField
                         id="Password"
                         label="Password"
@@ -197,6 +197,12 @@ class RegistrationPage extends Component {
                         error={this.state.warnings['password'] || this.state.error}
 
                     />
+            <Tooltip id='password-tooltip' title={<p>The password should be longer than 12 chars (with no further restrictions),
+                                                  <br/>
+                or longer than 8 with at least one capital and one non-alphanumeric character
+            </p>}
+            >
+                    <HelpIcon />
                     </Tooltip>
                     <br />
                     <TextField
