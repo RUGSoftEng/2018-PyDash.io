@@ -10,6 +10,8 @@ import Logo from '../images/logo.png'
 import Snackbar from 'material-ui/Snackbar';
 import IconButton from 'material-ui/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import HelpIcon from '@material-ui/icons/Help';
+import Tooltip from 'material-ui/Tooltip';
 
 
 
@@ -27,11 +29,12 @@ class RegistrationPage extends Component {
         username: '',
         email: '',
         password: '',
-        Confirmpassword: '',
+        password_confirmation: '',
         message: '',
         error: false,
         loading: false,
-        success: false
+          success: false,
+          warnings: {},
       }
 
   }
@@ -43,6 +46,56 @@ class RegistrationPage extends Component {
             [key]: event.target.value
         });
     };
+
+
+    handleEmail = event => {
+        const target_val = event.target.value;
+        let email_warning;
+        if(!/@.+?\..+/.test(target_val)){
+            email_warning = "Please enter a valid e-mail address";
+        }
+        this.setState((prevState) => {
+            let warnings = prevState.warnings
+            warnings['email'] = email_warning;
+            return {
+                email: target_val,
+                warnings: warnings,
+            }
+        })
+    }
+
+    handlePassword = event => {
+        const target_val = event.target.value;
+        let password_warning = null;
+        if(target_val.length < 8){
+            password_warning = "The password should be either > 8 chars, containing at least one capital and non-alphabetic char, or > 12 chars.";
+        }
+        this.setState((prevState) => {
+            let warnings = prevState.warnings
+            warnings['password'] = password_warning;
+            return {
+                password: target_val,
+                warnings: warnings,
+            }
+        })
+    }
+
+    handlePasswordConfirmation = event => {
+        const target_val = event.target.value;
+        let password_confirmation_warning;
+        if(target_val !== this.state.password){
+            password_confirmation_warning = "The passwords are not the same!";
+        }
+        this.setState((prevState) => {
+            let warnings = prevState.warnings
+            warnings['password_confirmation'] = password_confirmation_warning;
+            return {
+                password_confirmation: target_val,
+                warnings: warnings,
+            }
+        })
+    }
+
 
     handleClick = () => {
         this.setState({ open: true });
@@ -60,8 +113,8 @@ class RegistrationPage extends Component {
     tryLogin = (e) => {
         e.preventDefault()
         let username = this.state.username,
-            password = this.state.password
-            
+            password = this.state.password,
+            email = this.state.email
         if (!(username.trim()) || !(password.trim())) {
             this.setState(prevState => ({
                 ...prevState,
@@ -81,7 +134,9 @@ class RegistrationPage extends Component {
 
         axios.post(window.api_path + '/api/user/register', {
             username,
-            password},
+            password,
+            email
+          },
             {withCredentials: true}
         ).then((response) => {
             console.log(response);
@@ -121,16 +176,16 @@ class RegistrationPage extends Component {
                         value={this.state.username}
                         onChange={this.handleChange('username')}
                         margin="normal"
-                        error={this.state.error}
+                        error={this.state.warnings['username'] || this.state.error}
                     />
                     <br />
                     <TextField
                         id="Email"
                         label="Email"
                         value={this.state.email}
-                        onChange={this.handleChange('email')}
+                        onChange={this.handleEmail}
                         margin="normal"
-                        error={this.state.error}
+                        error={this.state.warnings['email'] || this.state.error}
                     />
                     <br />
 
@@ -138,24 +193,36 @@ class RegistrationPage extends Component {
                         id="Password"
                         label="Password"
                         value={this.state.password}
-                        onChange={this.handleChange('password')}
+                        onChange={this.handlePassword}
                         margin="normal"
                         type="password"
-                        error={this.state.error}
+                        error={this.state.warnings['password'] || this.state.error}
 
                     />
+            <Tooltip id='password-tooltip' title={<p>The password should be longer than 12 chars (with no further restrictions),
+                                                  <br/>
+                or longer than 8 with at least one capital and one non-alphanumeric character
+            </p>}
+            >
+                    <HelpIcon />
+                    </Tooltip>
                     <br />
                     <TextField
-                        id="Confirmpassword"
+                        id="password_confirmation"
                         label="Confirm password"
-                        value={this.state.Confirmpassword}
-                        onChange={this.handleChange('Confirmpassword')}
+                        value={this.state.password_confirmation}
+                        onChange={this.handlePasswordConfirmation}
                         margin="normal"
                         type="password"
-                        error={this.state.error}
+                        error={this.state.warnings['password_confirmation'] || this.state.error}
                         helperText={this.state.helperText}
                     />
                     <br />
+                    <ul class="registration-errors">
+                        {Object.keys(this.state.warnings).map(key => (
+                            (this.state.warnings[key] ? <li>{this.state.warnings[key]}</li> : '')
+                        ))}
+                    </ul>
                     <p>
                     <Button type="submit" variant="raised" color="primary" disabled={this.state.loading}  onClick={ this.handleClick}>
                         {this.state.loading ? "Creating account" : "Register"}
