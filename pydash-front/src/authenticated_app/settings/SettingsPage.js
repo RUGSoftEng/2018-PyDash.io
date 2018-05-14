@@ -249,7 +249,7 @@ handlePasswords = (e) => {
           control={
             <Switch
               checked={this.state.checked}
-              onClick={this.handleSettings}
+              //onClick={this.handleSettings}
               onChange={this.handleChangeSwitch('checked')}
               value="checked"
               color="primary"
