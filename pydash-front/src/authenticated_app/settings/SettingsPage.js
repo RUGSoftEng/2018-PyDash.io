@@ -98,8 +98,6 @@ handleDelete = (e) => {
 
   handleSettings = (e) => {
     e.preventDefault()
-    let username = this.state.username
-
     axios.post(window.api_path + '/api/user/change_settings', {
       method: 'post',
       withCredentials: true
@@ -107,7 +105,7 @@ handleDelete = (e) => {
       console.log(response);
       <Redirect to="/" />
   }).catch((error) => {
-      console.log('changing password failed');
+      console.log('changing settings failed');
       this.handleClose;
   });
 }
@@ -117,7 +115,7 @@ handlePasswords = (e) => {
 
   // Make a request for deletion
   axios(window.api_path + '/api/change_password', {
-      method: 'POST',
+      method: 'post',
       withCredentials: true
   }).then((response) => {
       console.log(response);
@@ -293,7 +291,7 @@ handlePasswords = (e) => {
             <Button onClick={this.handleCloseDeletion} color="primary">
               Cancel
             </Button>
-            <Button type="submit" onClick={this.handleDelete} onSubmit color="primary">
+            <Button type="submit" onClick={this.handleDelete} color="primary">
               Delete
             </Button>
           </DialogActions>
