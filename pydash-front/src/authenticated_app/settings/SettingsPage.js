@@ -57,7 +57,7 @@ class SettingsPage extends Component {
   state = {
     username: '',
     password:'',
-    Confirmpassword:'',
+    passConfirm:'',
     open: false,
     openDeletion: false,
     checked: true,
@@ -79,20 +79,30 @@ signInHandler = (username) => {
 };
 
 
-handleDelete = (e) => {
-  e.preventDefault()
+handleType = key => event => {
+  this.setState({
+      [key]: event.target.value
+  });
+};
 
+handleDelete = (e) => {
+  let password = this.state.password
+  
+  e.preventDefault()
   // Make a request for deletion
-  axios(window.api_path + '/api/delete',{}, {
-      method: 'post',
-      withCredentials: true
-  }).then((response) => {
-      console.log(response);
-      <Redirect to="/" />
+  axios.post(window.api_path + '/api/user/delete', {
+    password},
+    {withCredentials: true}
+  ).then((response) => {
+    if(this.state.password===this.state.passConfirm){     
+      this.props.signOutHandler();
+      return <Redirect to="/" />;
+    } else {
+      console.log('Passwords do not match!');
+    }
   }).catch((error) => {
       console.log('Deletion failed');
-      this.handleCloseDeletion;
-
+      this.handleCloseDeletion();
   });
 }
 
@@ -216,7 +226,7 @@ handlePasswords = (e) => {
             <TextField
               id="Confirmpassword"
               label="Confirm password"
-              onChange={this.handleChange('Confirmpassword')}
+              onChange={this.handleChange('passConfirm')}
               margin="normal"
               type="password"
               error={this.state.error}        
@@ -286,13 +296,15 @@ handlePasswords = (e) => {
               margin="dense"
               id="name"
               label="Password"
+              onChange={this.handleType('password')}
               type="password"
             />
             <TextField
               autoFocus
               margin="dense"
               id="name"
-              label="Confirm password"
+              label="passConfirm"
+              onChange={this.handleType('passConfirm')}
               type="password"           
             />
           </DialogContent>
