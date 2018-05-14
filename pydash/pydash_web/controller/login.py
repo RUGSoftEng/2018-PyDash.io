@@ -19,7 +19,7 @@ def login():
             "message": "User already logged in",
             "user": _user_details(current_user)
         }
-        logger.warning(f"Login failed - {current_user} already logged in")
+        logger.info(f"{current_user} already logged in")
         return jsonify(result)
 
     args = _parse_arguments()
