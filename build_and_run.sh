@@ -35,7 +35,6 @@ SeedBackend()
     #rm -f ./zeo_filestorage.fs*
     pipenv run flask seed
     cd ..
-    cd ..
     PydashPrint "Done!"
 }
 
