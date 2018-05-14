@@ -6,7 +6,6 @@ import { Switch } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 import BreadcrumbRoute from '../../common/BreadcrumbRoute';
 import Endpoint from '../endpoint/Endpoint';
-import { Link } from 'react-router-dom'
 // Contents:
 import StatisticsPage from './statistics_page/StatisticsPage';
 

@@ -12,7 +12,7 @@ import ExecutionTimesTable from './ExecutionTimesTable';
 // Helper:
 import {dict_to_xy_arr} from "../../../utils";
 
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import List, { ListItem } from 'material-ui/List';
 import { withStyles } from 'material-ui/styles';
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from 'material-ui/AppBar';

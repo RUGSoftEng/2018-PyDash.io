@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
-
-
-class Endpoint extends React.Component {
+class Endpoint extends Component {
   
 
   render() {
