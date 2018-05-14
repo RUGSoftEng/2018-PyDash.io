@@ -68,104 +68,66 @@ class Aggregator(persistent.Persistent):
 
 def powerset_generator(i):
     for subset in chain.from_iterable(combinations(i, r) for r in range(len(i)+1)):
-        yield frozenset(subset)
+        yield list(subset)
 
 
-class AggregatorPartitionFun2():
+class AggregatorPartitionFun():
     def __init__(self, field_name, category, fun):
+        self.field_name = field_name
         self.fun = fun
         self.category = category
 
     def __call__(self, endpoint_call):
         self.fun(endpoint_call)
 
-    # def __hash__(self):
-    #     return 0
-
-    def __eq__(self, other):
-        if self.category == other.category:
-            return self.category != None
-
     def __repr__(self):
-        return f"<{self.__class__.__name__} fun={self.fun}: category={self.category} >"
+        return f"<{self.__class__.__name__} field_name={self.field_name} category={self.category} >"
+
+def partition_by_year_fun(endpoint_call):
+    return endpoint_call.time.strftime("%Y")
+PartitionByYear = AggregatorPartitionFun('year', 'time', partition_by_year_fun)
 
 def partition_by_week_fun(endpoint_call):
     return endpoint_call.time.strftime("%Y-W%W")
-PartitionByWeek2 = AggregatorPartitionFun2('week', 'time', partition_by_week_fun)
+PartitionByWeek = AggregatorPartitionFun('week', 'time', partition_by_week_fun)
 
 
 def partition_by_day_fun(endpoint_call):
     return endpoint_call.time.strftime("%Y-%M-%d")
-PartitionByDay2 = AggregatorPartitionFun2('day', 'time', partition_by_day_fun)
+PartitionByDay = AggregatorPartitionFun('day', 'time', partition_by_day_fun)
 
-# class AggregatorPartitionFun(abc.ABC):
+def partition_by_hour_fun(endpoint_call):
+    return endpoint_call.time.strftime("%Y-%m-%dT%H")
+PartitionByHour = AggregatorPartitionFun('hour', 'time', partition_by_hour_fun)
 
-#     @abc.abstractmethod
-#     def __call__(self, endpoint_call):
-#         pass
+def partition_by_ip_fun(endpoint_call):
+    def __call__(self, endpoint_call):
+        return endpoint_call.ip
+PartitionByIP = AggregatorPartitionFun('ip', 'ip', partition_by_ip_fun)
 
-#     @abc.abstractmethod
-#     def field_name(self):
-#         pass
-
-#     @classmethod
-#     def category(self):
-#         """
-#         AggregatorPartitionFuns with the same category
-#         will not be part of the same selector in the AggregatorGroup.
-#         This ensures we can e.g. have multiple different ways to partition in time,
-#         that are mutually exclusive.
-#         """
-#         return None
-
-#     @classmethod
-#     def __eq__(self, other):
-#         if self.category() == None or other.category() == None:
-#             return False
-#         return self.category() == other.category()
+def partition_by_group_by_fun(endpoint_call):
+    def __call__(self, endpoint_call):
+        return endpoint_call.group_by
+PartitionByGroupBy = AggregatorPartitionFun('group_by', 'group_by', partition_by_group_by_fun)
 
 
-#     @classmethod
-#     def __hash__(self):
-#         """
-#         AggregatorPartitionFuns with the same category
-#         will not be part of the same selector in the AggregatorGroup.
-#         This ensures we can e.g. have multiple different ways to partition in time,
-#         that are mutually exclusive.
-#         """
-#         return 0
+def remove_duplicate_categories(partition_funs):
+    categories = set()
+    print(partition_funs)
+    for partition_fun in partition_funs:
+        if(partition_fun.category in categories):
+            next
+        else:
+            categories.add(partition_fun.category)
+            yield partition_fun
 
-# class PartitionByWeek(AggregatorPartitionFun):
-#     def __call__(self, endpoint_call):
-#         return endpoint_call.time.strftime("%Y-W%W")
 
-#     @classmethod
-#     def category(self):
-#         return 'time'
+def calc_endpoint_call_identifier(partition, endpoint_call):
+    return tuple(partition_fun(endpoint_call) for partition_fun in partition)
 
-# class PartitionByDay(AggregatorPartitionFun):
-#     def __call__(self, endpoint_call):
-#         return endpoint_call.time.strftime("%Y-%m-%d")
-
-#     @classmethod
-#     def category(self):
-#         return 'time'
-
-# class PartitionByHour(AggregatorPartitionFun):
-#     def __call__(self, endpoint_call):
-#         return endpoint_call.time.strftime("%Y-%m-%dT%H")
-
-#     @classmethod
-#     def category(self):
-#         return 'time'
-
-# class PartitionByIP(AggregatorPartitionFun):
-#     def __call__(self, endpoint_call):
-#         return endpoint_call.ip
-
-# class PartitionByGroupBy(AggregatorPartitionFun):
-#     def __call__(self, endpoint_call):
-#         return endpoint_call.group_by
+def partition_field_names(partition):
+    for partition_fun in partition:
+        yield partition_fun.field_name
 
 class AggregatorGroup(persistent.Persistent):
     """
@@ -177,23 +139,36 @@ class AggregatorGroup(persistent.Persistent):
     - etc.
     """
     partition_funs = [
-        # PartitionByGroupBy,
-        # PartitionByIP,
-        PartitionByWeek2,
-        PartitionByDay2,
-        # PartitionByHour,
+        PartitionByWeek,
+        PartitionByDay,
+        PartitionByHour,
+        PartitionByGroupBy,
+        PartitionByIP,
     ]
 
     partition_powerset = powerset_generator(partition_funs)
+    partitions_set = frozenset(frozenset(remove_duplicate_categories(elem)) for elem in partition_powerset)
+    for partition in partitions_set:
+        print(partition)
 
     def __init__(self):
         self.partitions = dict()
-        for elem in self.partition_powerset:
+        self.partition_names = dict()
+        for elem in self.partitions_set:
             self.partitions[elem] = defaultdict(Aggregator)
+            self.partition_names[frozenset(partition_field_names(elem))] = elem
 
     def add_endpoint_call(self, endpoint_call):
         for (partition, vals) in self.partitions.items():
             endpoint_call_identifier = calc_endpoint_call_identifier(partition, endpoint_call)
             vals[endpoint_call_identifier].add_endpoint_call(endpoint_call)
-    def calc_endpoint_identifier(self, partition, endpoint_call):
-        return tuple(partition_fun(endpoint_call) for partition_fun in partition)
+
+    def fetch(self, **partition_field_names):
+        partition = self.partition_names[frozenset(partition_field_names.keys())]
+        return self.partitions[partition][partition_field_names.values]
+
+
+# import pydash_app
+# ec = pydash_app.dashboard.repository.all()[1]._endpoint_calls[0]
+# a = pydash_app.dashboard.aggregator.AggregatorGroup()
+# a.add_endpoint_call(ec)
