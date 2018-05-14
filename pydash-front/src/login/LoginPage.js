@@ -15,6 +15,7 @@ import Logo from '../images/logo.png';
 import Snackbar from 'material-ui/Snackbar';
 import IconButton from 'material-ui/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import Warning from '@material-ui/icons/Warning';
 
 // Sound:
 import {Howl} from 'howler';
@@ -40,15 +41,27 @@ class LoginPage extends Component {
         message: '',
         success: false,
         loading: false,
-        open: false
+        open: false,
+        IsPasswordTooShort: true,
     };
 
     handleChange = key => event => {
-        this.setState({
-            [key]: event.target.value
+        let target_val = event.target.value;
+        this.setState((prevState) => {
+            let isPasswordUnsafe = prevState.isPasswordUnsafe;
+            if(key === 'password') {
+                console.log("TETS")
+                // Only bug person once password is longer than eight characters
+                // because that is a requirement in any case.
+                isPasswordUnsafe = (target_val.length < 12 && target_val.length > 8);
+            }
+            return {
+                [key]: target_val,
+                isPasswordUnsafe: isPasswordUnsafe,
+            }
         });
     };
-    
+
 
     handleClick = () => {
         this.setState({ open: true });
@@ -58,7 +71,7 @@ class LoginPage extends Component {
         if (reason === 'clickaway') {
             return;
         }
-    
+
         this.setState({ open: false });
       };
 
@@ -150,6 +163,14 @@ class LoginPage extends Component {
                         error={this.state.error}
                         helperText={this.state.helperText}
                     />
+            {(this.state.isPasswordUnsafe ?
+              <p className="password-safety-warning" >
+                  <Warning /><br/>
+                  Warning! Your password is shorter than 12 characters, which is considered unsafe.<br/>
+                  Please improve your password strength on the settings page after logging in.
+              </p>
+            : ""
+            )}
                     <p>
                     <Button  type="submit" variant="raised" color="primary" disabled={this.state.loading} onClick={ this.handleClick}>
                         {this.state.loading ? "Logging in..." : "Login"} 
@@ -182,6 +203,7 @@ class LoginPage extends Component {
                             </IconButton>,
                             ]}
                 />
+
                 </form>
             </div>
         );

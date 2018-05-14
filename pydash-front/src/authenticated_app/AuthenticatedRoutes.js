@@ -34,7 +34,7 @@ class AuthenticatedRoutes extends Component {
 }
 
 AuthenticatedRoutes.propTypes = {
-    dashboards: PropTypes.object.isRequired,
+    dashboards: PropTypes.object,
 };
 
 
