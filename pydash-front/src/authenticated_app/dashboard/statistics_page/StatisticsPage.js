@@ -152,7 +152,7 @@ class StatisticsPage extends Component {
               <TabContainer dir={theme.direction}>
                 <div>
 
-                    <EndpointsTable data={this.state.dashboard.endpoints} />
+                    <EndpointsTable data={this.state.dashboard.endpoints} dashboard_id={this.props.dashboard.id} />
                 {/*<h2>Names of endpoints:</h2>
                     <List>
                     {this.state.dashboard.endpoints.map((userData) => {

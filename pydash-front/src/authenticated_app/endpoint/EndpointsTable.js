@@ -1,7 +1,9 @@
 import React, { Component} from 'react';
 
 import { TableHead, Table, TableBody, TableRow, TableCell, TableRowColumn } from "material-ui";
+import Button from 'material-ui/Button';
 import { withStyles } from 'material-ui/styles';
+import { Link } from 'react-router-dom';
 
 const WideTableCell = withStyles(theme => ({
     head: {
@@ -18,20 +20,32 @@ class EndpointsTable extends Component {
             <div className="EndpointsTable">
                 <table width="100%">
                     <tr>
-                        <th rowspan="2">Endpoint</th>
-                        <th colspan="3">Number of hits</th>
-                        <th colspan="3">Median execution time</th>
-                        <th rowspan="2">Last accessed</th>
-                        <th rowspan="2">Details</th>
+                        <th></th>
+                        <th colspan="2">Number of hits</th>
+                        <th colspan="2">Execution times</th>
+                        <th></th>
+                        <th></th>
                     </tr>
                     <tr>
-                        <th>Today</th>
-                        <th>Last 7 days</th>
-                        <th>Overall</th>
-                        <th>Today</th>
-                        <th>Last 7 days</th>
-                        <th>Overall</th>
+                        <th>Endpoint</th>
+                        <th>Unique</th>
+                        <th>Total</th>
+                        <th>Average</th>
+                        <th>Total</th>
+                        <th>Details</th>
                     </tr>
+                    {this.props.data.map((endpoint) => {
+                        return (
+                            <tr>
+                                <td>{endpoint.name}</td>
+                                <td>{endpoint.aggregates.unique_visitors}</td>
+                                <td>{endpoint.aggregates.total_visits}</td>
+                                <td>{endpoint.aggregates.average_execution_time}</td>
+                                <td>{endpoint.aggregates.total_execution_time}</td>
+                                <td><Button variant="raised" color="primary" component={Link} to={'overview/dashboards/'+this.props.dashboard_id+'/endpoints/'+endpoint.name}>Details</Button></td>
+                            </tr>
+                        )
+                    })}
                 </table>
                 {/*<Table>
                     <TableHead>
