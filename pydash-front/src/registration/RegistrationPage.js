@@ -10,6 +10,7 @@ import Logo from '../images/logo.png'
 import Snackbar from 'material-ui/Snackbar';
 import IconButton from 'material-ui/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import Tooltip from 'material-ui/Tooltip';
 
 
 
@@ -81,7 +82,7 @@ class RegistrationPage extends Component {
     handlePasswordConfirmation = event => {
         const target_val = event.target.value;
         let password_confirmation_warning;
-        if(target_val != this.state.password){
+        if(target_val !== this.state.password){
             password_confirmation_warning = "The passwords are not the same!";
         }
         this.setState((prevState) => {
@@ -185,6 +186,7 @@ class RegistrationPage extends Component {
                     />
                     <br />
 
+                    <Tooltip id='password-tooltip' title='Test'>
                     <TextField
                         id="Password"
                         label="Password"
@@ -195,6 +197,7 @@ class RegistrationPage extends Component {
                         error={this.state.warnings['password'] || this.state.error}
 
                     />
+                    </Tooltip>
                     <br />
                     <TextField
                         id="password_confirmation"
