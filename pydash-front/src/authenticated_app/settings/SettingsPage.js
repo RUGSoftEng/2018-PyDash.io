@@ -83,7 +83,7 @@ handleDelete = (e) => {
   e.preventDefault()
 
   // Make a request for deletion
-  axios(window.api_path + '/api/delete', {
+  axios(window.api_path + '/api/delete',{}, {
       method: 'post',
       withCredentials: true
   }).then((response) => {
@@ -99,6 +99,9 @@ handleDelete = (e) => {
   handleSettings = (e) => {
     e.preventDefault()
     axios.post(window.api_path + '/api/user/change_settings', {
+      username: this.state.username,
+
+    },{
       method: 'post',
       withCredentials: true
   }).then((response) => {
@@ -114,7 +117,7 @@ handlePasswords = (e) => {
   e.preventDefault()
 
   // Make a request for deletion
-  axios(window.api_path + '/api/change_password', {
+  axios(window.api_path + '/api/change_password', {},{
       method: 'post',
       withCredentials: true
   }).then((response) => {
@@ -142,9 +145,15 @@ handlePasswords = (e) => {
     this.setState({ openDeletion: false });
   };
 
-  handleChange = name => event => {
+  handleChangeSwitch = name => event => {
     this.setState({ [name]: event.target.checked });
   };
+
+  handleChange = key => event => {
+    this.setState({
+        [key]: event.target.value
+    });
+};
   handleSoundSettings = ()=>{
     this.setState({SoundSettings: false});
   };
@@ -240,8 +249,8 @@ handlePasswords = (e) => {
           control={
             <Switch
               checked={this.state.checked}
-              onChange={this.handleChange('checked')}
               onClick={this.handleSettings}
+              onChange={this.handleChangeSwitch('checked')}
               value="checked"
               color="primary"
             />
