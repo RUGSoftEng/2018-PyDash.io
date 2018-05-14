@@ -21,7 +21,7 @@ from .entity import User
 
 if not hasattr(database_root(), 'users'):
     transaction.begin()
-    database_root().users = MultiIndexedPersistentCollection({'id', 'name'})
+    database_root().users = MultiIndexedPersistentCollection({'id', 'name', '_verification_code'})
     transaction.commit()
 
 
@@ -45,6 +45,16 @@ def find_by_name(name):
     name -- Name of the user we hope to find.
     """
     return database_root().users.get('name', name, default=None)
+
+
+def find_by_verification_code(verification_code):
+    """
+    Returns a single User-entity with the given `verification_code`, or None if it could not be found.
+    The latter case might indicate that the user does not exist, or that the verification code has expired.
+    :param verification_code: The verification code of the user we hope to find.
+    Should be a pydash_app.user.verification_code.VerificationCode object.
+    """
+    return database_root().users.get('_verification_code', verification_code, default=None)
 
 
 def all():
@@ -172,5 +182,5 @@ def clear_all():
     []
     """
     transaction.begin()
-    database_root().users = MultiIndexedPersistentCollection({'id', 'name'})
+    database_root().users = MultiIndexedPersistentCollection({'id', 'name', '_verification_code'})
     transaction.commit()

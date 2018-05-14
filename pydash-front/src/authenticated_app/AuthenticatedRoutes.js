@@ -20,6 +20,9 @@ class AuthenticatedRoutes extends Component {
                     <BreadcrumbRoute exact path={match.url + '/settings'} component={() => (<SettingsPage username={this.props.username} />)} title='Settings' />
                     <BreadcrumbRoute path={match.url + '/dashboards/'} isLink={false} title='Dashboards' render={ ({ match }) => (
                         <Route path={match.url + '/:id'} render={ ({match}) => {
+                                if(this.props.dashboards === null){
+                                    return (<em>Loading...</em>)
+                                }
                                 const dashboard_info = this.props.dashboards[match.params.id];
                                 return <DashboardRoutes match={match} dashboard={dashboard_info}/>
                         }} />
