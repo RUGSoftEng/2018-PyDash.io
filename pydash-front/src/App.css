@@ -23,6 +23,13 @@ html {
   font-size: large;
 }
 
+.registration-errors {
+    color: red;
+    font-size: 11px;
+    max-width: 450px;
+      margin: 0 auto;
+}
+
 
 .password-safety-warning {
     color: orange;
