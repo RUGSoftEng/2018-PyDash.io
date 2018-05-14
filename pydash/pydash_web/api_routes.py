@@ -21,18 +21,6 @@ def logout():
     return controller.logout()
 
 
-@api.route("/api/dashboards", methods=["GET"])
-@login_required
-def get_dashboards():
-    return controller.dashboards()
-
-
-@api.route("/api/dashboards/<dashboard_id>", methods=["GET"])
-@login_required
-def get_dashboard(dashboard_id):
-    return controller.dashboard(dashboard_id)
-
-
 @api.route("/api/user/register", methods=["POST"])
 def register_user():
     return controller.register_user()
@@ -52,12 +40,6 @@ def delete_user():
     return controller.delete_user()
 
 
-@api.route("/api/dashboards/register", methods=["POST"])
-@login_required
-def register_dashboard():
-    return controller.register_dashboard()
-
-
 @api.route("/api/user/change_settings", methods=["POST"])
 @login_required
 def change_settings():
@@ -68,3 +50,27 @@ def change_settings():
 @login_required
 def change_password():
     return controller.change_password()
+
+
+@api.route("/api/dashboards", methods=["GET"])
+@login_required
+def get_dashboards():
+    return controller.dashboards()
+
+
+@api.route("/api/dashboards/<dashboard_id>", methods=["GET"])
+@login_required
+def get_dashboard(dashboard_id):
+    return controller.dashboard(dashboard_id)
+
+
+@api.route("/api/dashboards/register", methods=["POST"])
+@login_required
+def register_dashboard():
+    return controller.register_dashboard()
+
+
+@api.route("/api/dashboards/<dashboard_id>/delete", methods=["POST"])
+@login_required
+def delete_dashboard(dashboard_id):
+    return controller.delete_dashboard(dashboard_id)
