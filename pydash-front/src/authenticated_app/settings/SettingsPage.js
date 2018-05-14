@@ -118,10 +118,10 @@ handleDelete = (e) => {
       withCredentials: true
   }).then((response) => {
       console.log(response);
-      <Redirect to="/" />
+     return <Redirect to="/" />
   }).catch((error) => {
       console.log('changing settings failed');
-      this.handleClose;
+      this.handleClose();
   });
 }
 
@@ -138,10 +138,10 @@ handlePasswords = (e) => {
       withCredentials: true
     }).then((response) => {
       console.log(response);
-      <Redirect to="/" />
+      return <Redirect to="/" />
   }).catch((error) => {
       console.log('changing password failed');
-      this.handleClose;
+      this.handleClose();
   });
 }
 
