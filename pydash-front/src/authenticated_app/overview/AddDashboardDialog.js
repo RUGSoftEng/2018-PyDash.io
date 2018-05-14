@@ -113,6 +113,7 @@ class AddDashboardDialog extends Component {
                             id="url"
                             label="Dashboard URL"
                             type="url"
+                            value={this.state.url}
                             fullWidth
                             required
                             error={this.state.error}
@@ -122,6 +123,7 @@ class AddDashboardDialog extends Component {
                             id="name"
                             label="Dashboard name"
                             type="text"
+                            value={this.state.name}
                             fullWidth 
                             error={this.state.error}
                             onChange={this.handleChange('name')}
@@ -130,6 +132,7 @@ class AddDashboardDialog extends Component {
                             id="token"
                             label="Security token"
                             type="password"
+                            value={this.state.token}
                             fullWidth 
                             required
                             error={this.state.error}
