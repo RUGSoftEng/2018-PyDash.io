@@ -14,13 +14,14 @@ class Aggregator(persistent.Persistent):
 
     contained_statistics_classes = OrderedSet([
         statistics.TotalVisits,
-        statistics.ExecutionTime,
+        statistics.AverageExecutionTime,
         statistics.VisitsPerDay,
         statistics.VisitsPerIP,
         statistics.UniqueVisitorsAllTime,
         statistics.UniqueVisitorsPerDay,
         statistics.FastestExecutionTime,
         statistics.FastestQuartileExecutionTime,
+        statistics.MedianExecutionTime,
         statistics.SlowestQuartileExecutionTime,
         statistics.NinetiethPercentileExecutionTime,
         statistics.NinetyNinthPercentileExecutionTime,
@@ -28,9 +29,7 @@ class Aggregator(persistent.Persistent):
     ])
     statistics_classes_with_dependencies = OrderedSet()
     for statistic in contained_statistics_classes:
-        for dependency in statistic.dependencies:
-            statistics_classes_with_dependencies.add(dependency)
-        statistics_classes_with_dependencies.add(statistic)
+        statistic.add_to_collection(statistics_classes_with_dependencies)
 
     def __init__(self, endpoint_calls=[]):
         """
@@ -58,11 +57,10 @@ class Aggregator(persistent.Persistent):
 
     def as_dict(self):
         """
-        Return aggregated data in a dict
+        Return aggregated data in a dict. Only includes statistics that should be rendered.
         :return: A dict containing several aggregated data points
         """
-
         return {
             statistic.field_name(): statistic.rendered_value()
-            for statistic in self.statistics.values()
+            for statistic in self.statistics.values() if statistic.should_be_rendered
         }

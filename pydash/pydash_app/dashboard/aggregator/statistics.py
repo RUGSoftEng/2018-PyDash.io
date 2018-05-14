@@ -16,12 +16,22 @@ class Statistic(persistent.Persistent, abc.ABC):
     def __init__(self):
         self.value = self.empty()
 
+    @property
+    @abc.abstractmethod
+    def should_be_rendered(self):
+        """Note: implementing subclasses should add the @property decorator.
+        There was some strange behaviour where without adding the decorator,
+        subclasses implementing it as `return True` behaved normally, but those implementing it as `return False` still
+        were treated as if it returned True. Adding the @property decorator fixed it.
+        """
+        pass
+
     @abc.abstractmethod
     def empty(self):
         return None
 
     @abc.abstractmethod
-    def append(self, endpoint_call):
+    def append(self, endpoint_call, dependencies):
         pass
 
     @abc.abstractmethod
@@ -31,8 +41,18 @@ class Statistic(persistent.Persistent, abc.ABC):
     def rendered_value(self):
         return self.value
 
+    @classmethod
+    def add_to_collection(cls, collection):
+        """cls should only be a class instead of an instance."""
+        for dependency in cls.dependencies:
+            dependency.add_to_collection(collection)
+        collection.add(cls)
+
 
 class TotalVisits(Statistic):
+    def should_be_rendered(self):
+        return True
+
     def empty(self):
         return 0
 
@@ -44,6 +64,9 @@ class TotalVisits(Statistic):
 
 
 class TotalExecutionTime(Statistic):
+    def should_be_rendered(self):
+        return True
+
     def empty(self):
         return 0
 
@@ -54,8 +77,11 @@ class TotalExecutionTime(Statistic):
         self.value += endpoint_call.execution_time
 
 
-class ExecutionTime(Statistic):
+class AverageExecutionTime(Statistic):
     dependencies = [TotalVisits, TotalExecutionTime]
+
+    def should_be_rendered(self):
+        return True
 
     def empty(self):
         return 0
@@ -71,7 +97,8 @@ class ExecutionTime(Statistic):
 
 
 class VisitsPerDay(Statistic):
-    dependencies = []
+    def should_be_rendered(self):
+        return True
 
     def empty(self):
         return defaultdict(int)
@@ -88,7 +115,8 @@ class VisitsPerDay(Statistic):
 
 
 class VisitsPerIP(Statistic):
-    dependencies = []
+    def should_be_rendered(self):
+        return True
 
     def empty(self):
         return defaultdict(int)
@@ -104,7 +132,8 @@ class VisitsPerIP(Statistic):
 
 
 class UniqueVisitorsAllTime(Statistic):
-    dependencies = []
+    def should_be_rendered(self):
+        return True
 
     def empty(self):
         return set()
@@ -120,7 +149,8 @@ class UniqueVisitorsAllTime(Statistic):
 
 
 class UniqueVisitorsPerDay(Statistic):
-    dependencies = []
+    def should_be_rendered(self):
+        return True
 
     def empty(self):
         return defaultdict(set)
@@ -136,102 +166,97 @@ class UniqueVisitorsPerDay(Statistic):
         return date_dict({k: len(v) for k, v in self.value.items()})
 
 
-class FastestExecutionTime(Statistic):
-    dependencies = []
+class ExecutionTimeTDigest(Statistic):
+    """Acts as the general execution time tdigest, from which its dependants take their data from.
+     This class is supposed to be instantiated, but not rendered."""
+    def __init__(self):
+        super().__init__()
+        self.value = tdigest.TDigest()
 
-    def empty(self):
-        return -1
+    @property  # See Statistic.should_be_rendered
+    def should_be_rendered(self):
+        return False
 
-    def field_name(self):
-        return 'fastest_measured_execution_time'
+    def empty(self):  # Implemented in order to be able to instantiate this class.
+        return None
 
-    def append(self, endpoint_call, dependencies):
-        if self.value < 0 or self.value > endpoint_call.execution_time:
-            self.value = endpoint_call.execution_time
-
-    def rendered_value(self):
-        return self.value
-
-
-class SlowestExecutionTime(Statistic):
-    dependencies = []
-
-    def empty(self):
-        return -1
-
-    def field_name(self):
-        return 'slowest_measured_execution_time'
+    def field_name(self):  # Implemented in order to be able to instantiate this class.
+        return 'execution_time_tdigest'
 
     def append(self, endpoint_call, dependencies):
-        if self.value < endpoint_call.execution_time:
-            self.value = endpoint_call.execution_time
-
-    def rendered_value(self):
-        return self.value
+        self.value.update(endpoint_call.execution_time)
 
 
-class TDigestStatistic(Statistic):
-    dependencies = []
+class ExecutionTimePercentileAbstractBaseClass(Statistic):
+    """Abstract base class for execution time percentile statistics."""
+    dependencies = [ExecutionTimeTDigest]
+    _NoDataErrorValue = -1
 
     def __init__(self):
         super().__init__()
         self.value = self.empty()
-        self._digest = tdigest.TDigest()
+
+    def should_be_rendered(self):
+        return True
 
     def empty(self):
-        return -1
-
-    @abc.abstractmethod
-    def field_name(self):
-        pass
-
-    @abc.abstractmethod
-    def append(self, endpoint_call, dependencies):
-        self._digest.update(endpoint_call.execution_time)
+        return ExecutionTimePercentileAbstractBaseClass._NoDataErrorValue
 
     def rendered_value(self):
         return self.value
 
 
-class FastestQuartileExecutionTime(TDigestStatistic):
-    dependencies = []
+class FastestExecutionTime(ExecutionTimePercentileAbstractBaseClass):
+    def field_name(self):
+        return 'fastest_measured_execution_time'
 
+    def append(self, endpoint_call, dependencies):
+        self.value = dependencies[ExecutionTimeTDigest].value.percentile(0)
+
+
+class FastestQuartileExecutionTime(ExecutionTimePercentileAbstractBaseClass):
     def field_name(self):
         return 'fastest_quartile_execution_time'
 
     def append(self, endpoint_call, dependencies):
-        super().append(endpoint_call, dependencies)
-        self.value = self._digest.percentile(25)
+        self.value = dependencies[ExecutionTimeTDigest].value.percentile(25)
 
 
-class SlowestQuartileExecutionTime(TDigestStatistic):
-    dependencies = []
+class MedianExecutionTime(ExecutionTimePercentileAbstractBaseClass):
+    def field_name(self):
+        return 'median_execution_time'
 
+    def append(self, endpoint_call, dependencies):
+        self.value = dependencies[ExecutionTimeTDigest].value.percentile(50)
+
+
+class SlowestQuartileExecutionTime(ExecutionTimePercentileAbstractBaseClass):
     def field_name(self):
         return 'slowest_quartile_execution_time'
 
     def append(self, endpoint_call, dependencies):
-        super().append(endpoint_call, dependencies)
-        self.value = self._digest.percentile(75)
+        self.value = dependencies[ExecutionTimeTDigest].value.percentile(75)
 
 
-class NinetiethPercentileExecutionTime(TDigestStatistic):
-    dependencies = []
-
+class NinetiethPercentileExecutionTime(ExecutionTimePercentileAbstractBaseClass):
     def field_name(self):
         return 'ninetieth_percentile_execution_time'
 
     def append(self, endpoint_call, dependencies):
-        super().append(endpoint_call, dependencies)
-        self.value = self._digest.percentile(90)
+        self.value = dependencies[ExecutionTimeTDigest].value.percentile(90)
 
 
-class NinetyNinthPercentileExecutionTime(TDigestStatistic):
-    dependencies = []
-
+class NinetyNinthPercentileExecutionTime(ExecutionTimePercentileAbstractBaseClass):
     def field_name(self):
         return 'ninety-ninth_percentile_execution_time'
 
     def append(self, endpoint_call, dependencies):
-        super().append(endpoint_call, dependencies)
-        self.value = self._digest.percentile(99)
+        self.value = dependencies[ExecutionTimeTDigest].value.percentile(99)
+
+
+class SlowestExecutionTime(ExecutionTimePercentileAbstractBaseClass):
+    def field_name(self):
+        return 'slowest_measured_execution_time'
+
+    def append(self, endpoint_call, dependencies):
+        self.value = dependencies[ExecutionTimeTDigest].value.percentile(100)

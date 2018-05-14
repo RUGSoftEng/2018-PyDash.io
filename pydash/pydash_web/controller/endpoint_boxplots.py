@@ -8,6 +8,9 @@ logger = pydash_logger.Logger(__name__)
 
 
 def endpoint_boxplots(dashboard_id):
+    #TODO: check whether dashboard_id is valid.
+    #Todo: check whether user may view dashboard.
+
     dashboard = pydash_app.dashboard.find(dashboard_id)
     endpoint_boxplot_list = [_boxplot_data(endpoint) for endpoint in dashboard.endpoints.values()]
     logger.info(f'Endpoint boxplots from dashboard {dashboard} requested')
@@ -21,6 +24,7 @@ def _boxplot_data(endpoint):
             'average_execution_time':                   aggregated_data['average_execution_time'],
             'fastest_measured_execution_time':          aggregated_data['fastest_measured_execution_time'],
             'fastest_quartile_execution_time':          aggregated_data['fastest_quartile_execution_time'],
+            'median_execution_time':                    aggregated_data['median_execution_time'],
             'slowest_quartile_execution_time':          aggregated_data['slowest_quartile_execution_time'],
             'ninetieth_percentile_execution_time':      aggregated_data['ninetieth_percentile_execution_time'],
             'ninety-ninth_percentile_execution_time':   aggregated_data['ninety-ninth_percentile_execution_time'],
