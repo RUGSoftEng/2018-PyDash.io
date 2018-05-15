@@ -30,7 +30,13 @@ def change_password():
         result = {'message': 'Current password incorrect'}
         return jsonify(result), 401
 
-    current_user.set_password(new_password)
+    try:
+        current_user.set_password(new_password)
+    except ValueError:
+        logger.warning("Password change failed - new password invalid")
+        result = {'message': 'New password invalid'}
+        return jsonify(result), 400
+
     user_repository.update(current_user)
 
     result = {'message': 'Successfully changed password'}
