@@ -14,9 +14,6 @@ import pydash_logger
 
 logger = pydash_logger.Logger(__name__)
 
-_MINIMUM_PASSWORD_LENGTH1 = 8
-_MINIMUM_PASSWORD_LENGTH2 = 12
-
 
 def register_user():
     args = _parse_arguments()
@@ -32,10 +29,15 @@ def register_user():
         logger.warning('User registration failed - username, password or email address missing')
         return jsonify(message), 400
 
-    if not _check_password_requirements(password):
-        message = {'message': 'User registration failed - password does not conform to the requirements.'}
-        logger.warning('User registration failed - password does not conform to the requirements.')
-        return jsonify(message), 400
+    try:
+        if not pydash_app.user.check_password_requirements(password):
+            message = {'message': 'User registration failed - password does not conform to the requirements.'}
+            logger.warning('User registration failed - password does not conform to the requirements.')
+            return jsonify(message), 400
+    except ValueError:
+        logger.warning("Password change failed - new password invalid")
+        result = {'message': 'New password invalid'}
+        return jsonify(result), 400
 
     if pydash_app.user.find_by_name(username) is not None:
         message = {'message': f'User with username {username} already exists.'}
@@ -97,17 +99,3 @@ def _send_verification_email(verification_code, expiration_date, recipient_email
                       )
 
     mail.send(message)
-
-
-def _check_password_requirements(password):
-    rules1 = [lambda xs: any(x.isupper() for x in xs),
-              lambda xs: any(not x.isalpha() for x in xs),
-              lambda xs: len(xs) >= _MINIMUM_PASSWORD_LENGTH1
-              ]
-    rules2 = [lambda xs:len(xs) >= _MINIMUM_PASSWORD_LENGTH2]
-    alternatives = [rules1, rules2]
-
-    def func(rules):
-        return all(rule(password) for rule in rules)
-
-    return any(func(alternative) for alternative in alternatives)

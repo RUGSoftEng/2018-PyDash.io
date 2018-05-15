@@ -1,9 +1,11 @@
-import uuid
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
+from .verification_code import VerificationCode
+from . import check_password_requirements
+
+import uuid
 import flask_login
 import persistent
-from .verification_code import VerificationCode
 
 
 class User(persistent.Persistent, flask_login.UserMixin):
@@ -79,10 +81,15 @@ class User(persistent.Persistent, flask_login.UserMixin):
         self._verification_code = self._smart_verification_code.verification_code
 
     def set_password(self, password):
+
+        if not check_password_requirements(password):
+            raise ValueError("Supplied password does not meet requirements")
+
         self.password_hash = generate_password_hash(password)
 
     # Required because `multi_indexed_collection` puts users in a set, that needs to order its keys for fast lookup.
     # Because the IDs are unchanging integer values, use that.
+
     def __lt__(self, other):
         """
         Users are ordered. This is a requirement because the persistence layer will store them in a dictionary with ordered keys.

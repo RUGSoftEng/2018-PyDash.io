@@ -11,6 +11,8 @@ logger = pydash_logger.Logger(__name__)
 
 def endpoint_boxplots(dashboard_id):
     # Check whether dashboard_id is valid.
+
+    # TODO split the exceptions into key and value errors (see delete_dashboard.py)
     try:
         dashboard = pydash_app.dashboard.find(dashboard_id)
     except Exception:
