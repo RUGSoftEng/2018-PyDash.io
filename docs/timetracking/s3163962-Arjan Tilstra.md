@@ -43,3 +43,13 @@
 | *2018-04-29* | 20:30-20:45 | Administrative work |
 | *2018-04-30* | 10:00-10:30 | Debugging protected pages issue |
 | *2018-04-30* | 15:00-17:00 | Weekly TA meeting + regular meeting |
+| *2018-05-02* | 13:00-15:00 | Frontend meeting |
+| *2018-05-05* | 16:00-16:30 | Adding dashboard names to overview and dashboard pages |
+| *2018-05-05* | 16:30-17:30 | Adding dashboard creation form |
+| *2018-05-05* | 17:40-17:45 | Making dashboard name optional |
+| *2018-05-07* | 15:00-17:00 | Weekly TA meeting + regular meeting |
+| *2018-05-08* | 13:30-15:00 | Frontend meeting |
+| *2018-05-12* | 15:15-16:15 | Debugging menu width + height problems |
+| *2018-05-13* | 20:00-21:45 | Hooking up dashboard creation form to API |
+| *2018-05-14* | 15:00-17:30 | Weekly TA meeting + regular meeting + Frontend meeting |
+| *2018-05-14* | 19:00-22:30 | Filling endpoint page |
