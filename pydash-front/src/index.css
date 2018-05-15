@@ -33,6 +33,9 @@ body {
     position: fixed;
 }
 
-.placeholder {
-    width: 240px;
+@media screen and (max-width: 960px){
+    .placeholder {
+        width: 240px;
+        background-color: red;
+    }
 }
