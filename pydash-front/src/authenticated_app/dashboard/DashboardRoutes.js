@@ -17,33 +17,46 @@ const MatchedStatisticsPage = (props) => {
     return () => (<StatisticsPage dashboard={props.dashboard} />);
 }
 
+
+
 class DashboardRoutes extends Component {
     render = () => {
         return (
-            <Switch>
-             <BreadcrumbRoute path={this.props.match.url + '/endpoints/'} isLink={false} title='Endpoints' render={ ({match}) => (
-                        <Route path={match.url + '/:id'} render={ ({match}) => {
-                                if(this.props.dashboard!=null){
-                                    for(var i = 0;i<this.props.dashboard.endpoints.length;i++){
-                                        if(match.params.id===this.props.dashboard.endpoints[i].name){
-                                            const endpoint_info = this.props.dashboard.endpoints[i];
-                                            console.log(endpoint_info);
-                                            return <Endpoint endpointData={endpoint_info}/>
+            <BreadcrumbRoute
+                path={this.props.match.url}
+                title={(this.props.dashboard ? (this.props.dashboard.name ? this.props.dashboard.name : this.props.dashboard.url) : '')}
+                render = { ({match}) => {
+                        console.log("INSIDE MATCH", match);
+                    return (<Switch>
+                        <Route exact path={match.url + '/'} component={MatchedStatisticsPage({dashboard: this.props.dashboard})}/>
+                        <BreadcrumbRoute path={match.url + '/endpoints/'} isLink={false} title='Endpoints' render={ ({match}) => (
+                            <Route path={match.url + '/:id'} render={ ({match}) => {
+                                    console.log("INSIDE EMATCH", match);
+                                    if(this.props.dashboard!=null){
+                                        for(var i = 0;i<this.props.dashboard.endpoints.length;i++){
+                                            if(match.params.id===this.props.dashboard.endpoints[i].name){
+                                                const endpoint_info = this.props.dashboard.endpoints[i];
+                                                console.log(endpoint_info);
+                                                return (
+                                                    <BreadcrumbRoute
+                                                        path={match.url}
+                                                        title={endpoint_info.name}
+                                                             render = {(_) => (
+                                                                 <Endpoint endpointData={endpoint_info}/>
+                                                             )}
+                                                        />
+                                                )
+                                            }
                                         }
                                     }
-                                }
-                                console.log('Endpoint not found');
-                                return <Endpoint/>
-                        }} />
-                    )}/>
-            <BreadcrumbRoute
-                path={this.props.match.url + '/'}
-                title={(this.props.dashboard ? (this.props.dashboard.name ? this.props.dashboard.name : this.props.dashboard.url) : '')}
-                component={MatchedStatisticsPage({dashboard: this.props.dashboard})}
-            />
-            </Switch>
+                                    console.log('Endpoint not found');
+                                    return <Endpoint/>
+                            }} />
+                        )}/>
+                    </Switch>
+                    )}}/>
         );
-}
+    }
 }
 
 DashboardRoutes.propTypes = {

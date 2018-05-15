@@ -50,6 +50,7 @@ class StatisticsPage extends Component {
             average_execution_times: [],
             error: "",
             width: 0,
+            current_tab: 0,
         };
     }
 
@@ -100,13 +101,17 @@ class StatisticsPage extends Component {
         });
     }
 
-    handleChange = (event, value) => {
-        this.setState({ value });
-      };
+    /* handleChange = (event, value) => {
+     *     this.setState({ value });
+     *   }; */
+    changeTab = (event, value) => {
+        this.setState({current_tab: value})
+    }
     
-      handleChangeIndex = index => {
+    handleChangeIndex = index => {
         this.setState({ value: index });
-      };
+    };
+
     render() {
         const { theme } = this.props;
         if(this.props.dashboard === null || this.state.dashboard === null) {
@@ -117,10 +122,9 @@ class StatisticsPage extends Component {
             
 
             <div className={"Name"}>
-            <AppBar position="static" color="default">
               <Tabs
-                value={this.state.value}
-                onChange={this.handleChange}
+                value={this.state.current_tab}
+                onChange={this.changeTab}
                 indicatorColor="primary"
                 textColor="primary"
                 centered
@@ -129,10 +133,9 @@ class StatisticsPage extends Component {
                 <Tab label="Endpoints" />
                 <Tab label="Settings" />
               </Tabs>
-            </AppBar>
             <SwipeableViews
               axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-              index={this.state.value}
+              index={this.state.current_tab}
               onChangeIndex={this.handleChangeIndex}
             >
               <TabContainer dir={theme.direction}>

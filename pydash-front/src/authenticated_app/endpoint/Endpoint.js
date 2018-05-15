@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import BreadcrumbRoute from '../../common/BreadcrumbRoute';
 
 class Endpoint extends Component {
   
