@@ -34,15 +34,15 @@ def seed():
 
     # Fill in users.
     _development_users = [
-        User(name="Alberto", password="albertoalberto"),
-        User(name="Arjan", password="arjanarjan"),
-        User(name="JeroenO", password="jeroenojeroeno"),
-        User(name="JeroenL", password="jeroenljeroenl"),
-        User(name="Koen", password="koenkoen"),
-        User(name="Lars", password="larslars"),
-        User(name="Patrick", password="patrickpatrick"),
-        User(name="Tom", password="tomtomtom"),
-        User(name="W-M", password="topsecrettopsecret")
+        User(name="Alberto", password="alberto"),
+        User(name="Arjan", password="arjan"),
+        User(name="JeroenO", password="jeroeno"),
+        User(name="JeroenL", password="jeroenl"),
+        User(name="Koen", password="koen"),
+        User(name="Lars", password="lars"),
+        User(name="Patrick", password="patrick"),
+        User(name="Tom", password="tom"),
+        User(name="W-M", password="topsecret")
     ]
     for user in _development_users:
         user.verified = True
