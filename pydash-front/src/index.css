@@ -28,3 +28,14 @@ body {
 .errorMessage {
     color: #f44336;
 }
+
+.sidebar {
+    position: fixed;
+}
+
+@media screen and (max-width: 960px){
+    .placeholder {
+        width: 240px;
+        background-color: red;
+    }
+}

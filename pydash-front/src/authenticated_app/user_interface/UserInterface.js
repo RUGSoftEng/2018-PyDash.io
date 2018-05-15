@@ -69,7 +69,7 @@ const styles = theme => ({
         flexGrow: 1,
         backgroundColor: theme.palette.background.default,
         padding: theme.spacing.unit * 3,
-    },
+    }
 });
 
 class UserInterface extends React.Component {
@@ -85,7 +85,7 @@ class UserInterface extends React.Component {
         const { classes, theme } = this.props;
 
         const drawer = (
-            <div>
+            <div className="sidebar">
 
                 <div className={classes.toolbar} >
                 <UserIcon className={classes.accounticon}  />
@@ -121,6 +121,7 @@ class UserInterface extends React.Component {
                         </Typography>
                     </Toolbar>
                 </AppBar>
+                <div className="placeholder" >
                 <Hidden mdUp>
                     <Drawer
                         variant="temporary"
@@ -133,6 +134,7 @@ class UserInterface extends React.Component {
                         ModalProps={{
                             keepMounted: true, // Better open performance on mobile.
                         }}
+                        className="sidebar"
                     >
                         {drawer}
                     </Drawer>
@@ -144,10 +146,12 @@ class UserInterface extends React.Component {
                         classes={{
                             paper: classes.drawerPaper,
                         }}
+                        className="sidebar"
                     >
                         {drawer}
                     </Drawer>
                 </Hidden>
+                </div>
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
                     <Breadcrumbs hidden={false} separator="/" />
