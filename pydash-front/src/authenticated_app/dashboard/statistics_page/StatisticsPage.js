@@ -8,17 +8,16 @@ import VisitsPanel from './VisitsPanel';
 import UniqueVisitorsPanel from './UniqueVisitorsPanel';
 import EndpointExecutionTimesPanel from './EndpointExecutionTimesPanel';
 import ExecutionTimesTable from './ExecutionTimesTable';
+import EndpointsTable from '../../endpoint/EndpointsTable';
 
 // Helper:
 import {dict_to_xy_arr} from "../../../utils";
 
-import List, { ListItem } from 'material-ui/List';
 import { withStyles } from 'material-ui/styles';
 import SwipeableViews from 'react-swipeable-views';
 import AppBar from 'material-ui/AppBar';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
-import { Link } from 'react-router-dom'
 function TabContainer({ children, dir }) {
   return (
     <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
@@ -150,7 +149,9 @@ class StatisticsPage extends Component {
               </TabContainer>
               <TabContainer dir={theme.direction}>
                 <div>
-                <h2>Names of endpoints:</h2>
+
+                    <EndpointsTable data={this.state.dashboard.endpoints} dashboard_id={this.props.dashboard.id} />
+                {/*<h2>Names of endpoints:</h2>
                     <List>
                     {this.state.dashboard.endpoints.map((userData) => {
                         return (
@@ -159,7 +160,7 @@ class StatisticsPage extends Component {
                             </Link>
                         )
                     })}
-                    </List>
+                    </List>*/}
                     
                     
                  </div>
