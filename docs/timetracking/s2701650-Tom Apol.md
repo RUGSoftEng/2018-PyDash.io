@@ -65,3 +65,26 @@
 | *2018-04-30* | 19:35-21:55 | User registration - email verification #179 |
 | *2018-05-01* | 14:30-16:05 | User registration - email verification #179 |
 | *2018-05-01* | 16:15-16:40 | Password requirements checking |
+| *2018-05-03* | 13:45-14:15 | User registration - email verification #179 |
+| *2018-05-06* | 15:00-17:00 | Email verification #179 / Name clash prevention #249 |
+| *2018-05-07* | 15:00-16:45 | Team meeting |
+| *2018-05-07* | 16:45-17:10 | Team meeting (backend) |
+| *2018-05-07* | 20:30-21:00 | Password requirements checking |
+| *2018-05-08* | 15:30-18:40 | Email verification #179 |
+| *2018-05-08* | 19:30-21:30 | Email verification #179 |
+| *2018-05-09* | 15:15-18:30 | Email verification #179 |
+| *2018-05-09* | 18:55-19:45 | Email verification #179 |
+| *2018-05-10* | 14:20-15:30 | Email verification #179 |
+| *2018-05-11* | 17:00-17:50 | PR checking |
+| *2018-05-11* | 20:20-21:30 | Fix dashboard creation backend API PR #282 |
+| *2018-05-11* | 21:45-23:20 | Email verification PR fixes |
+| *2018-05-12* | 14:55-15:05 | Email verification - Fixing merge conflicts #179 |
+| *2018-05-12* | 15:30-17:30 | Fixing issues and bugs w.r.t. wrongly approved and merged PRs (?) |
+| *2018-05-13* | 14:30-18:05 | Backend API Request: Boxplots for endpoints #195 |
+| *2018-05-13* | 21:30-21:50 | Dashboard registration - dashboard-url-check fix |
+| *2018-05-13* | 22:00-23:10 | Backend API Request: Boxplots for endpoints #195 |
+| *2018-05-14* | 15:00-16:25 | Team meeting |
+| *2018-05-14* | 16:25-18:15 | Backend API Request: Boxplots for endpoints #195 |
+| *2018-05-14* | 21:30-0:30 | Backend API Request: Boxplots for endpoints #195 |
+| *2018-05-15* | 15:30-18:20 | Aggregator Problem #323 |
+| *2018-05-15* | 19:20-20:20 | Aggregator Problem #323 |
