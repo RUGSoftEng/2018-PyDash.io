@@ -1,7 +1,7 @@
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from .verification_code import VerificationCode
-from . import check_password_requirements
+from pydash_app.user import check_password_requirements
 
 import uuid
 import flask_login
