@@ -74,3 +74,9 @@ def register_dashboard():
 @login_required
 def delete_dashboard(dashboard_id):
     return controller.delete_dashboard(dashboard_id)
+
+
+@api.route("/api/dashboards/<dashboard_id>/endpoint_boxplots", methods=["GET"])
+@login_required
+def get_endpoint_boxplots(dashboard_id):
+    return controller.endpoint_boxplots(dashboard_id)
