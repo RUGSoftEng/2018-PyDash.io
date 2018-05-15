@@ -5,6 +5,7 @@ Manages changing of user settings.
 from flask import request, jsonify
 from flask_login import current_user
 
+import pydash_app.user
 import pydash_app.user.repository as user_repository
 import pydash_logger
 
@@ -46,10 +47,21 @@ def change_settings():
         settings_to_change['play_sounds'] = new_sound_setting
 
     if len(settings_to_change) > 0:
-        for setting, value in settings_to_change.items():
-            setattr(current_user, setting, value)
+        # Since current_user is not of the type pydash_app.user.entity.User, retrieve the actual user object
+        actual_user = pydash_app.user.maybe_find_user(current_user.id)
 
-        user_repository.update(current_user)
+        if not actual_user:
+            logger.warning('Changing settings failed - current user does not exist for some reason')
+            result = {'message': 'Current user does not exist'}
+            return jsonify(result), 500
+
+        if 'name' in settings_to_change:
+            actual_user.name = settings_to_change['name']
+
+        if 'play_sounds' in settings_to_change:
+            actual_user.play_sounds = settings_to_change['play_sounds']
+
+        user_repository.update(actual_user)
 
     logger.info('Successfully changed settings')
 
