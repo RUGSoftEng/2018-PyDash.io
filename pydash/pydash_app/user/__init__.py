@@ -38,10 +38,6 @@ from . import verification
 from multi_indexed_collection import DuplicateIndexError
 
 
-_MINIMUM_PASSWORD_LENGTH1 = 8
-_MINIMUM_PASSWORD_LENGTH2 = 12
-
-
 def add_to_repository(user):
     """
     Adds the given User-entity to the user_repository. Raises a KeyError if the user is already in the repository.
@@ -168,15 +164,4 @@ def verify(verification_code):
     verification.verify(verification_code)
 
 
-def check_password_requirements(password):
-    rules1 = [lambda xs: any(x.isupper() for x in xs),
-              lambda xs: any(not x.isalpha() for x in xs),
-              lambda xs: len(xs) >= _MINIMUM_PASSWORD_LENGTH1
-              ]
-    rules2 = [lambda xs: len(xs) >= _MINIMUM_PASSWORD_LENGTH2]
-    alternatives = [rules1, rules2]
 
-    def func(rules):
-        return all(rule(password) for rule in rules)
-
-    return any(func(alternative) for alternative in alternatives)
