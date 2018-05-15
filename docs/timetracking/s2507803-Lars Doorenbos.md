@@ -56,26 +56,20 @@
 | *2018-04-29* | 20:00-20:20 | Updating design/documents |
 | *2018-04-30* | 15:00-17:00 | Weekly meeting |
 | *2018-05-03* | 11:00-11:30 | Catching up on missed meeting |
-| *2018-05-04* | 11:45-12:45 | Endpoint page making
- |
-| *2018-05-05* | 21:15-22:15 | Linking/issues
- |
+| *2018-05-04* | 11:45-12:45 | Endpoint page making |
+| *2018-05-05* | 21:15-22:15 | Linking/issues |
 | *2018-05-06* | 13:00-14:15 | Finished #213 |
 | *2018-05-06* | 19:00-21:45 | Working on dashboard tabs |
 | *2018-05-07* | 15:00-16:45 | Weekly TA meeting |
 | *2018-05-08* | 13:30-15:00 | frontend meeting |
 | *2018-05-08* | 15:30-16:30 | Endpoint links |
 | *2018-05-09* | 11:00-13:30 | Endpoints+deletion |
-| *2018-05-10* | 20:30-22:00 | Setting up on windows
- |
-| *2018-05-11* | 10:15-11:00 | breadcrumbs + deletion
- |
-| *2018-05-11* | 11:30-12:15 | Deletion
- |
-| *2018-05-11* | 16:00-16:15 | Saving correct parts
- |
+| *2018-05-10* | 20:30-22:00 | Setting up on windows |
+| *2018-05-11* | 10:15-11:00 | breadcrumbs + deletion |
+| *2018-05-11* | 11:30-12:15 | Deletion |
+| *2018-05-11* | 16:00-16:15 | Saving correct parts |
 | *2018-05-13* | 16:50-17:10 | Small edits |
-| *2018-05-13* | 19:50-21:30 | Finishing deletion
- |
+| *2018-05-13* | 19:50-21:30 | Finishing deletion |
 | *2018-05-14* | 15:00-17:30 | Weekly TA meeting |
 | *2018-05-14* | 20:30-20:45 | Docs + branches |
+| *2018-05-15* | 13:45-14:00 | Timetracking issues |
