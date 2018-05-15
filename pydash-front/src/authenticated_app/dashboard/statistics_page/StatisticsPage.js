@@ -10,14 +10,16 @@ import EndpointExecutionTimesPanel from './EndpointExecutionTimesPanel';
 import ExecutionTimesTable from './ExecutionTimesTable';
 import EndpointsTable from '../../endpoint/EndpointsTable';
 
+// Visual:
+import { withStyles } from 'material-ui/styles';
+import SwipeableViews from 'react-swipeable-views';
+import Tabs, { Tab } from 'material-ui/Tabs';
+import Typography from 'material-ui/Typography';
+
 // Helper:
 import {dict_to_xy_arr} from "../../../utils";
 
-import { withStyles } from 'material-ui/styles';
-import SwipeableViews from 'react-swipeable-views';
-import AppBar from 'material-ui/AppBar';
-import Tabs, { Tab } from 'material-ui/Tabs';
-import Typography from 'material-ui/Typography';
+
 function TabContainer({ children, dir }) {
   return (
     <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
