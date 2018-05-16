@@ -38,3 +38,17 @@
 | *2018-04-29* | 17:30-18:30 | Resolving conflicts and using register_user api #162 |
 | *2018-04-30* | 15:00-17:00 | Weekly meeting |
 | *2018-05-01* | 11:30-14:30 | Fixing problems with the registration functionality #147 |
+| *2018-05-02* | 13:00-15:00 | Front end meeting |
+| *2018-05-03* | 12:30-14:00 | Implementing user settings #242 |
+| *2018-05-03* | 18:00-20:00 | Trying to send props components with the user info #242 |
+| *2018-05-04* | 11:00-11:30 | Working on snackbars #227 |
+| *2018-05-04* | 18:30-20:30 | Working on snackbars notifications on logging in/out #229 |
+| *2018-05-08* | 13:30-15:30 | Front end meeting |
+| *2018-05-08* | 16:30-17:45 | Working on userSettingsForm #242 |
+| *2018-05-08* | 17:45-18:00 | Updating architectural document #268 |
+| *2018-05-08* | 18:00-18:30 | Showing message when user registered successfully |
+| *2018-05-09* | 11:00-12:00 | Toggle button to switch on/off sounds |
+| *2018-05-12* | 13:00-14:30 | Working on user settings using the APIs calls #242 |
+| *2018-05-12* | 16:00-18:00 | Working on user settings using the APIs calls #242 |
+| *2018-05-15* | 12:30-15:00 | Working on user settings change_settings #242 |
+| *2018-05-15* | 15:00-17:00 | Weekly meeting |
