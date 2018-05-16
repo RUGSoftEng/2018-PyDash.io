@@ -57,3 +57,9 @@
 | *2018-04-30* | 15:00-17:00 | Weekly meeting + TA meeting |
 | *2018-05-01* | 9:00-11:00 | More tests! |
 | *2018-05-01* | 21:00-22:00 | Helping out with PR corrections + setting up for PR into master |
+| *2018-05-07* | 15:00-17:00 | Weekly meeting + TA meeting |
+| *2018-05-10* | 18:00-23:00 | Working on dashboard creation API |
+| *2018-05-14* | 15:00-17:00 | Weekly meeting + TA meeting |
+| *2018-05-15* | 18:00-18:30 | Write customer meeting log  |
+| *2018-05-15* | 18:30-19:30 | Updating backend API description |
+| *2018-05-15* | 19:30-21:30 | Fix backend password checking |
