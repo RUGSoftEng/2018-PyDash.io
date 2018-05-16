@@ -96,6 +96,9 @@ class RegistrationPage extends Component {
         })
     }
 
+    handleClickBack = () => {
+        return <Redirect to='/' />;
+      };
 
     handleClick = () => {
         this.setState({ open: true });
@@ -226,6 +229,11 @@ class RegistrationPage extends Component {
                     <p>
                     <Button type="submit" variant="raised" color="primary" disabled={this.state.loading}  onClick={ this.handleClick}>
                         {this.state.loading ? "Creating account" : "Register"}
+                    </Button>
+                    </p>
+                    <p>
+                    <Button type="back" variant="raised" color="primary"   onClick={ this.handleClickBack}>
+                        "Back to login"
                     </Button>
                     </p>
                     <Snackbar
