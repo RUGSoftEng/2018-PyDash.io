@@ -137,13 +137,14 @@ class UserInterface extends React.Component {
                         {drawer}
                     </Drawer>
                 </Hidden>
-                <Hidden smDown implementation="css">
+                <Hidden smDown implementation="css" className="menubar">
                     <Drawer
                         variant="permanent"
                         open
                         classes={{
                             paper: classes.drawerPaper,
                         }}
+                        className="menubar_inner"
                     >
                         {drawer}
                     </Drawer>

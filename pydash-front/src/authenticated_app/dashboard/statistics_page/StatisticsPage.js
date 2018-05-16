@@ -10,14 +10,16 @@ import EndpointExecutionTimesPanel from './EndpointExecutionTimesPanel';
 import ExecutionTimesTable from './ExecutionTimesTable';
 import EndpointsTable from '../../endpoint/EndpointsTable';
 
+// Visual:
+import { withStyles } from 'material-ui/styles';
+import SwipeableViews from 'react-swipeable-views';
+import Tabs, { Tab } from 'material-ui/Tabs';
+import Typography from 'material-ui/Typography';
+
 // Helper:
 import {dict_to_xy_arr} from "../../../utils";
 
-import { withStyles } from 'material-ui/styles';
-import SwipeableViews from 'react-swipeable-views';
-import AppBar from 'material-ui/AppBar';
-import Tabs, { Tab } from 'material-ui/Tabs';
-import Typography from 'material-ui/Typography';
+
 function TabContainer({ children, dir }) {
   return (
     <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
@@ -50,6 +52,7 @@ class StatisticsPage extends Component {
             average_execution_times: [],
             error: "",
             width: 0,
+            current_tab: 0,
         };
     }
 
@@ -100,13 +103,17 @@ class StatisticsPage extends Component {
         });
     }
 
-    handleChange = (event, value) => {
-        this.setState({ value });
-      };
+    /* handleChange = (event, value) => {
+     *     this.setState({ value });
+     *   }; */
+    changeTab = (event, value) => {
+        this.setState({current_tab: value})
+    }
     
-      handleChangeIndex = index => {
+    handleChangeIndex = index => {
         this.setState({ value: index });
-      };
+    };
+
     render() {
         const { theme } = this.props;
         if(this.props.dashboard === null || this.state.dashboard === null) {
@@ -117,10 +124,9 @@ class StatisticsPage extends Component {
             
 
             <div className={"Name"}>
-            <AppBar position="static" color="default">
               <Tabs
-                value={this.state.value}
-                onChange={this.handleChange}
+                value={this.state.current_tab}
+                onChange={this.changeTab}
                 indicatorColor="primary"
                 textColor="primary"
                 centered
@@ -129,10 +135,9 @@ class StatisticsPage extends Component {
                 <Tab label="Endpoints" />
                 <Tab label="Settings" />
               </Tabs>
-            </AppBar>
             <SwipeableViews
               axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-              index={this.state.value}
+              index={this.state.current_tab}
               onChangeIndex={this.handleChangeIndex}
             >
               <TabContainer dir={theme.direction}>

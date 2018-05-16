@@ -32,7 +32,7 @@ class EndpointsTable extends Component {
                                 <td>{endpoint.aggregates.total_visits}</td>
                                 <td>{endpoint.aggregates.average_execution_time}</td>
                                 <td>{endpoint.aggregates.total_execution_time}</td>
-                                <td><Button variant="raised" color="primary" component={Link} to={'overview/dashboards/'+this.props.dashboard_id+'/endpoints/'+endpoint.name}>Details</Button></td>
+                                <td><Button variant="raised" color="primary" component={Link} to={'/overview/dashboards/'+this.props.dashboard_id+'/endpoints/'+endpoint.name}>Details</Button></td>
                             </tr>
                         )
                     })}
