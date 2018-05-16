@@ -308,7 +308,7 @@ handlePasswords = (e) => {
               autoFocus
               margin="dense"
               id="name"
-              label="passConfirm"
+              label="Confirm password"
               onChange={this.handleType('passConfirm')}
               type="password"           
             />
