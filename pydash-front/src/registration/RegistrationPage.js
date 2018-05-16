@@ -20,14 +20,14 @@ const styles = theme => ({
       width: theme.spacing.unit * 4,
       height: theme.spacing.unit * 4,
     },
-  });
+  }); 
 
 class RegistrationPage extends Component {
     constructor(props) {
       super(props);
       this.state = {
         username: '',
-        email: '',
+        email_address: '',
         password: '',
         password_confirmation: '',
         message: '',
@@ -58,7 +58,7 @@ class RegistrationPage extends Component {
             let warnings = prevState.warnings
             warnings['email'] = email_warning;
             return {
-                email: target_val,
+                email_address: target_val,
                 warnings: warnings,
             }
         })
@@ -114,7 +114,7 @@ class RegistrationPage extends Component {
         e.preventDefault()
         let username = this.state.username,
             password = this.state.password,
-            email = this.state.email
+            email_address = this.state.email_address
         if (!(username.trim()) || !(password.trim())) {
             this.setState(prevState => ({
                 ...prevState,
@@ -135,7 +135,7 @@ class RegistrationPage extends Component {
         axios.post(window.api_path + '/api/user/register', {
             username,
             password,
-            email
+            email_address
           },
             {withCredentials: true}
         ).then((response) => {
@@ -182,7 +182,7 @@ class RegistrationPage extends Component {
                     <TextField
                         id="Email"
                         label="Email"
-                        value={this.state.email}
+                        value={this.state.email_address}
                         onChange={this.handleEmail}
                         margin="normal"
                         error={this.state.warnings['email'] || this.state.error}
