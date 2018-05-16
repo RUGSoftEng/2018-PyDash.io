@@ -40,7 +40,6 @@ class StatisticFetcher extends Component {
                 let statistic_data = prevState.statistic_data;
                 statistic_data[this.props.timeslice] = timeslice_statistic_data;
                 console.log("NEW STATISTIC DATA", statistic_data, this.props.timeslice, timeslice_statistic_data);
-                let foo = {};console
                 return {
                     ...prevState,
                     loading: false,
@@ -48,6 +47,7 @@ class StatisticFetcher extends Component {
                 }
             });
         });
+
     }
 
     render = () => {
