@@ -33,17 +33,20 @@ class StatisticFetcher extends Component {
     }
 
     requestVisitsData = async () => {
-        const timeslice_statistic_data = await requestStatisticData(this.props.dashboard_id, this.statistic_name, this.props.timeslice);
-
-        // TODO Once back-end has proper API endpoints, use that one instead of the overall one.
-        this.setState(prevState => {
-            let statistic_data = prevState.statistic_data;
-            statistic_data[prevState.timeslice] = timeslice_statistic_data;
-            return {
-                ...prevState,
-                loading: false,
-                statistic_data: statistic_data,
-            }
+        requestStatisticData(this.props.dashboard_id, this.statistic_name, this.props.timeslice, timeslice_statistic_data => {
+            // TODO Once back-end has proper API endpoints, use that one instead of the overall one.
+            console.log("TIMESLICE DATA:", this.statistic_name, timeslice_statistic_data)
+            this.setState(prevState => {
+                let statistic_data = prevState.statistic_data;
+                statistic_data[this.props.timeslice] = timeslice_statistic_data;
+                console.log("NEW STATISTIC DATA", statistic_data, this.props.timeslice, timeslice_statistic_data);
+                let foo = {};console
+                return {
+                    ...prevState,
+                    loading: false,
+                    statistic_data: statistic_data,
+                }
+            });
         });
     }
 
