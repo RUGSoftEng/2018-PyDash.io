@@ -312,7 +312,7 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
 
     while start_time < current_time:
         # TODO: for now historical data is pulled in chunks of 1 hour (hardcoded)
-        end_time = start_time + timedelta(hours=1)
+        end_time = start_time + timedelta(weeks=1)
 
         if end_time > current_time:
             end_time = current_time
