@@ -49,6 +49,15 @@ class Statistic(persistent.Persistent, abc.ABC):
         collection.add(cls)
 
 
+class FloatStatisticABC(Statistic):
+    """The FloatStatisticABC is the abstract base class for float rendering statistics.
+    It specifies the default amount of decimal places to round its rendered value to as 3."""
+
+    @property
+    def rounded_decimal_places(self):
+        return 3
+
+
 class TotalVisits(Statistic):
     def should_be_rendered(self):
         return True
@@ -63,7 +72,7 @@ class TotalVisits(Statistic):
         self.value += 1
 
 
-class TotalExecutionTime(Statistic):
+class TotalExecutionTime(FloatStatisticABC):
     def should_be_rendered(self):
         return True
 
@@ -76,8 +85,13 @@ class TotalExecutionTime(Statistic):
     def append(self, endpoint_call, dependencies):
         self.value += endpoint_call.execution_time
 
+    def rendered_value(self):
+        return round(self.value, self.rounded_decimal_places)
 
-class AverageExecutionTime(Statistic):
+
+class AverageExecutionTime(FloatStatisticABC):
+    """Keeps track of the average execution time of all endpoints that have been appended to it.
+    Rendered value is rounded to 3 decimal places by default."""
     dependencies = [TotalVisits, TotalExecutionTime]
 
     def should_be_rendered(self):
@@ -94,6 +108,9 @@ class AverageExecutionTime(Statistic):
             self.value = 0
         else:
             self.value = dependencies[TotalExecutionTime].value / dependencies[TotalVisits].value
+
+    def rendered_value(self):
+        return round(self.value, self.rounded_decimal_places)
 
 
 class VisitsPerDay(Statistic):
@@ -187,7 +204,7 @@ class ExecutionTimeTDigest(Statistic):
         self.value.update(endpoint_call.execution_time)
 
 
-class ExecutionTimePercentileAbstractBaseClass(Statistic):
+class ExecutionTimePercentileABC(FloatStatisticABC):
     """Abstract base class for execution time percentile statistics."""
     dependencies = [ExecutionTimeTDigest]
     _NoDataErrorValue = -1
@@ -200,13 +217,13 @@ class ExecutionTimePercentileAbstractBaseClass(Statistic):
         return True
 
     def empty(self):
-        return ExecutionTimePercentileAbstractBaseClass._NoDataErrorValue
+        return ExecutionTimePercentileABC._NoDataErrorValue
 
     def rendered_value(self):
-        return self.value
+        return round(self.value, self.rounded_decimal_places)
 
 
-class FastestExecutionTime(ExecutionTimePercentileAbstractBaseClass):
+class FastestExecutionTime(ExecutionTimePercentileABC):
     def field_name(self):
         return 'fastest_measured_execution_time'
 
@@ -214,7 +231,7 @@ class FastestExecutionTime(ExecutionTimePercentileAbstractBaseClass):
         self.value = dependencies[ExecutionTimeTDigest].value.percentile(0)
 
 
-class FastestQuartileExecutionTime(ExecutionTimePercentileAbstractBaseClass):
+class FastestQuartileExecutionTime(ExecutionTimePercentileABC):
     def field_name(self):
         return 'fastest_quartile_execution_time'
 
@@ -222,7 +239,7 @@ class FastestQuartileExecutionTime(ExecutionTimePercentileAbstractBaseClass):
         self.value = dependencies[ExecutionTimeTDigest].value.percentile(25)
 
 
-class MedianExecutionTime(ExecutionTimePercentileAbstractBaseClass):
+class MedianExecutionTime(ExecutionTimePercentileABC):
     def field_name(self):
         return 'median_execution_time'
 
@@ -230,7 +247,7 @@ class MedianExecutionTime(ExecutionTimePercentileAbstractBaseClass):
         self.value = dependencies[ExecutionTimeTDigest].value.percentile(50)
 
 
-class SlowestQuartileExecutionTime(ExecutionTimePercentileAbstractBaseClass):
+class SlowestQuartileExecutionTime(ExecutionTimePercentileABC):
     def field_name(self):
         return 'slowest_quartile_execution_time'
 
@@ -238,7 +255,7 @@ class SlowestQuartileExecutionTime(ExecutionTimePercentileAbstractBaseClass):
         self.value = dependencies[ExecutionTimeTDigest].value.percentile(75)
 
 
-class NinetiethPercentileExecutionTime(ExecutionTimePercentileAbstractBaseClass):
+class NinetiethPercentileExecutionTime(ExecutionTimePercentileABC):
     def field_name(self):
         return 'ninetieth_percentile_execution_time'
 
@@ -246,7 +263,7 @@ class NinetiethPercentileExecutionTime(ExecutionTimePercentileAbstractBaseClass)
         self.value = dependencies[ExecutionTimeTDigest].value.percentile(90)
 
 
-class NinetyNinthPercentileExecutionTime(ExecutionTimePercentileAbstractBaseClass):
+class NinetyNinthPercentileExecutionTime(ExecutionTimePercentileABC):
     def field_name(self):
         return 'ninety-ninth_percentile_execution_time'
 
@@ -254,7 +271,7 @@ class NinetyNinthPercentileExecutionTime(ExecutionTimePercentileAbstractBaseClas
         self.value = dependencies[ExecutionTimeTDigest].value.percentile(99)
 
 
-class SlowestExecutionTime(ExecutionTimePercentileAbstractBaseClass):
+class SlowestExecutionTime(ExecutionTimePercentileABC):
     def field_name(self):
         return 'slowest_measured_execution_time'
 
