@@ -29,9 +29,9 @@ def register_user():
 # @api.route("/api/user/verify", methods=["POST"])
 # def verify_user():
 # For now this route and definition, as to facilitate direct api-calls w.r.t. email verification links.
-@api.route("/api/user/verify/<verification_code>", methods=["POST"])
-def verify_user(verification_code):
-    return controller.verify_user(verification_code)
+@api.route("/api/user/verify", methods=["POST"])
+def verify_user():
+    return controller.verify_user()
 
 
 @api.route("/api/user/delete", methods=["POST"])

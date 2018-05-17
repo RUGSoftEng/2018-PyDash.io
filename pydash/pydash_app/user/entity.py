@@ -73,7 +73,7 @@ class User(persistent.Persistent, flask_login.UserMixin):
 
     def get_verification_code(self):
         """Returns this User's verification code or None if it has expired or this User has already been verified"""
-        if hasattr(self, 'verification_code'):
+        if hasattr(self, '_verification_code'):
             return self._verification_code
         else:
             return None
@@ -86,6 +86,13 @@ class User(persistent.Persistent, flask_login.UserMixin):
             return self._smart_verification_code.expiration_datetime
         else:
             return None
+
+    def has_verification_code_expired(self):
+        """Returns a boolean whether this User's verification code has expired, if it has one."""
+        if hasattr(self, '_smart_verification_code'):
+            return self._smart_verification_code.is_expired()
+        else:
+            return False
 
     def is_verified(self):
         return self.verified

@@ -79,6 +79,12 @@ def _send_verification_email(verification_code, expiration_date, recipient_email
 
     # Todo: perhaps read this in from a file, for flexibility.
     # Todo: still doesn't look all that great, but it will suffice for now.
+
+    message_body = f'Dear {username}\n\n' \
+                   f'To verify your account, please copy and paste the following url into your internet browser' \
+                   f'and hit enter: {verification_url}.\n\n' \
+                   f'The link will expire at {expiration_date}.' \
+
     message_html = f'<p>Dear {username},</p>' \
                    f'<p>To verify your account, please click on this ' \
                    f'<a href=\"{verification_url}\">link</a>.' \
@@ -89,7 +95,7 @@ def _send_verification_email(verification_code, expiration_date, recipient_email
     # No sender is specified, such that we use DEFAULT_MAIL_SENDER as specified in config.py
     message = Message(subject=message_subject,
                       recipients=message_recipients,
-                      # body=message_body,
+                      body=message_body,
                       html=message_html
                       )
 
