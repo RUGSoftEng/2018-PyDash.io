@@ -1,8 +1,30 @@
 from collections import defaultdict
 import abc
 from tdigest import tdigest
+from math import trunc
 
 import persistent
+
+
+def reduce_precision(value, nr_of_digits):
+    """
+    Reduces the precision of `value` based on the amount of non-zero digits before the decimal point
+    and `nr_of_digits`.
+
+    Examples:
+    >>> x = 2/3
+    >>> reduce_precision(x, 3)
+    0.33
+    >>> x = 1234.5678
+    >>> reduce_precision(x, 3)
+    1234
+
+    """
+    x = len(str(trunc(value)))
+    y = (nr_of_digits-x)
+    if y < 0:
+        y = 0
+    return round(value, y)
 
 
 def date_dict(dict):
@@ -50,12 +72,18 @@ class Statistic(persistent.Persistent, abc.ABC):
 
 
 class FloatStatisticABC(Statistic):
-    """The FloatStatisticABC is the abstract base class for float rendering statistics.
-    It specifies the default amount of decimal places to round its rendered value to as 3."""
+    """
+    The FloatStatisticABC is the abstract base class for statistics that render a single floating point number.
+    It specifies the default amount of digits to round its rendered value to as 3.
+    (E.g. 2.54, 123, 0.3, but not 0.123)
+    """
 
     @property
-    def rounded_decimal_places(self):
+    def nr_of_digits(self):
         return 3
+
+    def rendered_value(self):
+        return reduce_precision(self.value, self.nr_of_digits)
 
 
 class TotalVisits(Statistic):
@@ -85,9 +113,6 @@ class TotalExecutionTime(FloatStatisticABC):
     def append(self, endpoint_call, dependencies):
         self.value += endpoint_call.execution_time
 
-    def rendered_value(self):
-        return round(self.value, self.rounded_decimal_places)
-
 
 class AverageExecutionTime(FloatStatisticABC):
     """Keeps track of the average execution time of all endpoints that have been appended to it.
@@ -108,9 +133,6 @@ class AverageExecutionTime(FloatStatisticABC):
             self.value = 0
         else:
             self.value = dependencies[TotalExecutionTime].value / dependencies[TotalVisits].value
-
-    def rendered_value(self):
-        return round(self.value, self.rounded_decimal_places)
 
 
 class VisitsPerDay(Statistic):
@@ -218,9 +240,6 @@ class ExecutionTimePercentileABC(FloatStatisticABC):
 
     def empty(self):
         return ExecutionTimePercentileABC._NoDataErrorValue
-
-    def rendered_value(self):
-        return round(self.value, self.rounded_decimal_places)
 
 
 class FastestExecutionTime(ExecutionTimePercentileABC):
