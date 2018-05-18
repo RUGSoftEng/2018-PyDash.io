@@ -17,14 +17,15 @@ def reduce_precision(value, nr_of_digits):
     0.67
     >>> x = 1234.5678
     >>> reduce_precision(x, 3)
-    1234
+    1235
 
     """
     x = len(str(trunc(value)))
     y = (nr_of_digits-x)
-    if y < 0:
-        y = 0
-    return round(value, y)
+    if y <= 0:
+        return trunc(round(value, y))
+    else:
+        return round(value, y)
 
 
 def date_dict(dict):
