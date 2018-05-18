@@ -14,7 +14,7 @@ def reduce_precision(value, nr_of_digits):
     Examples:
     >>> x = 2/3
     >>> reduce_precision(x, 3)
-    0.33
+    0.67
     >>> x = 1234.5678
     >>> reduce_precision(x, 3)
     1234
