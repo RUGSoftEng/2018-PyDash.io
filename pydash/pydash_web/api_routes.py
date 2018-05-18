@@ -25,10 +25,6 @@ def logout():
 def register_user():
     return controller.register_user()
 
-
-# @api.route("/api/user/verify", methods=["POST"])
-# def verify_user():
-# For now this route and definition, as to facilitate direct api-calls w.r.t. email verification links.
 @api.route("/api/user/verify", methods=["POST"])
 def verify_user():
     return controller.verify_user()
