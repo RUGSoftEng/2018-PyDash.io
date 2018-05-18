@@ -12,6 +12,8 @@ import IconButton from 'material-ui/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import HelpIcon from '@material-ui/icons/Help';
 import Tooltip from 'material-ui/Tooltip';
+import { NavLink } from 'react-router-dom'
+
 
 
 
@@ -95,10 +97,6 @@ class RegistrationPage extends Component {
             }
         })
     }
-
-    handleClickBack = () => {
-        return <Redirect to='/' />;
-      };
 
     handleClick = () => {
         this.setState({ open: true });
@@ -232,9 +230,7 @@ class RegistrationPage extends Component {
                     </Button>
                     </p>
                     <p>
-                    <Button type="back" variant="raised" color="primary"   onClick={ this.handleClickBack}>
-                        "Back to login"
-                    </Button>
+                    <Button component={NavLink} to="/">Back</Button>
                     </p>
                     <Snackbar
                             anchorOrigin={{
