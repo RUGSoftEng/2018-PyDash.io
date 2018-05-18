@@ -97,7 +97,7 @@ class Aggregator(persistent.Persistent):
             for statistic in self.statistics.values() if statistic.should_be_rendered
         }
         initial_dict['visits_per_day'] = self._visits_per_day
-        initial_dict['visits_per_ip'] = self._visits_per_ip
+        initial_dict['visits_per_ip'] = dict(self._visits_per_ip)
         initial_dict['unique_visitors'] = self._unique_visitors
         initial_dict['unique_visitors_per_day'] = self._unique_visitors_per_day
 
