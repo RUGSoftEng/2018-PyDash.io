@@ -23,7 +23,7 @@ def reduce_precision(value, nr_of_digits):
     x = len(str(trunc(value)))
     y = (nr_of_digits-x)
     if y <= 0:
-        return trunc(round(value, y))
+        return trunc(round(value, 0))
     else:
         return round(value, y)
 
