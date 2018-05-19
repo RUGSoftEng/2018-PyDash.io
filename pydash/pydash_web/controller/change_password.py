@@ -14,8 +14,15 @@ logger = pydash_logger.Logger(__name__)
 def change_password():
     logger.info(f'Password change requested for {current_user}')
 
-    current_password = request.form.get('current_password')
-    new_password = request.form.get('new_password')
+    request_data = request.get_json(silent=True)
+
+    if not request_data:
+        logger.warning('Password change failed - data missing')
+        result = {'message': 'Data missing'}
+        return jsonify(result), 400
+
+    current_password = request_data.get('current_password')
+    new_password = request_data.get('new_password')
 
     if current_password is None or new_password is None:
         logger.warning('Password change failed - current password or new password missing')
