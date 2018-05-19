@@ -5,7 +5,6 @@ Manages the registration of a new user.
 from flask import jsonify
 from flask_restplus.reqparse import RequestParser
 from flask_mail import Message
-from pydash_app.user.entity import check_password_requirements
 from pydash_mail import mail
 
 import pydash_app.user
@@ -29,7 +28,7 @@ def register_user():
         logger.warning('User registration failed - username, password or email address missing')
         return jsonify(message), 400
 
-    if not check_password_requirements(password):
+    if not pydash_app.user.check_password_requirements(password):
         message = {'message': 'User registration failed - password does not conform to the requirements.'}
         logger.warning('User registration failed - password does not conform to the requirements.')
         return jsonify(message), 400
@@ -79,6 +78,12 @@ def _send_verification_email(verification_code, expiration_date, recipient_email
 
     # Todo: perhaps read this in from a file, for flexibility.
     # Todo: still doesn't look all that great, but it will suffice for now.
+
+    message_body = f'Dear {username}\n\n' \
+                   f'To verify your account, please copy and paste the following url into your internet browser' \
+                   f'and hit enter: {verification_url}.\n\n' \
+                   f'The link will expire at {expiration_date}.' \
+
     message_html = f'<p>Dear {username},</p>' \
                    f'<p>To verify your account, please click on this ' \
                    f'<a href=\"{verification_url}\">link</a>.' \
@@ -89,7 +94,7 @@ def _send_verification_email(verification_code, expiration_date, recipient_email
     # No sender is specified, such that we use DEFAULT_MAIL_SENDER as specified in config.py
     message = Message(subject=message_subject,
                       recipients=message_recipients,
-                      # body=message_body,
+                      body=message_body,
                       html=message_html
                       )
 
