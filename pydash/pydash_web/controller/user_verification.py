@@ -16,7 +16,15 @@ def verify_user(verification_code):
     api-routes that have the `verification_required` decorator.
     """
 
-    # verification_code = request.form.get('verification_code')
+    # request_data = request.get_json(silent=True)
+    #
+    # if not request_data:
+    #     logger.warning('Login failed - data missing')
+    #     result = {'message': 'Data missing'}
+    #     return jsonify(result), 400
+    #
+    # verification_code = request_data.get('verification_code')
+    #
     # if verification_code is None:
     #     logger.warning('Verification failed - verification code missing')
     #     result = {'message': 'Verification code missing'}
