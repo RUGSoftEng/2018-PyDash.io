@@ -19,6 +19,7 @@ pqdict = "*"
 pytest-cov = "*"
 Flask-Mail = "*"
 ordered-set = "*"
+tdigest = "*"
 
 
 [dev-packages]

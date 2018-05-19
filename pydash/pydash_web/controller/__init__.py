@@ -15,3 +15,4 @@ from .dashboards import dashboards
 from .dashboards import dashboard
 from .register_dashboard import register_dashboard
 from .delete_dashboard import delete_dashboard
+from .endpoint_boxplots import endpoint_boxplots
