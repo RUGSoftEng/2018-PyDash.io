@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 
 class EndpointsTable extends Component {
     render = () => {
-        console.log(this.props.data);
         return (
             <div className="EndpointsTable">
                 <table width="100%">
@@ -37,31 +36,6 @@ class EndpointsTable extends Component {
                         )
                     })}
                 </table>
-                {/*<Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell></TableCell>
-                            <WideTableCell>Number of hits</WideTableCell>
-                            <WideTableCell>Median response time</WideTableCell>
-                            <TableCell></TableCell>
-                            <TableCell></TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>Endpoint</TableCell>
-                            <TableCell>Today</TableCell>
-                            <TableCell>Last 7 days</TableCell>
-                            <TableCell>Overall</TableCell>
-                            <TableCell>Today</TableCell>
-                            <TableCell>Last 7 days</TableCell>
-                            <TableCell>Overall</TableCell>
-                            <TableCell>Last accessed</TableCell>
-                            <TableCell>Details</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                                                
-                    </TableBody>
-                </Table>*/}
             </div>
         );
     }
