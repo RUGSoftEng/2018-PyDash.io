@@ -7,27 +7,6 @@ import flask_login
 import persistent
 
 
-_MINIMUM_PASSWORD_LENGTH1 = 8
-_MINIMUM_PASSWORD_LENGTH2 = 12
-
-
-def check_password_requirements(password):
-    rules1 = [
-        lambda xs: any(x.isupper() for x in xs),
-        lambda xs: any(not x.isalpha() for x in xs),
-        lambda xs: len(xs) >= _MINIMUM_PASSWORD_LENGTH1
-    ]
-    rules2 = [
-        lambda xs: len(xs) >= _MINIMUM_PASSWORD_LENGTH2
-    ]
-    alternatives = [rules1, rules2]
-
-    def check_rules(rules):
-        return all(rule(password) for rule in rules)
-
-    return any(check_rules(alternative) for alternative in alternatives)
-
-
 class User(persistent.Persistent, flask_login.UserMixin):
     """
     The User entity knows about:
@@ -101,10 +80,6 @@ class User(persistent.Persistent, flask_login.UserMixin):
         self._verification_code = self._smart_verification_code.verification_code
 
     def set_password(self, password):
-
-        if not self._check_password_requirements(password):
-            raise ValueError("Supplied password does not meet requirements")
-
         self.password_hash = generate_password_hash(password)
 
     # Required because `multi_indexed_collection` puts users in a set, that needs to order its keys for fast lookup.

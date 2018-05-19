@@ -5,7 +5,6 @@ Manages the registration of a new user.
 from flask import jsonify
 from flask_restplus.reqparse import RequestParser
 from flask_mail import Message
-from pydash_app.user.entity import check_password_requirements
 from pydash_mail import mail
 
 import pydash_app.user
@@ -29,7 +28,7 @@ def register_user():
         logger.warning('User registration failed - username, password or email address missing')
         return jsonify(message), 400
 
-    if not check_password_requirements(password):
+    if not pydash_app.user.check_password_requirements(password):
         message = {'message': 'User registration failed - password does not conform to the requirements.'}
         logger.warning('User registration failed - password does not conform to the requirements.')
         return jsonify(message), 400
