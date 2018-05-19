@@ -20,8 +20,8 @@ def delete_user():
     request_data = request.get_json(silent=True)
 
     if not request_data:
-        logger.warning('Login failed - data missing')
-        result = {'message': 'Data missing'}
+        logger.warning('Delete_user failed - data missing')
+        result = {'message': 'Deletion failed - data missing'}
         return jsonify(result), 400
 
     password = request_data.get('password')

@@ -22,7 +22,7 @@ def change_settings():
 
     if not settings:
         logger.warning('Changing settings failed - JSON settings object missing')
-        result = {'message': 'Settings object missing'}
+        result = {'message': 'Changing settings failed - settings object missing'}
         return jsonify(result), 400
 
     settings_to_change = {}
