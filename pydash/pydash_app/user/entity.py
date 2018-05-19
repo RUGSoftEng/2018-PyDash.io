@@ -12,17 +12,20 @@ _MINIMUM_PASSWORD_LENGTH2 = 12
 
 
 def check_password_requirements(password):
-    rules1 = [lambda xs: any(x.isupper() for x in xs),
-              lambda xs: any(not x.isalpha() for x in xs),
-              lambda xs: len(xs) >= _MINIMUM_PASSWORD_LENGTH1
-              ]
-    rules2 = [lambda xs: len(xs) >= _MINIMUM_PASSWORD_LENGTH2]
+    rules1 = [
+        lambda xs: any(x.isupper() for x in xs),
+        lambda xs: any(not x.isalpha() for x in xs),
+        lambda xs: len(xs) >= _MINIMUM_PASSWORD_LENGTH1
+    ]
+    rules2 = [
+        lambda xs: len(xs) >= _MINIMUM_PASSWORD_LENGTH2
+    ]
     alternatives = [rules1, rules2]
 
-    def func(rules):
+    def check_rules(rules):
         return all(rule(password) for rule in rules)
 
-    return any(func(alternative) for alternative in alternatives)
+    return any(check_rules(alternative) for alternative in alternatives)
 
 
 class User(persistent.Persistent, flask_login.UserMixin):
