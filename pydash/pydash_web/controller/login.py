@@ -21,16 +21,22 @@ def login():
         logger.info(f"{current_user} already logged in")
         return jsonify(result)
 
-    username = request.form.get('username')
-    password = request.form.get('password')
+    request_data = request.get_json(silent=True)
+
+    if not request_data:
+        logger.warning('Login failed - data missing')
+        result = {'message': 'Data missing'}
+        return jsonify(result), 400
+
+    username = request_data.get('username')
+    password = request_data.get('password')
 
     if username is None or password is None:
         result = {"message": "Username or password missing"}
         logger.warning('Login failed - username or password missing')
         return jsonify(result), 400
 
-    user = pydash_app.user.authenticate(username,
-                                        password)
+    user = pydash_app.user.authenticate(username, password)
 
     if not user:
         result = {"message": "Username or password incorrect"}
