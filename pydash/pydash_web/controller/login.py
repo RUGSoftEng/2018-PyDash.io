@@ -21,8 +21,8 @@ def login():
         logger.info(f"{current_user} already logged in")
         return jsonify(result)
 
-    username = request.args.get('username')
-    password = request.args.get('password')
+    username = request.form.get('username')
+    password = request.form.get('password')
 
     if username is None or password is None:
         result = {"message": "Username or password missing"}

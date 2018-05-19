@@ -15,9 +15,9 @@ logger = pydash_logger.Logger(__name__)
 
 
 def register_user():
-    username = request.args.get('username')
-    password = request.args.get('password')
-    email_address = request.args.get('email_address')
+    username = request.form.get('username')
+    password = request.form.get('password')
+    email_address = request.form.get('email_address')
 
     if username is None or password is None or email_address is None:
         logger.warning('User registration failed - username, password or email address missing')

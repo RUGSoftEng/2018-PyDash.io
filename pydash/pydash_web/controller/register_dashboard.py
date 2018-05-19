@@ -10,9 +10,9 @@ logger = pydash_logger.Logger(__name__)
 
 
 def register_dashboard():
-    name = request.args.get('name')
-    url = request.args.get('url')
-    token = request.args.get('token')
+    name = request.form.get('name')
+    url = request.form.get('url')
+    token = request.form.get('token')
 
     if url is None or token is None:
         logger.warning("Dashboard registration failed - url or token are missing.")

@@ -17,7 +17,7 @@ def delete_user():
     Deletes the currently logged in user and all dashboards they own.
     """
 
-    password = request.args.get('password')
+    password = request.form.get('password')
 
     if password is None:
         logger.error('Delete_user failed - no password provided')
