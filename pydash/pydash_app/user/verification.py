@@ -31,18 +31,18 @@ def verify(verification_code):
         logger.warning(f"Verification code {verification_code} is invalid - Unable to find connected user.")
         raise InvalidVerificationCodeError(f"Verification code {verification_code} is invalid.")
 
-    if user.smart_verification_code.is_expired():
+    if user.has_verification_code_expired():
         # Throw away this verification code.
-        delattr(user, 'verification_code')
-        delattr(user, 'smart_verification_code')
+        delattr(user, '_verification_code')
+        delattr(user, '_smart_verification_code')
         repository.update(user)
         logger.warning(f"Verification code {verification_code} has already expired.")
         raise VerificationCodeExpiredError(f"Verification code {verification_code} has already expired.")
 
     user.verified = True
     # Throw away this verification code.
-    delattr(user, 'verification_code')
-    delattr(user, 'smart_verification_code')
+    delattr(user, '_verification_code')
+    delattr(user, '_smart_verification_code')
     repository.update(user)
 
 
