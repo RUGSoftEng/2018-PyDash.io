@@ -40,7 +40,7 @@ def login():
 
     if not user:
         result = {"message": "Username or password incorrect"}
-        logger.warning(f"Failed login request using {args['username']}, {args['password']}")
+        logger.warning(f"Login failed - username or password incorrect")
         return jsonify(result), 401
 
     if not user.is_verified():
