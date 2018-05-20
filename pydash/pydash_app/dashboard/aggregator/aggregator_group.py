@@ -68,7 +68,7 @@ def remove_duplicate_categories(partition_funs):
 
 
 def calc_endpoint_call_identifier(partition, endpoint_call):
-    return tuple(partition_fun(endpoint_call) for partition_fun in partition)
+    return frozenset(partition_fun(endpoint_call) for partition_fun in partition)
 
 
 def partition_field_names(partition):
@@ -140,7 +140,7 @@ class AggregatorGroup(persistent.Persistent):
         self.partitions = dict()  # frozenset(partitions) -> defaultdict(Aggregator)
         self.partition_names = dict()  # frozenset(partition field names) -> frozenset(partitions)
         for elem in self.partitions_set:
-            self.partitions[elem] = defaultdict(Aggregator)  # tuple(partition field names) -> Aggregator
+            self.partitions[elem] = defaultdict(Aggregator)  # frozenset(partition field names) -> Aggregator
             self.partition_names[frozenset(partition_field_names(elem))] = elem
         for endpoint_call in endpoint_calls:
             self.add_endpoint_call(endpoint_call)
@@ -187,4 +187,4 @@ class AggregatorGroup(persistent.Persistent):
             raise ValueError("Bad input value: input filter type is not supported,"
                              " input filter-value not formatted correctly,"
                              " or multiple input filters of the same type.")
-        return self.partitions[partition][tuple(partition_field_names.values())]
+        return self.partitions[partition][frozenset(partition_field_names.values())]
