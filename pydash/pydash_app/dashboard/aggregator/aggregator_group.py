@@ -88,6 +88,7 @@ class AggregatorGroup(persistent.Persistent):
     Usage example:
     >>> from datetime import datetime
     >>> from pydash_app.dashboard.endpoint_call import EndpointCall
+    >>> from pydash_app.dashboard.aggregator.aggregator_group import AggregatorGroup
     >>> ag = AggregatorGroup()
     >>> ec1 = EndpointCall("foo", 0.5, datetime.strptime("2018-04-25 15:29:23", "%Y-%m-%d %H:%M:%S"), "0.1", "None", "127.0.0.1")
     >>> ec2 = EndpointCall("foo", 0.5, datetime.strptime("2018-04-26 15:29:23", "%Y-%m-%d %H:%M:%S"), "0.1", "None", "127.0.0.1")
@@ -98,21 +99,22 @@ class AggregatorGroup(persistent.Persistent):
     >>> a_day = ag.fetch_aggregator({'day':'2018-04-25'})
     >>> # Filter by day
     ... a_day.as_dict()
-    {'total_visits': 2, 'total_execution_time': 1.0, 'average_execution_time': 0.5, 'visits_per_day': {'2018-04-25': 2}, 'visits_per_ip': {'127.0.0.1': 1, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2}}
+    {'total_visits': 2, 'total_execution_time': 1.0, 'average_execution_time': 0.5, 'visits_per_day': {'2018-04-25': 2}, 'visits_per_ip': {'127.0.0.1': 1, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2}, 'fastest_measured_execution_time': 0.5, 'fastest_quartile_execution_time': 0.5, 'median_execution_time': 0.5, 'slowest_quartile_execution_time': 0.5, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
     >>> # Filter by week
     ... a_week = ag.fetch_aggregator({'week':'2018-W17'})
     >>> a_week.as_dict()
-    {'total_visits': 3, 'total_execution_time': 1.5, 'average_execution_time': 0.5, 'visits_per_day': {'2018-04-25': 2, '2018-04-26': 1}, 'visits_per_ip': {'127.0.0.1': 2, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2, '2018-04-26': 1}}
+    {'total_visits': 3, 'total_execution_time': 1.5, 'average_execution_time': 0.5, 'visits_per_day': {'2018-04-25': 2, '2018-04-26': 1}, 'visits_per_ip': {'127.0.0.1': 2, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2, '2018-04-26': 1}, 'fastest_measured_execution_time': 0.5, 'fastest_quartile_execution_time': 0.5, 'median_execution_time': 0.5, 'slowest_quartile_execution_time': 0.5, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
     >>> # Filter by day and ip
     ... a_day_ip = ag.fetch_aggregator({'day':'2018-04-25', 'ip':'127.0.0.1'})
     >>> a_day_ip.as_dict()
-    {'total_visits': 1, 'total_execution_time': 0.5, 'average_execution_time': 0.5, 'visits_per_day': {'2018-04-25': 1}, 'visits_per_ip': {'127.0.0.1': 1}, 'unique_visitors': 1, 'unique_visitors_per_day': {'2018-04-25': 1}}
+    {'total_visits': 1, 'total_execution_time': 0.5, 'average_execution_time': 0.5, 'visits_per_day': {'2018-04-25': 1}, 'visits_per_ip': {'127.0.0.1': 1}, 'unique_visitors': 1, 'unique_visitors_per_day': {'2018-04-25': 1}, 'fastest_measured_execution_time': 0.5, 'fastest_quartile_execution_time': 0.5, 'median_execution_time': 0.5, 'slowest_quartile_execution_time': 0.5, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
     >>> # No filtering (all endpoint calls are included in this aggregator)
     ... a_all = ag.fetch_aggregator({})
     >>> a_all.as_dict()
-    {'total_visits': 3, 'total_execution_time': 1.5, 'average_execution_time': 0.5, 'visits_per_day': {'2018-04-25': 2, '2018-04-26': 1}, 'visits_per_ip': {'127.0.0.1': 2, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2, '2018-04-26': 1}}
+    {'total_visits': 3, 'total_execution_time': 1.5, 'average_execution_time': 0.5, 'visits_per_day': {'2018-04-25': 2, '2018-04-26': 1}, 'visits_per_ip': {'127.0.0.1': 2, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2, '2018-04-26': 1}, 'fastest_measured_execution_time': 0.5, 'fastest_quartile_execution_time': 0.5, 'median_execution_time': 0.5, 'slowest_quartile_execution_time': 0.5, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
 
     """
+
     partition_funs = [
         PartitionByWeek,
         PartitionByDay,
