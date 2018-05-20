@@ -2,8 +2,7 @@
 Manages the registration of a new user.
 """
 
-from flask import jsonify
-from flask_restplus.reqparse import RequestParser
+from flask import jsonify, request
 from flask_mail import Message
 from pydash_mail import mail
 
@@ -15,33 +14,41 @@ logger = pydash_logger.Logger(__name__)
 
 
 def register_user():
-    args = _parse_arguments()
+    request_data = request.get_json(silent=True)
 
-    username = args['username']
-    password = args['password']
-    email_address = args['email_address']
+    if not request_data:
+        logger.warning('User registration failed - data missing')
+        result = {'message': 'Data missing'}
+        return jsonify(result), 400
 
-    print(f'args={args}')
+    username = request_data.get('username')
+    password = request_data.get('password')
+    email_address = request_data.get('email_address')
 
-    if not username or not password or not email_address:
-        message = {'message': 'Username, password or email address missing'}
+    if username is None or password is None or email_address is None:
         logger.warning('User registration failed - username, password or email address missing')
-        return jsonify(message), 400
+        result = {'message': 'Username, password or email address missing'}
+        return jsonify(result), 400
+
+    # In case username, password or email_address are ''
+    if not username or not password or not email_address:
+        logger.warning('User registration failed - username, password or email address cannot be empty')
+        result = {'message': 'Username, password or email address cannot be empty'}
+        return jsonify(result), 400
 
     if not pydash_app.user.check_password_requirements(password):
-        message = {'message': 'User registration failed - password does not conform to the requirements.'}
         logger.warning('User registration failed - password does not conform to the requirements.')
-        return jsonify(message), 400
+        result = {'message': 'User registration failed - password does not conform to the requirements.'}
+        return jsonify(result), 400
 
     if pydash_app.user.find_by_name(username) is not None:
-        message = {'message': f'User with username {username} already exists.'}
         logger.warning(f'While registering a user: {message}')
-        return jsonify(message), 400
+        result = {'message': f'User with username {username} already exists.'}
+        return jsonify(result), 400
     else:
         user = pydash_app.user.User(username, password)
         pydash_app.user.add_to_repository(user)
-        message = {'message': 'User successfully registered.',
-                   'verification_code': f'{user.get_verification_code()}'}
+        
         logger.info(f'User successfully registered with username: {username}'
                     f' and verification code {user.get_verification_code()}')
 
@@ -49,15 +56,11 @@ def register_user():
                                  user.get_verification_code_expiration_date(),
                                  email_address,
                                  user.name)
-        return jsonify(message), 200
 
+        result = {'message': 'User successfully registered.',
+                  'verification_code': f'{user.get_verification_code()}'}
 
-def _parse_arguments():
-    parser = RequestParser()
-    parser.add_argument('username')
-    parser.add_argument('password')
-    parser.add_argument('email_address')
-    return parser.parse_args()
+        return jsonify(result), 200
 
 
 def _send_verification_email(verification_code, expiration_date, recipient_email_address, username):
