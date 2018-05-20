@@ -85,7 +85,7 @@ class AggregatorGroup(persistent.Persistent):
     - FMD's group_by
     - etc.
 
-    Usage example:
+    Involved usage example:
     >>> from datetime import datetime
     >>> from pydash_app.dashboard.endpoint_call import EndpointCall
     >>> from pydash_app.dashboard.aggregator.aggregator_group import AggregatorGroup
@@ -132,34 +132,59 @@ class AggregatorGroup(persistent.Persistent):
     partition_powerset = powerset_generator(partition_funs)
     partitions_set = frozenset(frozenset(remove_duplicate_categories(elem)) for elem in partition_powerset)
 
-    def __init__(self):
+    def __init__(self, endpoint_calls=[]):
+        """
+        Sets up the aggregator group that will lazily create new Aggregators when needed.
+        :param endpoint_calls: An iterable collection of endpoint calls to seed the AggregatorGroup with.
+        """
         self.partitions = dict()  # frozenset(partitions) -> defaultdict(Aggregator)
         self.partition_names = dict()  # frozenset(partition field names) -> frozenset(partitions)
         for elem in self.partitions_set:
             self.partitions[elem] = defaultdict(Aggregator)  # tuple(partition field names) -> Aggregator
             self.partition_names[frozenset(partition_field_names(elem))] = elem
+        for endpoint_call in endpoint_calls:
+            self.add_endpoint_call(endpoint_call)
 
     def add_endpoint_call(self, endpoint_call):
+        """Adds the given endpoint call to the right aggregators within the group."""
         for (partition, aggregator_dict) in self.partitions.items():
             endpoint_call_identifier = calc_endpoint_call_identifier(partition, endpoint_call)
             aggregator_dict[endpoint_call_identifier].add_endpoint_call(endpoint_call)
 
     def fetch_aggregator(self, partition_field_names):
-        partition = self.partition_names[frozenset(partition_field_names.keys())]
+        """
+        Filters the internal collection of aggregators and returns the right one depending on partition_field_names.
+        :param partition_field_names: A dictionary containing filter_name-value pairs to filter on.
+          This is in the gist of `{'day':'2018-05-20', 'ip':'127.0.0.1'}`
+
+          The current filter_names are:
+            - Time:
+              * 'year' - e.g. '2018'
+              * 'week' - e.g. '2018-W17'
+              * 'day'  - e.g. '2018-05-20'
+              * 'hour' - e.g. '2018-05-20T20'
+
+            Note that for Time filter-values, the formatting is crucial.
+
+            - Version:
+              * 'version' - e.g. '1.0.1'
+
+            - IP:
+              * 'ip' - e.g. '127.0.0.1'
+
+            - Group-by:
+              * 'group_by' - e.g. None
+
+          Note that when providing two filters of the same type, a
+
+        :return: An Aggregator instance that contains the right aggregated data for this query.
+          Note that if an invalid value is given, a new (and empty) Aggregator is returned, due to the lazy addition.
+        """
+        try:
+            partition = self.partition_names[frozenset(partition_field_names.keys())]
+        except KeyError:
+            # TODO: discern what exactly goes wrong higher up in the callback chain.
+            raise ValueError("Bad input value: input filter type is not supported,"
+                             " input filter-value not formatted correctly,"
+                             " or multiple input filters of the same type.")
         return self.partitions[partition][tuple(partition_field_names.values())]
-
-
-# import pydash_app.dashboard.aggregator as aggregator
-# import pydash_app
-# ec = pydash_app.dashboard.repository.all()[1]._endpoint_calls[0]
-# a = pydash_app.dashboard.aggregator.AggregatorGroup()
-# a.add_endpoint_call(ec)
-# for dict in a.partitions.values():
-#     for ag in dict.values():
-#         print(ag.as_dict())
-# for dict in a.partitions.values():
-#     for key, value in dict.items():
-#         print(f'{key}, {len(value.endpoint_calls)}')
-# for dict in a.partitions.values():
-#     for key, value in dict.items():
-#         print(f'{key},\n {value.as_dict()}')
