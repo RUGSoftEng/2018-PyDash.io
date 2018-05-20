@@ -28,6 +28,7 @@ cors = CORS(flask_webapp,
             allow_headers=['Content-Type'],
             supports_credentials=True) # Only keep this line during development!
 
+flask_monitoringdashboard.config.init_from(envvar='FMD_CONFIG_PATH')
 flask_monitoringdashboard.bind(flask_webapp)
 
 flask_webapp.register_blueprint(api_blueprint)
