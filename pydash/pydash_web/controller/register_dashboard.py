@@ -1,10 +1,10 @@
 from flask import jsonify, request
 from flask_login import current_user
 
-import pydash_app.dashboard
 import pydash_logger
+import pydash_app.dashboard
+import pydash_app.dashboard.services
 import pydash_app.dashboard.services.fetching
-
 
 logger = pydash_logger.Logger(__name__)
 
@@ -30,7 +30,7 @@ def register_dashboard():
     if not name:
         name = None
 
-    is_valid, result = _is_valid_dashboard(url)
+    is_valid, result = pydash_app.dashboard.services.is_valid_dashboard(url)
     if not is_valid:
         return jsonify(result), 400
 
@@ -43,28 +43,3 @@ def register_dashboard():
 
     return jsonify(message), 200
 
-
-def _is_valid_dashboard(url):
-    import requests.exceptions
-    import json
-    import flask_monitoring_dashboard_client
-
-    try:
-        details = flask_monitoring_dashboard_client.get_details(url)
-        version = details['dashboard-version']
-    except requests.exceptions.ConnectionError:
-        return False, {'message': 'Could not connect to the dashboard'}
-    except requests.exceptions.Timeout:
-        return False, {'message': 'Timeout while connecting to the dashboard'}
-    except requests.exceptions.HTTPError as e:
-        if e.response:
-            return False, {'message': f'HTTP {e.response.status_code} error while connecting to the dashboard'}
-        return False, {'message': 'HTTP error while connecting to the dashboard'}
-    except json.JSONDecodeError:
-        return False, {'message': f'{url} does not seem to host a valid dashboard'}
-    except KeyError:
-        return False, {'message': 'Unsupported version of Flask-MonitoringDashboard'}
-    except requests.exceptions.RequestException:
-        return False, {'message': f'{url} seems to be an invalid url'}
-
-    return True, None
