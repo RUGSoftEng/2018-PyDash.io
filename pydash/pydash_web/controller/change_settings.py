@@ -20,9 +20,9 @@ def change_settings():
     # instead of calling Request.on_json_loading_failed()
     settings = request.get_json(silent=True)
 
-    if settings is None:
+    if not settings:
         logger.warning('Changing settings failed - JSON settings object missing')
-        result = {'message': 'Settings object missing'}
+        result = {'message': 'Changing settings failed - settings object missing'}
         return jsonify(result), 400
 
     settings_to_change = {}

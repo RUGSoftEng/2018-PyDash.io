@@ -1,6 +1,5 @@
-from flask import jsonify
+from flask import jsonify, request
 from flask_login import current_user
-from flask_restplus.reqparse import RequestParser
 
 import pydash_app.dashboard
 import pydash_logger
@@ -11,18 +10,25 @@ logger = pydash_logger.Logger(__name__)
 
 
 def register_dashboard():
-    args = _parse_arguments()
+    request_data = request.get_json(silent=True)
 
-    if not args['name'] or not args['url'] or not args['token']:
-        logger.warning("Dashboard registration failed - name, url or token are missing.")
+    if not request_data:
+        logger.warning('Dashboard registration failed - data missing')
+        result = {'message': 'Data missing'}
+        return jsonify(result), 400
+
+    name = request_data.get('name')
+    url = request_data.get('url')
+    token = request_data.get('token')
+
+    if url is None or token is None:
+        logger.warning("Dashboard registration failed - url or token are missing.")
         result = {'message': 'Name, url or token are missing.'}
         return jsonify(result), 400
 
-    logger.warning(f'{args}')
-
-    name = args['name']
-    url = args['url']
-    token = args['token']
+    # In case name is '' or None (since name is optional)
+    if not name:
+        name = None
 
     is_valid, result = _is_valid_dashboard(url)
     if not is_valid:
@@ -36,14 +42,6 @@ def register_dashboard():
     pydash_app.dashboard.services.fetching.schedule_historic_dashboard_fetching(dashboard)
 
     return jsonify(message), 200
-
-
-def _parse_arguments():
-    parser = RequestParser()
-    parser.add_argument('name')
-    parser.add_argument('url')
-    parser.add_argument('token')
-    return parser.parse_args()
 
 
 def _is_valid_dashboard(url):

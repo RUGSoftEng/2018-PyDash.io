@@ -2,14 +2,13 @@
 Manages the verification of a User.
 """
 
-from flask import jsonify
-from flask_restplus.reqparse import RequestParser
+from flask import jsonify, request
 import pydash_app.user as user
 import pydash_logger
 
 logger = pydash_logger.Logger(__name__)
 
-# For now verify_user will have input parameters, until the verification link points to a front-end page that can do a post-request.
+
 def verify_user():
     """
     Verifies the currently logged in User by comparing the given verification_code with the code assigned to the User.
@@ -17,12 +16,24 @@ def verify_user():
     api-routes that have the `verification_required` decorator.
     """
 
-    args = _parse_arguments()
-    if not args['verification_code']:
-        result = {"message": "Verification code missing"}
-        logger.warning('Verification failed - verification_code missing')
+    request_data = request.get_json(silent=True)
+
+    if not request_data:
+        logger.warning('Login failed - data missing')
+        result = {'message': 'Data missing'}
         return jsonify(result), 400
-    verification_code = args['verification_code']
+
+    verification_code = request_data.get('verification_code')
+
+    if verification_code is None:
+        logger.warning('Verification failed - verification code missing')
+        result = {'message': 'Verification code missing'}
+        return jsonify(result), 400
+
+    if not verification_code:
+        logger.warning('Verification failed - verification code cannot be empty')
+        result = {'message': 'Verification code cannot be empty'}
+        return jsonify(result), 400
 
     try:
         user.verify(verification_code)
@@ -35,9 +46,3 @@ def verify_user():
 
     result = {"message": "User successfully verified."}
     return jsonify(result), 200
-
-
-def _parse_arguments():
-    parser = RequestParser()
-    parser.add_argument('verification_code')
-    return parser.parse_args()
