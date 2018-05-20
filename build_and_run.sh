@@ -1,5 +1,13 @@
 #!/bin/bash
 
+ExportEnvironmentVars()
+{
+  export FLASK_APP=pydash.py
+  export FLASK_ENV=development
+  export MAIL_USERNAME=noreply.pydashtestmail@gmail.com
+  export MAIL_PASSWORD=verysecurepydashpassword
+}
+
 PydashPrint()
 {
     echo -e '\e[1m\e[92m[PyDash.io]: \e[0m\e[1m' "$1" '\e[0m'
@@ -30,11 +38,9 @@ SeedBackend()
     PydashPrint "seeding backend..."
     cd pydash
     mkdir -p logs
-    export FLASK_APP=pydash.py
-    export FLASK_ENV=development
-    rm -f ./zeo_filestorage.fs*
+    ExportEnvironmentVars
+    #rm -f ./zeo_filestorage.fs*
     pipenv run flask seed
-    cd ..
     cd ..
     PydashPrint "Done!"
 }
@@ -59,12 +65,21 @@ RunDatabaseForeground()
 
 RunFlask()
 {
-    PydashPrint "Finally: Starting flask webservice. Close with Ctrl+C"
+    PydashPrint "Starting flask webservice. Close with Ctrl+C"
     cd pydash
-    export FLASK_APP=pydash.py
-    export FLASK_ENV=development
+    ExportEnvironmentVars
     pipenv run flask run --no-reload --host=0.0.0.0
     cd ..
+}
+
+RunFlaskConsole()
+{
+    PydashPrint "Starting flask webservice as shell."
+    cd pydash
+    ExportEnvironmentVars
+    pipenv run flask shell
+    cd ..
+
 }
 
 RunFrontend()
@@ -78,20 +93,8 @@ RunFrontend()
 RunTests()
 {
     cd pydash
-    export FLASK_APP=pydash.py
-    export FLASK_ENV=development
+    ExportEnvironmentVars
     pipenv run pytest
-    cd ..
-    PydashPrint "Done!"
-}
-
-RunShell()
-{
-    PydashPrint "Starting Flask shell"
-    cd pydash
-    export FLASK_APP=pydash.py
-    export FLASK_ENV=development
-    pipenv run flask shell
     cd ..
     PydashPrint "Done!"
 }
@@ -133,7 +136,7 @@ then
         fi
         if [ $i == "shell" ];
         then
-            RunShell
+            RunFlaskConsole
         fi
     done;
     PydashPrint "Done! Goodbye :-)"

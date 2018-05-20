@@ -7,19 +7,19 @@ name = "pypi"
 
 [packages]
 
-flask = "*"
-flask-wtf = "*"
-flask-login = "*"
+Flask = "*"
+Flask-WTF = "*"
+Flask-Login = "*"
 multi-indexed-collection = "*"
-zeo = "*"
-flask-restplus = "*"
-pyjwt = "*"
+ZEO = "*"
+PyJWT = "*"
 requests = "*"
-flask-cors = "*"
+Flask-Cors = "*"
 pqdict = "*"
 pytest-cov = "*"
-flask-mail = "*"
+Flask-Mail = "*"
 ordered-set = "*"
+tdigest = "*"
 
 
 [dev-packages]

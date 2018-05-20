@@ -7,7 +7,7 @@ import { Line } from '@nivo/line'
 // Utils:
 import ResponsiveGraphWrapper from '../../../common/ResponsiveGraphWrapper';
 
-class DashboardVisitsGraph extends Component {
+class VisitsGraph extends Component {
     render() {
         let width = this.props.width;
         if(width < 0 || width === undefined){
@@ -15,7 +15,7 @@ class DashboardVisitsGraph extends Component {
         }
         return (
             <ResponsiveGraphWrapper height={this.props.height} >
-            <h4>{this.props.title}</h4>
+            <h4>{this.props.title} {this.props.timeslice}</h4>
             <Line
             data={[{id: this.props.tooltip_title, data: this.props.data}]}
             height={this.props.height}
@@ -60,11 +60,12 @@ class DashboardVisitsGraph extends Component {
     }
 }
 
-DashboardVisitsGraph.propTypes = {
+VisitsGraph.propTypes = {
     data: PropTypes.array.isRequired,
     title: PropTypes.string.isRequired,
     tooltip_title: PropTypes.string.isRequired,
     height: PropTypes.number.isRequired,
+    timeslice: PropTypes.string.isRequired
 };
 
-export default DashboardVisitsGraph;
+export default VisitsGraph;

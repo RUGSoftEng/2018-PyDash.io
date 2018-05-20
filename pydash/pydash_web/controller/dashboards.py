@@ -6,12 +6,9 @@ Currently only returns static mock data.
 
 from flask import jsonify
 from flask_login import current_user
-from pydash_app.dashboard.entity import DashboardState
 
 import pydash_app.dashboard
 import pydash_logger
-
-# from pydash_app.fetching.dashboard_fetch import update_endpoint_calls, _fetch_endpoint_calls
 
 logger = pydash_logger.Logger(__name__)
 
