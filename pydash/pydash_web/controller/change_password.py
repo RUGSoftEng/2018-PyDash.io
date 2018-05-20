@@ -36,9 +36,16 @@ def change_password():
         message = {'message': 'Password change failed - new password does not conform to the requirements'}
         return jsonify(message), 400
 
-    current_user.set_password(new_password)
+    actual_user = pydash_app.user.maybe_find_user(current_user.id)
 
-    user_repository.update(current_user)
+    if not actual_user:
+        logger.warning('Password change failed - current user does not exist for some reason')
+        result = {'message': 'Current user does not exist'}
+        return jsonify(result), 500
+
+    actual_user.set_password(new_password)
+
+    user_repository.update(actual_user)
 
     result = {'message': 'Successfully changed password'}
     return jsonify(result), 200
