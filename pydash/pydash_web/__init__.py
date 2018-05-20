@@ -8,7 +8,6 @@ import os
 from flask import Flask, jsonify
 from flask_login import LoginManager
 from flask_cors import CORS
-from flask_mail import Mail
 
 from pydash_mail import mail
 from pydash_web.api import api as api_blueprint
