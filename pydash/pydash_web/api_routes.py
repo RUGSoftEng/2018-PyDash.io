@@ -49,6 +49,12 @@ def change_password():
     return controller.change_password()
 
 
+@api.route("/api/dashboards/<dashboard_id>/change_settings", methods=["POST"])
+@login_required
+def change_dashboard_settings(dashboard_id):
+    return controller.change_dashboard_settings(dashboard_id)
+
+
 @api.route("/api/dashboards", methods=["GET"])
 @login_required
 def get_dashboards():
