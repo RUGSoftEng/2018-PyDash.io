@@ -12,7 +12,6 @@ const BreadcrumbRoute = ({
 	  ...props
 }) => (
     <Route { ...props } render={ routeProps => (
-        console.log("ROUTE PROPS", routeProps.match.url),
         <Breadcrumb data={{
     	      title: props.title,
     	      pathname: routeProps.match.url,
