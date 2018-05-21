@@ -111,3 +111,7 @@ class Aggregator(persistent.Persistent):
             new.statistics[key] = self.statistics[key].add_together(other.statistics[key], self.statistics, other.statistics)
         # TODO: if shit goes wrong again w.r.t. missing statistics in output, try to patch in the workaround here as well.
         return new
+
+    def __radd__(self, other):
+        if other == 0:
+            return self.deepcopy()
