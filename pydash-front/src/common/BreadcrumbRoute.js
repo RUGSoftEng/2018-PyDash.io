@@ -12,11 +12,12 @@ const BreadcrumbRoute = ({
 	  ...props
 }) => (
     <Route { ...props } render={ routeProps => (
+        console.log("ROUTE PROPS", routeProps.match.url),
         <Breadcrumb data={{
     	      title: props.title,
     	      pathname: routeProps.match.url,
     	      search: includeSearch ? routeProps.location.search : null,
-            isLink: isLink,
+            isLink: isLink && routeProps.match.url !== window.location.pathname,
         }}>
     	      { Component ? <Component { ...routeProps } /> : render(routeProps) }
         </Breadcrumb>
