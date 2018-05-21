@@ -102,3 +102,12 @@ class Aggregator(persistent.Persistent):
         initial_dict['unique_visitors_per_day'] = self._unique_visitors_per_day
 
         return initial_dict
+
+    def __add__(self, other):
+        """Creates a new aggregator object that combines the aggregates of both aggegators."""
+        new = Aggregator()
+        new.endpoint_calls = self.endpoint_calls + other.endpoint_calls
+        for key, _ in new.statistics.items():
+            new.statistics[key] = self.statistics[key].add_together(other.statistics[key], self.statistics, other.statistics)
+        # TODO: if shit goes wrong again w.r.t. missing statistics in output, try to patch in the workaround here as well.
+        return new

@@ -1,6 +1,7 @@
 from collections import defaultdict
 from itertools import chain, combinations
 import persistent
+from datetime import datetime
 
 from . import Aggregator
 
@@ -188,3 +189,36 @@ class AggregatorGroup(persistent.Persistent):
                              " input filter-value not formatted correctly,"
                              " or multiple input filters of the same type.")
         return self.partitions[partition][frozenset(partition_field_names.values())]
+
+def fetch_aggregator_daterange(filters, date_begin, date_end):
+
+
+
+
+
+def chop_date_range_into_chunks(date_begin, date_end):
+    years = chop_date_range_into_years(date_begin, date_end)
+    weeks = get_weeks_from_beginning_of_year() + get_weeks_until_end_of_year()
+    days = []
+    hours = []
+
+def chop_date_range_into_years(datetime_begin, datetime_end):
+    if datetime_begin > datetime_end:
+        raise ValueError("date_begin cannot be larger than date_end")
+
+    if datetime_begin == datetime(year=datetime_begin.year, month=0, day=0, hour=0):
+        range_begin = datetime_begin.year
+    else:
+        range_begin = datetime_begin.year + 1
+    if datetime_end == datetime(year=datetime_end.year, month=0, day=0, hour=0):
+        range_end = datetime_end.year - 1
+    else:
+        range_end = datetime_end.year
+
+    return [year for year in range(range_begin, range_end)]
+
+def get_weeks_until_end_of_year(datetime_begin):
+    return [week for week in range(datetime_begin, 53)]
+
+def get_weeks_from_beginning_of_year(datetime_end):
+    return [week for week in range(datetime_end)]
