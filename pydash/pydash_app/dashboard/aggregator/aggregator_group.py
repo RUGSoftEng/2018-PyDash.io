@@ -27,6 +27,11 @@ def partition_by_year_fun(endpoint_call):
 PartitionByYear = AggregatorPartitionFun('year', 'time', partition_by_year_fun)
 
 
+def partition_by_month_fun(endpoint_call):
+    return endpoint_call.time.strftime("%Y-%m")
+PartitionByMonth = AggregatorPartitionFun('month', 'time', partition_by_month_fun)
+
+
 def partition_by_week_fun(endpoint_call):
     return endpoint_call.time.strftime("%Y-W%W")
 PartitionByWeek = AggregatorPartitionFun('week', 'time', partition_by_week_fun)
@@ -40,6 +45,10 @@ PartitionByDay = AggregatorPartitionFun('day', 'time', partition_by_day_fun)
 def partition_by_hour_fun(endpoint_call):
     return endpoint_call.time.strftime("%Y-%m-%dT%H")
 PartitionByHour = AggregatorPartitionFun('hour', 'time', partition_by_hour_fun)
+
+def partition_by_minute_fun(endpoint_call):
+    return endpoint_call.time.strftime("%Y-%m-%dT%H-%M")
+PartitionByHour = AggregatorPartitionFun('minute', 'time', partition_by_minute_fun)
 
 
 def partition_by_version_fun(endpoint_call):
@@ -116,9 +125,12 @@ class AggregatorGroup(persistent.Persistent):
     """
 
     partition_funs = [
+        PartitionByYear,
+        PartitionByMonth,
         PartitionByWeek,
         PartitionByDay,
         PartitionByHour,
+        PartitionByMinute,
         PartitionByGroupBy,
         PartitionByIP,
         PartitionByVersion,
