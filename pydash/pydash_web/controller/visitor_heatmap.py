@@ -59,7 +59,6 @@ def visitor_heatmap(dashboard_id, field='total_visits'):
         end_date = datetime.today().strftime('%Y-%m-%d')
 
     end_date = end_date.split('-')
-    print(f'end_date = {end_date}')
     end_date = date(int(end_date[0]), int(end_date[1]), int(end_date[2]))
 
     # Generate list for each day that contains all the hourly data.
