@@ -32,7 +32,6 @@ def endpoint_boxplots(dashboard_id):
                        f'User {current_user} is not allowed to access dashboard {dashboard_id}')
         return jsonify(result), 403
 
-    dashboard = pydash_app.dashboard.find(dashboard_id)     # TODO remove this redundant statement
     endpoint_boxplot_list = [_boxplot_data(endpoint) for endpoint in dashboard.endpoints.values()]
     logger.info(f'Endpoint boxplots successful -  data from dashboard {dashboard} requested')
     return jsonify(endpoint_boxplot_list), 200
