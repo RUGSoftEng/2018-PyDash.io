@@ -34,9 +34,6 @@ def visitor_heatmap(dashboard_id, field='total_visits'):
                        f'User {current_user} is not allowed to access dashboard {dashboard_id}')
         return jsonify(result), 403
 
-    # silent=True makes sure None is returned on failure
-    # instead of calling Request.on_json_loading_failed()
-    # params = request.get_json(silent=True)
     params = request.args
 
     if not params:
@@ -56,9 +53,7 @@ def visitor_heatmap(dashboard_id, field='total_visits'):
     # Now generate date classes for each
     start_date = start_date.split('-')
     start_date = date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
-    # start_date.strftime('%Y-%m-%d')  # NOTE: seems to have no effect
 
-    print(f'end_date = {end_date}')
     if not end_date:
         # use current date if none provided
         end_date = datetime.today().strftime('%Y-%m-%d')
