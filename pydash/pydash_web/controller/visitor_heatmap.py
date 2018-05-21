@@ -36,7 +36,8 @@ def visitor_heatmap(dashboard_id, field='total_visits'):
 
     # silent=True makes sure None is returned on failure
     # instead of calling Request.on_json_loading_failed()
-    params = request.get_json(silent=True)
+    # params = request.get_json(silent=True)
+    params = request.args
 
     if not params:
         logger.info('Visitor_heatmap - no datetime info specified.')
@@ -44,8 +45,8 @@ def visitor_heatmap(dashboard_id, field='total_visits'):
         return jsonify(result), 400
 
     # Get datetime info
-    start_date = params['start_date', None]
-    end_date = params.get('end_date', None)
+    start_date = params['start_date']
+    end_date = params.get('end_date')
 
     if not start_date:
         logger.info('Visitor_heatmap - no datetime start_date specified.')
@@ -57,12 +58,13 @@ def visitor_heatmap(dashboard_id, field='total_visits'):
     start_date = date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
     # start_date.strftime('%Y-%m-%d')  # NOTE: seems to have no effect
 
+    print(f'end_date = {end_date}')
     if not end_date:
         # use current date if none provided
         end_date = datetime.today().strftime('%Y-%m-%d')
-    else:
-        end_date = end_date.split('-')
 
+    end_date = end_date.split('-')
+    print(f'end_date = {end_date}')
     end_date = date(int(end_date[0]), int(end_date[1]), int(end_date[2]))
 
     # Generate list for each day that contains all the hourly data.

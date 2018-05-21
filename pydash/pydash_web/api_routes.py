@@ -88,10 +88,10 @@ def get_endpoint_boxplots(dashboard_id):
 @api.route("/api/dashboards/<dashboard_id>/visitor_heatmap", methods=["GET"])
 @login_required
 def get_visitor_heatmap(dashboard_id):
-    controller.visitor_heatmap(dashboard_id)
+    return controller.visitor_heatmap(dashboard_id)
 
 
 @api.route("/api/dashboards/<dashboard_id>/unique_visitor_heatmap", methods=["GET"])
 @login_required
 def get_unique_visitor_heatmap(dashboard_id):
-    controller.visitor_heatmap(dashboard_id, 'unique_visitors')
+    return controller.visitor_heatmap(dashboard_id, 'unique_visitors')
