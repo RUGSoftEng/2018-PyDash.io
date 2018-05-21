@@ -90,12 +90,10 @@ class UserInterface extends React.Component {
                 <div className={classes.toolbar} >
                     <Link to={'/overview/settings'}>
                         <UserIcon className={classes.accounticon}  />
-                        
                         <div className={classes.accountname} >
                             {this.props.username || 'Username'}
                         </div>
                     </Link>
-                    
                 </div>
                 <Divider />
                 <MainMenuItems />
