@@ -54,8 +54,8 @@ def visitor_heatmap(dashboard_id, field='total_visits'):
 
     # Now generate date classes for each
     start_date = start_date.split('-')
-    start_date = date(start_date[0], start_date[1], start_date[2])
-    start_date.strftime('%Y-%m-%d')
+    start_date = date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
+    # start_date.strftime('%Y-%m-%d')  # NOTE: seems to have no effect
 
     if not end_date:
         # use current date if none provided
@@ -63,7 +63,7 @@ def visitor_heatmap(dashboard_id, field='total_visits'):
     else:
         end_date = end_date.split('-')
 
-    end_date = date(end_date[0], end_date[1], end_date[2])
+    end_date = date(int(end_date[0]), int(end_date[1]), int(end_date[2]))
 
     # Generate list for each day that contains all the hourly data.
     data = [get_hourly_data(dashboard, single_date, field) for single_date in daterange(start_date, end_date)]
