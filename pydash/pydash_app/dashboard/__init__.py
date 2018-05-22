@@ -59,18 +59,18 @@ def verify_dashboard(dashboard_id):
         result = {'message': f'Dashboard_id {dashboard_id} is not found.'}
         logger.warning(f'Endpoint_boxplots failure - Dashboard_id {dashboard_id} is not found. '
                        f'Current user: {current_user}')
-        return False, jsonify(result), 404
+        return None, jsonify(result), 404
     except ValueError:  # Happens when called without a proper UUID
         result = {'message': f'Dashboard_id {dashboard_id} is invalid UUID.'}
         logger.warning(f'Endpoint_boxplots failure - Dashboard_id {dashboard_id} is invalid UUID. '
                        f'Current user: {current_user}')
-        return False, jsonify(result), 400
+        return None, jsonify(result), 400
 
     # Check user authorisation
     if str(dashboard.user_id) != str(current_user.id):
         result = {'message': f'Current user is not allowed to access dashboard {dashboard_id}'}
         logger.warning(f'Endpoint_boxplots failure - '
                        f'User {current_user} is not allowed to access dashboard {dashboard_id}')
-        return False, jsonify(result), 403
+        return None, jsonify(result), 403
 
-    return True, None, None
+    return dashboard, None, None
