@@ -1,10 +1,8 @@
 from flask import jsonify, request
-from flask_login import current_user
 from datetime import timedelta, date, datetime
+from pydash_app.dashboard import verify_dashboard
 
-import pydash_app.dashboard
 import pydash_logger
-import pydash_app.dashboard.services
 
 
 logger = pydash_logger.Logger(__name__)
@@ -13,26 +11,10 @@ logger = pydash_logger.Logger(__name__)
 def visitor_heatmap(dashboard_id, field='total_visits'):
 
     # Check dashboard_id
-    # TODO get this slice of code out of here since it is in multiple controller methods
-    try:
-        dashboard = pydash_app.dashboard.find(dashboard_id)
-    except KeyError:
-        result = {'message': f'Dashboard_id {dashboard_id} is not found.'}
-        logger.warning(f'Endpoint_boxplots failure - Dashboard_id {dashboard_id} is not found. '
-                       f'Current user: {current_user}')
-        return jsonify(result), 400
-    except ValueError:  # Happens when called without a proper UUID
-        result = {'message': f'Dashboard_id {dashboard_id} is invalid UUID.'}
-        logger.warning(f'Endpoint_boxplots failure - Dashboard_id {dashboard_id} is invalid UUID. '
-                       f'Current user: {current_user}')
-        return jsonify(result), 400
+    valid_dashboard, result, http_error = verify_dashboard(dashboard_id)
 
-    # Check user authorisation
-    if str(dashboard.user_id) != str(current_user.id):
-        result = {'message': f'Current user is not allowed to access dashboard {dashboard_id}'}
-        logger.warning(f'Endpoint_boxplots failure - '
-                       f'User {current_user} is not allowed to access dashboard {dashboard_id}')
-        return jsonify(result), 403
+    if not valid_dashboard:
+        return result, http_error
 
     params = request.args
 
