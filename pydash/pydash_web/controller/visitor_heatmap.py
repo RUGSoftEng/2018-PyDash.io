@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from datetime import timedelta, date, datetime
-from pydash_app.dashboard import verify_dashboard
+from pydash_app.dashboard import find_verified_dashboard
 
 import pydash_logger
 
@@ -11,7 +11,7 @@ logger = pydash_logger.Logger(__name__)
 def visitor_heatmap(dashboard_id, field='total_visits'):
 
     # Check dashboard_id
-    valid_dashboard, result, http_error = verify_dashboard(dashboard_id)
+    valid_dashboard, result, http_error = find_verified_dashboard(dashboard_id)
 
     if not valid_dashboard:
         return result, http_error

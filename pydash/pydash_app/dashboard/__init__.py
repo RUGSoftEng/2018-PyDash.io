@@ -44,7 +44,7 @@ def dashboards_of_user(user_id):
     return [db for db in repository.all() if db.user_id == user_id]
 
 
-def verify_dashboard(dashboard_id):
+def find_verified_dashboard(dashboard_id):
     """
     Verifies if a given dashboard_id is correct and if the current user has access
     to the dashboard.

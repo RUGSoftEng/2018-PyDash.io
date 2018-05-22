@@ -3,7 +3,7 @@ Manages the deletion of a dashboard.
 """
 
 from flask import jsonify
-from pydash_app.dashboard import verify_dashboard, find, remove_from_repository
+from pydash_app.dashboard import find_verified_dashboard, remove_from_repository
 
 import pydash_logger
 
@@ -12,7 +12,7 @@ logger = pydash_logger.Logger(__name__)
 
 def delete_dashboard(dashboard_id):
     # Check dashboard_id
-    valid_dashboard, result, http_error = verify_dashboard(dashboard_id)
+    valid_dashboard, result, http_error = find_verified_dashboard(dashboard_id)
 
     if not valid_dashboard:
         return result, http_error
