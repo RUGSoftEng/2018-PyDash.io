@@ -23,25 +23,14 @@ def dashboard(dashboard_id):
                A dict containing an error message describing the particular error.
              - A corresponding HTML status code.
     """
-    try:
-        db = pydash_app.dashboard.find(dashboard_id)
+    # Check dashboard_id
+    valid_dashboard, result, http_error = pydash_app.dashboard.find_verified_dashboard(dashboard_id)
 
-        # logger.debug(f'Amount of newly fetched endpoint calls: {len(_fetch_endpoint_calls(db, db.last_fetch_time))}')
+    if not valid_dashboard:
+        return result, http_error
 
-        # update_endpoint_calls(db)
-    except KeyError:
-        logger.warning(f"Could not find dashboard matching with {dashboard_id}")
-        return jsonify({"message": "Could not find a matching dashboard."}), 404
-    except ValueError:  # Happens when called without a proper UUID
-        logger.warning(f"Invalid dashboard_id: {dashboard_id}")
-        return jsonify({"message": "Invalid dashboard_id"}), 400
-
-    if db.user_id != current_user.id:
-        logger.warning(F"{current_user} is not authorised to view {db}")
-        return jsonify({"message": "Not authorised to view this dashboard."}), 403
-
-    logger.info(f"Retrieved dashboard {db}")
-    return jsonify(_dashboard_detail(db)), 200
+    logger.info(f"Retrieved dashboard {valid_dashboard}")
+    return jsonify(_dashboard_detail(valid_dashboard)), 200
 
 
 def dashboards():
