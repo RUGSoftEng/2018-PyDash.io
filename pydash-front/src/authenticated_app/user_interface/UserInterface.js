@@ -116,9 +116,11 @@ class UserInterface extends React.Component {
                         >
                             <MenuIcon />
                         </IconButton>
-                        <Typography variant="title" color="inherit" noWrap>
-                            <img src={Logo} alt="PyDash.io logo" style={{marginTop: "15px", marginLeft: "20px", marginBottom: "10px", maxWidth: "150px"}} />
-                        </Typography>
+                        <Link to={'/overview'}>
+                            <Typography variant="title" color="inherit" noWrap>
+                                <img src={Logo} alt="PyDash.io logo" style={{marginTop: "15px", marginLeft: "20px", marginBottom: "10px", maxWidth: "150px"}} />
+                            </Typography>
+                        </Link>
                     </Toolbar>
                 </AppBar>
                 <Hidden mdUp>
