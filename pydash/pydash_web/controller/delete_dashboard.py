@@ -16,14 +16,12 @@ def delete_dashboard(dashboard_id):
 
     if not valid_dashboard:
         return result, http_error
-    
-    dashboard = find(dashboard_id)
 
     try:
         # TODO: only remove if owned by one user, otherwise just remove the user's id from the dashboard
-        remove_from_repository(dashboard)
+        remove_from_repository(valid_dashboard)
     except KeyError:
-        logger.warning(f'Dashboard {dashboard} does not seem to exist in the database')
+        logger.warning(f'Dashboard {valid_dashboard} does not seem to exist in the database')
         jsonify({"message": "Could not find a matching dashboard"}), 404
 
     result = {'message': 'Successfully removed dashboard'}
