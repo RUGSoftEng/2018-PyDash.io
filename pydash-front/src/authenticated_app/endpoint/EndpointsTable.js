@@ -46,21 +46,23 @@ class EndpointsTable extends Component {
                     </tr>
                     {this.props.data.map((endpoint) => {
                         if(this.state.input === '' || endpoint.name.includes(this.state.input)){
-                        return (
-                            <tr>
-                                <td>{endpoint.name}</td>
-                                <td>{endpoint.aggregates.unique_visitors}</td>
-                                <td>{endpoint.aggregates.total_visits}</td>
-                                <td>{endpoint.aggregates.average_execution_time}</td>
-                                <td>{endpoint.aggregates.total_execution_time}</td>
-                                <td><Button variant="raised" color="primary" component={Link} to={'/overview/dashboards/'+this.props.dashboard_id+'/endpoints/'+endpoint.name}>Details</Button></td>
-                            </tr>
-                        )
+                            return (
+                                <tr>
+                                    <td>{endpoint.name}</td>
+                                    <td>{endpoint.aggregates.unique_visitors}</td>
+                                    <td>{endpoint.aggregates.total_visits}</td>
+                                    <td>{endpoint.aggregates.average_execution_time}</td>
+                                    <td>{endpoint.aggregates.total_execution_time}</td>
+                                    <td><Button variant="raised" color="primary" component={Link} to={'/overview/dashboards/'+this.props.dashboard_id+'/endpoints/'+endpoint.name}>Details</Button></td>
+                                </tr>
+                            )
                         } 
-                        return  
+                        return console.log('none'); 
 
                     
-                    })}
+                        }
+                        
+                    )}
                 </table>
                 {/*<Table>
                     <TableHead>
