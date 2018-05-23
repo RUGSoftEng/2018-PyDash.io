@@ -6,6 +6,9 @@ from datetime import timedelta
 
 import periodic_tasks
 import pydash_app.user.repository
+import pydash_logger
+
+logger = pydash_logger.Logger(__name__)
 
 
 def schedule_periodic_pruning_task(
@@ -29,4 +32,5 @@ def _prune_unverified_users():
         try:
             pydash_app.user.repository.delete_by_id(user.id)
         except KeyError:
+            logger.info(f'Tried to prune already deleted user {user}')
             pass
