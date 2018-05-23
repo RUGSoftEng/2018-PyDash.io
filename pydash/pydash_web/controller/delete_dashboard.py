@@ -3,8 +3,10 @@ Manages the deletion of a dashboard.
 """
 
 from flask import jsonify
-from pydash_app.dashboard import find_verified_dashboard, remove_from_repository
+import uuid
 
+from pydash_app.dashboard import find_verified_dashboard, remove_from_repository
+import periodic_tasks
 import pydash_logger
 
 logger = pydash_logger.Logger(__name__)
@@ -23,6 +25,9 @@ def delete_dashboard(dashboard_id):
     except KeyError:
         logger.warning(f'Dashboard {valid_dashboard} does not seem to exist in the database')
         jsonify({"message": "Could not find a matching dashboard"}), 404
+
+    periodic_tasks.remove_task(('dashboard', valid_dashboard.id, 'historic_fetching'))
+    periodic_tasks.remove_task(('dashboard', valid_dashboard.id, 'fetching'))
 
     result = {'message': 'Successfully removed dashboard'}
     return jsonify(result), 200
