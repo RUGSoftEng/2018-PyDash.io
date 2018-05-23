@@ -87,3 +87,29 @@
 | *2018-04-29* | 22:15-23:10 | Making the fetching service compatible with FMD v1.12.0, and rejecting older versions |
 | *2018-04-30* | 15:00-15:30 | Weekly TA meeting |
 | *2018-04-30* | 15:30-17:00 | Internal meeting |
+| *2018-05-01* | 23:50-23:55 | Making the Flask-Login login_manager unauthorized callback explicit |
+| *2018-05-02* | 11:30-12:30 | Adding support for dashboard names in the backend |
+| *2018-05-02* | 22:30-22:50 | Making sure /api/user/delete requires a password |
+| *2018-05-03* | 17:50-17:55 | Adding password parameter to the API spec for /api/user/delete in the Architectural Design Document |
+| *2018-05-06* | 22:30-22:55 | Explicitly returning None (null) for dashboard name/error fields |
+| *2018-05-07* | 15:00-16:10 | Weekly TA meeting |
+| *2018-05-07* | 16:10-16:30 | Backend meeting |
+| *2018-05-07* | 23:30-0:00 | Making dashboard errors more user friendly |
+| *2018-05-08* | 0:00-0:45 | Making dashboard errors more user friendly |
+| *2018-05-09* | 12:45-15:30 | Making dashboard errors more user friendly |
+| *2018-05-09* | 15:30-15:45 | Patching: updating dashboard state after historic fetching |
+| *2018-05-09* | 15:45-16:00 | Setting up basic API endpoint to change user settings |
+| *2018-05-11* | 15:30-18:00 | Implementing /api/user/change_settings endpoint |
+| *2018-05-11* | 18:00-18:30 | Implementing /api/user/change_password endpoint |
+| *2018-05-11* | 20:30-22:00 | Reviewing Tom's email verification PR (#281) |
+| *2018-05-11* | 23:15-0:00 | Verifying dashboard validity before adding |
+| *2018-05-12* | 0:00-0:30 | Verifying dashboard validity before adding |
+| *2018-05-12* | 0:30-0:40 | Organizing issues on GitHub |
+| *2018-05-12* | 17:45-18:15 | Debugging fetching timeout errors |
+| *2018-05-12* | 18:45-20:15 | Setting up and implementing dashboard deletion API route |
+| *2018-05-13* | 22:00-22:30 | Cleaning up dashboard deletion API |
+| *2018-05-14* | 15:00-15:30 | Weekly TA meeting |
+| *2018-05-14* | 15:30-17:00 | Internal meeting |
+| *2018-05-14* | 17:00-17:30 | Removing Flask-RESTPlus dependency |
+| *2018-05-15* | 13:30-15:00 | Fixing backend settings changing bug |
+| *2018-05-15* | 15:00-16:55 | Investigating aggregator bug |

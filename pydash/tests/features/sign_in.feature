@@ -3,8 +3,8 @@ To ensure that Authentication and Authorization of PyDash works successfully,
 we check to see if only existing users are able to sign in.
 
 
-Scenario: Signing in successfully as existent user
-  Given PyDash contains the user "W-M" with password "mypass"
+Scenario: Signing in successfully as existent verified user
+  Given PyDash contains the verified user "W-M" with password "mypass"
   When I visit the Pydash sign in page
   And I enter the username "W-M"
   And I enter the password "mypass"

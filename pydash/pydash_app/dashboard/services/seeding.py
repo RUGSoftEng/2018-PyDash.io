@@ -4,7 +4,7 @@ to make it easier to test code in development and staging environments.
 """
 
 
-from pydash_app.dashboard.dashboard import Dashboard
+from pydash_app.dashboard.entity import Dashboard
 import pydash_app.dashboard.repository as repository
 import pydash_app.user.repository as user_repository
 
@@ -22,10 +22,12 @@ def seed():
     for user in user_repository.all():
         dashboard_new = Dashboard('http://flask-sample.koenbolhuis.nl/dashboard',
                                   'cc83733cb0af8b884ff6577086b87909',
-                                  user.get_id())
+                                  user.get_id(),
+                                  'Testing Dashboard (FMD v1.12.0)')
         dashboard_old = Dashboard('http://flask-sample-old.koenbolhuis.nl/dashboard',
                                   'cc83733cb0af8b884ff6577086b87909',
-                                  user.get_id())
+                                  user.get_id(),
+                                  'Unsupported Dashboard (FMD v1.11.5)')
         for dashboard in [dashboard_new, dashboard_old]:
             print(f'Adding dashboard {dashboard}')
             repository.add(dashboard)

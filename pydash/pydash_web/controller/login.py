@@ -1,6 +1,6 @@
 """
 Manages the logging in of a user into the application,
-and rejecting visitors that enter improper sign-in information.
+and rejecting visitors that enter improper sign-in information or have not been verified yet.
 """
 from flask import jsonify
 from flask_login import current_user, login_user
@@ -19,7 +19,7 @@ def login():
             "message": "User already logged in",
             "user": _user_details(current_user)
         }
-        logger.warning(f"Login failed - {current_user} already logged in")
+        logger.info(f"{current_user} already logged in")
         return jsonify(result)
 
     args = _parse_arguments()
@@ -36,6 +36,11 @@ def login():
         result = {"message": "Username or password incorrect"}
         logger.warning(f"Failed login request using {args['username']}, {args['password']}")
         return jsonify(result), 401
+
+    if not user.is_verified():
+        result = {"message": "User has not yet been verified"}
+        logger.warning(f"Login failed - {user} has not yet been verified")
+        return jsonify(result), 403
 
     login_user(user)
     logger.info(f"{current_user} successfully logged in")

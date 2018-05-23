@@ -2,7 +2,7 @@
 This module is the public interface (available to the web-application pydash_web)
 for interacting with Dashboards.
 """
-from .dashboard import Dashboard
+from .entity import Dashboard
 import pydash_app.dashboard.repository
 
 
@@ -24,7 +24,7 @@ def find(dashboard_id):
     """
     Returns a single Dashboard-entity with the given UUID or None if it could not be found.
     :param dashboard_id: UUID of the dashboard we hope to find.
-    :return: The Dashboard-entity with the given UUID or None if it could not be found.
+    :return: The Dashboard-entity with the given UUID or raises an Exception if it could not be found.
     """
     return repository.find(dashboard_id)
 

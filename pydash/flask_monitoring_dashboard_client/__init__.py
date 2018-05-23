@@ -16,21 +16,28 @@ _DETAILS_ENDPOINT = 0
 _RULES_ENDPOINT = 1
 _DATA_ENDPOINT = 2
 
+# In seconds
+_REQUEST_TIMEOUT = 1
+
 logger = pydash_logger.Logger(__name__)
 
 
-def get_details(dashboard_url):
+def get_details(dashboard_url, timeout=_REQUEST_TIMEOUT):
     """
     Get details from a deployed flask-monitoring-dashboard
     :param dashboard_url: The base URL for the deployed dashboard, without trailing slash
+    :param timeout: Optional timeout to wait for a response from the dashboard
     :return: A dict containing details from the dashboard, or None if the request was unsuccessful
     """
     endpoint = _endpoint_name(_DETAILS_ENDPOINT)
 
     try:
-        response = requests.get(f'{dashboard_url}/{endpoint}')
+        response = requests.get(f'{dashboard_url}/{endpoint}', timeout=timeout)
     except requests.exceptions.ConnectionError as e:
         logger.error(f'Connection error in get_details: {e}')
+        raise
+    except requests.exceptions.Timeout as e:
+        logger.error(f'Timeout error in get_details: {e}')
         raise
 
     if response.status_code != 200:
@@ -44,19 +51,23 @@ def get_details(dashboard_url):
         raise
 
 
-def get_monitor_rules(dashboard_url, dashboard_token):
+def get_monitor_rules(dashboard_url, dashboard_token, timeout=_REQUEST_TIMEOUT):
     """
     Get monitor rules from a deployed flask-monitoring-dashboard
     :param dashboard_url: The base URL for the deployed dashboard, without trailing slash
     :param dashboard_token: The secret token for the dashboard, used to decode the Json Web Token response
+    :param timeout: Optional timeout to wait for a response from the dashboard
     :return: A dict containing monitor rules of the dashboard, or None if the request was unsuccessful
     """
     endpoint = _endpoint_name(_RULES_ENDPOINT)
 
     try:
-        response = requests.get(f'{dashboard_url}/{endpoint}')
+        response = requests.get(f'{dashboard_url}/{endpoint}', timeout=timeout)
     except requests.exceptions.ConnectionError as e:
         logger.error(f'Connection error in get_monitor_rules: {e}')
+        raise
+    except requests.exceptions.Timeout as e:
+        logger.error(f'Timeout error in get_monitor_rules: {e}')
         raise
 
     if response.status_code != 200:
@@ -66,7 +77,7 @@ def get_monitor_rules(dashboard_url, dashboard_token):
     return _decode_jwt(response.text, dashboard_token)
 
 
-def get_data(dashboard_url, dashboard_token, time_from=None, time_to=None):
+def get_data(dashboard_url, dashboard_token, time_from=None, time_to=None, timeout=_REQUEST_TIMEOUT):
     """
     Get data from a deployed flask-monitoring-dashboard
     :param dashboard_url: The base URL for the deployed dashboard, without trailing slash
@@ -74,6 +85,7 @@ def get_data(dashboard_url, dashboard_token, time_from=None, time_to=None):
     :param time_from: An optional datetime indicating only data since that moment should be included
     :param time_to: An optional datetime indicating only data up to that point should be included;
     only valid if time_from is also specified
+    :param timeout: Optional timeout to wait for a response from the dashboard
     :return: A dict containing all monitoring data, possibly limited to the given time range
     """
     endpoint = _endpoint_name(_DATA_ENDPOINT)
@@ -92,9 +104,12 @@ def get_data(dashboard_url, dashboard_token, time_from=None, time_to=None):
         url = f'{url}/{time_to}'
 
     try:
-        response = requests.get(url)
-    except requests.exceptions.ConnectionError:
+        response = requests.get(url, timeout=timeout)
+    except requests.exceptions.ConnectionError as e:
         logger.error(f'Connection error in get_data: {e}')
+        raise
+    except requests.exceptions.Timeout as e:
+        logger.error(f'Timeout error in get_data: {e}')
         raise
 
     if response.status_code != 200:
