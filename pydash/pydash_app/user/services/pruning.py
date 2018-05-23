@@ -24,7 +24,7 @@ def schedule_periodic_pruning_task(
 def _prune_unverified_users():
     users_to_remove = []
 
-    for user in pydash_app.user.repository.all():
+    for user in pydash_app.user.repository.all_unverified():
         if user.has_verification_code_expired():
             users_to_remove.append(user)
 

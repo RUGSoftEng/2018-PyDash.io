@@ -43,7 +43,7 @@ def register_user():
         return jsonify(result), 400
 
     if pydash_app.user.find_by_name(username) is not None:
-        logger.warning(f'While registering a user: {message}')
+        logger.warning(f'While registering a user: User with username {username} already exists.')
         result = {'message': f'User with username {username} already exists.'}
         return jsonify(result), 400
     else:
