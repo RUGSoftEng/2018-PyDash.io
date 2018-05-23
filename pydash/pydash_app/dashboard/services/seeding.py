@@ -33,4 +33,5 @@ def seed():
             repository.add(dashboard)
             print(f'Fetching remote info for dashboard {dashboard}.')
             fetching.fetch_and_update_historic_dashboard_info(dashboard.id)
+
     print('Seeding of dashboards is done!')

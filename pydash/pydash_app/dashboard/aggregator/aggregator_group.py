@@ -150,6 +150,8 @@ class AggregatorGroup(persistent.Persistent):
         for (partition, aggregator_dict) in self.partitions.items():
             endpoint_call_identifier = calc_endpoint_call_identifier(partition, endpoint_call)
             aggregator_dict[endpoint_call_identifier].add_endpoint_call(endpoint_call)
+        self._p_changed = True # ZODB mark object as changed
+
 
     def fetch_aggregator(self, partition_field_names):
         """
