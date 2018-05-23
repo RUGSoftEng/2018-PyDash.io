@@ -15,6 +15,9 @@ import { withStyles } from 'material-ui/styles';
 import SwipeableViews from 'react-swipeable-views';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
+import DeleteIcon from 'material-ui-icons/Delete'
+import { Button } from 'material-ui';
+
 
 // Helper:
 import {dict_to_xy_arr} from "../../../utils";
@@ -37,6 +40,9 @@ const styles = theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     width: 500,
+  },
+  settings:{
+    float: "centre",
   },
 });
 
@@ -152,7 +158,7 @@ class StatisticsPage extends Component {
                     </div>
                 </div>
               </TabContainer>
-              <TabContainer dir={theme.direction}>
+              <TabContainer dir={theme.direction} >
                 <div>
 
                     <EndpointsTable data={this.state.dashboard.endpoints} dashboard_id={this.props.dashboard.id} />
@@ -170,8 +176,16 @@ class StatisticsPage extends Component {
                     
                  </div>
               </TabContainer>
-              <TabContainer dir={theme.direction}>
-                  <p>Nothing here yet!</p>
+              <TabContainer dir={theme.direction} className={theme.settings}>
+                  <h2>Name: {this.props.dashboard.name}</h2>
+                  <h2>URL: {this.props.dashboard.url}</h2>
+                  {/* <h2>Token: {this.props.dashboard.token}</h2> */}
+                    <Button className={theme.button} variant="raised" color="secondary" >
+                        Delete dashboard?
+                        <DeleteIcon className={theme.rightIcon} />
+                    </Button>
+
+
               </TabContainer>
             </SwipeableViews>
           </div>
