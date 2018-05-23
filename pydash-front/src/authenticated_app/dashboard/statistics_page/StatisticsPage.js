@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import axios from 'axios';
+import { Redirect } from 'react-router'
 
 // Contents:
 import VisitsPanel from './VisitsPanel';
@@ -120,6 +121,20 @@ class StatisticsPage extends Component {
         this.setState({ value: index });
     };
 
+    handleDelete = (e) => {
+        
+        e.preventDefault()
+        // Make a request for deletion
+        axios.post(window.api_path + '/api/dashboards/<dashboard_id>/delete', {
+          dashboard_id: this.props.dashboard.id},
+          {withCredentials: true}
+        ).then((response) => {
+            return <Redirect to="/" />;
+        }).catch((error) => {
+            console.log('Deletion failed');
+        });
+      }
+
     render() {
         const { theme } = this.props;
         if(this.props.dashboard === null || this.state.dashboard === null) {
@@ -180,7 +195,7 @@ class StatisticsPage extends Component {
                   <h2>Name: {this.props.dashboard.name}</h2>
                   <h2>URL: {this.props.dashboard.url}</h2>
                   {/* <h2>Token: {this.props.dashboard.token}</h2> */}
-                    <Button className={theme.button} variant="raised" color="secondary" >
+                    <Button className={theme.button} variant="raised" color="secondary"  onClick={this.handleDelete} >
                         Delete dashboard?
                         <DeleteIcon className={theme.rightIcon} />
                     </Button>
