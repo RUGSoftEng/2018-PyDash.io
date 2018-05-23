@@ -1,13 +1,33 @@
 import React, { Component} from 'react';
 
+
 import Button from 'material-ui/Button';
 import { Link } from 'react-router-dom';
+import TextField from 'material-ui/TextField';
 
 class EndpointsTable extends Component {
+    state = {
+        input:'',
+    };
+
+    handleType = key => event => {
+        this.setState({
+            [key]: event.target.value
+        });
+      };
+
     render = () => {
         console.log(this.props.data);
         return (
+
             <div className="EndpointsTable">
+                <TextField
+                id="filter"
+                label="Filter endpoints"
+                value={this.state.input}
+                onChange={this.handleType('input')}
+                margin="normal"
+                />
                 <table width="100%">
                     <tr>
                         <th></th>
@@ -25,6 +45,7 @@ class EndpointsTable extends Component {
                         <th>Details</th>
                     </tr>
                     {this.props.data.map((endpoint) => {
+                        if(this.state.input === '' || endpoint.name.includes(this.state.input)){
                         return (
                             <tr>
                                 <td>{endpoint.name}</td>
@@ -35,6 +56,10 @@ class EndpointsTable extends Component {
                                 <td><Button variant="raised" color="primary" component={Link} to={'/overview/dashboards/'+this.props.dashboard_id+'/endpoints/'+endpoint.name}>Details</Button></td>
                             </tr>
                         )
+                        } 
+                        return  
+
+                    
                     })}
                 </table>
                 {/*<Table>
