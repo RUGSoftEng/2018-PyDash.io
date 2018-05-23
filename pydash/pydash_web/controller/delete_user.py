@@ -5,6 +5,7 @@ Manages deletion of a user.
 from flask import jsonify, request
 from flask_login import current_user
 
+import periodic_tasks
 import pydash_app.user as user
 import pydash_app.dashboard as dashboard
 import pydash_logger.logger as pylog
@@ -40,6 +41,9 @@ def delete_user():
     for dash in dashboard.dashboards_of_user(current_user.id):
         try:
             dashboard.remove_from_repository(dash)
+
+            periodic_tasks.remove_task(('dashboard', dash.id, 'historic_fetching'))
+            periodic_tasks.remove_task(('dashboard', dash.id, 'fetching'))
         except KeyError:
             logger.warning(f'Dashboard {dash} from user {current_user} has already been removed.')
 
