@@ -55,7 +55,7 @@ def get_hourly_data(dashboard, day, field):
 
     # Gets a list of data per hour of the day.
     return [dashboard._aggregator_group.fetch_aggregator({'hour': str(day) + 'T' + str(i)}).as_dict()[str(field)]
-            for i in range(0, 23)]
+            for i in range(24)]
 
 
 def daterange(start_date, end_date):
