@@ -38,8 +38,8 @@ import persistent
 from enum import Enum
 
 from pydash_app.dashboard.endpoint import Endpoint
-from pydash_app.dashboard.aggregator import Aggregator
-
+# from pydash_app.dashboard.aggregator import Aggregator
+from pydash_app.dashboard.aggregator.aggregator_group import AggregatorGroup
 
 class DashboardState(Enum):
     """
@@ -108,7 +108,7 @@ class Dashboard(persistent.Persistent):
         self.error = None
 
         self._endpoint_calls = []  # list of unfiltered endpoint calls, for use with an aggregator.
-        self._aggregator = Aggregator(self._endpoint_calls)
+        self._aggregator_group = AggregatorGroup()
 
     def __repr__(self):
         return f'<{self.__class__.__name__} id={self.id} url={self.url}>'
@@ -142,7 +142,7 @@ class Dashboard(persistent.Persistent):
         :param endpoint_call: The endpoint call to add
         """
         self._endpoint_calls.append(endpoint_call)
-        self._aggregator.add_endpoint_call(endpoint_call)
+        self._aggregator_group.add_endpoint_call(endpoint_call)
 
         # Adds endpoint to list of endpoints if it has not been registered yet.
         if endpoint_call.endpoint not in self.endpoints:  # Note: this is possible, because the names are the keys.
@@ -154,7 +154,7 @@ class Dashboard(persistent.Persistent):
         Returns aggregated data on this dashboard.
         :return: A dict containing aggregated data points.
         """
-        return self._aggregator.as_dict()
+        return self._aggregator_group.fetch_aggregator({}).as_dict()
 
     # Required because `multi_indexed_collection` puts dashboards in a set,
     #  that needs to order its keys for fast lookup.
