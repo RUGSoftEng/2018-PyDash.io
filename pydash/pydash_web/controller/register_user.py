@@ -78,7 +78,7 @@ def _send_verification_email(verification_code, expiration_date, recipient_email
 
     protocol = 'http'  # this or https  #Todo: change to https once that has been set up.
     host = 'localhost:5000'  # Todo: change from localhost to deployment server once that has been set up.
-    verification_url = f'{protocol}://{host}/api/user/verify/{verification_code}'
+    verification_url = f'{protocol}://{host}/verify/{verification_code}'
 
     message_plain = format_verification_mail_plain(username, verification_url, expiration_date)
     message_html = format_verification_mail_html(username, verification_url, expiration_date)
