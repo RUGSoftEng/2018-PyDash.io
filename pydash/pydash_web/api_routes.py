@@ -25,6 +25,7 @@ def logout():
 def register_user():
     return controller.register_user()
 
+
 @api.route("/api/user/verify", methods=["POST"])
 def verify_user():
     return controller.verify_user()
