@@ -17,7 +17,15 @@ class EndpointsTable extends Component {
       };
 
     render = () => {
-        console.log(this.props.data);
+        console.log("ENDPOINTS TABLE", this.props.data);
+        if(this.props.data.length === 0) {
+            return (
+                <em>
+                    No Endpoints could currently be found for this Dashboard.
+                </em>
+            )
+        }
+
         return (
 
             <div className="EndpointsTable">
@@ -29,10 +37,11 @@ class EndpointsTable extends Component {
                 margin="normal"
                 />
                 <table width="100%">
+                    <thead>
                     <tr>
                         <th></th>
-                        <th colspan="2">Number of hits</th>
-                        <th colspan="2">Execution times</th>
+                        <th colSpan="2">Number of hits</th>
+                        <th colSpan="2">Execution times</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -44,6 +53,7 @@ class EndpointsTable extends Component {
                         <th>Total</th>
                         <th>Details</th>
                     </tr>
+
                     {this.props.data.map((endpoint) => {
                         if(this.state.input === '' || endpoint.name.includes(this.state.input)){
                             return (
@@ -63,6 +73,7 @@ class EndpointsTable extends Component {
                         }
                         
                     )}
+
                 </table>
                 {/*<Table>
                     <TableHead>

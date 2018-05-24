@@ -54,13 +54,15 @@ class Aggregator(persistent.Persistent):
             value.append(endpoint_call, self.statistics)
 
         self.endpoint_calls.append(endpoint_call)
+        self._p_changed = True  # ZODB mark object as changed
 
     def as_dict(self):
         """
         Return aggregated data in a dict. Only includes statistics that should be rendered.
         :return: A dict containing several aggregated data points
         """
+
         return {
-            statistic.field_name(): statistic.rendered_value()
-            for statistic in self.statistics.values() if statistic.should_be_rendered
-        }
+                statistic.field_name(): statistic.rendered_value()
+                for statistic in self.statistics.values() if statistic.should_be_rendered
+                }
