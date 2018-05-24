@@ -23,7 +23,8 @@ def seed():
         dashboard_new = Dashboard('http://flask-sample.koenbolhuis.nl/dashboard',
                                   'cc83733cb0af8b884ff6577086b87909',
                                   user.get_id(),
-                                  'Testing Dashboard (FMD v1.12.0)')
+                                  'Testing Dashboard (FMD v1.12.0+)',
+                                  True)
         dashboard_old = Dashboard('http://flask-sample-old.koenbolhuis.nl/dashboard',
                                   'cc83733cb0af8b884ff6577086b87909',
                                   user.get_id(),
