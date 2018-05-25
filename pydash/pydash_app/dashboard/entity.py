@@ -91,6 +91,9 @@ class Dashboard(persistent.Persistent):
         if name is not None and not isinstance(name, str):
             raise TypeError("Dashboard expects name to be a string.")
 
+        if not isinstance(monitor_uptime, bool):
+            raise TypeError("Dashboard expects monitor_uptime to be a string.")
+
         # Make sure integers and strings are allowed as well.
         if not isinstance(user_id, uuid.UUID):
             user_id = uuid.UUID(user_id)
