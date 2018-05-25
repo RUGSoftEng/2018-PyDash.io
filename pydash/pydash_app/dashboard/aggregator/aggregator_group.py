@@ -1,7 +1,8 @@
 from collections import defaultdict
 from itertools import chain, combinations
 import persistent
-from datetime import datetime
+from datetime import datetime, timedelta
+from copy import copy
 
 from . import Aggregator
 
@@ -49,7 +50,7 @@ PartitionByHour = AggregatorPartitionFun('hour', 'time', partition_by_hour_fun)
 
 def partition_by_minute_fun(endpoint_call):
     return endpoint_call.time.strftime("%Y-%m-%dT%H-%M")
-PartitionByHour = AggregatorPartitionFun('minute', 'time', partition_by_minute_fun)
+PartitionByMinute = AggregatorPartitionFun('minute', 'time', partition_by_minute_fun)
 
 
 def partition_by_version_fun(endpoint_call):
@@ -164,19 +165,20 @@ class AggregatorGroup(persistent.Persistent):
             endpoint_call_identifier = calc_endpoint_call_identifier(partition, endpoint_call)
             aggregator_dict[endpoint_call_identifier].add_endpoint_call(endpoint_call)
 
-    def fetch_aggregator(self, partition_field_names):
+    def fetch_aggregator(self, filter_dict):
         """
-        Filters the internal collection of aggregators and returns the right one depending on partition_field_names.
-        :param partition_field_names: A dictionary containing filter_name-value pairs to filter on.
+        Filters the internal collection of aggregators and returns the right one depending on filter_dict.
+        :param filter_dict: A dictionary containing property_name-value pairs to filter on.
           This is in the gist of `{'day':'2018-05-20', 'ip':'127.0.0.1'}`
 
           The current filter_names are:
             - Time:
-              * 'year' - e.g. '2018'
-              * 'week' - e.g. '2018-W17'
-              * 'day'  - e.g. '2018-05-20'
-              * 'hour' - e.g. '2018-05-20T20'
-
+              * 'year'   - e.g. '2018'
+              * 'month'  - e.g. '2018-05'
+              * 'week'   - e.g. '2018-W17'
+              * 'day'    - e.g. '2018-05-20'
+              * 'hour'   - e.g. '2018-05-20T20'
+              * 'minute' - e.g. '2018-05-20T20-10'
             Note that for Time filter-values, the formatting is crucial.
 
             - Version:
@@ -188,49 +190,194 @@ class AggregatorGroup(persistent.Persistent):
             - Group-by:
               * 'group_by' - e.g. None
 
-          Note that when providing two filters of the same type, a
+          Note that when providing two filters of the same type, a ValueError is raised.
 
         :return: An Aggregator instance that contains the right aggregated data for this query.
           Note that if an invalid value is given, a new (and empty) Aggregator is returned, due to the lazy addition.
         """
         try:
-            partition = self.partition_names[frozenset(partition_field_names.keys())]
+            partition = self.partition_names[frozenset(filter_dict.keys())]
         except KeyError:
             # TODO: discern what exactly goes wrong higher up in the callback chain.
             raise ValueError("Bad input value: input filter type is not supported,"
                              " input filter-value not formatted correctly,"
                              " or multiple input filters of the same type.")
-        return self.partitions[partition][frozenset(partition_field_names.values())]
+        return self.partitions[partition][frozenset(filter_dict.values())]
 
-def fetch_aggregator_daterange(filters, date_begin, date_end):
+    def fetch_aggregator_daterange(self, filters, datetime_begin, datetime_end):
+        """
+        Fetches an aggregator over the entire provided datetime range. Note that filters may not contain time-based
+        properties.
+        :param filters: A dictionary that contains property_name-value pairs to filter on.
+          This is in the gist of {'ip': '127.0.0.1', 'version': '1.0.1'}
+          For the complete set of possible filters, see AggregatorGroup.fetch_aggregator.
+        :param datetime_begin: A datetime object indicating the inclusive lower bound for the datetime range to
+         aggregate over.
+        :param datetime_end:  A datetime object indicating the exclusive upper bound for the datetime range to
+         aggregate over.
+        :return: An Aggregator object that contains the aggregated data over the entirety of the specified datetime
+         range.
+        """
+        for key in filters.keys:
+            if key in ['year', 'month', 'week', 'day', 'hour', 'minute']:
+                raise ValueError('filters may not contain time-based properties')
+
+        date_chunks = chop_date_range_into_chunks(datetime_begin, datetime_end)
+        aggregator = None
+
+        filters_cpy = copy(filters)
+        for day in date_chunks['day']:
+            filters_cpy['day'] = f'{day.year}-{day.month}-{day.day}'
+            aggregator += self.fetch_aggregator(filters_cpy)
+
+        filters_cpy = copy(filters)
+        for hour in date_chunks['hour']:
+            filters_cpy['hour'] = f'{hour.year}-{hour.month}-{hour.day}T{hour.hour}'
+            aggregator += self.fetch_aggregator(filters_cpy)
+
+        filters_cpy = copy(filters)
+        for minute in date_chunks['minute']:
+            filters_cpy['minute'] = f'{minute.year}-{minute.month}-{minute.day}T{minute.hour}-{minute.minute}'
+
+        return aggregator
 
 
+def chop_date_range_into_chunks(datetime_begin, datetime_end):
+    """
+    Chops the given datetime range into chunks of full days, hours and minutes.
+    :param datetime_begin: A datetime object that indicates the inclusive lower bound of the datetime range.
+    :param datetime_end: A datetime object that indicates the exclusive upper bound of the datetime range.
+    :return: A dict with the keys "days", "hours" and "minutes", where the values are lists of corresponding datetime
+     granulates.
+    """
+
+    chunks = {
+              "day": [],
+              "hour": [],
+              "minute": []
+             }
+
+    days, (complete_l, complete_r) = chop_date_range_into_days(datetime_begin, datetime_end)
+    chunks["day"] = days
+    if complete_l and complete_r:
+        return chunks
+
+    if not days:
+        hours, (complete_l, complete_r) = chop_date_range_into_hours(datetime_begin, datetime_end)
+    else:
+        if not complete_l:
+            hours_l, (complete_l, _) = chop_date_range_into_hours(datetime_begin,
+                                                                  datetime(year=days[0].year,
+                                                                           month=days[0].month,
+                                                                           day=days[0].day
+                                                                           )
+                                                                  )
+        else:
+            hours_l = []
+        if not complete_r:
+            hours_r, (_, complete_r) = chop_date_range_into_hours(datetime(year=datetime_end.year,
+                                                                           month=datetime_end.month,
+                                                                           day=datetime_end.day
+                                                                           ),
+                                                                  datetime_end
+                                                                  )
+        else:
+            hours_r = []
+        hours = hours_l + hours_r
+    chunks["hour"] = hours
+    if complete_l and complete_r:
+        return chunks
+
+    if not hours:
+        minutes = chop_date_range_into_minutes(datetime_begin, datetime_end)
+    else:
+        if not complete_l:
+            minutes_l = chop_date_range_into_minutes(datetime_begin,
+                                                     datetime(year=hours[0].year,
+                                                              month=hours[0].month,
+                                                              day=hours[0].day,
+                                                              hour=hours[0].hour
+                                                              )
+                                                     )
+        else:
+            minutes_l = []
+        if not complete_r:
+            minutes_r = chop_date_range_into_minutes(datetime(year=datetime_end.year,
+                                                              month=datetime_end.month,
+                                                              day=datetime_end.day,
+                                                              hour=datetime_end.hour
+                                                              ),
+                                                     datetime_end
+                                                     )
+        else:
+            minutes_r = []
+        minutes = minutes_l + minutes_r
+    chunks["minute"] = minutes
+    return chunks
 
 
-
-def chop_date_range_into_chunks(date_begin, date_end):
-    years = chop_date_range_into_years(date_begin, date_end)
-    weeks = get_weeks_from_beginning_of_year() + get_weeks_until_end_of_year()
-    days = []
-    hours = []
-
-def chop_date_range_into_years(datetime_begin, datetime_end):
+def chop_date_range_into_days(datetime_begin, datetime_end):
+    """
+    Returns a range of days (datetimes) that are fully within the given date range.
+    :param datetime_begin: a datetime object that indicates the inclusive lower bound of the desired date-range
+    :param datetime_end: a datetime object that indicates the exclusive upper bound of the desired date-range
+    :return: An ordered list of datetime objects containing the days that are fully within the given range,
+        as well as a tuple containing whether the left part and the right part of the date range have been consumed completely.
+    """
     if datetime_begin > datetime_end:
         raise ValueError("date_begin cannot be larger than date_end")
+    range_begin = datetime_begin.day
+    range_end = datetime_end.day
+    complete_l = True
+    complete_r = True
+    if datetime_begin.hour != 0 or datetime_begin.minute != 0:
+        range_begin += 1
+        complete_l = False
+    if datetime_end.hour != 0 or datetime_end.minute != 0:
+        complete_r = False
+    range_begin = datetime(datetime_begin.year, datetime_begin.month, range_begin)
+    range_end   = datetime(datetime_end.year, datetime_end.month, range_end)
+    num_days    = (range_end - range_begin).days
+    return [range_begin + day * timedelta(days=1) for day in range(num_days)], (complete_l, complete_r)
 
-    if datetime_begin == datetime(year=datetime_begin.year, month=0, day=0, hour=0):
-        range_begin = datetime_begin.year
-    else:
-        range_begin = datetime_begin.year + 1
-    if datetime_end == datetime(year=datetime_end.year, month=0, day=0, hour=0):
-        range_end = datetime_end.year - 1
-    else:
-        range_end = datetime_end.year
 
-    return [year for year in range(range_begin, range_end)]
+def chop_date_range_into_hours(datetime_begin, datetime_end):
+    """
+    Returns a range of hours (datetimes) that are fully within the given date range.
+    :param datetime_begin: a datetime object that indicates the inclusive lower bound of the desired date-range
+    :param datetime_end: a datetime object that indicates the exclusive upper bound of the desired date-range
+    :return: An ordered list of datetime objects containing the hours that are fully within the given range,
+        as well as a tuple containing whether the left part and the right part of the date range have been consumed completely.
+    """
+    if datetime_begin > datetime_end:
+        raise ValueError("date_begin cannot be larger than date_end")
+    range_begin = datetime_begin.hour
+    range_end = datetime_end.hour
+    complete_l = True
+    complete_r = True
 
-def get_weeks_until_end_of_year(datetime_begin):
-    return [week for week in range(datetime_begin, 53)]
+    if datetime_begin.minute != 0:
+        range_begin += 1
+        complete_l = False
+    if datetime_end.minute != 0:
+        complete_r = False
 
-def get_weeks_from_beginning_of_year(datetime_end):
-    return [week for week in range(datetime_end)]
+    range_begin = datetime(datetime_begin.year, datetime_begin.month, datetime_begin.day, range_begin)
+    range_end   = datetime(datetime_end.year, datetime_end.month, datetime_end.day, range_end)
+    num_hours   = int((range_end - range_begin).total_seconds() / 3600)
+    return [range_begin + hour * timedelta(seconds=3600) for hour in range(num_hours)], (complete_l, complete_r)
+
+
+def chop_date_range_into_minutes(datetime_begin, datetime_end):
+    """
+    Returns a range of minutes (datetimes) that are fully within the given date range.
+    :param datetime_begin: a datetime object that indicates the inclusive lower bound of the desired date-range
+    :param datetime_end: a datetime object that indicates the exclusive upper bound of the desired date-range
+    :return: An ordered list of datetime objects containing the minutes that are fully within the given range.
+    Note that this function will not take any lower kind of granularity into account than datetime.minute,
+      so the input `datetime(..., minute=6, second=20)` will be treated as `datetime(..., minute=6, second=0)`, etc.
+    """
+    if datetime_begin > datetime_end:
+        raise ValueError("date_begin cannot be larger than date_end")
+    num_minutes = int((datetime_end - datetime_begin).total_seconds() / 60)
+    return [datetime_begin + minute * timedelta(seconds=60) for minute in range(num_minutes)]

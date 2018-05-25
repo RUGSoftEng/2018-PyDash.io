@@ -152,10 +152,10 @@ class AverageExecutionTime(FloatStatisticABC):
 
     def add_together(self, other, dependencies_self, dependencies_other):
         aet = AverageExecutionTime()
-        self_tv = dependencies_self[TotalVisits]
-        other_tv = dependencies_other[TotalVisits]
-        self_tet = dependencies_self[TotalExecutionTime]
-        other_tet = dependencies_other[TotalExecutionTime]
+        self_tv = dependencies_self[TotalVisits].value
+        other_tv = dependencies_other[TotalVisits].value
+        self_tet = dependencies_self[TotalExecutionTime].value
+        other_tet = dependencies_other[TotalExecutionTime].value
 
         if self_tv == 0:
             aet.value = other.value
@@ -314,8 +314,10 @@ class ExecutionTimePercentileABC(FloatStatisticABC):
 
     def add_together(self, other, dependencies_self, dependencies_other):
         etp = self.__class__()
-        etp.value = (dependencies_self[ExecutionTimeTDigest].value + dependencies_other[ExecutionTimeTDigest].value)\
-            .percentile(self.percentile_nr)
+        if other.value != other.empty():
+            etp.value = (dependencies_self[ExecutionTimeTDigest].value +
+                         dependencies_other[ExecutionTimeTDigest].value)\
+                        .percentile(self.percentile_nr)
         return etp
 
 

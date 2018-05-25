@@ -2,6 +2,7 @@ from ordered_set import OrderedSet
 from collections import OrderedDict
 
 import persistent
+from copy import deepcopy
 
 from . import statistics
 
@@ -9,6 +10,7 @@ from . import statistics
 def date_dict(dict):
     # JS expects dates in the ISO 8601 Date format (example: 2018-03)
     return {k.strftime("%Y-%m-%d"): v for (k, v) in dict.items()}
+
 
 class Aggregator(persistent.Persistent):
     """
@@ -105,13 +107,26 @@ class Aggregator(persistent.Persistent):
 
     def __add__(self, other):
         """Creates a new aggregator object that combines the aggregates of both aggegators."""
+        if other is None:
+            return deepcopy(self)
+
         new = Aggregator()
         new.endpoint_calls = self.endpoint_calls + other.endpoint_calls
         for key, _ in new.statistics.items():
             new.statistics[key] = self.statistics[key].add_together(other.statistics[key], self.statistics, other.statistics)
-        # TODO: if shit goes wrong again w.r.t. missing statistics in output, try to patch in the workaround here as well.
         return new
 
     def __radd__(self, other):
+        # Return a deep copy in case sum(<Aggregator iterable>) is called
         if other == 0:
             return self.deepcopy()
+        else:
+            return self.__add__(other)
+
+    def __iadd__(self, other):
+        if other is None:
+            return self
+        self.endpoint_calls += other.endpoint_calls
+        for key, _ in self.statistics.items():
+            self.statistics[key] = self.satatistics[key].add_together(other.statistics[key], self.statistics, other.statistics)
+        return self
