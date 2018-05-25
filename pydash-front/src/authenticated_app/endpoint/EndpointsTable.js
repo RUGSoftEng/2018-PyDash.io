@@ -53,7 +53,7 @@ class EndpointsTable extends Component {
                         <th>Total</th>
                         <th>Details</th>
                     </tr>
-
+                    </thead>
                     {this.props.data.map((endpoint) => {
                         if(this.state.input === '' || endpoint.name.includes(this.state.input)){
                             return (
