@@ -76,6 +76,11 @@ def all():
     return database_root().users.values()
 
 
+def all_unverified():
+    """Returns a collection of all unverified users (in no guaranteed order)."""
+    return database_root().users.values('_verification_code')
+
+
 def add(user):
     """
     Adds the User-entity to the repository. Will raise a (KeyError, DuplicateIndexError) tuple on failure.

@@ -141,13 +141,13 @@ class Dashboard(persistent.Persistent):
          not been done yet.
         :param endpoint_call: The endpoint call to add
         """
-        self._endpoint_calls.append(endpoint_call)
-        self._aggregator_group.add_endpoint_call(endpoint_call)
-
         # Adds endpoint to list of endpoints if it has not been registered yet.
         if endpoint_call.endpoint not in self.endpoints:  # Note: this is possible, because the names are the keys.
             self.add_endpoint(Endpoint(endpoint_call.endpoint, True))
         self.endpoints[endpoint_call.endpoint].add_endpoint_call(endpoint_call)
+
+        self._endpoint_calls.append(endpoint_call)
+        self._aggregator_group.add_endpoint_call(endpoint_call)
 
     def aggregated_data(self):
         """

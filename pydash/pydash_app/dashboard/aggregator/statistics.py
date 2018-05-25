@@ -53,8 +53,12 @@ class Statistic(persistent.Persistent, abc.ABC):
     def empty(self):
         return None
 
-    @abc.abstractmethod
     def append(self, endpoint_call, dependencies):
+        self.perform_append(endpoint_call, dependencies)
+        self._p_changed = True # ZODB mark object as changed
+
+    @abc.abstractmethod
+    def perform_append(self, endpoint_call, dependencies):
         pass
 
     @abc.abstractmethod
@@ -102,13 +106,14 @@ class TotalVisits(Statistic):
     def field_name(self):
         return 'total_visits'
 
-    def append(self, endpoint_call, dependencies):
+    def perform_append(self, endpoint_call, dependencies):
         self.value += 1
 
     def add_together(self, other, dependencies_self, dependencies_other):
         tv = TotalVisits()
         tv.value = self.value + other.value
         return tv
+
 
 
 class TotalExecutionTime(FloatStatisticABC):
@@ -121,7 +126,7 @@ class TotalExecutionTime(FloatStatisticABC):
     def field_name(self):
         return 'total_execution_time'
 
-    def append(self, endpoint_call, dependencies):
+    def perform_append(self, endpoint_call, dependencies):
         self.value += endpoint_call.execution_time
 
     def add_together(self, other, dependencies_self, dependencies_other):
@@ -144,7 +149,7 @@ class AverageExecutionTime(FloatStatisticABC):
     def field_name(self):
         return 'average_execution_time'
 
-    def append(self, endpoint_call, dependencies):
+    def perform_append(self, endpoint_call, dependencies):
         if dependencies[TotalVisits].value == 0:
             self.value = 0
         else:
@@ -177,7 +182,7 @@ class VisitsPerDay(Statistic):
     def field_name(self):
         return 'visits_per_day'
 
-    def append(self, endpoint_call, dependencies):
+    def perform_append(self, endpoint_call, dependencies):
         date = endpoint_call.time.date()
         self.value[date] += 1
 
@@ -202,7 +207,7 @@ class VisitsPerIP(Statistic):
     def field_name(self):
         return 'visits_per_ip'
 
-    def append(self, endpoint_call, dependencies):
+    def perform_append(self, endpoint_call, dependencies):
         self.value[endpoint_call.ip] += 1
 
     def rendered_value(self):
@@ -226,7 +231,7 @@ class UniqueVisitorsAllTime(Statistic):
     def field_name(self):
         return 'unique_visitors'
 
-    def append(self, endpoint_call, dependencies):
+    def perform_append(self, endpoint_call, dependencies):
         self.value.add(endpoint_call.ip)
 
     def rendered_value(self):
@@ -248,7 +253,7 @@ class UniqueVisitorsPerDay(Statistic):
     def field_name(self):
         return 'unique_visitors_per_day'
 
-    def append(self, endpoint_call, dependencies):
+    def perform_append(self, endpoint_call, dependencies):
         date = endpoint_call.time.date()
         self.value[date].add(endpoint_call.ip)
 
@@ -280,7 +285,7 @@ class ExecutionTimeTDigest(Statistic):
     def field_name(self):  # Implemented in order to be able to instantiate this class.
         return 'execution_time_tdigest'
 
-    def append(self, endpoint_call, dependencies):
+    def perform_append(self, endpoint_call, dependencies):
         self.value.update(endpoint_call.execution_time)
 
     def add_together(self, other, dependencies_self, dependencies_other):
@@ -309,7 +314,7 @@ class ExecutionTimePercentileABC(FloatStatisticABC):
     def empty(self):
         return ExecutionTimePercentileABC._NoDataErrorValue
 
-    def append(self, endpoint_call, dependencies):
+    def perform_append(self, endpoint_call, dependencies):
         self.value = dependencies[ExecutionTimeTDigest].value.percentile(self.percentile_nr)
 
     def add_together(self, other, dependencies_self, dependencies_other):
