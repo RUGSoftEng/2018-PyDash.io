@@ -24,32 +24,40 @@ class AggregatorPartitionFun:
         return f"<{self.__class__.__name__} field_name={self.field_name} category={self.category} >"
 
 
+datetime_formats = {'year': '%Y'}
+datetime_formats['month'] = datetime_formats['year'] + '-%m'
+datetime_formats['week'] = datetime_formats['year'] + '-W%W'
+datetime_formats['day'] = datetime_formats['month'] + '-%d'
+datetime_formats['hour'] = datetime_formats['day'] + 'T%H'
+datetime_formats['minute'] = datetime_formats['hour'] + '-%M'
+
+
 def partition_by_year_fun(endpoint_call):
-    return endpoint_call.time.strftime("%Y")
+    return endpoint_call.time.strftime(datetime_formats['year'])
 PartitionByYear = AggregatorPartitionFun('year', 'time', partition_by_year_fun)
 
 
 def partition_by_month_fun(endpoint_call):
-    return endpoint_call.time.strftime("%Y-%m")
+    return endpoint_call.time.strftime(datetime_formats['month'])
 PartitionByMonth = AggregatorPartitionFun('month', 'time', partition_by_month_fun)
 
 
 def partition_by_week_fun(endpoint_call):
-    return endpoint_call.time.strftime("%Y-W%W")
+    return endpoint_call.time.strftime(datetime_formats['week'])
 PartitionByWeek = AggregatorPartitionFun('week', 'time', partition_by_week_fun)
 
 
 def partition_by_day_fun(endpoint_call):
-    return endpoint_call.time.strftime("%Y-%m-%d")
+    return endpoint_call.time.strftime(datetime_formats['day'])
 PartitionByDay = AggregatorPartitionFun('day', 'time', partition_by_day_fun)
 
 
 def partition_by_hour_fun(endpoint_call):
-    return endpoint_call.time.strftime("%Y-%m-%dT%H")
+    return endpoint_call.time.strftime(datetime_formats['hour'])
 PartitionByHour = AggregatorPartitionFun('hour', 'time', partition_by_hour_fun)
 
 def partition_by_minute_fun(endpoint_call):
-    return endpoint_call.time.strftime("%Y-%m-%dT%H-%M")
+    return endpoint_call.time.strftime(datetime_formats['minute'])
 PartitionByMinute = AggregatorPartitionFun('minute', 'time', partition_by_minute_fun)
 
 
@@ -107,22 +115,35 @@ class AggregatorGroup(persistent.Persistent):
     >>> ag.add_endpoint_call(ec1)
     >>> ag.add_endpoint_call(ec2)
     >>> ag.add_endpoint_call(ec3)
-    >>> a_day = ag.fetch_aggregator({'day':'2018-04-25'})
+    >>>
     >>> # Filter by day
-    ... a_day.as_dict()
+    ... a_day = ag.fetch_aggregator({'day':'2018-04-25'})
+    >>> a_day.as_dict()
     {'total_visits': 2, 'total_execution_time': 1.0, 'average_execution_time': 0.5, 'visits_per_day': {'2018-04-25': 2}, 'visits_per_ip': {'127.0.0.1': 1, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2}, 'fastest_measured_execution_time': 0.5, 'fastest_quartile_execution_time': 0.5, 'median_execution_time': 0.5, 'slowest_quartile_execution_time': 0.5, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
+    >>>
     >>> # Filter by week
     ... a_week = ag.fetch_aggregator({'week':'2018-W17'})
     >>> a_week.as_dict()
     {'total_visits': 3, 'total_execution_time': 1.5, 'average_execution_time': 0.5, 'visits_per_day': {'2018-04-25': 2, '2018-04-26': 1}, 'visits_per_ip': {'127.0.0.1': 2, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2, '2018-04-26': 1}, 'fastest_measured_execution_time': 0.5, 'fastest_quartile_execution_time': 0.5, 'median_execution_time': 0.5, 'slowest_quartile_execution_time': 0.5, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
+    >>>
     >>> # Filter by day and ip
     ... a_day_ip = ag.fetch_aggregator({'day':'2018-04-25', 'ip':'127.0.0.1'})
     >>> a_day_ip.as_dict()
     {'total_visits': 1, 'total_execution_time': 0.5, 'average_execution_time': 0.5, 'visits_per_day': {'2018-04-25': 1}, 'visits_per_ip': {'127.0.0.1': 1}, 'unique_visitors': 1, 'unique_visitors_per_day': {'2018-04-25': 1}, 'fastest_measured_execution_time': 0.5, 'fastest_quartile_execution_time': 0.5, 'median_execution_time': 0.5, 'slowest_quartile_execution_time': 0.5, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
+    >>>
     >>> # No filtering (all endpoint calls are included in this aggregator)
     ... a_all = ag.fetch_aggregator({})
     >>> a_all.as_dict()
     {'total_visits': 3, 'total_execution_time': 1.5, 'average_execution_time': 0.5, 'visits_per_day': {'2018-04-25': 2, '2018-04-26': 1}, 'visits_per_ip': {'127.0.0.1': 2, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2, '2018-04-26': 1}, 'fastest_measured_execution_time': 0.5, 'fastest_quartile_execution_time': 0.5, 'median_execution_time': 0.5, 'slowest_quartile_execution_time': 0.5, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
+    >>>
+    >>> # Filter over a datetime range
+    ... start_datetime = datetime(ec1.time.year, ec1.time.month, ec1.time.day)
+    >>> end_datetime = datetime(ec2.time.year, ec2.time.month, ec2.time.day + 1)
+    >>> a_all2 = ag.fetch_aggregator_daterange({}, start_datetime, end_datetime)
+    >>> a_all2.as_dict()
+    {'total_visits': 3, 'total_execution_time': 1.5, 'average_execution_time': 0.5, 'visits_per_day': {'2018-04-25': 2, '2018-04-26': 1}, 'visits_per_ip': {'127.0.0.1': 2, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2, '2018-04-26': 1}, 'fastest_measured_execution_time': 0.5, 'fastest_quartile_execution_time': 0.5, 'median_execution_time': 0.5, 'slowest_quartile_execution_time': 0.5, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
+    >>> a_all.as_dict() == a_all2.as_dict()
+    True
 
     """
 
@@ -165,7 +186,6 @@ class AggregatorGroup(persistent.Persistent):
             endpoint_call_identifier = calc_endpoint_call_identifier(partition, endpoint_call)
             aggregator_dict[endpoint_call_identifier].add_endpoint_call(endpoint_call)
         self._p_changed = True # ZODB mark object as changed
-
 
     def fetch_aggregator(self, filter_dict):
         """
@@ -220,26 +240,19 @@ class AggregatorGroup(persistent.Persistent):
         :return: An Aggregator object that contains the aggregated data over the entirety of the specified datetime
          range.
         """
-        for key in filters.keys:
+
+        for key in filters.keys():
             if key in ['year', 'month', 'week', 'day', 'hour', 'minute']:
                 raise ValueError('filters may not contain time-based properties')
 
         date_chunks = chop_date_range_into_chunks(datetime_begin, datetime_end)
-        aggregator = None
+        aggregator = Aggregator()
 
-        filters_cpy = copy(filters)
-        for day in date_chunks['day']:
-            filters_cpy['day'] = f'{day.year}-{day.month}-{day.day}'
-            aggregator += self.fetch_aggregator(filters_cpy)
-
-        filters_cpy = copy(filters)
-        for hour in date_chunks['hour']:
-            filters_cpy['hour'] = f'{hour.year}-{hour.month}-{hour.day}T{hour.hour}'
-            aggregator += self.fetch_aggregator(filters_cpy)
-
-        filters_cpy = copy(filters)
-        for minute in date_chunks['minute']:
-            filters_cpy['minute'] = f'{minute.year}-{minute.month}-{minute.day}T{minute.hour}-{minute.minute}'
+        for key, value in date_chunks.items():
+            filters_cpy = copy(filters)
+            for datetime in value:
+                filters_cpy[key] = datetime.strftime(datetime_formats[key])
+                aggregator += self.fetch_aggregator(filters_cpy)
 
         return aggregator
 

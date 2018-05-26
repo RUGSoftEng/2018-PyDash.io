@@ -74,7 +74,8 @@ class Aggregator(persistent.Persistent):
             return deepcopy(self)
 
         new = Aggregator()
-        new.endpoint_calls = self.endpoint_calls + other.endpoint_calls
+        new.endpoint_calls += self.endpoint_calls
+        new.endpoint_calls += other.endpoint_calls
         for key, _ in new.statistics.items():
             new.statistics[key] = self.statistics[key].add_together(other.statistics[key], self.statistics, other.statistics)
         return new
@@ -91,5 +92,5 @@ class Aggregator(persistent.Persistent):
             return self
         self.endpoint_calls += other.endpoint_calls
         for key, _ in self.statistics.items():
-            self.statistics[key] = self.satatistics[key].add_together(other.statistics[key], self.statistics, other.statistics)
+            self.statistics[key] = self.statistics[key].add_together(other.statistics[key], self.statistics, other.statistics)
         return self

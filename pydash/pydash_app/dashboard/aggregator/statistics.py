@@ -115,7 +115,6 @@ class TotalVisits(Statistic):
         return tv
 
 
-
 class TotalExecutionTime(FloatStatisticABC):
     def should_be_rendered(self):
         return True
@@ -214,7 +213,7 @@ class VisitsPerIP(Statistic):
         return dict(self.value)
 
     def add_together(self, other, dependencies_self, dependencies_other):
-        vpd = VisitsPerDay()
+        vpd = VisitsPerIP()
         keyset = set(self.value.keys()).union(set(other.value.keys()))
         for key in keyset:
             vpd.value[key] = self.value[key] + other.value[key]
@@ -315,14 +314,21 @@ class ExecutionTimePercentileABC(FloatStatisticABC):
         return ExecutionTimePercentileABC._NoDataErrorValue
 
     def perform_append(self, endpoint_call, dependencies):
-        self.value = dependencies[ExecutionTimeTDigest].value.percentile(self.percentile_nr)
+        # self.percentile_nr is called here, as in child classes it is interpreted as a method instead of a value
+        #  for some reason.
+        self.value = dependencies[ExecutionTimeTDigest].value.percentile(self.percentile_nr())
 
     def add_together(self, other, dependencies_self, dependencies_other):
         etp = self.__class__()
-        if other.value != other.empty():
+
+        if other.value == other.empty():
+            etp.value = self.value
+        else:
+            # self.percentile_nr is called here, as in child classes it is interpreted as a method instead of a value
+            #  for some reason.
             etp.value = (dependencies_self[ExecutionTimeTDigest].value +
-                         dependencies_other[ExecutionTimeTDigest].value)\
-                        .percentile(self.percentile_nr)
+                         dependencies_other[ExecutionTimeTDigest].value) \
+                .percentile(self.percentile_nr())
         return etp
 
 
