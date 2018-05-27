@@ -80,6 +80,7 @@ class AddDashboardDialog extends Component {
                 success: true,
                 loading: false,
             }));
+            this.props.callBack();
         }).catch((err) => {
             console.log(err);
             console.log(err.response);
