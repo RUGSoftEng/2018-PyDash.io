@@ -1,6 +1,6 @@
 import persistent
 import datetime
-from collections import defaultdict
+from collections import namedtuple, defaultdict
 
 
 class UptimeLog(persistent.Persistent):
@@ -10,14 +10,16 @@ class UptimeLog(persistent.Persistent):
     """
 
     def __init__(self):
-        self._log = defaultdict(list)  # datetime.date -> list[(datetime.time, bool)]
-        self._downtime = defaultdict(list)  # datetime.date -> list[(datetime.time, datetime.time)]
+        self._downtime_intervals = defaultdict(list)  # datetime.date -> list[(datetime.time, datetime.time)]
         self._total_downtime = defaultdict(datetime.timedelta)  # datetime.date -> datetime.timedelta
-        self._up_percentage = defaultdict(float)  # datetime.date -> float
 
-        self._is_up = None
+        self._downtime_start = None
 
-    def add_ping_result(self, is_up, ping_time=datetime.datetime.now(tz=datetime.timezone.utc)):
-        ping_date = ping_time.date()
-        status = (ping_time.time(), is_up)
-        self._log[ping_date].append(status)
+    def add_ping_result(self, is_up, ping_datetime=datetime.datetime.now(tz=datetime.timezone.utc)):
+        """
+        Add the result of a ping request to the uptime log.
+        :param is_up: Whether the web service is up or not.
+        :param ping_datetime: When the ping took place (approximately); defaults to the current time in UTC.
+        """
+
+
