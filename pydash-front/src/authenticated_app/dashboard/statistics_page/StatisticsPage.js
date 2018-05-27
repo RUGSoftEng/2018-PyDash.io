@@ -10,6 +10,7 @@ import EndpointExecutionTimesPanel from './EndpointExecutionTimesPanel';
 import ExecutionTimesTable from './ExecutionTimesTable';
 import EndpointsTable from '../../endpoint/EndpointsTable';
 import VisitorsHeatmapPanel from './VisitorsHeatmapPanel';
+import UniqueVisitorsHeatmapPanel from './UniqueVisitorsHeatmapPanel';
 
 // Visual:
 import { withStyles } from 'material-ui/styles';
@@ -151,6 +152,7 @@ class StatisticsPage extends Component {
                         <ExecutionTimesTable dashboard_id={this.props.dashboard.id} />
                         <EndpointExecutionTimesPanel dashboard_id={this.props.dashboard.id} />
                         <VisitorsHeatmapPanel dashboard_id={this.props.dashboard.id} />
+                        <UniqueVisitorsHeatmapPanel dashboard_id={this.props.dashboard.id} />
                     </div>
                 </div>
               </TabContainer>
