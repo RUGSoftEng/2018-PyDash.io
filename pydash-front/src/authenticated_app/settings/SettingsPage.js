@@ -118,26 +118,9 @@ handleDelete = (e) => {
   });
 }
 
-//   handleSettings = (e) => {
-//     e.preventDefault()
-//     axios.post(window.api_path + '/api/user/change_settings', {
-//       username: this.state.username,
-
-//     },{
-//       method: 'post',
-//       withCredentials: true
-//   }).then((response) => {
-//       console.log(response);
-//       this.handleClick();
-
-//      return <Redirect to="/" />
-//   }).catch((error) => {
-//       console.log('changing settings failed');
-//       this.handleClose();
-//   });
-// }
 
 handleChangesSettings = (e) => {
+
   e.preventDefault()
   let new_password = this.state.new_password,
       current_password = this.state.current_password,
@@ -147,14 +130,13 @@ handleChangesSettings = (e) => {
        if ((username.trim()) || (email.trim())) {
           axios.post(window.api_path + '/api/user/change_settings', {
           username: this.state.username,
+          
 
         },{
           method: 'post',
           withCredentials: true
       }).then((response) => {
           console.log(response);
-          this.handleClick();
-
         return <Redirect to="/" />
       }).catch((error) => {
           console.log('changing settings failed');
@@ -170,7 +152,6 @@ handleChangesSettings = (e) => {
       method: 'post',
       withCredentials: true
     }).then((response) => {
-      this.handleClick();
       console.log(response);
       return <Redirect to="/" />
   }).catch((error) => {
@@ -209,7 +190,7 @@ handleChangesSettings = (e) => {
     this.setState({SoundSettings: false});
   };
 
-  handleClick = () => {
+  handleOpenSnackbar = () => {
     this.setState({ snackbar: true });
   };
 
@@ -303,7 +284,7 @@ handleChangesSettings = (e) => {
             />
           </DialogContent>
           <DialogActions>
-          <Button onClick={this.handleChangesSettings}  color="primary">
+          <Button onClick={this.handleChangesSettings}  variant="raised" color="primary">
               OK
             </Button>
             <Button onClick={this.handleClose}  color="primary">
@@ -382,30 +363,30 @@ handleChangesSettings = (e) => {
           </DialogActions>
         </Dialog>
       </div>
-      <Snackbar
-                anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-                }}
-                snackbar={this.state.snackbar}
-                autoHideDuration={6000}
-                onClose={this.handleCloseSnackbar}
-                SnackbarContentProps={{
-                'aria-describedby': 'message-id',
-                }}
-                message={<span id="message-id">Changes have been saved!</span>}
-                action={[
-                <IconButton
-                    key="close"
-                    aria-label="Close"
-                    color="inherit"
-                    className={classes.close}
-                    onClick={this.handleCloseSnackbar}
-                >
-                    <CloseIcon />
-                </IconButton>
-                ]}
-    />
+        <Snackbar
+              anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+              }}
+              snackbar={this.state.snackbar}
+              autoHideDuration={6000}
+              onClose={this.handleCloseSnackbar}
+              SnackbarContentProps={{
+              'aria-describedby': 'message-id',
+              }}
+              message={<span id="message-id">Changes have been saved!</span>}
+              action={[
+            <IconButton
+                  key="close"
+                  aria-label="Close"
+                  color="inherit"
+                  className={classes.close}
+                  onClick={this.handleClose}
+              >
+                  <CloseIcon />
+            </IconButton>
+            ]}
+        />
 
       </div>
       
