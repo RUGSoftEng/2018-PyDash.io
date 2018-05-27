@@ -2,8 +2,8 @@
 
 Involved usage example:
 
->>> from pydash_app.dashboard.dashboard import Dashboard
->>> from pydash_app.user.user import User
+>>> from pydash_app.dashboard.entity import Dashboard
+>>> from pydash_app.user.entity import User
 >>> from pydash_app.dashboard.endpoint import Endpoint
 >>> from pydash_app.dashboard.endpoint_call import EndpointCall
 >>> import uuid
@@ -25,11 +25,11 @@ Involved usage example:
 >>> d.add_endpoint_call(ec4)
 >>> d.add_endpoint_call(ec5)
 >>> d.aggregated_data()
-{'total_visits': 5, 'total_execution_time': 1.2, 'average_execution_time': 0.24, 'visits_per_day': {'2018-04-25': 3, '2018-04-24': 1, '2018-04-23': 1}, 'visits_per_ip': {'127.0.0.1': 4, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2, '2018-04-24': 1, '2018-04-23': 1}}
+{'total_visits': 5, 'total_execution_time': 1.2, 'average_execution_time': 0.24, 'visits_per_day': {'2018-04-25': 3, '2018-04-24': 1, '2018-04-23': 1}, 'visits_per_ip': {'127.0.0.1': 4, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2, '2018-04-24': 1, '2018-04-23': 1}, 'fastest_measured_execution_time': 0.1, 'fastest_quartile_execution_time': 0.14, 'median_execution_time': 0.2, 'slowest_quartile_execution_time': 0.39, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
 >>> d.endpoints['foo'].aggregated_data()
-{'total_visits': 2, 'total_execution_time': 0.6, 'average_execution_time': 0.3, 'visits_per_day': {'2018-04-25': 2}, 'visits_per_ip': {'127.0.0.1': 1, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2}}
+{'total_visits': 2, 'total_execution_time': 0.6, 'average_execution_time': 0.3, 'visits_per_day': {'2018-04-25': 2}, 'visits_per_ip': {'127.0.0.1': 1, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2}, 'fastest_measured_execution_time': 0.1, 'fastest_quartile_execution_time': 0.1, 'median_execution_time': 0.3, 'slowest_quartile_execution_time': 0.5, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
 >>> d.endpoints['bar'].aggregated_data()
-{'total_visits': 3, 'total_execution_time': 0.6000000000000001, 'average_execution_time': 0.20000000000000004, 'visits_per_day': {'2018-04-25': 1, '2018-04-24': 1, '2018-04-23': 1}, 'visits_per_ip': {'127.0.0.1': 3}, 'unique_visitors': 1, 'unique_visitors_per_day': {'2018-04-25': 1, '2018-04-24': 1, '2018-04-23': 1}}
+{'total_visits': 3, 'total_execution_time': 0.6, 'average_execution_time': 0.2, 'visits_per_day': {'2018-04-25': 1, '2018-04-24': 1, '2018-04-23': 1}, 'visits_per_ip': {'127.0.0.1': 3}, 'unique_visitors': 1, 'unique_visitors_per_day': {'2018-04-25': 1, '2018-04-24': 1, '2018-04-23': 1}, 'fastest_measured_execution_time': 0.2, 'fastest_quartile_execution_time': 0.2, 'median_execution_time': 0.2, 'slowest_quartile_execution_time': 0.2, 'ninetieth_percentile_execution_time': 0.2, 'ninety-ninth_percentile_execution_time': 0.2, 'slowest_measured_execution_time': 0.2}
 
 """
 
@@ -38,8 +38,8 @@ import persistent
 from enum import Enum
 
 from pydash_app.dashboard.endpoint import Endpoint
-from pydash_app.dashboard.aggregator import Aggregator
-
+# from pydash_app.dashboard.aggregator import Aggregator
+from pydash_app.dashboard.aggregator.aggregator_group import AggregatorGroup
 
 class DashboardState(Enum):
     """
@@ -85,12 +85,19 @@ class Dashboard(persistent.Persistent):
     """
 
     def __init__(self, url, token, user_id, name=None):
-        if not isinstance(url, str) or not isinstance(user_id, str):
-            raise TypeError("Dashboard expects both url and user_id to be strings.")
+        if not isinstance(url, str) or not isinstance(token, str):
+            raise TypeError("Dashboard expects both url and token to be strings.")
+
+        if name is not None and not isinstance(name, str):
+            raise TypeError("Dashboard expects name to be a string.")
+
+        # Make sure integers and strings are allowed as well.
+        if not isinstance(user_id, uuid.UUID):
+            user_id = uuid.UUID(user_id)
 
         self.id = uuid.uuid4()
         self.url = url
-        self.user_id = uuid.UUID(user_id)
+        self.user_id = user_id
         self.token = token
         self.name = name
 
@@ -101,7 +108,7 @@ class Dashboard(persistent.Persistent):
         self.error = None
 
         self._endpoint_calls = []  # list of unfiltered endpoint calls, for use with an aggregator.
-        self._aggregator = Aggregator(self._endpoint_calls)
+        self._aggregator_group = AggregatorGroup()
 
     def __repr__(self):
         return f'<{self.__class__.__name__} id={self.id} url={self.url}>'
@@ -134,20 +141,20 @@ class Dashboard(persistent.Persistent):
          not been done yet.
         :param endpoint_call: The endpoint call to add
         """
-        self._endpoint_calls.append(endpoint_call)
-        self._aggregator.add_endpoint_call(endpoint_call)
-
         # Adds endpoint to list of endpoints if it has not been registered yet.
         if endpoint_call.endpoint not in self.endpoints:  # Note: this is possible, because the names are the keys.
             self.add_endpoint(Endpoint(endpoint_call.endpoint, True))
         self.endpoints[endpoint_call.endpoint].add_endpoint_call(endpoint_call)
+
+        self._endpoint_calls.append(endpoint_call)
+        self._aggregator_group.add_endpoint_call(endpoint_call)
 
     def aggregated_data(self):
         """
         Returns aggregated data on this dashboard.
         :return: A dict containing aggregated data points.
         """
-        return self._aggregator.as_dict()
+        return self._aggregator_group.fetch_aggregator({}).as_dict()
 
     # Required because `multi_indexed_collection` puts dashboards in a set,
     #  that needs to order its keys for fast lookup.

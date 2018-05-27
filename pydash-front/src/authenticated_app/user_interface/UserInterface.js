@@ -88,14 +88,12 @@ class UserInterface extends React.Component {
             <div className="sidebar">
 
                 <div className={classes.toolbar} >
-                <UserIcon className={classes.accounticon}  />
-                
-                <Link to={'/overview/settings'}>
-                    <div className={classes.accountname} >
-                        {this.props.username || 'Username'}
-                    </div>
-                </Link>
-                
+                    <Link to={'/overview/settings'}>
+                        <UserIcon className={classes.accounticon}  />
+                        <div className={classes.accountname} >
+                            {this.props.username || 'Username'}
+                        </div>
+                    </Link>
                 </div>
                 <Divider />
                 <MainMenuItems />
@@ -116,9 +114,11 @@ class UserInterface extends React.Component {
                         >
                             <MenuIcon />
                         </IconButton>
-                        <Typography variant="title" color="inherit" noWrap>
-                            <img src={Logo} alt="PyDash.io logo" style={{marginTop: "15px", marginLeft: "20px", marginBottom: "10px", maxWidth: "150px"}} />
-                        </Typography>
+                        <Link to={'/overview'}>
+                            <Typography variant="title" color="inherit" noWrap>
+                                <img src={Logo} alt="PyDash.io logo" style={{marginTop: "15px", marginLeft: "20px", marginBottom: "10px", maxWidth: "150px"}} />
+                            </Typography>
+                        </Link>
                     </Toolbar>
                 </AppBar>
                 <Hidden mdUp>
@@ -137,13 +137,14 @@ class UserInterface extends React.Component {
                         {drawer}
                     </Drawer>
                 </Hidden>
-                <Hidden smDown implementation="css">
+                <Hidden smDown implementation="css" className="menubar">
                     <Drawer
                         variant="permanent"
                         open
                         classes={{
                             paper: classes.drawerPaper,
                         }}
+                        className="menubar_inner"
                     >
                         {drawer}
                     </Drawer>

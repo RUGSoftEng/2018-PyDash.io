@@ -3,7 +3,7 @@ Fills the application with some preliminary users
 to make it easier to test code in development and staging environments.
 """
 
-from pydash_app.user.user import User
+from pydash_app.user.entity import User
 import pydash_app.user.repository as repository
 
 
@@ -45,6 +45,7 @@ def seed():
         User(name="W-M", password="topsecret")
     ]
     for user in _development_users:
+        user.verified = True
         print("Adding user {}".format(user))
         repository.add(user)
     print("Seeding of users is done!")

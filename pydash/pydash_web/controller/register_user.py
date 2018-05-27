@@ -2,8 +2,10 @@
 Manages the registration of a new user.
 """
 
-from flask import jsonify
-from flask_restplus.reqparse import RequestParser
+from flask import jsonify, request
+from flask_mail import Message
+from pydash_mail import mail
+from pydash_mail.templates import format_verification_mail_html, format_verification_mail_plain
 
 import pydash_app.user
 import pydash_logger
@@ -11,54 +13,80 @@ import pydash_logger
 
 logger = pydash_logger.Logger(__name__)
 
-_MINIMUM_PASSWORD_LENGTH = 8
-
 
 def register_user():
-    args = _parse_arguments()
+    request_data = request.get_json(silent=True)
 
-    username = args['username']
-    password = args['password']
+    if not request_data:
+        logger.warning('User registration failed - data missing')
+        result = {'message': 'Data missing'}
+        return jsonify(result), 400
 
-    print(f'args={args}')
+    username = request_data.get('username')
+    password = request_data.get('password')
+    email_address = request_data.get('email_address')
 
-    if not username or not password:
-        message = {'message': 'Username or password missing'}
-        logger.warning('User registration failed - username or password missing')
-        return jsonify(message), 400
+    if username is None or password is None or email_address is None:
+        logger.warning('User registration failed - username, password or email address missing')
+        result = {'message': 'Username, password or email address missing'}
+        return jsonify(result), 400
 
-    if not _check_password_requirements(password):
-        message = {'message': 'Password should consist of at least 8 characters, contain at least one capital letter'
-                              ' and at least one non-alphabetic character.'}
+    # In case username, password or email_address are ''
+    if not username or not password or not email_address:
+        logger.warning('User registration failed - username, password or email address cannot be empty')
+        result = {'message': 'Username, password or email address cannot be empty'}
+        return jsonify(result), 400
+
+    if not pydash_app.user.check_password_requirements(password):
         logger.warning('User registration failed - password does not conform to the requirements.')
-        return jsonify(message), 400
+        result = {'message': 'User registration failed - password does not conform to the requirements.'}
+        return jsonify(result), 400
 
     if pydash_app.user.find_by_name(username) is not None:
-        message = {'message': f'User with username {username} already exists.'}
-        logger.warning(f'While registering a user: {message}')
-        return jsonify(message), 409  # Todo: perhaps return 400 instead?
+        logger.warning(f'While registering a user: User with username {username} already exists.')
+        result = {'message': f'User with username {username} already exists.'}
+        return jsonify(result), 400
     else:
         user = pydash_app.user.User(username, password)
         pydash_app.user.add_to_repository(user)
-        message = {'message': 'User successfully registered.'}
-        logger.info(f'User successfully registered with username: {username}')
-        return jsonify(message), 200
+        
+        logger.info(f'User successfully registered with username: {username}'
+                    f' and verification code {user.get_verification_code()}')
+
+        _send_verification_email(user.get_verification_code(),
+                                 user.get_verification_code_expiration_date(),
+                                 email_address,
+                                 user.name)
+
+        result = {'message': 'User successfully registered.',
+                  'verification_code': f'{user.get_verification_code()}'}
+
+        return jsonify(result), 200
 
 
-def _parse_arguments():
-    parser = RequestParser()
-    parser.add_argument('username')
-    parser.add_argument('password')
-    return parser.parse_args()
+def _send_verification_email(verification_code, expiration_date, recipient_email_address, username):
+    """
+    Sends a verification email to the user with a link to the appropriate front-end page.
+    For now the backend-api is directly given though.
+    :param smart_verification_code: The verification code to send. Should be a VerificationCode instance.
+    :param recipient_email_address: The email address of the recipient. Should be a string.
+    :param username: The name of the User. Should be a string.
+    """
+    message_subject = 'PyDash.io - Account verification'
+    message_recipients = [recipient_email_address]
+    expiration_date = expiration_date.ctime() + ' GMT+0000'
 
+    protocol = 'http'  # this or https  #Todo: change to https once that has been set up.
+    host = 'localhost:5000'  # Todo: change from localhost to deployment server once that has been set up.
+    verification_url = f'{protocol}://{host}/verify/{verification_code}'
 
-def _check_password_requirements(password):
-    rules = [lambda xs: any(x.isupper() for x in xs),
-             lambda xs: any(not x.isalpha() for x in xs),
-             lambda xs: len(xs) >= _MINIMUM_PASSWORD_LENGTH
-             ]
+    message_plain = format_verification_mail_plain(username, verification_url, expiration_date)
+    message_html = format_verification_mail_html(username, verification_url, expiration_date)
 
-    if all(rule(password) for rule in rules):
-        return True
-    else:
-        return False
+    # No sender is specified, such that we use DEFAULT_MAIL_SENDER as specified in config.py
+    message = Message(subject=message_subject,
+                      recipients=message_recipients,
+                      body=message_plain,
+                      html=message_html)
+
+    mail.send(message)

@@ -29,6 +29,11 @@ body {
     color: #f44336;
 }
 
-.sidebar {
-    position: fixed;
+.menubar {
+    background-color: #fff;
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.menubar_inner {
+    margin-right: -1px;
 }

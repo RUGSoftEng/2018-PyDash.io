@@ -22,3 +22,19 @@ html {
 .App-intro {
   font-size: large;
 }
+
+.registration-errors {
+    color: red;
+    font-size: 11px;
+    max-width: 450px;
+      margin: 0 auto;
+}
+
+
+.password-safety-warning {
+    color: orange;
+    font-weight: bold;
+    font-size: 10px;
+    max-width: 470px;
+    margin: 0 auto;
+}

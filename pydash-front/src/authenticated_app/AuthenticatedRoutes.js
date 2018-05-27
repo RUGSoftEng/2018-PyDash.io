@@ -14,12 +14,15 @@ import SettingsPage from './settings/SettingsPage';
 class AuthenticatedRoutes extends Component {
     render = () => {
         return (
-            <BreadcrumbRoute path='/overview' title='Overview' render={ ({ match }) => (
+            <BreadcrumbRoute path='/overview' title='Dashboards' render={ ({ match }) => (
                 <div>
                     <Route exact path={match.url + '/'} component={() => (<OverviewPage dashboards={this.props.dashboards} />)} />
-                    <BreadcrumbRoute exact path={match.url + '/settings'} component={SettingsPage} title='Settings' />
-                    <BreadcrumbRoute path={match.url + '/dashboards/'} isLink={false} title='Dashboards' render={ ({ match }) => (
+                    <BreadcrumbRoute exact path={match.url + '/settings'} component={() => (<SettingsPage username={this.props.username} />)} title='Settings' />
+                    <Route path={match.url + '/dashboards/'} render={ ({ match }) => (
                         <Route path={match.url + '/:id'} render={ ({match}) => {
+                                if(this.props.dashboards === null){
+                                    return (<em>Loading...</em>)
+                                }
                                 const dashboard_info = this.props.dashboards[match.params.id];
                                 return <DashboardRoutes match={match} dashboard={dashboard_info}/>
                         }} />
@@ -31,7 +34,7 @@ class AuthenticatedRoutes extends Component {
 }
 
 AuthenticatedRoutes.propTypes = {
-    dashboards: PropTypes.object.isRequired,
+    dashboards: PropTypes.object,
 };
 
 
