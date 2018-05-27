@@ -85,7 +85,7 @@ class UserInterface extends React.Component {
         const { classes, theme } = this.props;
 
         const drawer = (
-            <div>
+            <div className="sidebar">
 
                 <div className={classes.toolbar} >
                     <Link to={'/overview/settings'}>
