@@ -13,6 +13,9 @@ import { FormControlLabel } from 'material-ui/Form';
 import Switch from 'material-ui/Switch';
 import { Redirect } from 'react-router'
 import axios from 'axios';
+import Snackbar from 'material-ui/Snackbar';
+import IconButton from 'material-ui/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 const styles = theme => ({
   root: {
@@ -64,6 +67,7 @@ class SettingsPage extends Component {
     openDeletion: false,
     checked: true,
     SoundSettings: true,
+    snackbar: false,
   };
 componentWillMount = () => {
     this.setState({
@@ -98,6 +102,7 @@ handleDelete = (e) => {
   ).then((response) => {
     if(this.state.password===this.state.passConfirm){     
       this.props.signOutHandler();
+      // this.props.handleClick();
       return <Redirect to="/" />;
     } else {
       console.log('Passwords do not match!');
@@ -118,6 +123,8 @@ handleDelete = (e) => {
       withCredentials: true
   }).then((response) => {
       console.log(response);
+      this.handleClick();
+
      return <Redirect to="/" />
   }).catch((error) => {
       console.log('changing settings failed');
@@ -137,6 +144,7 @@ handlePasswords = (e) => {
       method: 'post',
       withCredentials: true
     }).then((response) => {
+      this.handleClick();
       console.log(response);
       return <Redirect to="/" />
   }).catch((error) => {
@@ -172,6 +180,18 @@ handlePasswords = (e) => {
 };
   handleSoundSettings = ()=>{
     this.setState({SoundSettings: false});
+  };
+
+  handleClick = () => {
+    this.setState({ snackbar: true });
+  };
+
+  handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+        return;
+    }
+
+    this.setState({ snackbar: false });
   };
 
   render() {
@@ -323,7 +343,30 @@ handlePasswords = (e) => {
           </DialogActions>
         </Dialog>
       </div>
-        
+      <Snackbar
+                anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+                }}
+                snackbar={this.state.snackbar}
+                autoHideDuration={6000}
+                onClose={this.handleCloseSnackbar}
+                SnackbarContentProps={{
+                'aria-describedby': 'message-id',
+                }}
+                message={<span id="message-id">Changes have been saved!</span>}
+                action={[
+                <IconButton
+                    key="close"
+                    aria-label="Close"
+                    color="inherit"
+                    className={classes.close}
+                    onClick={this.handleCloseSnackbar}
+                >
+                    <CloseIcon />
+                </IconButton>
+                ]}
+    />
 
       </div>
       

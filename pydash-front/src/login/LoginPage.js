@@ -200,7 +200,7 @@ class LoginPage extends Component {
                                 onClick={this.handleClose}
                             >
                                 <CloseIcon />
-                            </IconButton>,
+                            </IconButton>
                             ]}
                 />
 
