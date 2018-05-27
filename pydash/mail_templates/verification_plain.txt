@@ -1,0 +1,7 @@
+Dear {username},
+
+To verify your account, please copy and paste the following URL into your internet browser:
+{verification_url}
+
+The link will expire at {expiration_date}.
+If you do not verify your account before then, you will need to register again.

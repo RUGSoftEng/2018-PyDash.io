@@ -2,6 +2,7 @@ from ordered_set import OrderedSet
 from collections import OrderedDict
 
 import persistent
+from copy import deepcopy
 
 from . import statistics
 
@@ -63,6 +64,33 @@ class Aggregator(persistent.Persistent):
         """
 
         return {
-                statistic.field_name(): statistic.rendered_value()
-                for statistic in self.statistics.values() if statistic.should_be_rendered
-                }
+            statistic.field_name(): statistic.rendered_value()
+            for statistic in self.statistics.values() if statistic.should_be_rendered
+        }
+
+    def __add__(self, other):
+        """Creates a new aggregator object that combines the aggregates of both aggegators."""
+        if other is None:
+            return deepcopy(self)
+
+        new = Aggregator()
+        new.endpoint_calls += self.endpoint_calls
+        new.endpoint_calls += other.endpoint_calls
+        for key, _ in new.statistics.items():
+            new.statistics[key] = self.statistics[key].add_together(other.statistics[key], self.statistics, other.statistics)
+        return new
+
+    def __radd__(self, other):
+        # Return a deep copy in case sum(<Aggregator iterable>) is called
+        if other == 0:
+            return self.deepcopy()
+        else:
+            return self.__add__(other)
+
+    def __iadd__(self, other):
+        if other is None:
+            return self
+        self.endpoint_calls += other.endpoint_calls
+        for key, _ in self.statistics.items():
+            self.statistics[key] = self.statistics[key].add_together(other.statistics[key], self.statistics, other.statistics)
+        return self
