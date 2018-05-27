@@ -17,7 +17,10 @@ import SwipeableViews from 'react-swipeable-views';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
 import DeleteIcon from 'material-ui-icons/Delete'
+import CreateIcon from 'material-ui-icons/Create'
 import { Button } from 'material-ui';
+import Dialog, { DialogActions, DialogContent, DialogContentText, DialogTitle,} from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
 
 
 // Helper:
@@ -54,11 +57,13 @@ class StatisticsPage extends Component {
         this.divRef = React.createRef();
         this.state = {
             dashboard: null,
+            dashboardName: this.props.dashboard.id,
             visits_per_day: [],
             unique_visitors_per_day: [],
             average_execution_times: [],
             error: "",
             width: 0,
+            open: false,
             current_tab: 0,
         };
     }
@@ -116,17 +121,28 @@ class StatisticsPage extends Component {
     changeTab = (event, value) => {
         this.setState({current_tab: value})
     }
+    handleChange = key => event => {
+        this.setState({
+            [key]: event.target.value
+        });
+    };
+    handleClickOpen = () => {
+        this.setState({ open: true });
+      };
     
     handleChangeIndex = index => {
         this.setState({ value: index });
     };
+    handleClose = () => {
+        this.setState({ open: false });
+      };
 
     handleDelete = (e) => {
         
         e.preventDefault()
         // Make a request for deletion
         axios.post(window.api_path + '/api/dashboards/<dashboard_id>/delete', {
-          dashboard_id: this.props.dashboard.id},
+          dashboard_id: this.state.dashboard.id},
           {withCredentials: true}
         ).then((response) => {
             return <Redirect to="/" />;
@@ -194,6 +210,39 @@ class StatisticsPage extends Component {
               <TabContainer dir={theme.direction} className={theme.settings}>
                   <h2>Name: {this.props.dashboard.name}</h2>
                   <h2>URL: {this.props.dashboard.url}</h2>
+                  <h2>Token: ···</h2>
+                  <div>
+        <Dialog
+          open={this.state.open}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Updating dashboard information</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+                This form allows you to change the information of the dashboard
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="New name"
+              type="dashboard"
+              onChange={this.handleChange('dashboardName')}
+            />
+            <Button type="submit" variant="raised"  >OK</Button><br/>
+            </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose}  color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+      <Button variant="raised" color="primary" className={theme.button} onClick={this.handleClickOpen} >
+              Edit dashboard?
+              <CreateIcon className={theme.rightIcon}/>
+          </Button>
                   {/* <h2>Token: {this.props.dashboard.token}</h2> */}
                     <Button className={theme.button} variant="raised" color="secondary"  onClick={this.handleDelete} >
                         Delete dashboard?
