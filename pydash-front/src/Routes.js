@@ -5,6 +5,7 @@ import { Switch, Route } from 'react-router-dom';
 import LoginPage from './login/LoginPage';
 import RegistrationPage from './registration/RegistrationPage';
 import AuthenticatedApp from './authenticated_app/AuthenticatedApp';
+import VerificationPage from './registration/VerificationPage';
 
 class Routes extends Component {
     render = () => {
@@ -15,7 +16,7 @@ class Routes extends Component {
                         signInHandler={this.props.signInHandler}
                         {...props}
                     />
-                    )}/>
+                )}/>
                 <Route exact path='/register' render={(props) => (
                     <RegistrationPage
                         username={this.props.username}
@@ -23,6 +24,9 @@ class Routes extends Component {
                         {...props}
                     />
                 )}/>
+                <Route exact path={'/verify/:verification_code'} render={ ({match}) => (
+                    <VerificationPage verification_code={match.params.verification_code} />
+                )} />
                 <Route path='/overview' render={(props) => (
                     <AuthenticatedApp
                         username={this.props.username}
