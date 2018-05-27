@@ -35,6 +35,11 @@ const styles = theme => ({
     marginLeft:'200px',
     fontSize: theme.typography.pxToRem(17),
   },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 200,
+  },
 
   EditDeleteIcons: {
     float:"right",
@@ -113,30 +118,51 @@ handleDelete = (e) => {
   });
 }
 
-  handleSettings = (e) => {
-    e.preventDefault()
-    axios.post(window.api_path + '/api/user/change_settings', {
-      username: this.state.username,
+//   handleSettings = (e) => {
+//     e.preventDefault()
+//     axios.post(window.api_path + '/api/user/change_settings', {
+//       username: this.state.username,
 
-    },{
-      method: 'post',
-      withCredentials: true
-  }).then((response) => {
-      console.log(response);
-      this.handleClick();
+//     },{
+//       method: 'post',
+//       withCredentials: true
+//   }).then((response) => {
+//       console.log(response);
+//       this.handleClick();
 
-     return <Redirect to="/" />
-  }).catch((error) => {
-      console.log('changing settings failed');
-      this.handleClose();
-  });
-}
+//      return <Redirect to="/" />
+//   }).catch((error) => {
+//       console.log('changing settings failed');
+//       this.handleClose();
+//   });
+// }
 
-handlePasswords = (e) => {
+handleChangesSettings = (e) => {
   e.preventDefault()
   let new_password = this.state.new_password,
-      current_password = this.state.current_password
-  // Make a request for deletion
+      current_password = this.state.current_password,
+      username = this.state.username,
+      email = this.state.email
+      //Make a request for deletion
+       if ((username.trim()) || (email.trim())) {
+          axios.post(window.api_path + '/api/user/change_settings', {
+          username: this.state.username,
+
+        },{
+          method: 'post',
+          withCredentials: true
+      }).then((response) => {
+          console.log(response);
+          this.handleClick();
+
+        return <Redirect to="/" />
+      }).catch((error) => {
+          console.log('changing settings failed');
+          this.handleClose();
+      });
+    }
+    else{
+    //Make requestion for changing the password
   axios(window.api_path + '/api/user/change_password', {
       new_password,
       current_password,
@@ -151,6 +177,7 @@ handlePasswords = (e) => {
       console.log('changing password failed');
       this.handleClose();
   });
+}
 }
 
   handleClickOpen = () => {
@@ -230,22 +257,17 @@ handlePasswords = (e) => {
             <DialogContentText>
               This form allows you to update your information
             </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="New username"
-              type="username"
-              onChange={this.handleChange('username')}
-            />
-            <Button type="submit" variant="raised" onClick={this.handleSettings} >OK</Button><br/>
+
             <TextField
               id="Password"
               label="New password"
               onChange={this.handleType('new_password')}
-              margin="dense"
+              margin="normal"
               type="password"
-              error={this.state.error}         
+              error={this.state.error}    
+              className={classes.textField}
+   
+              
             />
             
             <TextField
@@ -254,19 +276,36 @@ handlePasswords = (e) => {
               onChange={this.handleType('current_password')}
               margin="normal"
               type="password"
-              error={this.state.error}        
+              error={this.state.error}   
+              className={classes.textField}
+   
             />
-            <Button variant="raised" onClick={this.handlePasswords}>OK</Button><br/>
-            <TextField
+              <TextField
               autoFocus
               margin="dense"
               id="name"
-              label="New email"
-              type="email"     
+              label="New username"
+              type="username"
+              onChange={this.handleChange('username')}
+              fullWidth
+              className={classes.textField}
+
             />
-             <Button variant="raised" onClick={this.handleSettings}>OK</Button><br/>
+            <TextField
+              autoFocus
+              margin="normal"
+              id="full-width"
+              label="New email"
+              type="email"  
+              fullWidth   
+              className={classes.textField}
+
+            />
           </DialogContent>
           <DialogActions>
+          <Button onClick={this.handleChangesSettings}  color="primary">
+              OK
+            </Button>
             <Button onClick={this.handleClose}  color="primary">
               Close
             </Button>
