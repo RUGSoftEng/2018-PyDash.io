@@ -180,6 +180,7 @@ handlePasswords = (e) => {
     return (
 
       <div className={classes.root}>
+        <h2>Settings</h2>
         <ExpansionPanel>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography className={classes.heading}>Personal data
