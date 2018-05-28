@@ -13,6 +13,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import HelpIcon from '@material-ui/icons/Help';
 import Tooltip from 'material-ui/Tooltip';
 
+import { showNotification } from "../Notifier";
 
 
 const styles = theme => ({
@@ -110,8 +111,9 @@ class RegistrationPage extends Component {
       };
    
    
-    tryLogin = (e) => {
+    tryRegister = (e) => {
         e.preventDefault()
+        showNotification({ message: "Registering..."});
         let username = this.state.username,
             password = this.state.password,
             email_address = this.state.email_address
@@ -122,15 +124,15 @@ class RegistrationPage extends Component {
                 open: false,
                 helperText: 'These fields are required!',
             }))
-
+            showNotification({ message: "Registration failed"});
             return;
         }
         this.setState(prevState => ({
             ...prevState,
-                error: false,
-                helperText: '',
-                loading: true
-            }))
+            error: false,
+            helperText: '',
+            loading: true
+        }))
 
         axios.post(window.api_path + '/api/user/register', {
             username,
@@ -146,6 +148,7 @@ class RegistrationPage extends Component {
                 success: true,
                 loading: false
             }));
+            showNotification({ message: "Registration successful. Please check your e-mail inbox to verify the e-mailadres you entered."});
         }).catch((error) => {
             console.log(error);
             if(error.response && error.response.status === 409) {
@@ -154,7 +157,14 @@ class RegistrationPage extends Component {
                     helperText: 'User already exists',
                     loading: false,
                 }))
+            } else {
+                this.setState(prevState => ({
+                    error: true,
+                    helperText: error.response.data.message,
+                    loading: false,
+                }))
             }
+            showNotification({ message: "Registration failed"});
         });
     }
 
@@ -168,7 +178,7 @@ class RegistrationPage extends Component {
                     <img alt="PyDash logo" width="200" src={Logo} />
                 </header>
 
-                <form onSubmit={this.tryLogin}>
+                <form onSubmit={this.tryRegister}>
                     <br />
                     <TextField
                         id="username"
@@ -197,7 +207,6 @@ class RegistrationPage extends Component {
                         margin="normal"
                         type="password"
                         error={this.state.warnings['password'] || this.state.error}
-
                     />
             <Tooltip id='password-tooltip' title={<p>The password should be longer than 12 chars (with no further restrictions),
                                                   <br/>

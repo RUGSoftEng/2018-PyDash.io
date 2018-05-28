@@ -14,6 +14,8 @@ import Switch from 'material-ui/Switch';
 import { Redirect } from 'react-router'
 import axios from 'axios';
 
+import { showNotification } from "../../Notifier";
+
 const styles = theme => ({
   root: {
     width: '100%',
@@ -118,6 +120,7 @@ handleDelete = (e) => {
       withCredentials: true
   }).then((response) => {
       console.log(response);
+      showNotification({ message: "Settings saved!"});
      return <Redirect to="/" />
   }).catch((error) => {
       console.log('changing settings failed');
@@ -138,6 +141,7 @@ handlePasswords = (e) => {
       withCredentials: true
     }).then((response) => {
       console.log(response);
+        showNotification({ message: "Password updated!"});
       return <Redirect to="/" />
   }).catch((error) => {
       console.log('changing password failed');

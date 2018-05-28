@@ -21,6 +21,9 @@ import Warning from '@material-ui/icons/Warning';
 import {Howl} from 'howler';
 import login_soundfile from "./boot.mp3";
 
+// Notifications
+import { showNotification } from '../Notifier'
+
 
 const login_sound = new Howl({
     src: [login_soundfile],
@@ -64,7 +67,7 @@ class LoginPage extends Component {
 
 
     handleClick = () => {
-        this.setState({ open: true });
+        showNotification({ message: "Logging in..."});
       };
 
       handleClose = (event, reason) => {
@@ -87,7 +90,7 @@ class LoginPage extends Component {
                 open: false,
                 helperText: 'Both fields are required!',
             }))
-
+            showNotification({ message: "Login failed."});
             return;
         }
 
@@ -116,6 +119,7 @@ class LoginPage extends Component {
              * }));*/
         }).catch((error) => {
             console.log(error);
+            showNotification({ message: "Login failed."});
             if(error.response && error.response.status === 401) {
                 this.setState(prevState => ({
                     error: true,
