@@ -161,7 +161,8 @@ handleDelete = (e) => {
 //   });
 // }
 handleClick = () => {
-  this.setState({ openS: true });
+  //this.setState({ openS: true });
+  alert("Settings saved!");
 };
 
 handleClose = (event, reason) => {
@@ -336,7 +337,7 @@ let username = this.state.new_username,
 
             />
             <br/>
-            <Button type="submit" Onclick={this.handleClick} disabled={this.state.loading} variant="raised" color="primary"  className={classes.EditDeleteIcons} >
+            <Button type="submit" onClick={this.handleClick} disabled={this.state.loading} variant="raised" color="primary"  className={classes.EditDeleteIcons} >
             {this.state.loading ? "saving changes..." : "OK"} 
             </Button>
             <Button onClick={this.handleClose}  color="primary"className={classes.EditDeleteIcons}>
