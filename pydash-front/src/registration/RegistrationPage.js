@@ -109,7 +109,7 @@ class RegistrationPage extends Component {
    
     tryRegister = (e) => {
         e.preventDefault()
-        showNotification({ message: "Registering..."});
+        showNotification({ message: "Registering...", preventClosing: true}); // Do not hide automatically
         let username = this.state.username,
             password = this.state.password,
             email_address = this.state.email_address
