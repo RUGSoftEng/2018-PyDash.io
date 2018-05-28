@@ -4,10 +4,13 @@ Manages the lookup and returning of dashboard information for a certain user.
 Currently only returns static mock data.
 """
 
-from flask import jsonify
+from flask import jsonify, request
 from flask_login import current_user
 
+from datetime import datetime, timedelta
+
 import pydash_app.dashboard
+from pydash_app.dashboard.aggregator import Aggregator
 import pydash_logger
 
 logger = pydash_logger.Logger(__name__)
@@ -29,8 +32,101 @@ def dashboard(dashboard_id):
     if not valid_dashboard:
         return result, http_error
 
-    logger.info(f"Retrieved dashboard {valid_dashboard}")
-    return jsonify(_dashboard_detail(valid_dashboard)), 200
+    params = request.args
+    statistic = params.get('statistic')
+    start_date = params.get('start_date', default='1970-1-1')
+    end_date = params.get('end_date', default=datetime.utcnow().strftime('%Y-%m-%d %H-%M-%S'))
+    timeslice = params.get('timeslice')
+
+    if not statistic:  # Default to returning the generic dashboard_detail.
+        logger.info(f"Retrieved dashboard {valid_dashboard}")
+        return jsonify(_dashboard_detail(valid_dashboard)), 200
+    else:
+
+        start_date = match_datetime_string_with_formats(start_date)
+        if start_date is None:
+            logger.warning('In dashboard: Invalid format of start_date.')
+            result = {"message": "Invalid format of start_date."}
+            return jsonify(result), 400
+
+        end_date = match_datetime_string_with_formats(end_date)
+        if end_date is None:
+            logger.warning('In dashboard: Invalid format of end_date.')
+            result = {"message": "Invalid format of end_date."}
+            jsonify(result), 400
+
+        if not check_allowed_statistics(statistic):
+            logger.warning(f'In dashboard: Statistic {statistic} is not supported for use.')
+            result = {'message': f'Statistic {statistic} is not supported for use.'}
+            return jsonify(result), 400
+
+        if not timeslice:  # We are dealing with statistics that only deal with single aggregates, not multiple.
+            result = handle_statistic_without_timeslice(valid_dashboard, statistic, start_date, end_date)
+        else:
+            if not check_allowed_timeslices(timeslice):
+                logger.warning(f'In dashboard: Timeslice {timeslice} is not supported.')
+                result = {'message': f'Timeslice {timeslice} is not supported.'}
+                return jsonify(result), 400
+            # Handle timeslice statistics
+            result = handle_statistic_per_timeslice(valid_dashboard, statistic, timeslice, start_date, end_date)
+
+        logger.info(f'Successfully handled dashboard-statistic call.'
+                    f' statistic={statistic}, timeslice={timeslice}, start_date={start_date}, end_date={end_date}')
+        return jsonify(result), 200
+
+
+def handle_statistic_without_timeslice(dashboard, statistic, start_datetime, end_datetime):
+    """These datetimes are treated as inclusive boundaries of a datetime range (e.g. [start_datetime, end_datetime]"""
+    aggregator = dashboard.aggregated_data_daterange(start_datetime, end_datetime)
+    return aggregator.as_dict()[statistic]
+
+
+def handle_statistic_per_timeslice(dashboard, statistic, timeslice, start_datetime, end_datetime):
+    """These datetimes are treated as inclusive boundaries of a datetime range (e.g. [start_datetime, end_datetime]"""
+    if timeslice == "minute":
+        
+    elif timeslice == "hour":
+
+    elif timeslice == "day":
+
+    elif timeslice == "week":
+
+    elif timeslice == "month":
+
+    elif timeslice == "year":
+
+    else:
+        raise ValueError(f'Timeslice {timeslice} is not supported.')
+
+def match_datetime_string_with_formats(datetime_string):
+    """Returns a datetime object if the provided string matched with one of the allowed formats
+       Otherwise, returns None."""
+    formats = ['%Y-%m-%d', '%Y-%m-%d %H-%M-%S']
+    datetime_object = None
+    for i in range(len(formats)):
+        try:
+            datetime_object = datetime.strptime(datetime_string, formats[i])
+        except ValueError:
+            continue
+    return datetime_object
+
+
+def check_allowed_timeslices(timeslice):
+    return timeslice in ['year', 'month', 'week', 'day', 'hour', 'minute']
+
+
+# def check_allowed_timeslice_statistics(statistic):
+#     return statistic in ['visits_per_time', 'unique_visits_per_time', ]
+
+
+def check_allowed_statistics(statistic):
+    return statistic in ['total_visits', 'total_execution_time', 'average_execution_time', 'visits_per_ip',
+                         'unique_visitors', 'fastest_measured_execution_time', 'fastest_quartile_execution_time',
+                         'median_execution_time', 'slowest_quartile_execution_time', 'ninetieth_percentile_execution_time',
+                         'ninety-ninth_percentile_execution_time', 'slowest_measured_execution_time']
+#     or perhaps
+#     return statistic in Aggregator().as_dict().keys()
+#     if we prune all currently rendered statistics that can be retrieved otherwise.
 
 
 def dashboards():
