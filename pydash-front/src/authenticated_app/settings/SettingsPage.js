@@ -161,11 +161,11 @@ handleDelete = (e) => {
 //   });
 // }
 handleClick = () => {
-  //this.setState({ openS: true });
-  alert("Settings saved!");
+  this.setState({ openS: true });
+  //alert("Settings saved!");
 };
 
-handleClose = (event, reason) => {
+handleCloseSnack = (event, reason) => {
   if (reason === 'clickaway') {
     return;
   }
@@ -416,15 +416,14 @@ let username = this.state.new_username,
             </Button>
           </DialogActions>
         </Dialog>
-      </div>
-      <Snackbar
+        <Snackbar
           anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'left',
           }}
-          openS={this.state.openS}
+          open={this.state.openS}
           autoHideDuration={6000}
-          onClose={this.handleClose}
+          onClose={this.handleCloseSnack}
           ContentProps={{
             'aria-describedby': 'message-id',
           }}
@@ -435,12 +434,14 @@ let username = this.state.new_username,
               aria-label="Close"
               color="inherit"
               className={classes.close}
-              onClick={this.handleClose}
+              onClick={this.handleCloseSnack}
             >
               <CloseIcon />
             </IconButton>,
           ]}
         />
+      </div>
+
 
       </div>
       
