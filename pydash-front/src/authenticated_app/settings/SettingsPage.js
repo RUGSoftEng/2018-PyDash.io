@@ -65,11 +65,13 @@ class SettingsPage extends Component {
   state = {
     username: '',
     new_username: '',
-    email: '',
+    email: this.props.email_address,
+    new_email:'',
     password:'',
     new_password:'',
     current_password:'',
     passConfirm:'',
+    error:false,
     open: false,
     openDeletion: false,
     checked: true,
@@ -175,9 +177,19 @@ handleCloseSnack = (event, reason) => {
 handleOkButton = (e) => {
   e.preventDefault()
 let username = this.state.new_username,
-    email = this.state.email,
+    email = this.state.new_email,
     new_password = this.state.new_password,
     current_password = this.state.current_password
+    if (!(username.trim()) && !(email.trim()) && !(new_password.trim()) && !(current_password.trim())) {
+      this.setState(prevState => ({
+          ...prevState,
+          error:true,
+          snackbar:false,
+          
+      }))
+      
+      return alert("All fields cannot be empty!");
+  }
       if(((username.trim())||email.trim())){
       
              this.setState(prevState => ({
@@ -189,11 +201,19 @@ let username = this.state.new_username,
                 method: 'post',
                 withCredentials: true, 
             }).then((response) => {
+              this.setState(prevState => ({
+                ...prevState,
+                error:true,
+                snackbar:false,
+                
+            }))
                 console.log(response);
                 this.handleClose();
+                window.location.reload();
             }).catch((error) => {
                 this.setState(prevState => ({
                 snackbar: false,
+                error:true,
             }))
                 console.log('changing settings failed');
                 this.handleClose();
@@ -204,6 +224,7 @@ let username = this.state.new_username,
               this.setState(prevState => ({
                 ...prevState,
                 loading: true,
+                error:false,
             }))
               axios.post(window.api_path + '/api/user/change_password', {
               new_password,
@@ -214,10 +235,18 @@ let username = this.state.new_username,
             }).then((response) => {
               console.log(response);
               this.handleClose();
+              window.location.reload();
           }).catch((error) => {
             this.setState(prevState => ({
               snackbar: false,
+              error:true,
           }))
+          this.setState(prevState => ({
+            ...prevState,
+            error:true,
+            snackbar:false,
+            
+        }))
               console.log('changing password failed');
               this.handleClose();
     });
@@ -318,8 +347,8 @@ let username = this.state.new_username,
               autoFocus
               margin="dense"
               id="name"
-              label={this.props.username}
-              type="username"
+              label={this.state.username}
+              type="new_username"
               onChange={this.handleChange('new_username')}
               fullWidth
               className={classes.textField}
@@ -329,15 +358,15 @@ let username = this.state.new_username,
               autoFocus
               margin="normal"
               id="full-width"
-              label={this.props.email_address}
-              type="email" 
-              onChange={this.handleChange('email')}
+              label={this.state.email_address}
+              type="name" 
+              onChange={this.handleChange('new_email')}
               fullWidth   
               className={classes.textField}
 
             />
             <br/>
-            <Button type="submit" onClick={this.handleClick} disabled={this.state.loading} variant="raised" color="primary"  className={classes.EditDeleteIcons} >
+            <Button type="submit" onClick={this.handleClick} disabled={this.state.loading} variant="raised" color="primary" className={classes.EditDeleteIcons} >
             {this.state.loading ? "saving changes..." : "OK"} 
             </Button>
             <Button onClick={this.handleClose}  color="primary"className={classes.EditDeleteIcons}>
