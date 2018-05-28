@@ -167,6 +167,32 @@ class LoginPage extends Component {
                     <p>
                         <Button component={NavLink} to="/register">Create an account?</Button>
                     </p>
+
+                        <Snackbar
+                            anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                            }}
+                            open={this.state.open}
+                            autoHideDuration={6000}
+                            onClose={this.handleClose}
+                            SnackbarContentProps={{
+                            'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">Logging in</span>}
+                            action={[
+                            <IconButton
+                                key="close"
+                                aria-label="Close"
+                                color="inherit"
+                                className={classes.close}
+                                onClick={this.handleClose}
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                            ]}
+                />
+
                 </form>
             </div>
         );
