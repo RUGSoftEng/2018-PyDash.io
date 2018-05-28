@@ -8,7 +8,6 @@ import { Redirect } from 'react-router'
 import VisitsPanel from './VisitsPanel';
 import UniqueVisitorsPanel from './UniqueVisitorsPanel';
 import EndpointExecutionTimesPanel from './EndpointExecutionTimesPanel';
-import ExecutionTimesTable from './ExecutionTimesTable';
 import EndpointsTable from '../../endpoint/EndpointsTable';
 
 // Visual:
@@ -203,7 +202,6 @@ class StatisticsPage extends Component {
                     <div>
                         <VisitsPanel dashboard_id={this.props.dashboard.id} />
                         <UniqueVisitorsPanel dashboard_id={this.props.dashboard.id} />
-                        <ExecutionTimesTable dashboard_id={this.props.dashboard.id} />
                         <EndpointExecutionTimesPanel dashboard_id={this.props.dashboard.id} />
                     </div>
                 </div>
