@@ -75,6 +75,7 @@ class SettingsPage extends Component {
     checked: true,
     SoundSettings: true,
     snackbar: false,
+    loading: false
   };
 componentWillMount = () => {
     this.setState({
@@ -123,14 +124,13 @@ handleDelete = (e) => {
 
 
 
-// handleSettings = (e) => {
+// handleSounds = (e) => {
 
 //   e.preventDefault()
-//   let username = this.state.username,
-//       email = this.state.email
+//   let SoundSettings = this.state.SoundSettings
 //       //Make a request for deletion
 //           axios.post(window.api_path + '/api/user/change_settings', {
-//           username,email},{
+//           SoundSettings},{
 //           method: 'post',
 //           withCredentials: true
 //       }).then((response) => {
@@ -160,41 +160,67 @@ handleDelete = (e) => {
 //       this.handleClose();
 //   });
 // }
+handleOpenSnackbar = () => {
+  this.setState({ snackbar: true });
+};
 
+handleCloseSnackbar = (event, reason) => {
+  if (reason === 'clickaway') {
+      return;
+  }
+
+  this.setState({ snackbar: false });
+};
 handleOkButton = (e) => {
   e.preventDefault()
 let username = this.state.new_username,
     email = this.state.email,
     new_password = this.state.new_password,
     current_password = this.state.current_password
-    if(((username.trim())||email.trim())){
+      if(((username.trim())||email.trim())){
       
-            //Make a request for deletion
+             this.setState(prevState => ({
+              ...prevState,
+              loading: true,
+          }))
                 axios.post(window.api_path + '/api/user/change_settings', {
                 username,email},{
                 method: 'post',
-                withCredentials: true
+                withCredentials: true, 
             }).then((response) => {
                 console.log(response);
-              return <Redirect to="/" />
+                this.handleClose();
+                this.handleOpenSnackbar();
             }).catch((error) => {
+                this.setState(prevState => ({
+                snackbar: false,
+            }))
                 console.log('changing settings failed');
                 this.handleClose();
             });
           }
     else if(((new_password.trim())||current_password.trim())){
-         axios.post(window.api_path + '/api/user/change_password', {
-        new_password,
-        current_password,
-    },{
-        method: 'post',
-        withCredentials: true
-      }).then((response) => {
-        console.log(response);
-        return <Redirect to="/" />
-    }).catch((error) => {
-        console.log('changing password failed');
-        this.handleClose();
+
+              this.setState(prevState => ({
+                ...prevState,
+                loading: true,
+            }))
+              axios.post(window.api_path + '/api/user/change_password', {
+              new_password,
+              current_password,
+          },{
+              method: 'post',
+              withCredentials: true,
+            }).then((response) => {
+              console.log(response);
+              this.handleClose();
+              this.handleOpenSnackbar();
+          }).catch((error) => {
+            this.setState(prevState => ({
+              snackbar: false,
+          }))
+              console.log('changing password failed');
+              this.handleClose();
     });
   }
     }
@@ -228,17 +254,7 @@ let username = this.state.new_username,
     this.setState({SoundSettings: false});
   };
 
-  handleOpenSnackbar = () => {
-    this.setState({ snackbar: true });
-  };
 
-  handleCloseSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
-        return;
-    }
-
-    this.setState({ snackbar: false });
-  };
 
   render() {
     const { classes } = this.props;
@@ -323,8 +339,8 @@ let username = this.state.new_username,
             />
           </DialogContent>
           <DialogActions>
-          <Button onClick={this.handleOkButton}  variant="raised" color="primary">
-              OK
+          <Button onClick={this.handleOkButton}  disabled={this.state.loading} variant="raised" color="primary">
+          {this.state.loading ? "saving changes..." : "OK"} 
             </Button>
             <Button onClick={this.handleClose}  color="primary">
               Close
@@ -343,7 +359,6 @@ let username = this.state.new_username,
           control={
             <Switch
               checked={this.state.checked}
-              //onClick={this.handleSettings}
               onChange={this.handleChangeSwitch('checked')}
               value="checked"
               color="primary"
@@ -407,7 +422,7 @@ let username = this.state.new_username,
               vertical: 'bottom',
               horizontal: 'left',
               }}
-              snackbar={this.state.snackbar}
+              snackbar ={this.state.snackbar} 
               autoHideDuration={6000}
               onClose={this.handleCloseSnackbar}
               SnackbarContentProps={{
@@ -420,7 +435,7 @@ let username = this.state.new_username,
                   aria-label="Close"
                   color="inherit"
                   className={classes.close}
-                  onClick={this.handleClose}
+                  onClick={this.handleCloseSnackbar}
               >
                   <CloseIcon />
             </IconButton>
