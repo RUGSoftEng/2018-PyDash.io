@@ -20,7 +20,7 @@ class User(persistent.Persistent, flask_login.UserMixin):
 
     The User entity checks its parameters on creation:
 
-    >>> User(42, 32)
+    >>> User(42, 32, 11)
     Traceback (most recent call last):
       ...
     TypeError
@@ -45,7 +45,7 @@ class User(persistent.Persistent, flask_login.UserMixin):
         """
         The user has a string representation to be easily introspectable:
 
-        >>> user = User("Gandalf", "pass")
+        >>> user = User("Gandalf", "pass", 'some@email.com')
         >>> f"{user}".startswith("<User ")
         True
         """
@@ -100,8 +100,8 @@ class User(persistent.Persistent, flask_login.UserMixin):
         The actual order does not matter, as long as the same object always has the same location.
         Therefore, we use the UUIDs for this.
 
-        >>> gandalf = User("Gandalf", "pass")
-        >>> dumbledore = User("Dumbledore", "secret")
+        >>> gandalf = User("Gandalf", "pass", 'some@email.com')
+        >>> dumbledore = User("Dumbledore", "secret", 'some@email.com')
         >>> gandalf < dumbledore or gandalf > dumbledore
         True
         >>> gandalf < gandalf

@@ -5,7 +5,7 @@ for interacting with Users.
 
 Example Usage:
 
->>> gandalf = User("Gandalf", "pass")
+>>> gandalf = User("Gandalf", "pass", 'some@email.com')
 >>> add_to_repository(gandalf)
 ...
 >>> found_user = find(gandalf.id)
@@ -48,9 +48,9 @@ def add_to_repository(user):
 
     Adding the same user twice with the same name is not allowed:
 
-    >>> gandalf1 = User("Gandalf", "pass")
+    >>> gandalf1 = User("Gandalf", "pass", 'some@email.com')
     >>> add_to_repository(gandalf1)
-    >>> gandalf2 = User("Gandalf", "balrog")
+    >>> gandalf2 = User("Gandalf", "balrog", 'some@email.com')
     >>> add_to_repository(gandalf2)
     Traceback (most recent call last):
       ...
@@ -67,7 +67,7 @@ def remove_from_repository(user_id):
     """
     Removes the User-entity whose user_id is `user_id` from the repository.
 
-    >>> gandalf1 = User("Gandalf", "pass")
+    >>> gandalf1 = User("Gandalf", "pass", 'some@email.com')
     >>> add_to_repository(gandalf1)
     >>> remove_from_repository(gandalf1.get_id())
     >>> found_user = find_by_name("Gandalf")
@@ -76,7 +76,7 @@ def remove_from_repository(user_id):
 
     Will raise a KeyError if said user is not in the repository.
 
-    >>> gandalf1 = User("Gandalf", "pass")
+    >>> gandalf1 = User("Gandalf", "pass", 'some@email.com')
     >>> add_to_repository(gandalf1)
     >>> remove_from_repository(gandalf1.get_id())
     >>> remove_from_repository(gandalf1.get_id())
@@ -105,7 +105,7 @@ def maybe_find_user(user_id):
     """
     Returns the User entity, or `None` if it does not exist.
 
-    >>> user = User("Gandalf", "pass")
+    >>> user = User("Gandalf", "pass", 'some@email.com')
     >>> add_to_repository(user)
     ...
     >>> found_user = maybe_find_user(user.id)
