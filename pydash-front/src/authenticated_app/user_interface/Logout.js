@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import IconButton from 'material-ui/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 import axios from 'axios';
 // Routing:
 import { Redirect } from 'react-router'
@@ -61,7 +59,6 @@ class Logout extends Component {
     }
 
     render() {
-        const { classes } = this.props;
         return this.state.success ? (
          <Redirect to="/" />
              ) : (
@@ -80,7 +77,6 @@ class Logout extends Component {
 
 Logout.propTypes = {
     signOutHandler: PropTypes.func.isRequired,
-    classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(Logout);

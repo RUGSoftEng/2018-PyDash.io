@@ -12,9 +12,6 @@ import NavLink from 'react-router-dom/NavLink';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import Logo from '../images/logo.png';
-import Snackbar from 'material-ui/Snackbar';
-import IconButton from 'material-ui/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 import Warning from '@material-ui/icons/Warning';
 
 // Sound:
@@ -125,7 +122,6 @@ class LoginPage extends Component {
     }
 
     render() {
-        const { classes } = this.props;
         return this.state.success ? (
             <Redirect to="/overview" />
         ) : (
@@ -178,7 +174,6 @@ class LoginPage extends Component {
 }
 LoginPage.propTypes = {
     signInHandler: PropTypes.func.isRequired,
-    classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(LoginPage);
