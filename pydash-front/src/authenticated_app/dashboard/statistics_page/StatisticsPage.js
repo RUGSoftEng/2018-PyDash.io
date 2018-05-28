@@ -58,6 +58,8 @@ class StatisticsPage extends Component {
         this.state = {
             dashboard: null,
             dashboardName: this.props.dashboard.id,
+            dashboardUrl: this.props.dashboard.url,
+            dashboardToken: '',
             visits_per_day: [],
             unique_visitors_per_day: [],
             average_execution_times: [],
@@ -137,6 +139,9 @@ class StatisticsPage extends Component {
         this.setState({ open: false });
       };
 
+
+
+
     handleDelete = (e) => {
         
         e.preventDefault()
@@ -148,6 +153,20 @@ class StatisticsPage extends Component {
             return <Redirect to="/" />;
         }).catch((error) => {
             console.log('Deletion failed');
+        });
+      }
+
+      handleSettings = (e) => {
+        
+        e.preventDefault()
+        // Make a request for deletion
+        axios.post(window.api_path + '/api/dashboards/'+this.state.dashboard.id+'/change_settings', {
+          name: this.state.dashboardName, url: this.state.dashboardUrl, token: this.state.dashboardToken},
+          {withCredentials: true}
+        ).then((response) => {
+            return <Redirect to="/" />;
+        }).catch((error) => {
+            console.log('Editing failed');
         });
       }
 
@@ -230,9 +249,28 @@ class StatisticsPage extends Component {
               type="dashboard"
               onChange={this.handleChange('dashboardName')}
             />
-            <Button type="submit" variant="raised"  >OK</Button><br/>
+            <br/>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="New url"
+              type="dashboard"
+              onChange={this.handleChange('dashboardUrl')}
+            />
+            <br/>
+               <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="New token"
+              type="dashboard"
+              onChange={this.handleChange('dashboardToken')}
+            />
+            
             </DialogContent>
           <DialogActions>
+          <Button type="submit" variant="raised" color="primary"onClick={this.handleSettings} >OK</Button>
             <Button onClick={this.handleClose}  color="primary">
               Close
             </Button>
