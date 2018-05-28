@@ -144,7 +144,6 @@ class AddDashboardDialog extends Component {
                             type="text"
                             value={this.state.name}
                             fullWidth 
-                            error={this.state.error}
                             onChange={this.handleChange('name')}
                         />
                         <TextField 
