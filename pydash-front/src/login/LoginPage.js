@@ -12,14 +12,17 @@ import NavLink from 'react-router-dom/NavLink';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import Logo from '../images/logo.png';
+import Warning from '@material-ui/icons/Warning';
 import Snackbar from 'material-ui/Snackbar';
 import IconButton from 'material-ui/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import Warning from '@material-ui/icons/Warning';
 
 // Sound:
 import {Howl} from 'howler';
 import login_soundfile from "./boot.mp3";
+
+// Notifications
+import { showNotification } from '../Notifier'
 
 
 const login_sound = new Howl({
@@ -28,10 +31,10 @@ const login_sound = new Howl({
 
 const styles = theme => ({
     close: {
-      width: theme.spacing.unit * 4,
-      height: theme.spacing.unit * 4,
+        width: theme.spacing.unit * 4,
+        height: theme.spacing.unit * 4,
     },
-  });
+});
 
 class LoginPage extends Component {
     state = {
@@ -41,7 +44,6 @@ class LoginPage extends Component {
         message: '',
         success: false,
         loading: false,
-        open: false,
         IsPasswordTooShort: true,
     };
 
@@ -62,21 +64,17 @@ class LoginPage extends Component {
         });
     };
 
-
-    handleClick = () => {
-        this.setState({ open: true });
-      };
-
-      handleClose = (event, reason) => {
+    handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
 
-        this.setState({ open: false });
-      };
+    };
 
     tryLogin = (e) => {
         e.preventDefault()
+        showNotification({ message: "Logging in..."});
+
         let username = this.state.username,
             password = this.state.password
 
@@ -84,38 +82,32 @@ class LoginPage extends Component {
             this.setState(prevState => ({
                 ...prevState,
                 error: true,
-                open: false,
                 helperText: 'Both fields are required!',
             }))
-
+            showNotification({ message: "Login failed."});
             return;
         }
 
         this.setState(prevState => ({
             ...prevState,
-                error: false,
-                helperText: '',
-                loading: true,
-            }))
+            error: false,
+            helperText: '',
+            loading: true,
+        }))
 
 
         // Make a request for a user with a given ID
         axios.post(window.api_path + '/api/login', {
             username,
             password},
-            {withCredentials: true},
+                   {withCredentials: true},
         ).then((response) => {
             console.log(response);
             login_sound.play()
             this.props.signInHandler(username)
-            /* this.setState(prevState => ({
-             *     error: false,
-             *     helperText: '',
-             *     success: true,
-             *     loading: false
-             * }));*/
         }).catch((error) => {
             console.log(error);
+            showNotification({ message: "Login failed."});
             if(error.response && error.response.status === 401) {
                 this.setState(prevState => ({
                     error: true,
@@ -133,7 +125,6 @@ class LoginPage extends Component {
     }
 
     render() {
-        const { classes } = this.props;
         return this.state.success ? (
             <Redirect to="/overview" />
         ) : (
@@ -163,22 +154,23 @@ class LoginPage extends Component {
                         error={this.state.error}
                         helperText={this.state.helperText}
                     />
-            {(this.state.isPasswordUnsafe ?
-              <p className="password-safety-warning" >
-                  <Warning /><br/>
-                  Warning! Your password is shorter than 12 characters, which is considered unsafe.<br/>
-                  Please improve your password strength on the settings page after logging in.
-              </p>
-            : ""
-            )}
+                    {(this.state.isPasswordUnsafe ?
+                      <p className="password-safety-warning" >
+                          <Warning /><br/>
+                          Warning! Your password is shorter than 12 characters, which is considered unsafe.<br/>
+                          Please improve your password strength on the settings page after logging in.
+                      </p>
+                     : ""
+                    )}
                     <p>
-                    <Button  type="submit" variant="raised" color="primary" disabled={this.state.loading} onClick={ this.handleClick}>
-                        {this.state.loading ? "Logging in..." : "Login"} 
-                    </Button>
+                        <Button  type="submit" variant="raised" color="primary" disabled={this.state.loading}>
+                            {this.state.loading ? "Logging in..." : "Login"} 
+                        </Button>
                     </p>
                     <p>
-                    <Button component={NavLink} to="/register">Create an account?</Button>
+                        <Button component={NavLink} to="/register">Create an account?</Button>
                     </p>
+
                         <Snackbar
                             anchorOrigin={{
                             vertical: 'bottom',
@@ -196,7 +188,7 @@ class LoginPage extends Component {
                                 key="close"
                                 aria-label="Close"
                                 color="inherit"
-                                className={classes.close}
+                                //className={theme.close}
                                 onClick={this.handleClose}
                             >
                                 <CloseIcon />
@@ -211,7 +203,6 @@ class LoginPage extends Component {
 }
 LoginPage.propTypes = {
     signInHandler: PropTypes.func.isRequired,
-    classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(LoginPage);
