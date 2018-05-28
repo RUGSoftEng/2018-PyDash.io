@@ -270,7 +270,7 @@ class RegistrationPage extends Component {
                     </Button>
                     </p>
                     <p>
-                    <Button component={NavLink} to="/">Back</Button>
+                        <Button component={NavLink} to="/">Back</Button>
                     </p>
                     <Snackbar
                             anchorOrigin={{
