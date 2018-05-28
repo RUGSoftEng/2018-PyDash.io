@@ -7,6 +7,9 @@ import Dialog, {
     DialogContentText,
     DialogTitle,
 } from 'material-ui/Dialog';
+import Snackbar from 'material-ui/Snackbar';
+import IconButton from 'material-ui/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 import axios from 'axios';
 
@@ -18,6 +21,7 @@ class AddDashboardDialog extends Component {
             name: '',
             token: '',
             message: '',
+            openS:false,
             error: false,
             loading: false,
             success: false,
@@ -29,7 +33,18 @@ class AddDashboardDialog extends Component {
             [key]: event.target.value
         });
     };
-
+    
+    handleSnackbar = () => {
+        this.setState({ openS: true });
+      };
+      
+      handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+      
+        this.setState({ openS: false });
+      };
     handleClick = () => {
         this.setState({ open: true });
     };
@@ -108,6 +123,7 @@ class AddDashboardDialog extends Component {
                         <DialogContentText>
                             To add a new dashboard, we will need some information from you.
                         </DialogContentText>
+
                         <TextField
                             autoFocus
                             id="url"
@@ -140,15 +156,43 @@ class AddDashboardDialog extends Component {
                             onChange={this.handleChange('token')}
                         />
                     </DialogContent>
-                    <DialogActions>
+                    <DialogActions onSubmit={this.tryCreation}
+>
                         <Button onClick={this.props.onClose} color="default">
                             Cancel
                         </Button>
-                        <Button onClick={this.tryCreation} color="primary" disabled={this.state.loading} variant="raised">
+                        <Button type="submit" onClick={this.handleSnackbar} color="primary" disabled={this.state.loading} variant="raised">
                             {this.state.loading ? "Adding dashboard" : "Save"}
                         </Button>
+                    
+
                     </DialogActions>
+
                 </Dialog>
+                <Snackbar
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                        }}
+                        openS={this.state.openS}
+                        autoHideDuration={6000}
+                        onClose={this.handleClose}
+                        ContentProps={{
+                            'aria-describedby': 'message-id',
+                        }}
+                        message={<span id="message-id">Changes have been saved!</span>}
+                        action={[
+                            <IconButton
+                            key="close"
+                            aria-label="Close"
+                            color="inherit"
+                            //className={classes.close}
+                            onClick={this.handleClose}
+                            >
+                            <CloseIcon />
+                            </IconButton>,
+                        ]}
+                        />
             </div>
         );
     }

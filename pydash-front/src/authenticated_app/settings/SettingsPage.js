@@ -17,6 +17,8 @@ import Snackbar from 'material-ui/Snackbar';
 import IconButton from 'material-ui/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
+import { showNotification } from "../../Notifier";
+
 const styles = theme => ({
   root: {
     width: '100%',
@@ -121,6 +123,23 @@ handleDelete = (e) => {
   });
 }
 
+  handleSettings = (e) => {
+    e.preventDefault()
+    axios.post(window.api_path + '/api/user/change_settings', {
+      username: this.state.username,
+
+    },{
+      method: 'post',
+      withCredentials: true
+  }).then((response) => {
+      console.log(response);
+      showNotification({ message: "Settings saved!"});
+     return <Redirect to="/" />
+  }).catch((error) => {
+      console.log('changing settings failed');
+      this.handleClose();
+  });
+}
 
 
 
@@ -174,55 +193,24 @@ handleClose = (event, reason) => {
 };
 handleOkButton = (e) => {
   e.preventDefault()
-let username = this.state.new_username,
-    email = this.state.email,
-    new_password = this.state.new_password,
-    current_password = this.state.current_password
-      if(((username.trim())||email.trim())){
-      
-             this.setState(prevState => ({
-              ...prevState,
-              loading: true,
-          }))
-                axios.post(window.api_path + '/api/user/change_settings', {
-                username,email},{
-                method: 'post',
-                withCredentials: true, 
-            }).then((response) => {
-                console.log(response);
-                this.handleClose();
-            }).catch((error) => {
-                this.setState(prevState => ({
-                snackbar: false,
-            }))
-                console.log('changing settings failed');
-                this.handleClose();
-            });
-          }
-    else if(((new_password.trim())||current_password.trim())){
-
-              this.setState(prevState => ({
-                ...prevState,
-                loading: true,
-            }))
-              axios.post(window.api_path + '/api/user/change_password', {
-              new_password,
-              current_password,
-          },{
-              method: 'post',
-              withCredentials: true,
-            }).then((response) => {
-              console.log(response);
-              this.handleClose();
-          }).catch((error) => {
-            this.setState(prevState => ({
-              snackbar: false,
-          }))
-              console.log('changing password failed');
-              this.handleClose();
-    });
-  }
-    }
+  let new_password = this.state.new_password,
+      current_password = this.state.current_password
+  // Make a request for deletion
+  axios(window.api_path + '/api/user/change_password', {
+      new_password,
+      current_password,
+  },{
+      method: 'post',
+      withCredentials: true
+    }).then((response) => {
+      console.log(response);
+        showNotification({ message: "Password updated!"});
+      return <Redirect to="/" />
+  }).catch((error) => {
+      console.log('changing password failed');
+      this.handleClose();
+  });
+}
 
   handleClickOpen = () => {
     this.setState({ open: true });
@@ -261,6 +249,7 @@ let username = this.state.new_username,
     return (
 
       <div className={classes.root}>
+        <h2>Settings</h2>
         <ExpansionPanel>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography className={classes.heading}>Personal data
