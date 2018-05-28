@@ -26,12 +26,9 @@ def register_user():
     return controller.register_user()
 
 
-# @api.route("/api/user/verify", methods=["POST"])
-# def verify_user():
-# For now this route and definition, as to facilitate direct api-calls w.r.t. email verification links.
-@api.route("/api/user/verify/<verification_code>", methods=["POST"])
-def verify_user(verification_code):
-    return controller.verify_user(verification_code)
+@api.route("/api/user/verify", methods=["POST"])
+def verify_user():
+    return controller.verify_user()
 
 
 @api.route("/api/user/delete", methods=["POST"])
@@ -50,6 +47,12 @@ def change_settings():
 @login_required
 def change_password():
     return controller.change_password()
+
+
+@api.route("/api/dashboards/<dashboard_id>/change_settings", methods=["POST"])
+@login_required
+def change_dashboard_settings(dashboard_id):
+    return controller.change_dashboard_settings(dashboard_id)
 
 
 @api.route("/api/dashboards", methods=["GET"])
@@ -80,3 +83,15 @@ def delete_dashboard(dashboard_id):
 @login_required
 def get_endpoint_boxplots(dashboard_id):
     return controller.endpoint_boxplots(dashboard_id)
+
+
+@api.route("/api/dashboards/<dashboard_id>/visitor_heatmap", methods=["GET"])
+@login_required
+def get_visitor_heatmap(dashboard_id):
+    return controller.visitor_heatmap(dashboard_id)
+
+
+@api.route("/api/dashboards/<dashboard_id>/unique_visitor_heatmap", methods=["GET"])
+@login_required
+def get_unique_visitor_heatmap(dashboard_id):
+    return controller.visitor_heatmap(dashboard_id, 'unique_visitors')

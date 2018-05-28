@@ -1,7 +1,8 @@
 import uuid
 import persistent
 
-from .aggregator import Aggregator
+# from .aggregator import Aggregator
+from .aggregator.aggregator_group import AggregatorGroup
 
 
 class Endpoint(persistent.Persistent):
@@ -24,7 +25,8 @@ class Endpoint(persistent.Persistent):
         self.is_monitored = is_monitored
 
         self._calls = []
-        self._aggregator = Aggregator(self._calls)
+        # self._aggregator = Aggregator(self._calls)
+        self._aggregator_group = AggregatorGroup()
 
     def __repr__(self):
         return f'{self.__class__.__name__} id={self.id} name={self.name}'
@@ -38,12 +40,14 @@ class Endpoint(persistent.Persistent):
         :param call: The endpoint call to add.
         """
         self._calls.append(call)
-        self._aggregator.add_endpoint_call(call)
+        self._aggregator_group.add_endpoint_call(call)
+        # self._aggregator.add_endpoint_call(call)
 
     def remove_endpoint_call(self, call):
         """
         Removes an EndpointCall from this endpoint's internal collection of endpoint calls.
         Raises a ValueError if no such call exists.
+        Note: does not remove it from its aggregated dataset yet.
         :param call: The endpoint call to remove.
         """
         self._calls.remove(call)
@@ -56,4 +60,4 @@ class Endpoint(persistent.Persistent):
         Get aggregated data on this endpoint.
         :return: A dict containing aggregated data points.
         """
-        return self._aggregator.as_dict()
+        return self._aggregator_group.fetch_aggregator({}).as_dict()
