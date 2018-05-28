@@ -50,31 +50,33 @@ class AddDashboardDialog extends Component {
             name = this.state.name,
             token = this.state.token;
 
-        if (!(token.trim())) {
-            this.setState(prevState => ({
-                ...prevState,
-                errorToken: true,
-                open: false,
-                helperText: 'These fields are required!',
-            }))
-
+        this.setState(prevState => ({
+            ...prevState,
+            error: false,
+            errorToken: false,
+            errorURL: false,
+        })) 
+        if (!(token.trim())||!(url.trim())) {
+            if(!token.trim()){
+                this.setState(prevState => ({
+                    ...prevState,
+                    errorToken: true,
+                    open: false,
+                    helperText: 'These fields are required!',
+                }))
+            }
+            if(!url.trim()){
+                this.setState(prevState => ({
+                    ...prevState,
+                    errorURL: true,
+                    open: false,
+                    helperText: 'These fields are required!',
+                }))
+            }
             return;
-        } else {
-            this.setState(prevState => ({
-                ...prevState,
-                errorToken: false,
-            }))
         }
-        if (!(url.trim())) {
-            this.setState(prevState => ({
-                ...prevState,
-                errorURL: true,
-                open: false,
-                helperText: 'These fields are required!',
-            }))
 
-            return;
-        }
+
 
         this.setState(prevState => ({
             ...prevState,
