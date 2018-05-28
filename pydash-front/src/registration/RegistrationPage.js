@@ -137,10 +137,6 @@ class RegistrationPage extends Component {
             errorPasswordConfirm: false,
         }))
 
-        if(password!==password_confirmation || this.state.warnings['password']!==null || this.state.warnings['password_confirmation']!==null ){
-            return;
-        }
-
         if (!(username.trim()) || !(password.trim()) || !(email_address.trim()) || !(password_confirmation.trim())) {
             this.setState(prevState => ({
                 ...prevState,
