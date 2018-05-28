@@ -6,6 +6,8 @@ from flask import jsonify, request
 from flask_mail import Message
 from pydash_mail import mail
 from pydash_mail.templates import format_verification_mail_html, format_verification_mail_plain
+from datetime import datetime, timedelta, timezone
+from uuid import uuid4
 
 import pydash_app.user
 import pydash_logger
@@ -47,7 +49,7 @@ def register_user():
         result = {'message': f'User with username {username} already exists.'}
         return jsonify(result), 400
     else:
-        user = pydash_app.user.User(username, password)
+        user = pydash_app.user.User(username, password, email_address)
         pydash_app.user.add_to_repository(user)
         
         logger.info(f'User successfully registered with username: {username}'
@@ -58,6 +60,20 @@ def register_user():
                                  email_address,
                                  user.name)
 
+
+_DEFAULT_EXPIRATION_TIME = timedelta(days=1)
+
+
+class VerificationCode:
+    """
+    A 'smart' randomly generated verification code that keeps track of whether it has expired.
+    Default expiration time is 7 days.
+    """
+    def __init__(self, expiration_time=_DEFAULT_EXPIRATION_TIME):
+        self.verification_code = uuid4()
+        self.expiration_datetime = datetime.now(tz=timezone.utc) + expiration_time
+
+    def is_expired(self):
         result = {'message': 'User successfully registered.',
                   'verification_code': f'{user.get_verification_code()}'}
 
