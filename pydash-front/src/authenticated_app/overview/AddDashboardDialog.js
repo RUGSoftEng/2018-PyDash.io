@@ -19,6 +19,8 @@ class AddDashboardDialog extends Component {
             token: '',
             message: '',
             error: false,
+            errorURL: false,
+            errorToken: false,
             loading: false,
             success: false,
         }
@@ -48,10 +50,25 @@ class AddDashboardDialog extends Component {
             name = this.state.name,
             token = this.state.token;
 
-        if (!(url.trim()) || !(token.trim())) {
+        if (!(token.trim())) {
             this.setState(prevState => ({
                 ...prevState,
-                error: true,
+                errorToken: true,
+                open: false,
+                helperText: 'These fields are required!',
+            }))
+
+            return;
+        } else {
+            this.setState(prevState => ({
+                ...prevState,
+                errorToken: false,
+            }))
+        }
+        if (!(url.trim())) {
+            this.setState(prevState => ({
+                ...prevState,
+                errorURL: true,
                 open: false,
                 helperText: 'These fields are required!',
             }))
@@ -61,7 +78,8 @@ class AddDashboardDialog extends Component {
 
         this.setState(prevState => ({
             ...prevState,
-            error: false,
+            errorURL: false,
+            errorToken: false,
             helperText: '',
             loading: true
         }))
@@ -75,7 +93,6 @@ class AddDashboardDialog extends Component {
             console.log(response);
             this.setState(prevState => ({
                 ...prevState,
-                error: false,
                 helperText: '',
                 success: true,
                 loading: false,
@@ -116,7 +133,7 @@ class AddDashboardDialog extends Component {
                             value={this.state.url}
                             fullWidth
                             required
-                            error={this.state.error}
+                            error={this.state.errorURL||this.state.error}
                             onChange={this.handleChange('url')}
                         />
                         <TextField
@@ -135,7 +152,7 @@ class AddDashboardDialog extends Component {
                             value={this.state.token}
                             fullWidth 
                             required
-                            error={this.state.error}
+                            error={this.state.errorToken||this.state.error}
                             helperText={this.state.helperText}
                             onChange={this.handleChange('token')}
                         />
