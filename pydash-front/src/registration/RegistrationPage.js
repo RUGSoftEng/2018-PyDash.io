@@ -187,6 +187,8 @@ class RegistrationPage extends Component {
                 success: true,
                 loading: false
             }));
+            console.log('hier')
+            this.forceUpdate()
         }).catch((error) => {
             console.log(error);
             if(error.response && error.response.status === 409) {
