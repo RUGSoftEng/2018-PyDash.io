@@ -17,6 +17,8 @@ import Snackbar from 'material-ui/Snackbar';
 import IconButton from 'material-ui/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
+import { showNotification } from "../../Notifier";
+
 const styles = theme => ({
   root: {
     width: '100%',
@@ -121,6 +123,26 @@ handleDelete = (e) => {
   });
 }
 
+<<<<<<< HEAD
+=======
+  handleSettings = (e) => {
+    e.preventDefault()
+    axios.post(window.api_path + '/api/user/change_settings', {
+      username: this.state.username,
+
+    },{
+      method: 'post',
+      withCredentials: true
+  }).then((response) => {
+      console.log(response);
+      showNotification({ message: "Settings saved!"});
+     return <Redirect to="/" />
+  }).catch((error) => {
+      console.log('changing settings failed');
+      this.handleClose();
+  });
+}
+>>>>>>> origin/snackbar_notifier
 
 
 
@@ -174,6 +196,7 @@ handleClose = (event, reason) => {
 };
 handleOkButton = (e) => {
   e.preventDefault()
+<<<<<<< HEAD
 let username = this.state.new_username,
     email = this.state.email,
     new_password = this.state.new_password,
@@ -223,6 +246,26 @@ let username = this.state.new_username,
     });
   }
     }
+=======
+  let new_password = this.state.new_password,
+      current_password = this.state.current_password
+  // Make a request for deletion
+  axios(window.api_path + '/api/user/change_password', {
+      new_password,
+      current_password,
+  },{
+      method: 'post',
+      withCredentials: true
+    }).then((response) => {
+      console.log(response);
+        showNotification({ message: "Password updated!"});
+      return <Redirect to="/" />
+  }).catch((error) => {
+      console.log('changing password failed');
+      this.handleClose();
+  });
+}
+>>>>>>> origin/snackbar_notifier
 
   handleClickOpen = () => {
     this.setState({ open: true });
