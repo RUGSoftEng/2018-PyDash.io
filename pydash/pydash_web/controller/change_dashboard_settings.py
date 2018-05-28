@@ -58,7 +58,7 @@ def change_dashboard_settings(dashboard_id):
         if 'url' in settings_to_change:
             valid_dashboard.url = settings_to_change['url']
 
-        if 'token' in settings_to_change['url']:
+        if 'token' in settings_to_change:
             valid_dashboard.token = settings_to_change['token']
 
         pydash_app.dashboard.repository.update(valid_dashboard)
