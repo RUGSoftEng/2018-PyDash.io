@@ -253,7 +253,7 @@ class StatisticsPage extends Component {
             <TextField
               autoFocus
               margin="dense"
-              id="name"
+              id="url"
               label="New url"
               type="dashboard"
               onChange={this.handleChange('dashboardUrl')}
