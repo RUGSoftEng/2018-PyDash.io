@@ -31,10 +31,10 @@ const login_sound = new Howl({
 
 const styles = theme => ({
     close: {
-      width: theme.spacing.unit * 4,
-      height: theme.spacing.unit * 4,
+        width: theme.spacing.unit * 4,
+        height: theme.spacing.unit * 4,
     },
-  });
+});
 
 class LoginPage extends Component {
     state = {
@@ -44,7 +44,6 @@ class LoginPage extends Component {
         message: '',
         success: false,
         loading: false,
-        open: false,
         IsPasswordTooShort: true,
     };
 
@@ -65,21 +64,17 @@ class LoginPage extends Component {
         });
     };
 
-
-    handleClick = () => {
-        showNotification({ message: "Logging in..."});
-      };
-
-      handleClose = (event, reason) => {
+    handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
 
-        this.setState({ open: false });
-      };
+    };
 
     tryLogin = (e) => {
         e.preventDefault()
+        showNotification({ message: "Logging in..."});
+
         let username = this.state.username,
             password = this.state.password
 
@@ -87,7 +82,6 @@ class LoginPage extends Component {
             this.setState(prevState => ({
                 ...prevState,
                 error: true,
-                open: false,
                 helperText: 'Both fields are required!',
             }))
             showNotification({ message: "Login failed."});
@@ -96,27 +90,21 @@ class LoginPage extends Component {
 
         this.setState(prevState => ({
             ...prevState,
-                error: false,
-                helperText: '',
-                loading: true,
-            }))
+            error: false,
+            helperText: '',
+            loading: true,
+        }))
 
 
         // Make a request for a user with a given ID
         axios.post(window.api_path + '/api/login', {
             username,
             password},
-            {withCredentials: true},
+                   {withCredentials: true},
         ).then((response) => {
             console.log(response);
             login_sound.play()
             this.props.signInHandler(username)
-            /* this.setState(prevState => ({
-             *     error: false,
-             *     helperText: '',
-             *     success: true,
-             *     loading: false
-             * }));*/
         }).catch((error) => {
             console.log(error);
             showNotification({ message: "Login failed."});
@@ -167,47 +155,22 @@ class LoginPage extends Component {
                         error={this.state.error}
                         helperText={this.state.helperText}
                     />
-            {(this.state.isPasswordUnsafe ?
-              <p className="password-safety-warning" >
-                  <Warning /><br/>
-                  Warning! Your password is shorter than 12 characters, which is considered unsafe.<br/>
-                  Please improve your password strength on the settings page after logging in.
-              </p>
-            : ""
-            )}
+                    {(this.state.isPasswordUnsafe ?
+                      <p className="password-safety-warning" >
+                          <Warning /><br/>
+                          Warning! Your password is shorter than 12 characters, which is considered unsafe.<br/>
+                          Please improve your password strength on the settings page after logging in.
+                      </p>
+                     : ""
+                    )}
                     <p>
-                    <Button  type="submit" variant="raised" color="primary" disabled={this.state.loading} onClick={ this.handleClick}>
-                        {this.state.loading ? "Logging in..." : "Login"} 
-                    </Button>
+                        <Button  type="submit" variant="raised" color="primary" disabled={this.state.loading}>
+                            {this.state.loading ? "Logging in..." : "Login"} 
+                        </Button>
                     </p>
                     <p>
-                    <Button component={NavLink} to="/register">Create an account?</Button>
+                        <Button component={NavLink} to="/register">Create an account?</Button>
                     </p>
-                        <Snackbar
-                            anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'left',
-                            }}
-                            open={this.state.open}
-                            autoHideDuration={6000}
-                            onClose={this.handleClose}
-                            SnackbarContentProps={{
-                            'aria-describedby': 'message-id',
-                            }}
-                            message={<span id="message-id">Logging in</span>}
-                            action={[
-                            <IconButton
-                                key="close"
-                                aria-label="Close"
-                                color="inherit"
-                                className={classes.close}
-                                onClick={this.handleClose}
-                            >
-                                <CloseIcon />
-                            </IconButton>,
-                            ]}
-                />
-
                 </form>
             </div>
         );

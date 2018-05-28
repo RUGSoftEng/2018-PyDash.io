@@ -98,16 +98,12 @@ class RegistrationPage extends Component {
     }
 
 
-    handleClick = () => {
-        this.setState({ open: true });
-      };
 
       handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
     
-        this.setState({ open: false });
       };
    
    
@@ -121,7 +117,6 @@ class RegistrationPage extends Component {
             this.setState(prevState => ({
                 ...prevState,
                 error: true,
-                open: false,
                 helperText: 'These fields are required!',
             }))
             showNotification({ message: "Registration failed"});
@@ -233,34 +228,10 @@ class RegistrationPage extends Component {
                         ))}
                     </ul>
                     <p>
-                    <Button type="submit" variant="raised" color="primary" disabled={this.state.loading}  onClick={ this.handleClick}>
+                    <Button type="submit" variant="raised" color="primary" disabled={this.state.loading}>
                         {this.state.loading ? "Creating account" : "Register"}
                     </Button>
                     </p>
-                    <Snackbar
-                            anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'left',
-                            }}
-                            open={this.state.open}
-                            autoHideDuration={6000}
-                            onClose={this.handleClose}
-                            SnackbarContentProps={{
-                            'aria-describedby': 'message-id',
-                            }}
-                            message={<span id="message-id">User registered</span>}
-                            action={[
-                            <IconButton
-                                key="close"
-                                aria-label="Close"
-                                color="inherit"
-                                className={classes.close}
-                                onClick={this.handleClose}
-                            >
-                                <CloseIcon />
-                            </IconButton>,
-                            ]}
-                />
                 </form>
             </div>
         );
