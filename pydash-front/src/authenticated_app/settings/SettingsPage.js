@@ -123,8 +123,6 @@ handleDelete = (e) => {
   });
 }
 
-<<<<<<< HEAD
-=======
   handleSettings = (e) => {
     e.preventDefault()
     axios.post(window.api_path + '/api/user/change_settings', {
@@ -142,7 +140,6 @@ handleDelete = (e) => {
       this.handleClose();
   });
 }
->>>>>>> origin/snackbar_notifier
 
 
 
@@ -196,57 +193,6 @@ handleClose = (event, reason) => {
 };
 handleOkButton = (e) => {
   e.preventDefault()
-<<<<<<< HEAD
-let username = this.state.new_username,
-    email = this.state.email,
-    new_password = this.state.new_password,
-    current_password = this.state.current_password
-      if(((username.trim())||email.trim())){
-      
-             this.setState(prevState => ({
-              ...prevState,
-              loading: true,
-          }))
-                axios.post(window.api_path + '/api/user/change_settings', {
-                username,email},{
-                method: 'post',
-                withCredentials: true, 
-            }).then((response) => {
-                console.log(response);
-                this.handleClose();
-            }).catch((error) => {
-                this.setState(prevState => ({
-                snackbar: false,
-            }))
-                console.log('changing settings failed');
-                this.handleClose();
-            });
-          }
-    else if(((new_password.trim())||current_password.trim())){
-
-              this.setState(prevState => ({
-                ...prevState,
-                loading: true,
-            }))
-              axios.post(window.api_path + '/api/user/change_password', {
-              new_password,
-              current_password,
-          },{
-              method: 'post',
-              withCredentials: true,
-            }).then((response) => {
-              console.log(response);
-              this.handleClose();
-          }).catch((error) => {
-            this.setState(prevState => ({
-              snackbar: false,
-          }))
-              console.log('changing password failed');
-              this.handleClose();
-    });
-  }
-    }
-=======
   let new_password = this.state.new_password,
       current_password = this.state.current_password
   // Make a request for deletion
@@ -265,7 +211,6 @@ let username = this.state.new_username,
       this.handleClose();
   });
 }
->>>>>>> origin/snackbar_notifier
 
   handleClickOpen = () => {
     this.setState({ open: true });
