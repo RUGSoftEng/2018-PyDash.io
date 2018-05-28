@@ -13,6 +13,11 @@ import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import Logo from '../images/logo.png';
 import Warning from '@material-ui/icons/Warning';
+
+import Snackbar from 'material-ui/Snackbar';
+import IconButton from 'material-ui/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+
 import Snackbar from 'material-ui/Snackbar';
 import IconButton from 'material-ui/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
