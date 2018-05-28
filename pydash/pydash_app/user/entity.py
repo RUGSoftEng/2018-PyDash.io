@@ -26,7 +26,7 @@ class User(persistent.Persistent, flask_login.UserMixin):
     TypeError
     """
 
-    def __init__(self, name, password):
+    def __init__(self, name, password, mail):
         if not isinstance(name, str) or not isinstance(password, str):
             raise TypeError("User expects name and password to be strings.")
 
@@ -37,6 +37,7 @@ class User(persistent.Persistent, flask_login.UserMixin):
         self._smart_verification_code = VerificationCode()
         # Needed for the database to search for users by verification code
         self._verification_code = self._smart_verification_code.verification_code
+        self.mail = mail
 
         self.play_sounds = True
 
