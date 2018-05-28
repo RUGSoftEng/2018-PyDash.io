@@ -1,0 +1,9 @@
+<p>Dear {username},</p>
+<br/>
+<p>To verify your account, please click on this <a href="{verification_url}">link</a>.</p>
+<br/>
+<p>Alternatively, copy and paste the following URL into your internet browser:</p>
+<p>{verification_url}</p>
+<br/>
+<p>The link will expire at {expiration_date}.</p>
+<p>If you do not verify your account before then, you will need to register again.</p>

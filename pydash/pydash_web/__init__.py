@@ -57,7 +57,6 @@ def seed_command():
     """Initializes our datastore with some preliminary values"""
     pydash_app.seed_datastructures()
 
-
 # pydash_app.schedule_periodic_tasks()
 
 
