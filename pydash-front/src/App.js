@@ -39,7 +39,7 @@ class App extends Component {
             return <Redirect to='/overview' />;
         }
 
-        if(!this.state.isAuthenticated && (window.location.pathname !== "/" && window.location.pathname !== '/register')){
+        if(!this.state.isAuthenticated && (window.location.pathname !== "/" && window.location.pathname !== '/register' && window.location.pathname.substring(0,8) !== '/verify/')){
             return <Redirect to='/' />;
         }
     }

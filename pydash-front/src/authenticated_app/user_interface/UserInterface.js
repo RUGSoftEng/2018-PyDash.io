@@ -85,18 +85,17 @@ class UserInterface extends React.Component {
         const { classes, theme } = this.props;
 
         const drawer = (
-            <div>
+            <div className="sidebar">
 
                 <div className={classes.toolbar} >
-                
-                
+
                 <Link to={'/overview/settings'}>
                     <UserIcon className={classes.accounticon}  />
                     <div className={classes.accountname} >
                         {this.props.username || 'Username'}
                     </div>
                 </Link>
-                
+
                 </div>
                 <Divider />
                 <MainMenuItems />
@@ -117,11 +116,11 @@ class UserInterface extends React.Component {
                         >
                             <MenuIcon />
                         </IconButton>
-                        <Typography variant="title" color="inherit" noWrap>
-                            <Link to={'/overview/settings'}>
+                        <Link to={'/overview'}>
+                            <Typography variant="title" color="inherit" noWrap>
                                 <img src={Logo} alt="PyDash.io logo" style={{marginTop: "15px", marginLeft: "20px", marginBottom: "10px", maxWidth: "150px"}} />
-                            </Link>
-                        </Typography>
+                            </Typography>
+                        </Link>
                     </Toolbar>
                 </AppBar>
                 <Hidden mdUp>

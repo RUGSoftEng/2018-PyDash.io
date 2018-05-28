@@ -76,7 +76,11 @@ def fetch_and_update_new_dashboard_info(dashboard_id):
     """
     Updates the dashboard with the new EndpointCall information that is fetched from the Dashboard's remote location.
     """
-    dashboard = dashboard_repository.find(dashboard_id)
+    try:
+        dashboard = dashboard_repository.find(dashboard_id)
+    except KeyError:
+        logger.warning('Dashboard does not exist')
+        return
 
     logger.info(f'INSIDE FETCH FUNCTION: {dashboard_id}')
 
@@ -94,7 +98,11 @@ def fetch_and_update_historic_dashboard_info(dashboard_id):
     """
     Updates the dashboard with the historic EndpointCall information that is fetched from the Dashboard's remote location.
     """
-    dashboard = dashboard_repository.find(dashboard_id)
+    try:
+        dashboard = dashboard_repository.find(dashboard_id)
+    except KeyError:
+        logger.warning('Dashboard does not exist')
+        return
 
     logger.info(f'INSIDE INITIAL FETCHING FUNCTION: {dashboard_id}')
 
@@ -312,7 +320,7 @@ def fetch_and_add_historic_endpoint_calls(dashboard):
 
     while start_time < current_time:
         # TODO: for now historical data is pulled in chunks of 1 hour (hardcoded)
-        end_time = start_time + timedelta(hours=1)
+        end_time = start_time + timedelta(weeks=1)
 
         if end_time > current_time:
             end_time = current_time
