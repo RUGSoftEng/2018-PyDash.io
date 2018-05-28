@@ -141,7 +141,7 @@ class StatisticsPage extends Component {
         
         e.preventDefault()
         // Make a request for deletion
-        axios.post(window.api_path + '/api/dashboards/<dashboard_id>/delete', {
+        axios.post(window.api_path + '/api/dashboards/'+this.state.dashboard.id+'/delete', {
           dashboard_id: this.state.dashboard.id},
           {withCredentials: true}
         ).then((response) => {
