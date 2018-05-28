@@ -275,10 +275,10 @@ let username = this.state.new_username,
           Username: {this.props.username}
           <br/>
 
-          Email: 
+          Email: {this.props.email_address}
           <br/>
 
-          Registration date:
+          Registration date:...
           </Typography>
           <div>
         <Dialog
@@ -306,7 +306,7 @@ let username = this.state.new_username,
             
             <TextField
               id="currentPassword"
-              label="Old password"
+              label={this.props.password}
               onChange={this.handleType('current_password')}
               margin="normal"
               type="password"
@@ -318,7 +318,7 @@ let username = this.state.new_username,
               autoFocus
               margin="dense"
               id="name"
-              label="New username"
+              label={this.props.username}
               type="username"
               onChange={this.handleChange('new_username')}
               fullWidth
@@ -329,7 +329,7 @@ let username = this.state.new_username,
               autoFocus
               margin="normal"
               id="full-width"
-              label="New email"
+              label={this.props.email_address}
               type="email" 
               onChange={this.handleChange('email')}
               fullWidth   
