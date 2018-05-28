@@ -13,9 +13,12 @@ import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import Logo from '../images/logo.png';
 import Warning from '@material-ui/icons/Warning';
+<<<<<<< HEAD
 import Snackbar from 'material-ui/Snackbar';
 import IconButton from 'material-ui/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+=======
+>>>>>>> 2b54db52dcaec5713b2e14940d48106e7d3597df
 
 // Sound:
 import {Howl} from 'howler';
