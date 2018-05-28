@@ -74,7 +74,7 @@ class SettingsPage extends Component {
     openDeletion: false,
     checked: true,
     SoundSettings: true,
-    snackbar: false,
+    openS: false,
     loading: false
   };
 componentWillMount = () => {
@@ -160,16 +160,16 @@ handleDelete = (e) => {
 //       this.handleClose();
 //   });
 // }
-handleOpenSnackbar = () => {
-  this.setState({ snackbar: true });
+handleClick = () => {
+  this.setState({ openS: true });
 };
 
-handleCloseSnackbar = (event, reason) => {
+handleClose = (event, reason) => {
   if (reason === 'clickaway') {
-      return;
+    return;
   }
 
-  this.setState({ snackbar: false });
+  this.setState({ openS: false });
 };
 handleOkButton = (e) => {
   e.preventDefault()
@@ -190,7 +190,6 @@ let username = this.state.new_username,
             }).then((response) => {
                 console.log(response);
                 this.handleClose();
-                this.handleOpenSnackbar();
             }).catch((error) => {
                 this.setState(prevState => ({
                 snackbar: false,
@@ -214,7 +213,6 @@ let username = this.state.new_username,
             }).then((response) => {
               console.log(response);
               this.handleClose();
-              this.handleOpenSnackbar();
           }).catch((error) => {
             this.setState(prevState => ({
               snackbar: false,
@@ -292,7 +290,7 @@ let username = this.state.new_username,
             <DialogContentText>
               This form allows you to update your information
             </DialogContentText>
-
+            <form onSubmit={this.handleOkButton}>
             <TextField
               id="Password"
               label="New password"
@@ -337,16 +335,17 @@ let username = this.state.new_username,
               className={classes.textField}
 
             />
-          </DialogContent>
-          <DialogActions>
-          <Button onClick={this.handleOkButton}  disabled={this.state.loading} variant="raised" color="primary">
-          {this.state.loading ? "saving changes..." : "OK"} 
+            <br/>
+            <Button type="submit" Onclick={this.handleClick} disabled={this.state.loading} variant="raised" color="primary"  className={classes.EditDeleteIcons} >
+            {this.state.loading ? "saving changes..." : "OK"} 
             </Button>
-            <Button onClick={this.handleClose}  color="primary">
+            <Button onClick={this.handleClose}  color="primary"className={classes.EditDeleteIcons}>
               Close
             </Button>
-          </DialogActions>
+            </form>
+          </DialogContent>
         </Dialog>
+            
       </div>
 
         </ExpansionPanel>
@@ -417,29 +416,29 @@ let username = this.state.new_username,
           </DialogActions>
         </Dialog>
       </div>
-        <Snackbar
-              anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-              }}
-              snackbar ={this.state.snackbar} 
-              autoHideDuration={6000}
-              onClose={this.handleCloseSnackbar}
-              SnackbarContentProps={{
-              'aria-describedby': 'message-id',
-              }}
-              message={<span id="message-id">Changes have been saved!</span>}
-              action={[
+      <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          openS={this.state.openS}
+          autoHideDuration={6000}
+          onClose={this.handleClose}
+          ContentProps={{
+            'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">Changes have been saved!</span>}
+          action={[
             <IconButton
-                  key="close"
-                  aria-label="Close"
-                  color="inherit"
-                  className={classes.close}
-                  onClick={this.handleCloseSnackbar}
-              >
-                  <CloseIcon />
-            </IconButton>
-            ]}
+              key="close"
+              aria-label="Close"
+              color="inherit"
+              className={classes.close}
+              onClick={this.handleClose}
+            >
+              <CloseIcon />
+            </IconButton>,
+          ]}
         />
 
       </div>
