@@ -7,13 +7,21 @@ Currently only returns static mock data.
 from flask import jsonify, request
 from flask_login import current_user
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+from copy import copy
 
 import pydash_app.dashboard
 from pydash_app.dashboard.aggregator import Aggregator
 import pydash_logger
 
 logger = pydash_logger.Logger(__name__)
+
+datetime_formats = {'year': '%Y'}
+datetime_formats['month'] = datetime_formats['year'] + '-%m'
+datetime_formats['week'] = datetime_formats['year'] + '-W%W'
+datetime_formats['day'] = datetime_formats['month'] + '-%d'
+datetime_formats['hour'] = datetime_formats['day'] + 'T%H'
+datetime_formats['minute'] = datetime_formats['hour'] + '-%M'
 
 
 def dashboard(dashboard_id):
@@ -76,27 +84,59 @@ def dashboard(dashboard_id):
 
 
 def handle_statistic_without_timeslice(dashboard, statistic, start_datetime, end_datetime):
-    """These datetimes are treated as inclusive boundaries of a datetime range (e.g. [start_datetime, end_datetime]"""
+    """
+    These datetimes are treated as inclusive boundaries of a datetime range (e.g. [start_datetime, end_datetime]
+    :param dashboard:
+    :param statistic:
+    :param start_datetime:
+    :param end_datetime:
+    :return: The value of a single statistic over the specified datetime range.
+    """
     aggregator = dashboard.aggregated_data_daterange(start_datetime, end_datetime)
     return aggregator.as_dict()[statistic]
 
 
 def handle_statistic_per_timeslice(dashboard, statistic, timeslice, start_datetime, end_datetime):
-    """These datetimes are treated as inclusive boundaries of a datetime range (e.g. [start_datetime, end_datetime]"""
-    if timeslice == "minute":
-        
-    elif timeslice == "hour":
+    """These datetimes are treated as inclusive boundaries of a datetime range (e.g. [start_datetime, end_datetime].
+    Assumes start_timedate and end_timedate are both timezone aware, with timezone utc.
+    :param dashboard:
+    :param statistic:
+    :param timeslice:
+    :param start_datetime:
+    :param end_datetime:
+    :return: A list of tuples consisting of a datetime string (formatted in the following way: TODO: Write down format)
+             and the corresponding statistic, over the specified datetime range.
+    """
+    statistics = []
 
-    elif timeslice == "day":
+    begin_timestamp = start_datetime.timestamp()
+    end_timestamp = (end_datetime + timedelta(minutes=1)).timestamp()
 
-    elif timeslice == "week":
+    timeslice_increment_funcs = {'minute': lambda datetime_value : 60}
+    timeslice_increment_funcs['hour'] = lambda datetime_value : timeslice_increment_funcs['minute'](datetime_value) * 60
+    timeslice_increment_funcs['day'] = lambda datetime_value : timeslice_increment_funcs['hour'](datetime_value) * 24
+    timeslice_increment_funcs['week'] = lambda datetime_value : timeslice_increment_funcs['hour'](datetime_value) * 7
+    timeslice_increment_funcs['month'] = \
+        lambda datetime_value : (datetime(datetime_value.year, datetime_value.month+1, datetime_value.day, datetime_value.hour,
+                                          datetime_value.minute, datetime_value.second, tzinfo=timezone.utc)
+                                 - datetime_value).total_seconds()
+    timeslice_increment_funcs['year'] = \
+        lambda datetime_value : (datetime(datetime_value.year+1, datetime_value.month, datetime_value.day, datetime_value.hour,
+                                          datetime_value.minute, datetime_value.second, tzinfo=timezone.utc)
+                                 - datetime_value).total_seconds()
 
-    elif timeslice == "month":
+    current_timestamp = copy(begin_timestamp)
+    while current_timestamp < end_timestamp:
+        delta_seconds = timeslice_increment_funcs[timeslice](datetime.fromtimestamp(current_timestamp))
+        start = datetime.fromtimestamp(current_timestamp, tz=timezone.utc)
+        end = start + timedelta(seconds=delta_seconds)
+        current_timestamp += delta_seconds
+        statistic_value = (datetime.fromtimestamp(current_timestamp, tz=timezone.utc).strftime(datetime_formats[timeslice]),
+                           dashboard.aggregated_data_daterange(start, end)[statistic])
+        statistics.append(statistic_value)
 
-    elif timeslice == "year":
+    return statistics
 
-    else:
-        raise ValueError(f'Timeslice {timeslice} is not supported.')
 
 def match_datetime_string_with_formats(datetime_string):
     """Returns a datetime object if the provided string matched with one of the allowed formats

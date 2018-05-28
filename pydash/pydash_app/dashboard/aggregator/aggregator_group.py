@@ -1,10 +1,11 @@
 from collections import defaultdict
 from itertools import chain, combinations
 import persistent
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from copy import copy
 
 from . import Aggregator
+
 
 def powerset_generator(i):
     for subset in chain.from_iterable(combinations(i, r) for r in range(len(i)+1)):
@@ -284,7 +285,8 @@ def chop_date_range_into_chunks(datetime_begin, datetime_end):
             hours_l, (complete_l, _) = chop_date_range_into_hours(datetime_begin,
                                                                   datetime(year=days[0].year,
                                                                            month=days[0].month,
-                                                                           day=days[0].day
+                                                                           day=days[0].day,
+                                                                           tzinfo=timezone.utc
                                                                            )
                                                                   )
         else:
@@ -292,7 +294,8 @@ def chop_date_range_into_chunks(datetime_begin, datetime_end):
         if not complete_r:
             hours_r, (_, complete_r) = chop_date_range_into_hours(datetime(year=datetime_end.year,
                                                                            month=datetime_end.month,
-                                                                           day=datetime_end.day
+                                                                           day=datetime_end.day,
+                                                                           tzinfo=timezone.utc
                                                                            ),
                                                                   datetime_end
                                                                   )
@@ -311,7 +314,8 @@ def chop_date_range_into_chunks(datetime_begin, datetime_end):
                                                      datetime(year=hours[0].year,
                                                               month=hours[0].month,
                                                               day=hours[0].day,
-                                                              hour=hours[0].hour
+                                                              hour=hours[0].hour,
+                                                              tzinfo=timezone.utc
                                                               )
                                                      )
         else:
@@ -320,7 +324,8 @@ def chop_date_range_into_chunks(datetime_begin, datetime_end):
             minutes_r = chop_date_range_into_minutes(datetime(year=datetime_end.year,
                                                               month=datetime_end.month,
                                                               day=datetime_end.day,
-                                                              hour=datetime_end.hour
+                                                              hour=datetime_end.hour,
+                                                              tzinfo=timezone.utc
                                                               ),
                                                      datetime_end
                                                      )
@@ -377,8 +382,8 @@ def chop_date_range_into_hours(datetime_begin, datetime_end):
     if datetime_end.minute != 0:
         complete_r = False
 
-    range_begin = datetime(datetime_begin.year, datetime_begin.month, datetime_begin.day, range_begin)
-    range_end   = datetime(datetime_end.year, datetime_end.month, datetime_end.day, range_end)
+    range_begin = datetime(datetime_begin.year, datetime_begin.month, datetime_begin.day, range_begin, tzinfo=timezone.utc)
+    range_end   = datetime(datetime_end.year, datetime_end.month, datetime_end.day, range_end, tzinfo=timezone.utc)
     num_hours   = int((range_end - range_begin).total_seconds() / 3600)
     return [range_begin + hour * timedelta(seconds=3600) for hour in range(num_hours)], (complete_l, complete_r)
 
