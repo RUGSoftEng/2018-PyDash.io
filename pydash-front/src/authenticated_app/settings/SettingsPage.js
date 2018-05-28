@@ -187,7 +187,7 @@ handlePasswords = (e) => {
           </ExpansionPanelSummary>
           
         <Button variant="raised" color="primary" className={classes.EditDeleteIcons} onClick={this.handleClickOpen} >
-              Edit information?
+              Edit information
               <CreateIcon className={classes.rightIcon}/>
           </Button>
           <Typography className={classes.Textpanel}>
@@ -308,7 +308,7 @@ handlePasswords = (e) => {
               autoFocus
               margin="dense"
               id="name"
-              label="passConfirm"
+              label="Confirm password"
               onChange={this.handleType('passConfirm')}
               type="password"           
             />
