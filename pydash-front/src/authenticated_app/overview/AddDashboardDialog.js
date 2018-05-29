@@ -45,8 +45,9 @@ class AddDashboardDialog extends Component {
         this.setState({ open: false });
     };
 
-    handleClickSnack = () => {
+    handleClickSnack = (e) => {
         this.setState({ openS: true });
+        this.tryCreation(e);
         //alert("Settings saved!");
       };
       
