@@ -256,6 +256,40 @@ class AggregatorGroup(persistent.Persistent):
 
         return aggregator
 
+    def fetch_aggregator_inclusive_daterange(self, filters, datetime_begin, datetime_end, granularity):
+        """
+        Fetches an aggregator over the entire provided datetime range. Note that filters may not contain time-based
+        properties. Does account for leap seconds.
+        :param filters: A dictionary that contains property_name-value pairs to filter on.
+          This is in the gist of {'ip': '127.0.0.1', 'version': '1.0.1'}
+          For the complete set of possible filters, see AggregatorGroup.fetch_aggregator.
+        :param datetime_begin: A datetime object indicating the inclusive lower bound for the datetime range to
+         aggregate over.
+        :param datetime_end:  A datetime object indicating the exclusive upper bound for the datetime range to
+         aggregate over.
+        :param granularity: A string denoting the granularity of the daterange.
+        :return: An Aggregator object that contains the aggregated data over the entirety of the specified datetime
+         range.
+        """
+        granularity_adaptor = {'week': timedelta(weeks=1), 'day': timedelta(days=1), 'hour': timedelta(hours=1),
+                               'minute': timedelta(minutes=1)}
+
+        def inclusive_to_exclusive_datetime_adaptor(end_date, granularity):
+            if granularity in granularity_adaptor.keys():
+                return end_date + granularity_adaptor[granularity]
+            elif granularity in ['year', 'month']:
+                if granularity == 'year':
+                    return datetime(end_date.year + 1, 1, 1)
+                else:
+                    if end_date.month == 12:
+                        return datetime(end_date.year + 1, 1, 1)
+                    else:
+                        return datetime(end_date.year, end_date.month + 1, 1)
+            else:
+                raise ValueError(f'Granularity {granularity} is not supported.')
+
+        return self.fetch_aggregator_daterange(filters, datetime_begin, inclusive_to_exclusive_datetime_adaptor(datetime_end, granularity))
+
 
 def chop_date_range_into_chunks(datetime_begin, datetime_end):
     """

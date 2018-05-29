@@ -162,31 +162,10 @@ class Dashboard(persistent.Persistent):
         :param start_date: A datetime object that is treated as the inclusive lower bound of the daterange.
         :param end_date: A datetime object that is treated as the inclusive upper bound of the daterange.
         :param granularity: A string denoting the granularity of the daterange.
-         For now, only the values 'week', 'day', 'hour' and 'minute' are supported.
-         Any unsupported granularities are treated as 'day'.
         :return: A dictionary with all aggregated statistics and their values.
         """
-        granularity_adaptor = {'week': timedelta(weeks=1), 'day': timedelta(days=1), 'hour': timedelta(hours=1),
-                               'minute': timedelta(minutes=1)}
 
-        def inclusive_to_exclusive_datetime_adaptor(end_date, granularity):
-            if granularity in granularity_adaptor.keys():
-                return end_date + granularity_adaptor[granularity]
-            elif granularity in ['year', 'month']:
-                if granularity == 'year':
-                    return datetime(end_date.year+1, 1, 1)
-                else:
-                    if end_date.month == 12:
-                        return datetime(end_date.year+1, 1, 1)
-                    else:
-                        return datetime(end_date.year, end_date.month+1, 1)
-            else:
-                raise ValueError(f'Granularity {granularity} is not supported.')
-
-        return self._aggregator_group.fetch_aggregator_daterange({},
-                                                                 start_date,
-                                                                 inclusive_to_exclusive_datetime_adaptor(end_date, granularity)
-                                                                 ).as_dict()
+        return self._aggregator_group.fetch_aggregator_inclusive_daterange({}, start_date, end_date, granularity).as_dict()
 
     # Required because `multi_indexed_collection` puts dashboards in a set,
     #  that needs to order its keys for fast lookup.

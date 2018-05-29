@@ -132,12 +132,12 @@ def handle_statistic_per_timeslice(dashboard, statistic, timeslice, start_dateti
              and the corresponding statistic, over the specified datetime range.
     """
     statistics = {}
-    timeslice_to_dtrange_unit_adaptor = {'year': 'year',
-                                         'month': 'month',
-                                         'week': 'week',
-                                         'day': 'day',
-                                         'hour': 'hour',
-                                         'minute': 'minutes'
+    timeslice_to_dtrange_unit_adaptor = {'year': 'y',
+                                         'month': 'm',
+                                         'week': 'w',
+                                         'day': 'd',
+                                         'hour': 'h',
+                                         'minute': 'min'
                                          }
 
     datetime_range = peekable(dtrange(start_datetime, end_datetime, step=1,
