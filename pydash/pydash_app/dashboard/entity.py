@@ -8,7 +8,7 @@ Involved usage example:
 >>> from pydash_app.dashboard.endpoint_call import EndpointCall
 >>> import uuid
 >>> from datetime import datetime, timedelta
->>> user = User("Gandalf", "pass")
+>>> user = User("Gandalf", "pass", 'some@email.com')
 >>> d = Dashboard("http://foo.io", str(uuid.uuid4()), str(user.id))
 >>> e1 = Endpoint("foo", True)
 >>> e2 = Endpoint("bar", True)

@@ -5,6 +5,10 @@ import Button from 'material-ui/Button';
 import { Link } from 'react-router-dom';
 import TextField from 'material-ui/TextField';
 
+import {withRouter} from "react-router-dom";
+
+let endpoint_url = (dashboard_id, endpoint_name) => ('/overview/dashboards/'+dashboard_id+'/endpoints/'+endpoint_name);
+
 class EndpointsTable extends Component {
     state = {
         input:'',
@@ -56,14 +60,15 @@ class EndpointsTable extends Component {
                     </thead>
                     {this.props.data.map((endpoint) => {
                         if(this.state.input === '' || endpoint.name.includes(this.state.input)){
+                            let endpoint_link = endpoint_url(this.props.dashboard_id, endpoint.name);
                             return (
                                 <tr>
-                                    <td>{endpoint.name}</td>
+                                    <td><a href={endpoint_link} onClick={(e) => {e.preventDefault(); this.props.history.push(endpoint_link)}} >{endpoint.name}</a></td>
                                     <td>{endpoint.aggregates.unique_visitors}</td>
                                     <td>{endpoint.aggregates.total_visits}</td>
                                     <td>{endpoint.aggregates.average_execution_time}</td>
                                     <td>{endpoint.aggregates.total_execution_time}</td>
-                                    <td><Button variant="raised" color="primary" component={Link} to={'/overview/dashboards/'+this.props.dashboard_id+'/endpoints/'+endpoint.name}>Details</Button></td>
+                                    <td><Button variant="raised" color="primary" component={Link} to={endpoint_link}>Details</Button></td>
                                 </tr>
                             )
                         } 
@@ -105,4 +110,4 @@ class EndpointsTable extends Component {
     }
 }
 
-export default EndpointsTable;
+export default withRouter(EndpointsTable);

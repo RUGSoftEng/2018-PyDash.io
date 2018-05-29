@@ -18,6 +18,7 @@ flask-mail = "*"
 ordered-set = "*"
 tdigest = "*"
 flask-monitoringdashboard = "*"
+email-validator = "*"
 dtrange = "*"
 more-itertools = "*"
 
