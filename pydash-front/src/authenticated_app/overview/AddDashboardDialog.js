@@ -79,17 +79,11 @@ class AddDashboardDialog extends Component {
         })) 
     };
 
-    tryCreation = (e) => {
-        e.preventDefault();
+    registerCall = () =>{
         let url = this.state.url,
             name = this.state.name,
             token = this.state.token;
-
-        this.resetState()
-        if(this.preventEmpty()===0){
-            return;
-        }
-
+            
         axios.post(window.api_path + '/api/dashboards/register', {
             url,
             name,
@@ -115,6 +109,17 @@ class AddDashboardDialog extends Component {
                 }));
             }
         });
+    }
+
+    tryCreation = (e) => {
+        e.preventDefault();
+
+        this.resetState()
+        if(this.preventEmpty()===0){
+            return;
+        }
+
+        this.registerCall()
         
     }
 
