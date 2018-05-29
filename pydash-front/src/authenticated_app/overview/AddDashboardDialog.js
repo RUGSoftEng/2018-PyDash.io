@@ -21,6 +21,8 @@ class AddDashboardDialog extends Component {
             token: '',
             message: '',
             error: false,
+            errorURL: false,
+            errorToken: false,
             loading: false,
             openS: false,
             success: false,
@@ -50,39 +52,55 @@ class AddDashboardDialog extends Component {
         this.tryCreation(e);
         //alert("Settings saved!");
       };
-      
-      handleCloseSnack = (event, reason) => {
-        if (reason === 'clickaway') {
-          return;
-        }
-      
-        this.setState({ openS: false });
-      };
 
-    tryCreation = (e) => {
-        e.preventDefault();
+    handleCloseSnack = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+
+      this.setState({ openS: false });
+    };
+
+    preventEmpty = () =>{
+        let url = this.state.url,
+            token = this.state.token;
+        if (!(token.trim())||!(url.trim())) {
+            if(!token.trim()){
+                this.setState(prevState => ({
+                    ...prevState,
+                    errorToken: true,
+                    open: false,
+                    helperText: 'These fields are required!',
+                }))
+            }
+            if(!url.trim()){
+                this.setState(prevState => ({
+                    ...prevState,
+                    errorURL: true,
+                    open: false,
+                    helperText: 'These fields are required!',
+                }))
+            }
+            return 0;
+        }
+        return 1;
+    }
+https://se2018-pydashio.slack.com/messages/C9A0LP9HV/
+    resetState = () => {
+        this.setState(prevState => ({
+            ...prevState,
+            helperText: '',
+            error: false,
+            errorToken: false,
+            errorURL: false,
+        })) 
+    };
+
+    registerCall = () =>{
         let url = this.state.url,
             name = this.state.name,
             token = this.state.token;
-
-        if (!(url.trim()) || !(token.trim())) {
-            this.setState(prevState => ({
-                ...prevState,
-                error: true,
-                open: false,
-                helperText: 'These fields are required!',
-            }))
-
-            return;
-        }
-
-        this.setState(prevState => ({
-            ...prevState,
-            error: false,
-            helperText: '',
-            loading: true
-        }))
-
+            
         axios.post(window.api_path + '/api/dashboards/register', {
             url,
             name,
@@ -92,7 +110,6 @@ class AddDashboardDialog extends Component {
             console.log(response);
             this.setState(prevState => ({
                 ...prevState,
-                error: false,
                 helperText: '',
                 success: true,
                 loading: false,
@@ -109,6 +126,17 @@ class AddDashboardDialog extends Component {
                 }));
             }
         });
+    }
+
+    tryCreation = (e) => {
+        e.preventDefault();
+
+        this.resetState()
+        if(this.preventEmpty()===0){
+            return;
+        }
+
+        this.registerCall()
         
     }
 
@@ -134,7 +162,7 @@ class AddDashboardDialog extends Component {
                             value={this.state.url}
                             fullWidth
                             required
-                            error={this.state.error}
+                            error={this.state.errorURL||this.state.error}
                             onChange={this.handleChange('url')}
                         />
                         <TextField
@@ -143,7 +171,6 @@ class AddDashboardDialog extends Component {
                             type="text"
                             value={this.state.name}
                             fullWidth 
-                            error={this.state.error}
                             onChange={this.handleChange('name')}
                         />
                         <TextField 
@@ -153,7 +180,7 @@ class AddDashboardDialog extends Component {
                             value={this.state.token}
                             fullWidth 
                             required
-                            error={this.state.error}
+                            error={this.state.errorToken||this.state.error}
                             helperText={this.state.helperText}
                             onChange={this.handleChange('token')}
                         />
