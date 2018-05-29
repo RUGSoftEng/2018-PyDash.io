@@ -3,9 +3,14 @@ from werkzeug.security import check_password_hash
 from .verification_code import VerificationCode
 from email_validator import validate_email, EmailNotValidError
 
+
 import uuid
 import flask_login
 import persistent
+import pydash_logger
+
+
+logger = pydash_logger.Logger(__name__)
 
 
 class User(persistent.Persistent, flask_login.UserMixin):
@@ -40,11 +45,9 @@ class User(persistent.Persistent, flask_login.UserMixin):
         self._verification_code = self._smart_verification_code.verification_code
 
         try:
-            validate_email(new_mail)
+            validate_email(mail)
         except EmailNotValidError:
-            logger.warning(f"Changing settings failed - mail address invalid")
-            result = {'message': 'Invalid mail address'}
-            return jsonify(result), 400
+            logger.warning(f"User creation error - mail address invalid")
 
         self.mail = mail
 
