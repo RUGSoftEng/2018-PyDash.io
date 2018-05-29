@@ -6,8 +6,6 @@ from flask import jsonify, request
 from flask_mail import Message
 from pydash_mail import mail
 from pydash_mail.templates import format_verification_mail_html, format_verification_mail_plain
-from datetime import datetime, timedelta, timezone
-from uuid import uuid4
 
 import pydash_app.user
 import pydash_logger
@@ -61,30 +59,11 @@ def register_user():
                                  user.name)
 
 
-_DEFAULT_EXPIRATION_TIME = timedelta(days=1)
-
-
-class VerificationCode:
-    """
-    A 'smart' randomly generated verification code that keeps track of whether it has expired.
-    Default expiration time is 7 days.
-    """
-    def __init__(self, expiration_time=_DEFAULT_EXPIRATION_TIME):
-        self.verification_code = uuid4()
-        self.expiration_datetime = datetime.now(tz=timezone.utc) + expiration_time
-
-    def is_expired(self):
-        result = {'message': 'User successfully registered.',
-                  'verification_code': f'{user.get_verification_code()}'}
-
-        return jsonify(result), 200
-
-
 def _send_verification_email(verification_code, expiration_date, recipient_email_address, username):
     """
     Sends a verification email to the user with a link to the appropriate front-end page.
     For now the backend-api is directly given though.
-    :param smart_verification_code: The verification code to send. Should be a VerificationCode instance.
+    :param verification_code: The verification code to send. Should be a VerificationCode instance.
     :param recipient_email_address: The email address of the recipient. Should be a string.
     :param username: The name of the User. Should be a string.
     """
