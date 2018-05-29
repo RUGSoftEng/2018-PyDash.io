@@ -167,7 +167,10 @@ class Dashboard(persistent.Persistent):
         return self._aggregator_group.fetch_aggregator_inclusive_daterange({}, start_date, end_date, granularity).as_dict()
 
     def first_endpoint_call_time(self):
-        return self._endpoint_calls[0].time
+        if not self._endpoint_calls:
+            return None
+        else:
+            return self._endpoint_calls[0].time
 
     # Required because `multi_indexed_collection` puts dashboards in a set,
     #  that needs to order its keys for fast lookup.

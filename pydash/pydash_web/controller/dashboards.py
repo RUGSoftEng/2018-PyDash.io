@@ -48,6 +48,8 @@ def dashboard(dashboard_id):
       (e.g. 'timeslice=day' will result in datetimes like '2018-05-29', while 'timeslice=minute' will result in
       datetimes like '2018-05-29T15:45')
 
+
+    Note that if the dashboard has not yet received any endpoint calls, it will simply return {"message": "Dashboard is empty"}
     """
     # Check dashboard_id
     valid_dashboard, result, http_error = pydash_app.dashboard.find_verified_dashboard(dashboard_id)
@@ -58,6 +60,11 @@ def dashboard(dashboard_id):
     params = request.args
     statistic = params.get('statistic')
     start_date = params.get('start_date', default=valid_dashboard.first_endpoint_call_time().strftime('%Y-%m-%dT%H-%M'))
+    if not start_date:
+        logger.info(f"Retrieved empty dashboard {valid_dashboard}")
+        result = {"message": "Dashboard is empty"}
+        return jsonify(result), 200
+
     end_date = params.get('end_date', default=datetime.utcnow().strftime('%Y-%m-%dT%H-%M'))
     timeslice = params.get('timeslice')
     granularity = params.get('granularity', default='day')
@@ -73,7 +80,6 @@ def dashboard(dashboard_id):
             logger.info(f"Retrieved dashboard {valid_dashboard}")
             return jsonify(_dashboard_detail(valid_dashboard)), 200
     else:
-
         start_date = match_datetime_string_with_formats(start_date)
         if start_date is None:
             logger.warning('In dashboard: Invalid format of start_date.')
