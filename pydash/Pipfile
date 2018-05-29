@@ -1,12 +1,9 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [packages]
-
 Flask = "*"
 Flask-WTF = "*"
 Flask-Login = "*"
@@ -20,10 +17,9 @@ pytest-cov = "*"
 Flask-Mail = "*"
 ordered-set = "*"
 tdigest = "*"
-
+email-validator = "*"
 
 [dev-packages]
-
 pytest = "*"
 pytest-xdist = "*"
 pytest-env = "*"
@@ -34,12 +30,8 @@ pytest-localserver = "*"
 pytest-bdd = "*"
 pytest-random-order = "*"
 
-
 [requires]
-
 python_version = "3.6"
 
-
 [pipenv]
-
 keep_outdated = true
