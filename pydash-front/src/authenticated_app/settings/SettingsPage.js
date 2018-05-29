@@ -195,36 +195,18 @@ handleCloseSnack = (event, reason) => {
   this.setState({ openS: false });
 };
 handleOkButton = (e) => {
-  e.preventDefault()
-  let new_password = this.state.new_password,
-      current_password = this.state.current_password
-  // Make a request for deletion
-  axios(window.api_path + '/api/user/change_password', {
-      new_password,
-      current_password,
-  },{
-      method: 'post',
-      withCredentials: true
-    }).then((response) => {
-      console.log(response);
-        showNotification({ message: "Password updated!"});
-      return <Redirect to="/" />
-  }).catch((error) => {
-      console.log('changing password failed');
-      this.handleClose();
-  });
-}
-let username = this.state.new_username,
-    email = this.state.new_email,
-    new_password = this.state.new_password,
-    current_password = this.state.current_password
+    e.preventDefault()
+    let username = this.state.new_username,
+        email = this.state.new_email,
+        new_password = this.state.new_password,
+        current_password = this.state.current_password
     if (!(username.trim()) && !(email.trim()) && !(new_password.trim()) && !(current_password.trim())) {
-      this.setState(prevState => ({
-          ...prevState,
-          error:true,
-          snackbar:false,
-          
-      }))
+        this.setState(prevState => ({
+            ...prevState,
+            error:true,
+            snackbar:false,
+            
+        }))
       
       return alert("All fields cannot be empty!");
   }
@@ -289,7 +271,7 @@ let username = this.state.new_username,
               this.handleClose();
     });
   }
-    }
+}
 
   handleClickOpen = () => {
     this.setState({ open: true });
