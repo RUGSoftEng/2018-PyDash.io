@@ -94,8 +94,6 @@ class RegistrationPage extends Component {
         })
     }
 
-
-
       handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
