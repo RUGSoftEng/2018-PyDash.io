@@ -7,12 +7,10 @@ import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import axios from 'axios';
 import Logo from '../images/logo.png'
-import Snackbar from 'material-ui/Snackbar';
-import IconButton from 'material-ui/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 import HelpIcon from '@material-ui/icons/Help';
 import Tooltip from 'material-ui/Tooltip';
 
+import { showNotification } from "../Notifier";
 
 
 const styles = theme => ({
@@ -97,21 +95,18 @@ class RegistrationPage extends Component {
     }
 
 
-    handleClick = () => {
-        this.setState({ open: true });
-      };
 
       handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
     
-        this.setState({ open: false });
       };
    
    
-    tryLogin = (e) => {
+    tryRegister = (e) => {
         e.preventDefault()
+        showNotification({ message: "Registering...", preventClosing: true}); // Do not hide automatically
         let username = this.state.username,
             password = this.state.password,
             email_address = this.state.email_address
@@ -119,18 +114,17 @@ class RegistrationPage extends Component {
             this.setState(prevState => ({
                 ...prevState,
                 error: true,
-                open: false,
                 helperText: 'These fields are required!',
             }))
-
+            showNotification({ message: "Registration failed"});
             return;
         }
         this.setState(prevState => ({
             ...prevState,
-                error: false,
-                helperText: '',
-                loading: true
-            }))
+            error: false,
+            helperText: '',
+            loading: true
+        }))
 
         axios.post(window.api_path + '/api/user/register', {
             username,
@@ -146,6 +140,7 @@ class RegistrationPage extends Component {
                 success: true,
                 loading: false
             }));
+            showNotification({ message: "Registration successful. Please check your e-mail inbox to verify the e-mailadres you entered."});
         }).catch((error) => {
             console.log(error);
             if(error.response && error.response.status === 409) {
@@ -154,12 +149,18 @@ class RegistrationPage extends Component {
                     helperText: 'User already exists',
                     loading: false,
                 }))
+            } else {
+                this.setState(prevState => ({
+                    error: true,
+                    helperText: error.response.data.message,
+                    loading: false,
+                }))
             }
+            showNotification({ message: "Registration failed"});
         });
     }
 
     render() {
-        const { classes } = this.props;
         return this.state.success ? (
             <Redirect to="/" />
         ) : (
@@ -168,7 +169,7 @@ class RegistrationPage extends Component {
                     <img alt="PyDash logo" width="200" src={Logo} />
                 </header>
 
-                <form onSubmit={this.tryLogin}>
+                <form onSubmit={this.tryRegister}>
                     <br />
                     <TextField
                         id="username"
@@ -197,7 +198,6 @@ class RegistrationPage extends Component {
                         margin="normal"
                         type="password"
                         error={this.state.warnings['password'] || this.state.error}
-
                     />
             <Tooltip id='password-tooltip' title={<p>The password should be longer than 12 chars (with no further restrictions),
                                                   <br/>
@@ -224,34 +224,10 @@ class RegistrationPage extends Component {
                         ))}
                     </ul>
                     <p>
-                    <Button type="submit" variant="raised" color="primary" disabled={this.state.loading}  onClick={ this.handleClick}>
+                    <Button type="submit" variant="raised" color="primary" disabled={this.state.loading}>
                         {this.state.loading ? "Creating account" : "Register"}
                     </Button>
                     </p>
-                    <Snackbar
-                            anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'left',
-                            }}
-                            open={this.state.open}
-                            autoHideDuration={6000}
-                            onClose={this.handleClose}
-                            SnackbarContentProps={{
-                            'aria-describedby': 'message-id',
-                            }}
-                            message={<span id="message-id">User registered</span>}
-                            action={[
-                            <IconButton
-                                key="close"
-                                aria-label="Close"
-                                color="inherit"
-                                className={classes.close}
-                                onClick={this.handleClose}
-                            >
-                                <CloseIcon />
-                            </IconButton>,
-                            ]}
-                />
                 </form>
             </div>
         );
@@ -260,7 +236,6 @@ class RegistrationPage extends Component {
 
 RegistrationPage.propTypes = {
     signInHandler: PropTypes.func.isRequired,
-    classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(RegistrationPage);
