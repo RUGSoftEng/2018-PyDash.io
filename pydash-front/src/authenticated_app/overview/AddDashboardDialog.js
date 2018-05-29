@@ -45,7 +45,7 @@ class AddDashboardDialog extends Component {
         this.setState({ open: false });
     };
 
-    handleClickSnack = (e) => {
+    handleSubmit = (e) => {
         this.setState({ openS: true });
         this.tryCreation(e);
         //alert("Settings saved!");
@@ -126,7 +126,6 @@ class AddDashboardDialog extends Component {
                         <DialogContentText>
                             To add a new dashboard, we will need some information from you.
                         </DialogContentText>
-                        <form onSubmit={this.tryCreation}>
                         <TextField
                             autoFocus
                             id="url"
@@ -158,12 +157,11 @@ class AddDashboardDialog extends Component {
                             helperText={this.state.helperText}
                             onChange={this.handleChange('token')}
                         />
-                         </form>
                          <DialogActions>
                         <Button onClick={this.props.onClose} color="default">
                             Cancel
                         </Button>
-                        <Button onClick={this.handleClickSnack} color="primary" disabled={this.state.loading} variant="raised">
+                        <Button onClick={this.handleSubmit} color="primary" disabled={this.state.loading} variant="raised">
                             {this.state.loading ? "Adding dashboard" : "Save"}
                         </Button>
                        
