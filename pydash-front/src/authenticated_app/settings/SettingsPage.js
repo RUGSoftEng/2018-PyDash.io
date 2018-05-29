@@ -13,6 +13,9 @@ import { FormControlLabel } from 'material-ui/Form';
 import Switch from 'material-ui/Switch';
 import { Redirect } from 'react-router'
 import axios from 'axios';
+import Snackbar from 'material-ui/Snackbar';
+import IconButton from 'material-ui/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { showNotification } from "../../Notifier";
 
@@ -33,6 +36,11 @@ const styles = theme => ({
     textAlign: 'left',
     marginLeft:'200px',
     fontSize: theme.typography.pxToRem(17),
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 200,
   },
 
   EditDeleteIcons: {
@@ -58,14 +66,20 @@ class SettingsPage extends Component {
 
   state = {
     username: '',
+    new_username: '',
+    email: this.props.email_address,
+    new_email:'',
     password:'',
     new_password:'',
     current_password:'',
     passConfirm:'',
+    error:false,
     open: false,
     openDeletion: false,
     checked: true,
     SoundSettings: true,
+    openS: false,
+    loading: false
   };
 componentWillMount = () => {
     this.setState({
@@ -100,6 +114,7 @@ handleDelete = (e) => {
   ).then((response) => {
     if(this.state.password===this.state.passConfirm){     
       this.props.signOutHandler();
+      // this.props.handleClick();
       return <Redirect to="/" />;
     } else {
       console.log('Passwords do not match!');
@@ -128,7 +143,58 @@ handleDelete = (e) => {
   });
 }
 
-handlePasswords = (e) => {
+
+
+
+// handleSounds = (e) => {
+
+//   e.preventDefault()
+//   let SoundSettings = this.state.SoundSettings
+//       //Make a request for deletion
+//           axios.post(window.api_path + '/api/user/change_settings', {
+//           SoundSettings},{
+//           method: 'post',
+//           withCredentials: true
+//       }).then((response) => {
+//           console.log(response);
+//         return <Redirect to="/" />
+//       }).catch((error) => {
+//           console.log('changing settings failed');
+//           this.handleClose();
+//       });
+//     }
+    
+//     handlePassword = (e) =>{
+//       e.preventDefault()
+//       let new_password = this.state.new_password,
+//           current_password = this.state.current_password
+//           axios.post(window.api_path + '/api/user/change_password', {
+//       new_password,
+//       current_password,
+//   },{
+//       method: 'post',
+//       withCredentials: true
+//     }).then((response) => {
+//       console.log(response);
+//       return <Redirect to="/" />
+//   }).catch((error) => {
+//       console.log('changing password failed');
+//       this.handleClose();
+//   });
+// }
+handleClick = () => {
+  this.setState({ openS: true });
+  //alert("Settings saved!");
+};
+
+handleCloseSnack = (event, reason) => {
+  if (reason === 'clickaway') {
+    return;
+  }
+
+  this.setState({ openS: false });
+};
+handleOkButton = (e) => {
   e.preventDefault()
   let new_password = this.state.new_password,
       current_password = this.state.current_password
@@ -148,6 +214,82 @@ handlePasswords = (e) => {
       this.handleClose();
   });
 }
+let username = this.state.new_username,
+    email = this.state.new_email,
+    new_password = this.state.new_password,
+    current_password = this.state.current_password
+    if (!(username.trim()) && !(email.trim()) && !(new_password.trim()) && !(current_password.trim())) {
+      this.setState(prevState => ({
+          ...prevState,
+          error:true,
+          snackbar:false,
+          
+      }))
+      
+      return alert("All fields cannot be empty!");
+  }
+      if(((username.trim())||email.trim())){
+      
+             this.setState(prevState => ({
+              ...prevState,
+              loading: true,
+          }))
+                axios.post(window.api_path + '/api/user/change_settings', {
+                username,email},{
+                method: 'post',
+                withCredentials: true, 
+            }).then((response) => {
+              this.setState(prevState => ({
+                ...prevState,
+                error:true,
+                snackbar:false,
+                
+            }))
+                console.log(response);
+                this.handleClose();
+                window.location.reload();
+            }).catch((error) => {
+                this.setState(prevState => ({
+                snackbar: false,
+                error:true,
+            }))
+                console.log('changing settings failed');
+                this.handleClose();
+            });
+          }
+    else if(((new_password.trim())||current_password.trim())){
+
+              this.setState(prevState => ({
+                ...prevState,
+                loading: true,
+                error:false,
+            }))
+              axios.post(window.api_path + '/api/user/change_password', {
+              new_password,
+              current_password,
+          },{
+              method: 'post',
+              withCredentials: true,
+            }).then((response) => {
+              console.log(response);
+              this.handleClose();
+              window.location.reload();
+          }).catch((error) => {
+            this.setState(prevState => ({
+              snackbar: false,
+              error:true,
+          }))
+          this.setState(prevState => ({
+            ...prevState,
+            error:true,
+            snackbar:false,
+            
+        }))
+              console.log('changing password failed');
+              this.handleClose();
+    });
+  }
+    }
 
   handleClickOpen = () => {
     this.setState({ open: true });
@@ -178,6 +320,8 @@ handlePasswords = (e) => {
     this.setState({SoundSettings: false});
   };
 
+
+
   render() {
     const { classes } = this.props;
 
@@ -199,10 +343,10 @@ handlePasswords = (e) => {
           Username: {this.props.username}
           <br/>
 
-          Email: 
+          Email: {this.props.email_address}
           <br/>
 
-          Registration date:
+          Registration date:...
           </Typography>
           <div>
         <Dialog
@@ -215,48 +359,62 @@ handlePasswords = (e) => {
             <DialogContentText>
               This form allows you to update your information
             </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="New username"
-              type="username"
-              onChange={this.handleChange('username')}
-            />
-            <Button type="submit" variant="raised" onClick={this.handleSettings} >OK</Button><br/>
+            <form onSubmit={this.handleOkButton}>
             <TextField
               id="Password"
               label="New password"
               onChange={this.handleType('new_password')}
-              margin="dense"
+              margin="normal"
               type="password"
-              error={this.state.error}         
+              error={this.state.error}    
+              className={classes.textField}
+   
+              
             />
             
             <TextField
               id="currentPassword"
-              label="Old password"
+              label={this.props.password}
               onChange={this.handleType('current_password')}
               margin="normal"
               type="password"
-              error={this.state.error}        
+              error={this.state.error}   
+              className={classes.textField}
+   
             />
-            <Button variant="raised" onClick={this.handlePasswords}>OK</Button><br/>
-            <TextField
+              <TextField
               autoFocus
               margin="dense"
               id="name"
-              label="New email"
-              type="email"     
+              label={this.state.username}
+              type="new_username"
+              onChange={this.handleChange('new_username')}
+              fullWidth
+              className={classes.textField}
+
             />
-             <Button variant="raised" onClick={this.handleSettings}>OK</Button><br/>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleClose}  color="primary">
+            <TextField
+              autoFocus
+              margin="normal"
+              id="full-width"
+              label={this.state.email_address}
+              type="name" 
+              onChange={this.handleChange('new_email')}
+              fullWidth   
+              className={classes.textField}
+
+            />
+            <br/>
+            <Button type="submit" onClick={this.handleClick} disabled={this.state.loading} variant="raised" color="primary" className={classes.EditDeleteIcons} >
+            {this.state.loading ? "saving changes..." : "OK"} 
+            </Button>
+            <Button onClick={this.handleClose}  color="primary"className={classes.EditDeleteIcons}>
               Close
             </Button>
-          </DialogActions>
+            </form>
+          </DialogContent>
         </Dialog>
+            
       </div>
 
         </ExpansionPanel>
@@ -269,7 +427,6 @@ handlePasswords = (e) => {
           control={
             <Switch
               checked={this.state.checked}
-              //onClick={this.handleSettings}
               onChange={this.handleChangeSwitch('checked')}
               value="checked"
               color="primary"
@@ -327,8 +484,32 @@ handlePasswords = (e) => {
             </Button>
           </DialogActions>
         </Dialog>
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          open={this.state.openS}
+          autoHideDuration={6000}
+          onClose={this.handleCloseSnack}
+          ContentProps={{
+            'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">Changes have been saved!</span>}
+          action={[
+            <IconButton
+              key="close"
+              aria-label="Close"
+              color="inherit"
+              className={classes.close}
+              onClick={this.handleCloseSnack}
+            >
+              <CloseIcon />
+            </IconButton>,
+          ]}
+        />
       </div>
-        
+
 
       </div>
       

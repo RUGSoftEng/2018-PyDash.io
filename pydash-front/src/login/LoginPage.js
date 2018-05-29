@@ -167,6 +167,7 @@ class LoginPage extends Component {
                     <p>
                         <Button component={NavLink} to="/register">Create an account?</Button>
                     </p>
+
                 </form>
             </div>
         );
