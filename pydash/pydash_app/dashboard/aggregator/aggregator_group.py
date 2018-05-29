@@ -1,8 +1,8 @@
 from collections import defaultdict
 from itertools import chain, combinations
 import persistent
-from datetime import datetime, timedelta, timezone
-from copy import copy
+from datetime import datetime, timedelta
+from copy import copy, deepcopy
 
 from . import Aggregator
 
@@ -211,7 +211,7 @@ class AggregatorGroup(persistent.Persistent):
               * 'ip' - e.g. '127.0.0.1'
 
             - Group-by:
-              * 'group_by' - e.g. None
+              * 'group_by' - e.g. 'None'
 
           Note that when providing two filters of the same type, a ValueError is raised.
 
@@ -230,7 +230,7 @@ class AggregatorGroup(persistent.Persistent):
     def fetch_aggregator_daterange(self, filters, datetime_begin, datetime_end):
         """
         Fetches an aggregator over the entire provided datetime range. Note that filters may not contain time-based
-        properties.
+        properties. Does account for leap seconds.
         :param filters: A dictionary that contains property_name-value pairs to filter on.
           This is in the gist of {'ip': '127.0.0.1', 'version': '1.0.1'}
           For the complete set of possible filters, see AggregatorGroup.fetch_aggregator.
@@ -248,9 +248,8 @@ class AggregatorGroup(persistent.Persistent):
 
         date_chunks = chop_date_range_into_chunks(datetime_begin, datetime_end)
         aggregator = Aggregator()
-
         for key, value in date_chunks.items():
-            filters_cpy = copy(filters)
+            filters_cpy = deepcopy(filters)
             for datetime in value:
                 filters_cpy[key] = datetime.strftime(datetime_formats[key])
                 aggregator += self.fetch_aggregator(filters_cpy)
@@ -260,7 +259,7 @@ class AggregatorGroup(persistent.Persistent):
 
 def chop_date_range_into_chunks(datetime_begin, datetime_end):
     """
-    Chops the given datetime range into chunks of full days, hours and minutes.
+    Chops the given datetime range into chunks of full days, hours and minutes. Does account for leap seconds.
     :param datetime_begin: A datetime object that indicates the inclusive lower bound of the datetime range.
     :param datetime_end: A datetime object that indicates the exclusive upper bound of the datetime range.
     :return: A dict with the keys "days", "hours" and "minutes", where the values are lists of corresponding datetime
@@ -286,7 +285,6 @@ def chop_date_range_into_chunks(datetime_begin, datetime_end):
                                                                   datetime(year=days[0].year,
                                                                            month=days[0].month,
                                                                            day=days[0].day,
-                                                                           tzinfo=timezone.utc
                                                                            )
                                                                   )
         else:
@@ -295,7 +293,6 @@ def chop_date_range_into_chunks(datetime_begin, datetime_end):
             hours_r, (_, complete_r) = chop_date_range_into_hours(datetime(year=datetime_end.year,
                                                                            month=datetime_end.month,
                                                                            day=datetime_end.day,
-                                                                           tzinfo=timezone.utc
                                                                            ),
                                                                   datetime_end
                                                                   )
@@ -306,7 +303,7 @@ def chop_date_range_into_chunks(datetime_begin, datetime_end):
     if complete_l and complete_r:
         return chunks
 
-    if not hours:
+    if not days and not hours:
         minutes = chop_date_range_into_minutes(datetime_begin, datetime_end)
     else:
         if not complete_l:
@@ -315,7 +312,6 @@ def chop_date_range_into_chunks(datetime_begin, datetime_end):
                                                               month=hours[0].month,
                                                               day=hours[0].day,
                                                               hour=hours[0].hour,
-                                                              tzinfo=timezone.utc
                                                               )
                                                      )
         else:
@@ -325,7 +321,6 @@ def chop_date_range_into_chunks(datetime_begin, datetime_end):
                                                               month=datetime_end.month,
                                                               day=datetime_end.day,
                                                               hour=datetime_end.hour,
-                                                              tzinfo=timezone.utc
                                                               ),
                                                      datetime_end
                                                      )
@@ -338,7 +333,7 @@ def chop_date_range_into_chunks(datetime_begin, datetime_end):
 
 def chop_date_range_into_days(datetime_begin, datetime_end):
     """
-    Returns a range of days (datetimes) that are fully within the given date range.
+    Returns a range of days (datetimes) that are fully within the given date range. Does account for leap seconds.
     :param datetime_begin: a datetime object that indicates the inclusive lower bound of the desired date-range
     :param datetime_end: a datetime object that indicates the exclusive upper bound of the desired date-range
     :return: An ordered list of datetime objects containing the days that are fully within the given range,
@@ -363,7 +358,7 @@ def chop_date_range_into_days(datetime_begin, datetime_end):
 
 def chop_date_range_into_hours(datetime_begin, datetime_end):
     """
-    Returns a range of hours (datetimes) that are fully within the given date range.
+    Returns a range of hours (datetimes) that are fully within the given date range. Does account for leap seconds.
     :param datetime_begin: a datetime object that indicates the inclusive lower bound of the desired date-range
     :param datetime_end: a datetime object that indicates the exclusive upper bound of the desired date-range
     :return: An ordered list of datetime objects containing the hours that are fully within the given range,
@@ -382,15 +377,15 @@ def chop_date_range_into_hours(datetime_begin, datetime_end):
     if datetime_end.minute != 0:
         complete_r = False
 
-    range_begin = datetime(datetime_begin.year, datetime_begin.month, datetime_begin.day, range_begin, tzinfo=timezone.utc)
-    range_end   = datetime(datetime_end.year, datetime_end.month, datetime_end.day, range_end, tzinfo=timezone.utc)
+    range_begin = datetime(datetime_begin.year, datetime_begin.month, datetime_begin.day, range_begin)
+    range_end   = datetime(datetime_end.year, datetime_end.month, datetime_end.day, range_end)
     num_hours   = int((range_end - range_begin).total_seconds() / 3600)
     return [range_begin + hour * timedelta(seconds=3600) for hour in range(num_hours)], (complete_l, complete_r)
 
 
 def chop_date_range_into_minutes(datetime_begin, datetime_end):
     """
-    Returns a range of minutes (datetimes) that are fully within the given date range.
+    Returns a range of minutes (datetimes) that are fully within the given date range. Does account for leap seconds.
     :param datetime_begin: a datetime object that indicates the inclusive lower bound of the desired date-range
     :param datetime_end: a datetime object that indicates the exclusive upper bound of the desired date-range
     :return: An ordered list of datetime objects containing the minutes that are fully within the given range.
@@ -399,5 +394,9 @@ def chop_date_range_into_minutes(datetime_begin, datetime_end):
     """
     if datetime_begin > datetime_end:
         raise ValueError("date_begin cannot be larger than date_end")
+    # Reset both datetime_begin and datetime_end to the beginning of their minutes.
+    datetime_begin -= timedelta(seconds=datetime_begin.second)
+    datetime_end -= timedelta(seconds=datetime_end.second)
+
     num_minutes = int((datetime_end - datetime_begin).total_seconds() / 60)
     return [datetime_begin + minute * timedelta(seconds=60) for minute in range(num_minutes)]
