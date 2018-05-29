@@ -88,3 +88,35 @@
 | *2018-05-14* | 21:30-0:30 | Backend API Request: Boxplots for endpoints #195 |
 | *2018-05-15* | 15:30-18:20 | Aggregator Problem #323 |
 | *2018-05-15* | 19:20-20:20 | Aggregator Problem #323 |
+| *2018-05-16* | 9:30-10:15 | Aggregator Problem #323 - temp fix |
+| *2018-05-16* | 11:00-13:00 | Hallway usability testing |
+| *2018-05-17* | 16:10-17:30 | Reduce floats precision #339 |
+| *2018-05-17* | 17:40-19:00 | User registration 500 error: default sender not set #335 |
+| *2018-05-17* | 20:45-22:20 | User registration 500 error: default sender not set #335 |
+| *2018-05-18* | 14:55-16:30 | Recude floats precision #339 |
+| *2018-05-18* | 17:15-18:00 | Aggregator Problem #323 |
+| *2018-05-18* | 21:00-23:10 | Aggregator Problem #323 |
+| *2018-05-19* | 15:40-18:20 | Vastly improve Aggregators #105 |
+| *2018-05-20* | 14:30-18:30 | Vastly improve Aggregators #105 |
+| *2018-05-20* | 20:00-21:50 | Vastly improve Aggregators #105 |
+| *2018-05-20* | 23:40-1:00 | Vastly improve Aggregators #105 |
+| *2018-05-21* | 14:20-17:20 | Vastly improve Aggregators #105 |
+| *2018-05-21* | 17:20-17:50 | Visitor heatmap PR check #337 |
+| *2018-05-21* | 20:25-21:45 | Visitor heatmap fixes #337 |
+| *2018-05-22* | 18:00-18:35 | Empty Dashboard Aggregator fix |
+| *2018-05-23* | 14:00-14:30 | Aggregator Problem and Empty Dashboard Aggregator fix |
+| *2018-05-23* | 16:45-18:40 | Improved Email Verification - pruning enhancement |
+| *2018-05-24* | 10:25-11:50 | AggregatorGroup fetch_daterange |
+| *2018-05-24* | 13:00-14:15 | Team meeting |
+| *2018-05-24* | 15:45-18:10 | AggregatorGroup fetch_daterange |
+| *2018-05-25* | 12:00-12:50 | AggregatorGroup fetch_daterange |
+| *2018-05-25* | 13:37-16:52 | AggregatorGroup fetch_daterange |
+| *2018-05-26* | 14:00-15:45 | AggregatorGroup fetch_daterange |
+| *2018-05-27* | 14:30-15:45 | Dashboard routes |
+| *2018-05-27* | 17:00-18:15 | Dashboard routes |
+| *2018-05-28* | 12:15-14:05 | Dashboard routes |
+| *2018-05-28* | 15:00-16:15 | Team meeting |
+| *2018-05-28* | 16:15-16:50 | Dashboard routes |
+| *2018-05-28* | 22:00-1:25 | Dashboard routes |
+| *2018-05-29* | 12:40-16:15 | Dashboard routes (testing) |
+| *2018-05-29* | 16:30-17:45 | Dashboard routes (final fixes) |
