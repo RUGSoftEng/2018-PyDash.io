@@ -24,10 +24,6 @@ class OverviewPage extends Component {
         this.setState({open: false});
     };
 
-    update = () => {
-        this.setState({state: this.state});
-    }
-
     render() {
         return (
             <div>
@@ -39,7 +35,7 @@ class OverviewPage extends Component {
                 <AddDashboardDialog
                     open={this.state.open}
                     onClose={this.handleClose}
-                    callBack={this.update}
+                    callBack={this.props.updateData}
                 />
 
                 {((this.props.dashboards == null) ?

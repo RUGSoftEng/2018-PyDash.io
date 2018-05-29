@@ -115,3 +115,4 @@ ENV/
 /pydash/logs
 /pydash/.pytest_cache
 .pytest_cache
+/pydash/flask_monitoringdashboard.db
