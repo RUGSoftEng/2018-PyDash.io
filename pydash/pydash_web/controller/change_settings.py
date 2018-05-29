@@ -4,6 +4,7 @@ Manages changing of user settings.
 
 from flask import request, jsonify
 from flask_login import current_user
+from email_validator import validate_email, EmailNotValidError
 
 import pydash_app.user
 import pydash_app.user.repository as user_repository
@@ -36,6 +37,7 @@ def change_settings():
         result = {'message': 'Invalid value(s) provided for one or more settings'}
         return jsonify(result), 400
 
+    # Username
     if new_username != current_user.name:
         if user_repository.find_by_name(new_username) is not None:
             logger.warning('Changing settings failed - new username already in use')
@@ -44,12 +46,20 @@ def change_settings():
 
         settings_to_change['name'] = new_username
 
-    # TODO is this even necessary? You can just update the setting since it is either off or on
+    # Sound settings
     if new_sound_setting != current_user.play_sounds:
         settings_to_change['play_sounds'] = new_sound_setting
 
-    # TODO verify mail address?
+    # Email
     if new_mail != current_user.mail:
+
+        try:
+            validate_email(new_mail)
+        except EmailNotValidError:
+            logger.warning(f"Changing settings failed - mail address invalid")
+            result = {'message': 'Invalid mail address'}
+            return jsonify(result), 400
+
         settings_to_change['mail'] = new_mail
 
     if len(settings_to_change) > 0:
