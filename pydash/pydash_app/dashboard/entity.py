@@ -164,8 +164,10 @@ class Dashboard(persistent.Persistent):
         :param granularity: A string denoting the granularity of the daterange.
         :return: A dictionary with all aggregated statistics and their values.
         """
-
         return self._aggregator_group.fetch_aggregator_inclusive_daterange({}, start_date, end_date, granularity).as_dict()
+
+    def first_endpoint_call_time(self):
+        return self._endpoint_calls[0].time
 
     # Required because `multi_indexed_collection` puts dashboards in a set,
     #  that needs to order its keys for fast lookup.

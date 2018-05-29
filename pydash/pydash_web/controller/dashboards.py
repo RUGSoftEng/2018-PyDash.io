@@ -57,7 +57,7 @@ def dashboard(dashboard_id):
 
     params = request.args
     statistic = params.get('statistic')
-    start_date = params.get('start_date', default='1970')  # Default is UNIX Epoch time 0
+    start_date = params.get('start_date', default=valid_dashboard.first_endpoint_call_time().strftime('%Y-%m-%dT%H-%M'))
     end_date = params.get('end_date', default=datetime.utcnow().strftime('%Y-%m-%dT%H-%M'))
     timeslice = params.get('timeslice')
     granularity = params.get('granularity', default='day')

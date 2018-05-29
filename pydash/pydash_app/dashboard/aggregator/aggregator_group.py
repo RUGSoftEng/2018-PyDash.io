@@ -3,6 +3,7 @@ from itertools import chain, combinations
 import persistent
 from datetime import datetime, timedelta
 from copy import copy, deepcopy
+from dtrange import dtrange
 
 from . import Aggregator
 
@@ -375,19 +376,16 @@ def chop_date_range_into_days(datetime_begin, datetime_end):
     """
     if datetime_begin > datetime_end:
         raise ValueError("date_begin cannot be larger than date_end")
-    range_begin = datetime_begin.day
-    range_end = datetime_end.day
+    range_begin = datetime(datetime_begin.year, datetime_begin.month, datetime_begin.day)
+    range_end = datetime(datetime_end.year, datetime_end.month, datetime_end.day)
     complete_l = True
     complete_r = True
     if datetime_begin.hour != 0 or datetime_begin.minute != 0:
-        range_begin += 1
+        range_begin += timedelta(1)
         complete_l = False
     if datetime_end.hour != 0 or datetime_end.minute != 0:
         complete_r = False
-    range_begin = datetime(datetime_begin.year, datetime_begin.month, range_begin)
-    range_end   = datetime(datetime_end.year, datetime_end.month, range_end)
-    num_days    = (range_end - range_begin).days
-    return [range_begin + day * timedelta(days=1) for day in range(num_days)], (complete_l, complete_r)
+    return [day for day in dtrange(range_begin, range_end, step=1, units='d')], (complete_l, complete_r)
 
 
 def chop_date_range_into_hours(datetime_begin, datetime_end):
@@ -400,21 +398,18 @@ def chop_date_range_into_hours(datetime_begin, datetime_end):
     """
     if datetime_begin > datetime_end:
         raise ValueError("date_begin cannot be larger than date_end")
-    range_begin = datetime_begin.hour
-    range_end = datetime_end.hour
+    range_begin = datetime(datetime_begin.year, datetime_begin.month, datetime_begin.day, datetime_begin.hour)
+    range_end = datetime(datetime_end.year, datetime_end.month, datetime_end.day, datetime_end.hour)
     complete_l = True
     complete_r = True
 
     if datetime_begin.minute != 0:
-        range_begin += 1
+        range_begin += timedelta(hours=1)
         complete_l = False
     if datetime_end.minute != 0:
         complete_r = False
 
-    range_begin = datetime(datetime_begin.year, datetime_begin.month, datetime_begin.day, range_begin)
-    range_end   = datetime(datetime_end.year, datetime_end.month, datetime_end.day, range_end)
-    num_hours   = int((range_end - range_begin).total_seconds() / 3600)
-    return [range_begin + hour * timedelta(seconds=3600) for hour in range(num_hours)], (complete_l, complete_r)
+    return [hour for hour in dtrange(range_begin, range_end, step=1, units='h')], (complete_l, complete_r)
 
 
 def chop_date_range_into_minutes(datetime_begin, datetime_end):
