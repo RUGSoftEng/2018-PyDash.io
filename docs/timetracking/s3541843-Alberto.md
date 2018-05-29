@@ -52,3 +52,13 @@
 | *2018-05-12* | 16:00-18:00 | Working on user settings using the APIs calls #242 |
 | *2018-05-15* | 12:30-15:00 | Working on user settings change_settings #242 |
 | *2018-05-15* | 15:00-17:00 | Weekly meeting |
+| *2018-05-24* | 13:00-15:00 | TA and team meeting |
+| *2018-05-25* | 10:00-12:00 | Adapting user settings form as customer wants #242 |
+| *2018-05-25* | 16:30-18:30 | Adapting user settings form as customer wants #242 |
+| *2018-05-27* | 9:00-11:00 | Trying to adding snackbars when changing settings #243 |
+| *2018-05-27* | 11:00-13:30 | Creating dashboard settings form #316 |
+| *2018-05-27* | 16:15-17:45 | Creating dashboard settings form #316 |
+| *2018-05-28* | 11:00-13:00 | Adding snackbars when adding dashboard #243|
+| *2018-05-28* | 15:00-17:00 | Weekly meeting |
+| *2018-05-28* | 21:00-23:50 | Fixing changing settings notification PR |
+
