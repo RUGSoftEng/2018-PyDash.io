@@ -23,7 +23,6 @@ class UniqueVisitorsHeatmapPanel extends Component {
     }
 
     componentDidMount() {
-        // TODO Once back-end has proper API endpoints, use that one instead of the overall one.
         let start_date = new Date();
         start_date.setDate(start_date.getDate() - 7);
         let start_date_string = getIsoDateString(start_date);
