@@ -44,18 +44,9 @@ class AddDashboardDialog extends Component {
         this.setState({ open: false });
     };
 
-    tryCreation = (e) => {
-        e.preventDefault();
+    preventEmpty = () =>{
         let url = this.state.url,
-            name = this.state.name,
             token = this.state.token;
-
-        this.setState(prevState => ({
-            ...prevState,
-            error: false,
-            errorToken: false,
-            errorURL: false,
-        })) 
         if (!(token.trim())||!(url.trim())) {
             if(!token.trim()){
                 this.setState(prevState => ({
@@ -73,18 +64,31 @@ class AddDashboardDialog extends Component {
                     helperText: 'These fields are required!',
                 }))
             }
-            return;
+            return 0;
         }
+        return 1;
+    }
 
-
-
+    resetState = () => {
         this.setState(prevState => ({
             ...prevState,
-            errorURL: false,
-            errorToken: false,
             helperText: '',
-            loading: true
-        }))
+            error: false,
+            errorToken: false,
+            errorURL: false,
+        })) 
+    };
+
+    tryCreation = (e) => {
+        e.preventDefault();
+        let url = this.state.url,
+            name = this.state.name,
+            token = this.state.token;
+
+        this.resetState()
+        if(this.preventEmpty()===0){
+            return;
+        }
 
         axios.post(window.api_path + '/api/dashboards/register', {
             url,
