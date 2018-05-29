@@ -112,66 +112,29 @@ class RegistrationPage extends Component {
 
     handleClick = () => {
         this.setState({ open: true });
-      };
+    };
 
-      handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-    
-        this.setState({ open: false });
-      };
-   
-   
-    tryLogin = (e) => {
-        e.preventDefault()
-        let username = this.state.username,
-            password = this.state.password,
-            email_address = this.state.email_address,
-            password_confirmation = this.state.password_confirmation
-            
+    handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+        return;
+    }
+
+    this.setState({ open: false });
+    };
+
+    resetState = () => {
         this.setState(prevState => ({
             errorName: false,
             errorMail: false,
             errorPassword: false,
             errorPasswordConfirm: false,
         }))
+    };
 
-        if (!(username.trim()) || !(password.trim()) || !(email_address.trim()) || !(password_confirmation.trim())) {
-            this.setState(prevState => ({
-                ...prevState,
-                open: false,
-                helperText: 'These fields are required!',
-            }))
-            if(!username.trim()){
-                this.setState(prevState => ({
-                    errorName: true,
-                }))
-            }
-            if(!password.trim()){
-                this.setState(prevState => ({
-                    errorPassword: true,
-                }))
-            }
-            if(!email_address.trim()){
-                this.setState(prevState => ({
-                    errorMail: true,
-                }))
-            }
-            if(!password_confirmation.trim()){
-                this.setState(prevState => ({
-                    errorPasswordConfirm: true,
-                }))
-            }
-
-            return;
-        }
-        this.setState(prevState => ({
-            ...prevState,
-                error: false,
-                helperText: '',
-                loading: true
-            }))
+    registerCall = () =>{
+        let username = this.state.username,
+            password = this.state.password,
+            email_address = this.state.email_address
 
         axios.post(window.api_path + '/api/user/register', {
             username,
@@ -200,6 +163,56 @@ class RegistrationPage extends Component {
         });
     }
 
+    checkEmpty = () =>{
+        let username = this.state.username,
+            password = this.state.password,
+            email_address = this.state.email_address,
+            password_confirmation = this.state.password_confirmation
+
+        if (!(username.trim()) || !(password.trim()) || !(email_address.trim()) || !(password_confirmation.trim())) {
+            this.setState(prevState => ({
+                ...prevState,
+                open: false,
+                helperText: 'These fields are required!',
+            }))
+            if(!username.trim()){
+                this.setState(prevState => ({
+                    errorName: true,
+                }))
+            }
+            if(!password.trim()){
+                this.setState(prevState => ({
+                    errorPassword: true,
+                }))
+            }
+            if(!email_address.trim()){
+                this.setState(prevState => ({
+                    errorMail: true,
+                }))
+            }
+            if(!password_confirmation.trim()){
+                this.setState(prevState => ({
+                    errorPasswordConfirm: true,
+                }))
+            }
+
+            return 0;
+        }
+        return 1;
+    }
+   
+    tryRegister = (e) => {
+        e.preventDefault()
+            
+        this.resetState()
+        if(this.checkEmpty()===0){
+            return;
+        }
+
+        this.registerCall()
+
+    }
+
     render() {
         const { classes } = this.props;
         return this.state.success ? (
@@ -210,7 +223,7 @@ class RegistrationPage extends Component {
                     <img alt="PyDash logo" width="200" src={Logo} />
                 </header>
 
-                <form onSubmit={this.tryLogin}>
+                <form onSubmit={this.tryRegister}>
                     <br />
                     <TextField
                         id="username"
