@@ -1,6 +1,7 @@
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from .verification_code import VerificationCode
+from email_validator import validate_email, EmailNotValidError
 
 import uuid
 import flask_login
@@ -37,6 +38,14 @@ class User(persistent.Persistent, flask_login.UserMixin):
         self._smart_verification_code = VerificationCode()
         # Needed for the database to search for users by verification code
         self._verification_code = self._smart_verification_code.verification_code
+
+        try:
+            validate_email(new_mail)
+        except EmailNotValidError:
+            logger.warning(f"Changing settings failed - mail address invalid")
+            result = {'message': 'Invalid mail address'}
+            return jsonify(result), 400
+
         self.mail = mail
 
         self.play_sounds = True
