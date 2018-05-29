@@ -8,7 +8,7 @@ Involved usage example:
 >>> from pydash_app.dashboard.endpoint_call import EndpointCall
 >>> import uuid
 >>> from datetime import datetime, timedelta
->>> user = User("Gandalf", "pass")
+>>> user = User("Gandalf", "pass", 'some@email.com')
 >>> d = Dashboard("http://foo.io", str(uuid.uuid4()), str(user.id))
 >>> e1 = Endpoint("foo", True)
 >>> e2 = Endpoint("bar", True)
@@ -36,9 +36,9 @@ Involved usage example:
 import uuid
 import persistent
 from enum import Enum
+from datetime import datetime, timedelta
 
 from pydash_app.dashboard.endpoint import Endpoint
-# from pydash_app.dashboard.aggregator import Aggregator
 from pydash_app.dashboard.aggregator.aggregator_group import AggregatorGroup
 
 class DashboardState(Enum):
@@ -155,6 +155,22 @@ class Dashboard(persistent.Persistent):
         :return: A dict containing aggregated data points.
         """
         return self._aggregator_group.fetch_aggregator({}).as_dict()
+
+    def aggregated_data_daterange(self, start_date, end_date, granularity):
+        """
+        Returns the aggregated data on this dashboard over the specified daterange.
+        :param start_date: A datetime object that is treated as the inclusive lower bound of the daterange.
+        :param end_date: A datetime object that is treated as the inclusive upper bound of the daterange.
+        :param granularity: A string denoting the granularity of the daterange.
+        :return: A dictionary with all aggregated statistics and their values.
+        """
+        return self._aggregator_group.fetch_aggregator_inclusive_daterange({}, start_date, end_date, granularity).as_dict()
+
+    def first_endpoint_call_time(self):
+        if not self._endpoint_calls:
+            return None
+        else:
+            return self._endpoint_calls[0].time
 
     # Required because `multi_indexed_collection` puts dashboards in a set,
     #  that needs to order its keys for fast lookup.
