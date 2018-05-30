@@ -22,4 +22,26 @@ class UptimeLog(persistent.Persistent):
         :param ping_datetime: When the ping took place (approximately); defaults to the current time in UTC.
         """
 
+        if is_up:
+            if self._downtime_start:
+                start = self._downtime_start
+                end = min(ping_datetime, _day_end(start))
 
+                while end <= ping_datetime:
+                    date = start.date()
+                    interval = (start.timetz(), end.timetz())
+                    self._downtime_intervals[date].append(interval)
+
+                    start = _day_start(start + datetime.timedelta(days=1))
+                    end = min(ping_datetime, _day_end(start))
+        else:
+            if self._downtime_start is None:
+                self._downtime_start = ping_datetime
+
+
+def _day_start(dt):
+    return datetime.datetime.combine(dt.date(), datetime.time.min)
+
+
+def _day_end(dt):
+    return datetime.datetime.combine(dt.date(), datetime.time.max)
