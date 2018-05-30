@@ -9,6 +9,8 @@ import axios from 'axios';
 import Logo from '../images/logo.png'
 import HelpIcon from '@material-ui/icons/Help';
 import Tooltip from 'material-ui/Tooltip';
+import { NavLink } from 'react-router-dom'
+
 
 import { showNotification } from "../Notifier";
 
@@ -29,7 +31,10 @@ class RegistrationPage extends Component {
         password: '',
         password_confirmation: '',
         message: '',
-        error: false,
+        errorName: false,
+        errorMail: false,
+        errorPassword: false,
+        errorPasswordConfirm: false,
         loading: false,
           success: false,
           warnings: {},
@@ -52,6 +57,9 @@ class RegistrationPage extends Component {
         if(!/@.+?\..+/.test(target_val)){
             email_warning = "Please enter a valid e-mail address";
         }
+        if(target_val.length===0){
+            email_warning=null;
+        }
         this.setState((prevState) => {
             let warnings = prevState.warnings
             warnings['email'] = email_warning;
@@ -67,6 +75,9 @@ class RegistrationPage extends Component {
         let password_warning = null;
         if(target_val.length < 8){
             password_warning = "The password should be either > 8 chars, containing at least one capital and non-alphabetic char, or > 12 chars.";
+        }
+        if(target_val.length===0){
+            password_warning=null;
         }
         this.setState((prevState) => {
             let warnings = prevState.warnings
@@ -84,6 +95,9 @@ class RegistrationPage extends Component {
         if(target_val !== this.state.password){
             password_confirmation_warning = "The passwords are not the same!";
         }
+        if(target_val.length===0){
+            password_confirmation_warning=null;
+        }
         this.setState((prevState) => {
             let warnings = prevState.warnings
             warnings['password_confirmation'] = password_confirmation_warning;
@@ -94,36 +108,34 @@ class RegistrationPage extends Component {
         })
     }
 
-      handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-    
-      };
-   
-   
-    tryRegister = (e) => {
-        e.preventDefault()
-        showNotification({ message: "Registering...", preventClosing: true}); // Do not hide automatically
+
+    handleClick = () => {
+        this.setState({ open: true });
+    };
+
+    handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+        return;
+    }
+
+    this.setState({ open: false });
+    };
+
+    resetState = () => {
+        this.setState(prevState => ({
+            errorName: false,
+            errorMail: false,
+            errorPassword: false,
+            errorPasswordConfirm: false,
+        }))
+    };
+
+    registerCall = () =>{
         let username = this.state.username,
             password = this.state.password,
             email_address = this.state.email_address
-        if (!(username.trim()) || !(password.trim())) {
-            this.setState(prevState => ({
-                ...prevState,
-                error: true,
-                helperText: 'These fields are required!',
-            }))
-            showNotification({ message: "Registration failed"});
-            return;
-        }
-        this.setState(prevState => ({
-            ...prevState,
-            error: false,
-            helperText: '',
-            loading: true
-        }))
-
+        
+        showNotification({ message: "Registering...", preventClosing: true}); // Do not hide automatically
         axios.post(window.api_path + '/api/user/register', {
             username,
             password,
@@ -139,6 +151,7 @@ class RegistrationPage extends Component {
                 loading: false
             }));
             showNotification({ message: "Registration successful. Please check your e-mail inbox to verify the e-mailadres you entered."});
+            this.forceUpdate()
         }).catch((error) => {
             console.log(error);
             if(error.response && error.response.status === 409) {
@@ -158,6 +171,56 @@ class RegistrationPage extends Component {
         });
     }
 
+    checkEmpty = () =>{
+        let username = this.state.username,
+            password = this.state.password,
+            email_address = this.state.email_address,
+            password_confirmation = this.state.password_confirmation
+
+        if (!(username.trim()) || !(password.trim()) || !(email_address.trim()) || !(password_confirmation.trim())) {
+            this.setState(prevState => ({
+                ...prevState,
+                open: false,
+                helperText: 'These fields are required!',
+            }))
+            if(!username.trim()){
+                this.setState(prevState => ({
+                    errorName: true,
+                }))
+            }
+            if(!password.trim()){
+                this.setState(prevState => ({
+                    errorPassword: true,
+                }))
+            }
+            if(!email_address.trim()){
+                this.setState(prevState => ({
+                    errorMail: true,
+                }))
+            }
+            if(!password_confirmation.trim()){
+                this.setState(prevState => ({
+                    errorPasswordConfirm: true,
+                }))
+            }
+
+            return 0;
+        }
+        return 1;
+    }
+   
+    tryRegister = (e) => {
+        e.preventDefault()
+            
+        this.resetState()
+        if(this.checkEmpty()===0){
+            return;
+        }
+
+        this.registerCall()
+
+    }
+
     render() {
         return this.state.success ? (
             <Redirect to="/" />
@@ -175,7 +238,7 @@ class RegistrationPage extends Component {
                         value={this.state.username}
                         onChange={this.handleChange('username')}
                         margin="normal"
-                        error={this.state.warnings['username'] || this.state.error}
+                        error={this.state.warnings['username'] || this.state.errorName}
                     />
                     <br />
                     <TextField
@@ -184,7 +247,7 @@ class RegistrationPage extends Component {
                         value={this.state.email_address}
                         onChange={this.handleEmail}
                         margin="normal"
-                        error={this.state.warnings['email'] || this.state.error}
+                        error={this.state.warnings['email'] || this.state.errorMail}
                     />
                     <br />
 
@@ -195,7 +258,7 @@ class RegistrationPage extends Component {
                         onChange={this.handlePassword}
                         margin="normal"
                         type="password"
-                        error={this.state.warnings['password'] || this.state.error}
+                        error={this.state.warnings['password'] || this.state.errorPassword}
                     />
             <Tooltip id='password-tooltip' title={<p>The password should be longer than 12 chars (with no further restrictions),
                                                   <br/>
@@ -212,7 +275,7 @@ class RegistrationPage extends Component {
                         onChange={this.handlePasswordConfirmation}
                         margin="normal"
                         type="password"
-                        error={this.state.warnings['password_confirmation'] || this.state.error}
+                        error={this.state.warnings['password_confirmation'] || this.state.errorPasswordConfirm}
                         helperText={this.state.helperText}
                     />
                     <br />
@@ -225,6 +288,9 @@ class RegistrationPage extends Component {
                     <Button type="submit" variant="raised" color="primary" disabled={this.state.loading}>
                         {this.state.loading ? "Creating account" : "Register"}
                     </Button>
+                    </p>
+                    <p>
+                        <Button component={NavLink} to="/">Back</Button>
                     </p>
                 </form>
             </div>
