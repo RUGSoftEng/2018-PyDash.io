@@ -4,6 +4,8 @@ import persistent
 from datetime import datetime, timedelta
 from copy import copy, deepcopy
 from dtrange import dtrange
+from more_itertools import peekable
+
 
 from . import Aggregator
 
@@ -32,6 +34,9 @@ datetime_formats['week'] = datetime_formats['year'] + '-W%W'
 datetime_formats['day'] = datetime_formats['month'] + '-%d'
 datetime_formats['hour'] = datetime_formats['day'] + 'T%H'
 datetime_formats['minute'] = datetime_formats['hour'] + '-%M'
+
+
+allowed_timeslices = ['year', 'month', 'week', 'day', 'hour', 'minute']
 
 
 def partition_by_year_fun(endpoint_call):
@@ -230,11 +235,11 @@ class AggregatorGroup(persistent.Persistent):
 
     def fetch_aggregator_daterange(self, filters, datetime_begin, datetime_end):
         """
-        Fetches an aggregator over the entire provided datetime range. Note that filters may not contain time-based
-        properties. Does account for leap seconds.
+        Fetches an aggregator over the entire provided datetime range.
         :param filters: A dictionary that contains property_name-value pairs to filter on.
           This is in the gist of {'ip': '127.0.0.1', 'version': '1.0.1'}
           For the complete set of possible filters, see AggregatorGroup.fetch_aggregator.
+          Note: may not contain time-based filters, for obvious reasons.
         :param datetime_begin: A datetime object indicating the inclusive lower bound for the datetime range to
          aggregate over.
         :param datetime_end:  A datetime object indicating the exclusive upper bound for the datetime range to
@@ -247,7 +252,7 @@ class AggregatorGroup(persistent.Persistent):
             if key in ['year', 'month', 'week', 'day', 'hour', 'minute']:
                 raise ValueError('filters may not contain time-based properties')
 
-        date_chunks = chop_date_range_into_chunks(datetime_begin, datetime_end)
+        date_chunks = _chop_date_range_into_chunks(datetime_begin, datetime_end)
         aggregator = Aggregator()
         for key, value in date_chunks.items():
             filters_cpy = deepcopy(filters)
@@ -259,14 +264,14 @@ class AggregatorGroup(persistent.Persistent):
 
     def fetch_aggregator_inclusive_daterange(self, filters, datetime_begin, datetime_end, granularity):
         """
-        Fetches an aggregator over the entire provided datetime range. Note that filters may not contain time-based
-        properties. Does account for leap seconds.
+        Fetches an aggregator over the entire provided datetime range.
         :param filters: A dictionary that contains property_name-value pairs to filter on.
           This is in the gist of {'ip': '127.0.0.1', 'version': '1.0.1'}
           For the complete set of possible filters, see AggregatorGroup.fetch_aggregator.
+          Note: May not contain time-based filters, for obvious reasons.
         :param datetime_begin: A datetime object indicating the inclusive lower bound for the datetime range to
          aggregate over.
-        :param datetime_end:  A datetime object indicating the exclusive upper bound for the datetime range to
+        :param datetime_end:  A datetime object indicating the inclusive upper bound for the datetime range to
          aggregate over.
         :param granularity: A string denoting the granularity of the daterange.
         :return: An Aggregator object that contains the aggregated data over the entirety of the specified datetime
@@ -291,8 +296,47 @@ class AggregatorGroup(persistent.Persistent):
 
         return self.fetch_aggregator_daterange(filters, datetime_begin, inclusive_to_exclusive_datetime_adaptor(datetime_end, granularity))
 
+    def fetch_aggregators_per_timeslice(self, filters, timeslice, start_datetime, end_datetime):
+        """These datetimes are treated as inclusive boundaries of a datetime range (e.g. [start_datetime, end_datetime].
+        Assumes start_datetime and end_datetime are both from utc.
+        :param filters: A dictionary that contains property_name-value pairs to filter on.
+          This is in the gist of {'ip': '127.0.0.1', 'version': '1.0.1'}
+          For the complete set of possible filters, see AggregatorGroup.fetch_aggregator.
+          Note: May not contain time-based filters, for obvious reasons.
+        :param timeslice: A string denoting at what granularity the indicated datetime range should be split.
+          The currently supported values for this are: 'year', 'month', 'week', 'day', 'hour' and 'minute'.
+        :param start_datetime: A datetime object indicating the inclusive lower bound for the datetime range to
+         aggregate over.
+        :param end_datetime:  A datetime object indicating the inclusive upper bound for the datetime range to
+         aggregate over.
+        :return: A list of tuples consisting of a datetime string (formatted according to the ISO-8601 standard)
+                 and the corresponding aggregator, over the specified datetime range.
+        """
+        statistics_aggregators = {}
+        timeslice_to_dtrange_unit_adaptor = {'year': 'y',
+                                             'month': 'm',
+                                             'week': 'w',
+                                             'day': 'd',
+                                             'hour': 'h',
+                                             'minute': 'min'
+                                             }
 
-def chop_date_range_into_chunks(datetime_begin, datetime_end):
+        datetime_range = peekable(dtrange(start_datetime, end_datetime, step=1,
+                                          units=timeslice_to_dtrange_unit_adaptor[timeslice], endpoint=True)
+                                  )
+        for datetime_value in datetime_range:
+            try:
+                next_value = datetime_range.peek()
+            except StopIteration:
+                next_value = end_datetime
+            date, statistic_aggregator = (datetime_value.strftime(datetime_formats[timeslice]),
+                                          self.fetch_aggregator_inclusive_daterange(filters, datetime_value, next_value, timeslice))
+            statistics_aggregators[date] = statistic_aggregator
+
+        return statistics_aggregators
+
+
+def _chop_date_range_into_chunks(datetime_begin, datetime_end):
     """
     Chops the given datetime range into chunks of full days, hours and minutes. Does account for leap seconds.
     :param datetime_begin: A datetime object that indicates the inclusive lower bound of the datetime range.
@@ -307,30 +351,30 @@ def chop_date_range_into_chunks(datetime_begin, datetime_end):
               "minute": []
              }
 
-    days, (complete_l, complete_r) = chop_date_range_into_days(datetime_begin, datetime_end)
+    days, (complete_l, complete_r) = _chop_date_range_into_days(datetime_begin, datetime_end)
     chunks["day"] = days
     if complete_l and complete_r:
         return chunks
 
     if not days:
-        hours, (complete_l, complete_r) = chop_date_range_into_hours(datetime_begin, datetime_end)
+        hours, (complete_l, complete_r) = _chop_date_range_into_hours(datetime_begin, datetime_end)
     else:
         if not complete_l:
-            hours_l, (complete_l, _) = chop_date_range_into_hours(datetime_begin,
-                                                                  datetime(year=days[0].year,
-                                                                           month=days[0].month,
-                                                                           day=days[0].day,
-                                                                           )
-                                                                  )
+            hours_l, (complete_l, _) = _chop_date_range_into_hours(datetime_begin,
+                                                                   datetime(year=days[0].year,
+                                                                            month=days[0].month,
+                                                                            day=days[0].day,
+                                                                            )
+                                                                   )
         else:
             hours_l = []
         if not complete_r:
-            hours_r, (_, complete_r) = chop_date_range_into_hours(datetime(year=datetime_end.year,
-                                                                           month=datetime_end.month,
-                                                                           day=datetime_end.day,
-                                                                           ),
-                                                                  datetime_end
-                                                                  )
+            hours_r, (_, complete_r) = _chop_date_range_into_hours(datetime(year=datetime_end.year,
+                                                                            month=datetime_end.month,
+                                                                            day=datetime_end.day,
+                                                                            ),
+                                                                   datetime_end
+                                                                   )
         else:
             hours_r = []
         hours = hours_l + hours_r
@@ -339,26 +383,26 @@ def chop_date_range_into_chunks(datetime_begin, datetime_end):
         return chunks
 
     if not days and not hours:
-        minutes = chop_date_range_into_minutes(datetime_begin, datetime_end)
+        minutes = _chop_date_range_into_minutes(datetime_begin, datetime_end)
     else:
         if not complete_l:
-            minutes_l = chop_date_range_into_minutes(datetime_begin,
-                                                     datetime(year=hours[0].year,
-                                                              month=hours[0].month,
-                                                              day=hours[0].day,
-                                                              hour=hours[0].hour,
-                                                              )
-                                                     )
+            minutes_l = _chop_date_range_into_minutes(datetime_begin,
+                                                      datetime(year=hours[0].year,
+                                                               month=hours[0].month,
+                                                               day=hours[0].day,
+                                                               hour=hours[0].hour,
+                                                               )
+                                                      )
         else:
             minutes_l = []
         if not complete_r:
-            minutes_r = chop_date_range_into_minutes(datetime(year=datetime_end.year,
-                                                              month=datetime_end.month,
-                                                              day=datetime_end.day,
-                                                              hour=datetime_end.hour,
-                                                              ),
-                                                     datetime_end
-                                                     )
+            minutes_r = _chop_date_range_into_minutes(datetime(year=datetime_end.year,
+                                                               month=datetime_end.month,
+                                                               day=datetime_end.day,
+                                                               hour=datetime_end.hour,
+                                                               ),
+                                                      datetime_end
+                                                      )
         else:
             minutes_r = []
         minutes = minutes_l + minutes_r
@@ -366,7 +410,7 @@ def chop_date_range_into_chunks(datetime_begin, datetime_end):
     return chunks
 
 
-def chop_date_range_into_days(datetime_begin, datetime_end):
+def _chop_date_range_into_days(datetime_begin, datetime_end):
     """
     Returns a range of days (datetimes) that are fully within the given date range. Does account for leap seconds.
     :param datetime_begin: a datetime object that indicates the inclusive lower bound of the desired date-range
@@ -388,7 +432,7 @@ def chop_date_range_into_days(datetime_begin, datetime_end):
     return [day for day in dtrange(range_begin, range_end, step=1, units='d')], (complete_l, complete_r)
 
 
-def chop_date_range_into_hours(datetime_begin, datetime_end):
+def _chop_date_range_into_hours(datetime_begin, datetime_end):
     """
     Returns a range of hours (datetimes) that are fully within the given date range. Does account for leap seconds.
     :param datetime_begin: a datetime object that indicates the inclusive lower bound of the desired date-range
@@ -412,7 +456,7 @@ def chop_date_range_into_hours(datetime_begin, datetime_end):
     return [hour for hour in dtrange(range_begin, range_end, step=1, units='h')], (complete_l, complete_r)
 
 
-def chop_date_range_into_minutes(datetime_begin, datetime_end):
+def _chop_date_range_into_minutes(datetime_begin, datetime_end):
     """
     Returns a range of minutes (datetimes) that are fully within the given date range. Does account for leap seconds.
     :param datetime_begin: a datetime object that indicates the inclusive lower bound of the desired date-range

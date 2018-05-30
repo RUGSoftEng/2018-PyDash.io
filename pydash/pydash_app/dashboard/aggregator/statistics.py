@@ -61,8 +61,9 @@ class Statistic(persistent.Persistent, abc.ABC):
     def perform_append(self, endpoint_call, dependencies):
         pass
 
+    @classmethod
     @abc.abstractmethod
-    def field_name(self):
+    def field_name(cls):
         pass
 
     def rendered_value(self):
@@ -171,29 +172,29 @@ class AverageExecutionTime(FloatStatisticABC):
         return aet
 
 
-class VisitsPerDay(Statistic):
-    def should_be_rendered(self):
-        return True
-
-    def empty(self):
-        return defaultdict(int)
-
-    def field_name(self):
-        return 'visits_per_day'
-
-    def perform_append(self, endpoint_call, dependencies):
-        date = endpoint_call.time.date()
-        self.value[date] += 1
-
-    def rendered_value(self):
-        return date_dict(self.value)
-
-    def add_together(self, other, dependencies_self, dependencies_other):
-        vpd = VisitsPerDay()
-        keyset = set(self.value.keys()).union(set(other.value.keys()))
-        for key in keyset:
-            vpd.value[key] = self.value[key] + other.value[key]
-        return vpd
+# class VisitsPerDay(Statistic):
+#     def should_be_rendered(self):
+#         return True
+#
+#     def empty(self):
+#         return defaultdict(int)
+#
+#     def field_name(self):
+#         return 'visits_per_day'
+#
+#     def perform_append(self, endpoint_call, dependencies):
+#         date = endpoint_call.time.date()
+#         self.value[date] += 1
+#
+#     def rendered_value(self):
+#         return date_dict(self.value)
+#
+#     def add_together(self, other, dependencies_self, dependencies_other):
+#         vpd = VisitsPerDay()
+#         keyset = set(self.value.keys()).union(set(other.value.keys()))
+#         for key in keyset:
+#             vpd.value[key] = self.value[key] + other.value[key]
+#         return vpd
 
 
 class VisitsPerIP(Statistic):
@@ -242,29 +243,29 @@ class UniqueVisitorsAllTime(Statistic):
         return uvat
 
 
-class UniqueVisitorsPerDay(Statistic):
-    def should_be_rendered(self):
-        return True
-
-    def empty(self):
-        return defaultdict(set)
-
-    def field_name(self):
-        return 'unique_visitors_per_day'
-
-    def perform_append(self, endpoint_call, dependencies):
-        date = endpoint_call.time.date()
-        self.value[date].add(endpoint_call.ip)
-
-    def rendered_value(self):
-        return date_dict({k: len(v) for k, v in self.value.items()})
-
-    def add_together(self, other, dependencies_self, dependencies_other):
-        uvpd = UniqueVisitorsPerDay()
-        keyset = set(self.value.keys()).union(set(other.value.keys()))
-        for key in keyset:
-            uvpd.value[key] = self.value[key].union(other.value[key])
-        return uvpd
+# class UniqueVisitorsPerDay(Statistic):
+#     def should_be_rendered(self):
+#         return True
+#
+#     def empty(self):
+#         return defaultdict(set)
+#
+#     def field_name(self):
+#         return 'unique_visitors_per_day'
+#
+#     def perform_append(self, endpoint_call, dependencies):
+#         date = endpoint_call.time.date()
+#         self.value[date].add(endpoint_call.ip)
+#
+#     def rendered_value(self):
+#         return date_dict({k: len(v) for k, v in self.value.items()})
+#
+#     def add_together(self, other, dependencies_self, dependencies_other):
+#         uvpd = UniqueVisitorsPerDay()
+#         keyset = set(self.value.keys()).union(set(other.value.keys()))
+#         for key in keyset:
+#             uvpd.value[key] = self.value[key].union(other.value[key])
+#         return uvpd
 
 
 class ExecutionTimeTDigest(Statistic):

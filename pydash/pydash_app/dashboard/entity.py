@@ -166,6 +166,22 @@ class Dashboard(persistent.Persistent):
         """
         return self._aggregator_group.fetch_aggregator_inclusive_daterange({}, start_date, end_date, granularity).as_dict()
 
+    def statistic_per_timeslice(self, statistic, timeslice, start_datetime, end_datetime):
+        """
+
+        :param statistic:
+        :param timeslice:
+        :param start_datetime:
+        :param end_datetime:
+        :return: A dictionary consisting of a datetime string (key)(formatted according to the ISO-8601 standard)
+             and the corresponding statistic, over the specified datetime range.
+        """
+        return_dict = {}
+        for datetime, aggregator in self._aggregator_group.fetch_aggregators_per_timeslice({}, timeslice, start_datetime, end_datetime).items():
+            return_dict[datetime] = aggregator.as_dict()[statistic]
+
+        return return_dict
+
     def first_endpoint_call_time(self):
         if not self._endpoint_calls:
             return None

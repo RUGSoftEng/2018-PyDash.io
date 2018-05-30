@@ -61,3 +61,32 @@ class Endpoint(persistent.Persistent):
         :return: A dict containing aggregated data points.
         """
         return self._aggregator_group.fetch_aggregator({}).as_dict()
+
+    def aggregated_data_daterange(self, start_date, end_date, granularity):
+        """
+        Returns the aggregated data on this dashboard over the specified daterange.
+        :param start_date: A datetime object that is treated as the inclusive lower bound of the daterange.
+        :param end_date: A datetime object that is treated as the inclusive upper bound of the daterange.
+        :param granularity: A string denoting the granularity of the daterange.
+        :return: A dictionary with all aggregated statistics and their values.
+        """
+        return self._aggregator_group.fetch_aggregator_inclusive_daterange({}, start_date, end_date,
+                                                                           granularity).as_dict()
+
+    def statistic_per_timeslice(self, statistic, timeslice, start_datetime, end_datetime):
+        """
+
+        :param statistic:
+        :param timeslice:
+        :param start_datetime:
+        :param end_datetime:
+        :return: A dictionary consisting of a datetime string (key)(formatted according to the ISO-8601 standard)
+             and the corresponding statistic, over the specified datetime range.
+        """
+        return_dict = {}
+        for datetime, aggregator in self._aggregator_group.fetch_aggregators_per_timeslice({}, timeslice,
+                                                                                           start_datetime,
+                                                                                           end_datetime):
+            return_dict[datetime] = aggregator.as_dict()[statistic]
+
+        return return_dict

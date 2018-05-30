@@ -8,8 +8,9 @@ from flask import jsonify, request
 from flask_login import current_user
 
 from datetime import datetime
-from dtrange import dtrange
-from more_itertools import peekable
+from pydash_app.dashboard.aggregator.aggregator_group import allowed_timeslices
+from pydash_app.dashboard.aggregator import Aggregator
+
 
 import pydash_app.dashboard
 import pydash_logger
@@ -31,6 +32,24 @@ def dashboard(dashboard_id):
     :return: The returned value consists of a tuple of dashboard information, together with a http status code.
     This route supports the following request arguments:
     - statistic: The name of the statistic of which aggregated information should be returned.
+      The currently supported statistics are:['total_visits', 'total_execution_time', 'average_execution_time', 'visits_per_ip',
+                         'unique_visitors', 'fastest_measured_execution_time', 'fastest_quartile_execution_time',
+                         'median_execution_time', 'slowest_quartile_execution_time', 'ninetieth_percentile_execution_time',
+                         'ninety-ninth_percentile_execution_time', 'slowest_measured_execution_time']
+#     or perhaps
+        * total_visits
+        * total_execution_time
+        * average_execution_time
+        * visits_per_ip
+        * unique_visitors
+        * fastest_measured_execution_time
+        * fastest_quartile_execution_time
+        * median_execution_time
+        * slowest_quartile_execution_time
+        * ninetieth_percentile_execution_time
+        * ninety-ninth_percentile_execution_time
+        * slowest_measured_execution_time
+
     - start_date, end_date: The start- and end dates of the datetime range in which the desired information lies.
         Both start_date and end_date are inclusive resp. upper- and lower bounds of this datetime range.
         If start_date is not provided, it defaults to 1970-1-1.
@@ -122,8 +141,7 @@ def handle_statistic_without_timeslice(dashboard, statistic, start_datetime, end
     :param granularity:
     :return: The value of a single statistic over the specified datetime range.
     """
-    data = dashboard.aggregated_data_daterange(start_datetime, end_datetime, granularity)
-    return data[statistic]
+    return dashboard.aggregated_data_daterange(start_datetime, end_datetime, granularity)[statistic]
 
 
 def handle_statistic_per_timeslice(dashboard, statistic, timeslice, start_datetime, end_datetime):
@@ -134,31 +152,10 @@ def handle_statistic_per_timeslice(dashboard, statistic, timeslice, start_dateti
     :param timeslice:
     :param start_datetime:
     :param end_datetime:
-    :return: A list of tuples consisting of a datetime string (formatted in the following way: TODO: Write down format)
+    :return: A dictionary consisting of a datetime string (key)(formatted according to the ISO-8601 standard)
              and the corresponding statistic, over the specified datetime range.
     """
-    statistics = {}
-    timeslice_to_dtrange_unit_adaptor = {'year': 'y',
-                                         'month': 'm',
-                                         'week': 'w',
-                                         'day': 'd',
-                                         'hour': 'h',
-                                         'minute': 'min'
-                                         }
-
-    datetime_range = peekable(dtrange(start_datetime, end_datetime, step=1,
-                                      units=timeslice_to_dtrange_unit_adaptor[timeslice], endpoint=True)
-                              )
-    for datetime_value in datetime_range:
-        try:
-            next_value = datetime_range.peek()
-        except StopIteration:
-            next_value = end_datetime
-        date, statistic_value = (datetime_value.strftime(datetime_formats[timeslice]),
-                           dashboard.aggregated_data_daterange(datetime_value, next_value, timeslice)[statistic])
-        statistics[date] = statistic_value
-
-    return statistics
+    return dashboard.statistic_per_timeslice(statistic, timeslice, start_datetime, end_datetime)
 
 
 def match_datetime_string_with_formats(datetime_string):
@@ -174,17 +171,11 @@ def match_datetime_string_with_formats(datetime_string):
 
 
 def check_allowed_timeslices(timeslice):
-    return timeslice in ['year', 'month', 'week', 'day', 'hour', 'minute']
+    return timeslice in allowed_timeslices
 
 
 def check_allowed_statistics(statistic):
-    return statistic in ['total_visits', 'total_execution_time', 'average_execution_time', 'visits_per_ip',
-                         'unique_visitors', 'fastest_measured_execution_time', 'fastest_quartile_execution_time',
-                         'median_execution_time', 'slowest_quartile_execution_time', 'ninetieth_percentile_execution_time',
-                         'ninety-ninth_percentile_execution_time', 'slowest_measured_execution_time']
-#     or perhaps
-#     return statistic in Aggregator().as_dict().keys()
-#     if we prune all currently rendered statistics that can be retrieved otherwise.
+    return statistic in [stat_class.field_name(stat_class) for stat_class in Aggregator.contained_statistics_classes]
 
 
 def dashboards():
