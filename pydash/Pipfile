@@ -1,29 +1,28 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [packages]
-
-Flask = "*"
-Flask-WTF = "*"
-Flask-Login = "*"
+flask = "*"
+flask-wtf = "*"
+flask-login = "*"
 multi-indexed-collection = "*"
-ZEO = "*"
-PyJWT = "*"
+zeo = "*"
+pyjwt = "*"
 requests = "*"
-Flask-Cors = "*"
+flask-cors = "*"
 pqdict = "*"
 pytest-cov = "*"
-Flask-Mail = "*"
+flask-mail = "*"
 ordered-set = "*"
 tdigest = "*"
-
+flask-monitoringdashboard = "*"
+email-validator = "*"
+dtrange = "*"
+more-itertools = "*"
 
 [dev-packages]
-
 pytest = "*"
 pytest-xdist = "*"
 pytest-env = "*"
@@ -34,12 +33,8 @@ pytest-localserver = "*"
 pytest-bdd = "*"
 pytest-random-order = "*"
 
-
 [requires]
-
 python_version = "3.6"
 
-
 [pipenv]
-
 keep_outdated = true

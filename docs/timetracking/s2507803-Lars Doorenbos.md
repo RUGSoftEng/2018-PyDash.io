@@ -73,3 +73,17 @@
 | *2018-05-14* | 15:00-17:30 | Weekly TA meeting |
 | *2018-05-14* | 20:30-20:45 | Docs + branches |
 | *2018-05-15* | 13:45-14:00 | Timetracking issues |
+| *2018-05-16* | 11:00-13:00 | Hallway testing |
+| *2018-05-16* | 14:15-16:00 | Hallway issues / building issues |
+| *2018-05-18* | 14:45-15:45 | Hallway issues 354 & 348 |
+| *2018-05-19* | 20:20-21:00 | Running issues |
+| *2018-05-20* | 16:00-16:30 | Pipenv issues |
+| *2018-05-20* | 21:00-21:45 | Venv issues |
+| *2018-05-23* | 12:30-15:30 | Endpoint filtering |
+| *2018-05-24* | 13:00-15:00 | TA meeting + merging & conflicts |
+| *2018-05-25* | 10:00-11:00 | Fixing Travis for filtering |
+| *2018-05-28* | 12:00-13:30 | Fixing PR's & finishing hallway issues |
+| *2018-05-28* | 15:00-16:00 | TA meeting + team meeting |
+| *2018-05-28* | 19:30-20:40 | #349 and #353 |
+| *2018-05-29* | 9:00-10:00 | Fixing PRs & refactoring |
+| *2018-05-29* | 21:45-22:00 | Final updates presprint |

@@ -8,7 +8,7 @@ import os
 from flask import Flask, jsonify
 from flask_login import LoginManager
 from flask_cors import CORS
-from flask_mail import Mail
+import flask_monitoringdashboard
 
 from pydash_mail import mail
 from pydash_web.api import api as api_blueprint
@@ -27,6 +27,9 @@ cors = CORS(flask_webapp,
             resources={r"/api/*": {"origins": "*"}},
             allow_headers=['Content-Type'],
             supports_credentials=True) # Only keep this line during development!
+
+flask_monitoringdashboard.config.init_from(envvar='FMD_CONFIG_PATH')
+flask_monitoringdashboard.bind(flask_webapp)
 
 flask_webapp.register_blueprint(api_blueprint)
 flask_webapp.register_blueprint(react_server_blueprint)
