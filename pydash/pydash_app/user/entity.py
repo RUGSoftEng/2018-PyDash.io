@@ -1,10 +1,16 @@
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from .verification_code import VerificationCode
+from email_validator import validate_email, EmailNotValidError
+
 
 import uuid
 import flask_login
 import persistent
+import pydash_logger
+
+
+logger = pydash_logger.Logger(__name__)
 
 
 class User(persistent.Persistent, flask_login.UserMixin):
@@ -20,13 +26,13 @@ class User(persistent.Persistent, flask_login.UserMixin):
 
     The User entity checks its parameters on creation:
 
-    >>> User(42, 32)
+    >>> User(42, 32, 11)
     Traceback (most recent call last):
       ...
     TypeError
     """
 
-    def __init__(self, name, password):
+    def __init__(self, name, password, mail):
         if not isinstance(name, str) or not isinstance(password, str):
             raise TypeError("User expects name and password to be strings.")
 
@@ -38,13 +44,20 @@ class User(persistent.Persistent, flask_login.UserMixin):
         # Needed for the database to search for users by verification code
         self._verification_code = self._smart_verification_code.verification_code
 
+        try:
+            validate_email(mail)
+        except EmailNotValidError:
+            logger.warning(f"User creation error - mail address invalid")
+
+        self.mail = mail
+
         self.play_sounds = True
 
     def __repr__(self):
         """
         The user has a string representation to be easily introspectable:
 
-        >>> user = User("Gandalf", "pass")
+        >>> user = User("Gandalf", "pass", 'some@email.com')
         >>> f"{user}".startswith("<User ")
         True
         """
@@ -99,8 +112,8 @@ class User(persistent.Persistent, flask_login.UserMixin):
         The actual order does not matter, as long as the same object always has the same location.
         Therefore, we use the UUIDs for this.
 
-        >>> gandalf = User("Gandalf", "pass")
-        >>> dumbledore = User("Dumbledore", "secret")
+        >>> gandalf = User("Gandalf", "pass", 'some@email.com')
+        >>> dumbledore = User("Dumbledore", "secret", 'some@email.com')
         >>> gandalf < dumbledore or gandalf > dumbledore
         True
         >>> gandalf < gandalf

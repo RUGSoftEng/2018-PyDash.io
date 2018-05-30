@@ -47,7 +47,7 @@ def register_user():
         result = {'message': f'User with username {username} already exists.'}
         return jsonify(result), 400
     else:
-        user = pydash_app.user.User(username, password)
+        user = pydash_app.user.User(username, password, email_address)
         pydash_app.user.add_to_repository(user)
         
         logger.info(f'User successfully registered with username: {username}'
@@ -58,17 +58,12 @@ def register_user():
                                  email_address,
                                  user.name)
 
-        result = {'message': 'User successfully registered.',
-                  'verification_code': f'{user.get_verification_code()}'}
-
-        return jsonify(result), 200
-
 
 def _send_verification_email(verification_code, expiration_date, recipient_email_address, username):
     """
     Sends a verification email to the user with a link to the appropriate front-end page.
     For now the backend-api is directly given though.
-    :param smart_verification_code: The verification code to send. Should be a VerificationCode instance.
+    :param verification_code: The verification code to send. Should be a VerificationCode instance.
     :param recipient_email_address: The email address of the recipient. Should be a string.
     :param username: The name of the User. Should be a string.
     """
