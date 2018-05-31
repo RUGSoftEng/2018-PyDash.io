@@ -38,8 +38,8 @@ import persistent
 from enum import Enum
 
 from pydash_app.dashboard.endpoint import Endpoint
-# from pydash_app.dashboard.aggregator import Aggregator
 from pydash_app.dashboard.aggregator.aggregator_group import AggregatorGroup
+from pydash_app.dashboard.downtime import DowntimeLog
 
 class DashboardState(Enum):
     """
@@ -84,15 +84,15 @@ class Dashboard(persistent.Persistent):
     This task is handled by the `dashboard_repository`.
     """
 
-    def __init__(self, url, token, user_id, name=None, monitor_uptime=False):
+    def __init__(self, url, token, user_id, name=None, monitor_downtime=False):
         if not isinstance(url, str) or not isinstance(token, str):
             raise TypeError("Dashboard expects both url and token to be strings.")
 
         if name is not None and not isinstance(name, str):
             raise TypeError("Dashboard expects name to be a string.")
 
-        if not isinstance(monitor_uptime, bool):
-            raise TypeError("Dashboard expects monitor_uptime to be a string.")
+        if not isinstance(monitor_downtime, bool):
+            raise TypeError("Dashboard expects monitor_downtime to be a string.")
 
         # Make sure integers and strings are allowed as well.
         if not isinstance(user_id, uuid.UUID):
@@ -113,7 +113,8 @@ class Dashboard(persistent.Persistent):
         self._endpoint_calls = []  # list of unfiltered endpoint calls, for use with an aggregator.
         self._aggregator_group = AggregatorGroup()
 
-        self.monitor_uptime = monitor_uptime
+        self.monitor_downtime = monitor_downtime
+        self.downtime_log = DowntimeLog()
 
     def __repr__(self):
         return f'<{self.__class__.__name__} id={self.id} url={self.url}>'
