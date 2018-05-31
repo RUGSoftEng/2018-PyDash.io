@@ -74,6 +74,27 @@ class DowntimeLog(persistent.Persistent):
             date.strftime('%Y-%m-%d'): self._total_downtime[date] for date in _date_range(start, end)
         }
 
+    def get_downtime_percentage(
+            self,
+            start=datetime.datetime.now(tz=datetime.timezone.utc).date() - datetime.timedelta(days=90),
+            end=datetime.datetime.now(tz=datetime.timezone.utc).date()):
+        """
+        Get the percentage of downtime between two dates.
+        :param start: The start date (exclusive; defaults to 90 days before the current day).
+        :param end: The end date (inclusive; defaults to the current day).
+        :return: A float, the downtime percentage for the given date range.
+        """
+        total_time = end - start
+        if total_time <= 0:
+            raise ValueError('Date range cannot be negative or zero')
+
+        total_downtime = sum(self._total_downtime[date] for date in _date_range(start, end))
+
+        percentage = total_downtime/total_time*100
+
+        # TODO: check values
+        return percentage
+
 
 def _day_start(dt):
     return datetime.datetime.combine(dt.date(), datetime.time.min).replace(tzinfo=datetime.timezone.utc)
