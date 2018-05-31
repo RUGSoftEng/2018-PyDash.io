@@ -100,4 +100,4 @@ def get_unique_visitor_heatmap(dashboard_id):
 @api.route("/api/dashboards/<dashboard_id>/downtime", methods=["GET"])
 @login_required
 def get_dashboard_downtime(dashboard_id):
-    return controller.dashboard_downtime()
+    return controller.dashboard_downtime(dashboard_id)
