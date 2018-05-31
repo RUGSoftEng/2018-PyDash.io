@@ -21,7 +21,6 @@ class UptimeLog(persistent.Persistent):
         :param is_up: Whether the web service is up or not.
         :param ping_datetime: When the ping took place (approximately); defaults to the current time in UTC.
         """
-
         if is_up:
             if self._downtime_start:
                 start = self._downtime_start
@@ -39,6 +38,34 @@ class UptimeLog(persistent.Persistent):
             if self._downtime_start is None:
                 self._downtime_start = ping_datetime
 
+    def get_downtime_intervals(
+            self,
+            start=datetime.datetime.now(tz=datetime.timezone.utc).date() - datetime.timedelta(days=90),
+            end=datetime.datetime.now(tz=datetime.timezone.utc).date()):
+        """
+        Return the intervals of downtime per day between two dates.
+        :param start: The start date (exclusive; defaults to 90 days before the current day).
+        :param end: The end date (inclusive; defaults to the current day).
+        :return: A dict containing a list of downtime intervals per day.
+        """
+        return {
+            date: list(self._downtime_intervals[date]) for date in _date_range(start, end)
+        }
+
+    def get_total_downtimes(
+            self,
+            start=datetime.datetime.now(tz=datetime.timezone.utc).date() - datetime.timedelta(days=90),
+            end=datetime.datetime.now(tz=datetime.timezone.utc).date()):
+        """
+        Return the total amounts of downtime per day between two dates.
+        :param start: The start date (exclusive; defaults to 90 days before the current day).
+        :param end: The end date (inclusive; defaults to the current day).
+        :return: A dict containing the total downtime per day.
+        """
+        return {
+            date: self._total_downtime[date] for date in _date_range(start, end)
+        }
+
 
 def _day_start(dt):
     return datetime.datetime.combine(dt.date(), datetime.time.min)
@@ -46,3 +73,15 @@ def _day_start(dt):
 
 def _day_end(dt):
     return datetime.datetime.combine(dt.date(), datetime.time.max)
+
+
+def _date_range(start, end):
+    """
+    Yield dates in the range (start, end].
+    :param start: Start date (exclusive).
+    :param end: End date.
+    """
+    start += datetime.timedelta(days=1)
+    while start <= end:
+        yield start
+        start += datetime.timedelta(days=1)
