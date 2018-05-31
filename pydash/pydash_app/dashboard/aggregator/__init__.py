@@ -27,6 +27,7 @@ class Aggregator(persistent.Persistent):
         statistics.NinetiethPercentileExecutionTime,
         statistics.NinetyNinthPercentileExecutionTime,
         statistics.SlowestExecutionTime,
+        # statistics.Versions,
     ])
     statistics_classes_with_dependencies = OrderedSet()
     for statistic in contained_statistics_classes:
@@ -88,9 +89,10 @@ class Aggregator(persistent.Persistent):
             return self.__add__(other)
 
     def __iadd__(self, other):
+
         if other is None:
             return self
         self.endpoint_calls += other.endpoint_calls
-        for key, _ in self.statistics.items():
+        for key in self.statistics.keys():
             self.statistics[key] = self.statistics[key].add_together(other.statistics[key], self.statistics, other.statistics)
         return self

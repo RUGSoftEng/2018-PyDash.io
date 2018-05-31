@@ -55,7 +55,7 @@ class Statistic(persistent.Persistent, abc.ABC):
 
     def append(self, endpoint_call, dependencies):
         self.perform_append(endpoint_call, dependencies)
-        self._p_changed = True # ZODB mark object as changed
+        self._p_changed = True  # ZODB mark object as changed
 
     @abc.abstractmethod
     def perform_append(self, endpoint_call, dependencies):
@@ -387,3 +387,25 @@ class SlowestExecutionTime(ExecutionTimePercentileABC):
 
     def percentile_nr(self):
         return 100
+
+
+# class Versions(Statistic):
+#     def should_be_rendered(self):
+#         return True
+#
+#     def empty(self):
+#         return set()
+#
+#     def field_name(self):
+#         return 'versions'
+#
+#     def rendered_value(self):
+#         return list(self.value)
+#
+#     def perform_append(self, endpoint_call, dependencies):
+#         self.value.add(endpoint_call.version)
+#
+#     def add_together(self, other, dependencies_self, dependencies_other):
+#         versions = Versions()
+#         versions.value = self.value.union(other.value)
+#         return versions

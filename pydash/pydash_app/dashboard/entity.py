@@ -149,6 +149,18 @@ class Dashboard(persistent.Persistent):
         self._endpoint_calls.append(endpoint_call)
         self._aggregator_group.add_endpoint_call(endpoint_call)
 
+    def first_endpoint_call_time(self):
+        if not self._endpoint_calls:
+            return None
+        else:
+            return self._endpoint_calls[0].time
+
+    # Required because `multi_indexed_collection` puts dashboards in a set,
+    #  that needs to order its keys for fast lookup.
+    # Because the IDs are unchanging integer values, use that.
+    def __lt__(self, other):
+        return self.id < other.id
+
     def aggregated_data(self):
         """
         Returns aggregated data on this dashboard.
@@ -166,10 +178,20 @@ class Dashboard(persistent.Persistent):
         """
         return self._aggregator_group.fetch_aggregator_inclusive_daterange({}, start_date, end_date, granularity).as_dict()
 
-    def statistic_per_timeslice(self, statistic, timeslice, start_datetime, end_datetime):
+    def statistic(self, statistic, filters):
         """
 
         :param statistic:
+        :param filters:
+        :return:
+        """
+        return self._aggregator_group.fetch_aggregator(filters).as_dict[statistic]
+
+    def statistic_per_timeslice(self, statistic, filters, timeslice, start_datetime, end_datetime):
+        """
+
+        :param statistic:
+        :param filters: A dict containing filter_name-filter_value pairs to filter on. May not contain time-based filters.
         :param timeslice:
         :param start_datetime:
         :param end_datetime:
@@ -177,19 +199,7 @@ class Dashboard(persistent.Persistent):
              and the corresponding statistic, over the specified datetime range.
         """
         return_dict = {}
-        for datetime, aggregator in self._aggregator_group.fetch_aggregators_per_timeslice({}, timeslice, start_datetime, end_datetime).items():
+        for datetime, aggregator in self._aggregator_group.fetch_aggregators_per_timeslice(filters, timeslice, start_datetime, end_datetime).items():
             return_dict[datetime] = aggregator.as_dict()[statistic]
 
         return return_dict
-
-    def first_endpoint_call_time(self):
-        if not self._endpoint_calls:
-            return None
-        else:
-            return self._endpoint_calls[0].time
-
-    # Required because `multi_indexed_collection` puts dashboards in a set,
-    #  that needs to order its keys for fast lookup.
-    # Because the IDs are unchanging integer values, use that.
-    def __lt__(self, other):
-        return self.id < other.id

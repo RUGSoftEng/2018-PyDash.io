@@ -194,7 +194,7 @@ class AggregatorGroup(persistent.Persistent):
             aggregator_dict[endpoint_call_identifier].add_endpoint_call(endpoint_call)
         self._p_changed = True # ZODB mark object as changed
 
-    def fetch_aggregator(self, filter_dict):
+    def fetch_aggregator(self, filter_dict={}):
         """
         Filters the internal collection of aggregators and returns the right one depending on filter_dict.
         :param filter_dict: A dictionary containing property_name-value pairs to filter on.
