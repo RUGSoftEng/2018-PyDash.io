@@ -1,6 +1,6 @@
 import persistent
 import datetime
-from collections import namedtuple, defaultdict
+from collections import defaultdict
 
 
 class UptimeLog(persistent.Persistent):
@@ -26,7 +26,7 @@ class UptimeLog(persistent.Persistent):
                 start = self._downtime_start
                 end = min(ping_datetime, _day_end(start))
 
-                while end <= ping_datetime:
+                while start <= ping_datetime:
                     date = start.date()
                     interval = (start.timetz(), end.timetz())
                     self._downtime_intervals[date].append(interval)
@@ -34,6 +34,8 @@ class UptimeLog(persistent.Persistent):
 
                     start = _day_start(start + datetime.timedelta(days=1))
                     end = min(ping_datetime, _day_end(start))
+
+                self._downtime_start = None
         else:
             if self._downtime_start is None:
                 self._downtime_start = ping_datetime
@@ -68,11 +70,11 @@ class UptimeLog(persistent.Persistent):
 
 
 def _day_start(dt):
-    return datetime.datetime.combine(dt.date(), datetime.time.min)
+    return datetime.datetime.combine(dt.date(), datetime.time.min).replace(tzinfo=datetime.timezone.utc)
 
 
 def _day_end(dt):
-    return datetime.datetime.combine(dt.date(), datetime.time.max)
+    return datetime.datetime.combine(dt.date(), datetime.time.max).replace(tzinfo=datetime.timezone.utc)
 
 
 def _date_range(start, end):
