@@ -35,6 +35,7 @@ Involved usage example:
 
 import uuid
 import persistent
+import datetime
 from enum import Enum
 
 from pydash_app.dashboard.endpoint import Endpoint
@@ -114,7 +115,7 @@ class Dashboard(persistent.Persistent):
         self._aggregator_group = AggregatorGroup()
 
         self.monitor_downtime = monitor_downtime
-        self.downtime_log = DowntimeLog()
+        self._downtime_log = DowntimeLog()
 
     def __repr__(self):
         return f'<{self.__class__.__name__} id={self.id} url={self.url}>'
@@ -161,6 +162,30 @@ class Dashboard(persistent.Persistent):
         :return: A dict containing aggregated data points.
         """
         return self._aggregator_group.fetch_aggregator({}).as_dict()
+
+    def add_ping_result(self, is_up, ping_datetime=datetime.datetime.now(tz=datetime.timezone.utc)):
+        """
+        Adds the result of a ping request to the dashboard.
+        :param is_up: Whether the dashboard's web service is up.
+        :param ping_datetime: When the ping took place (approximately); defaults to the current time in UTC.
+        """
+        self._downtime_log.add_ping_result(is_up, ping_datetime)
+
+    def get_downtime_data(
+            self,
+            start=datetime.datetime.now(tz=datetime.timezone.utc).date() - datetime.timedelta(days=90),
+            end=datetime.datetime.now(tz=datetime.timezone.utc).date()):
+        """
+        Returns a dict containing this dashboard's downtime data for a given date range.
+        :param start: The start date (exclusive; defaults to 90 days before the current date).
+        :param end: The end date (inclusive; defaults to the current date).
+        :return: A dictionary containing the dashboard's downtime data in the given date range.
+        """
+        return {
+            'downtime_intervals': self._downtime_log.get_downtime_intervals(start, end),
+            'total_downtimes': self._downtime_log.get_total_downtimes(start, end),
+            'downtime_percentage': self._downtime_log.get_downtime_percentage(start, end)
+        }
 
     # Required because `multi_indexed_collection` puts dashboards in a set,
     #  that needs to order its keys for fast lookup.
