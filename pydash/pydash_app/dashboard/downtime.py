@@ -1,3 +1,9 @@
+"""
+Exposes the class DowntimeLog, which keeps track of a web service's downtime,
+and calculates downtime intervals, total downtime, and downtime percentage
+in an on-line manner.
+"""
+
 import persistent
 import datetime
 from collections import defaultdict
