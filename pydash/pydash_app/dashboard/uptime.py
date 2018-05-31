@@ -3,9 +3,9 @@ import datetime
 from collections import defaultdict
 
 
-class UptimeLog(persistent.Persistent):
+class DowntimeLog(persistent.Persistent):
     """
-    Keeps track of uptime, and calculates downtime intervals, total downtime, and downtime percentage
+    Keeps track of downtime, and calculates downtime intervals, total downtime, and downtime percentage
     in an on-line manner.
     """
 
@@ -17,7 +17,7 @@ class UptimeLog(persistent.Persistent):
 
     def add_ping_result(self, is_up, ping_datetime=datetime.datetime.now(tz=datetime.timezone.utc)):
         """
-        Add the result of a ping request to the uptime log.
+        Add the result of a ping request to the downtime log.
         :param is_up: Whether the web service is up or not.
         :param ping_datetime: When the ping took place (approximately); defaults to the current time in UTC.
         """
