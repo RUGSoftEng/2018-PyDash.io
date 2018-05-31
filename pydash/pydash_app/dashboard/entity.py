@@ -29,6 +29,7 @@ Involved usage example:
 >>> d.endpoints['foo'].aggregated_data()
 {'total_visits': 2, 'total_execution_time': 0.6, 'average_execution_time': 0.3, 'visits_per_ip': {'127.0.0.1': 1, '127.0.0.2': 1}, 'unique_visitors': 2, 'fastest_measured_execution_time': 0.1, 'fastest_quartile_execution_time': 0.1, 'median_execution_time': 0.3, 'slowest_quartile_execution_time': 0.5, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
 >>> d.endpoints['bar'].aggregated_data()
+{'total_visits': 3, 'total_execution_time': 0.6, 'average_execution_time': 0.2, 'visits_per_ip': {'127.0.0.1': 3}, 'unique_visitors': 1, 'fastest_measured_execution_time': 0.2, 'fastest_quartile_execution_time': 0.2, 'median_execution_time': 0.2, 'slowest_quartile_execution_time': 0.2, 'ninetieth_percentile_execution_time': 0.2, 'ninety-ninth_percentile_execution_time': 0.2, 'slowest_measured_execution_time': 0.2}
 
 """
 
