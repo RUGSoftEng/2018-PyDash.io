@@ -77,13 +77,14 @@ def dashboard(dashboard_id):
         return result, http_error
 
     params = request.args
-    statistic = params.get('statistic')
-    start_date = params.get('start_date', default=valid_dashboard.first_endpoint_call_time().strftime('%Y-%m-%dT%H-%M'))
-    if not start_date:
+    first_endpoint_call_time = valid_dashboard.first_endpoint_call_time()
+    if not first_endpoint_call_time:
         logger.info(f"Retrieved empty dashboard {valid_dashboard}")
         result = {"message": "Dashboard is empty"}
         return jsonify(result), 200
 
+    statistic = params.get('statistic')
+    start_date = params.get('start_date', default=first_endpoint_call_time.strftime('%Y-%m-%dT%H-%M'))
     end_date = params.get('end_date', default=datetime.utcnow().strftime('%Y-%m-%dT%H-%M'))
     timeslice = params.get('timeslice')
     granularity = params.get('granularity', default='day')
@@ -155,7 +156,7 @@ def handle_statistic_per_timeslice(dashboard, statistic, timeslice, start_dateti
     :return: A dictionary consisting of a datetime string (key)(formatted according to the ISO-8601 standard)
              and the corresponding statistic, over the specified datetime range.
     """
-    return dashboard.statistic_per_timeslice(statistic, timeslice, start_datetime, end_datetime)
+    return dashboard.statistic_per_timeslice(statistic, {}, timeslice, start_datetime, end_datetime)
 
 
 def match_datetime_string_with_formats(datetime_string):

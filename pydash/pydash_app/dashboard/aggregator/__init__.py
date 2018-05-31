@@ -27,7 +27,7 @@ class Aggregator(persistent.Persistent):
         statistics.NinetiethPercentileExecutionTime,
         statistics.NinetyNinthPercentileExecutionTime,
         statistics.SlowestExecutionTime,
-        # statistics.Versions,
+        statistics.Versions,
     ])
     statistics_classes_with_dependencies = OrderedSet()
     for statistic in contained_statistics_classes:

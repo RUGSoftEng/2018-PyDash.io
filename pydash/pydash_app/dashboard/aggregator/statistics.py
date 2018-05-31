@@ -389,23 +389,23 @@ class SlowestExecutionTime(ExecutionTimePercentileABC):
         return 100
 
 
-# class Versions(Statistic):
-#     def should_be_rendered(self):
-#         return True
-#
-#     def empty(self):
-#         return set()
-#
-#     def field_name(self):
-#         return 'versions'
-#
-#     def rendered_value(self):
-#         return list(self.value)
-#
-#     def perform_append(self, endpoint_call, dependencies):
-#         self.value.add(endpoint_call.version)
-#
-#     def add_together(self, other, dependencies_self, dependencies_other):
-#         versions = Versions()
-#         versions.value = self.value.union(other.value)
-#         return versions
+class Versions(Statistic):
+    def should_be_rendered(self):
+        return True
+
+    def empty(self):
+        return set()
+
+    def field_name(self):
+        return 'versions'
+
+    def rendered_value(self):
+        return list(self.value)
+
+    def perform_append(self, endpoint_call, dependencies):
+        self.value.add(endpoint_call.version)
+
+    def add_together(self, other, dependencies_self, dependencies_other):
+        versions = Versions()
+        versions.value = self.value.union(other.value)
+        return versions

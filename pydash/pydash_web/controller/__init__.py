@@ -18,3 +18,4 @@ from .change_dashboard_settings import change_dashboard_settings
 from .delete_dashboard import delete_dashboard
 from .endpoint_boxplots import endpoint_boxplots
 from .visitor_heatmap import visitor_heatmap
+from .execution_times_per_version import execution_times_per_version
