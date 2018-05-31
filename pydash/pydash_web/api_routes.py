@@ -97,7 +97,7 @@ def get_unique_visitor_heatmap(dashboard_id):
     return controller.visitor_heatmap(dashboard_id, 'unique_visitors')
 
 
-@api.route("/api/dashboards/<dashboard_id>/response_time_per_version", methods=["GET"])
+@api.route("/api/dashboards/<dashboard_id>/execution_times_per_version", methods=["GET"])
 @login_required
 def get_response_time_per_version_dashboard(dashboard_id):
     return controller.execution_times_per_version(dashboard_id=dashboard_id)

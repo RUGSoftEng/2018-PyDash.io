@@ -185,7 +185,7 @@ class Dashboard(persistent.Persistent):
         :param filters:
         :return:
         """
-        return self._aggregator_group.fetch_aggregator(filters).as_dict[statistic]
+        return self._aggregator_group.fetch_aggregator(filters).as_dict()[statistic]
 
     def statistic_per_timeslice(self, statistic, filters, timeslice, start_datetime, end_datetime):
         """
