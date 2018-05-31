@@ -57,7 +57,7 @@ class DowntimeLog(persistent.Persistent):
         :return: A dict containing a list of downtime intervals per day.
         """
         return {
-            date: list(self._downtime_intervals[date]) for date in _date_range(start, end)
+            date.strftime('%Y-%m-%d'): list(self._downtime_intervals[date]) for date in _date_range(start, end)
         }
 
     def get_total_downtimes(
@@ -71,7 +71,7 @@ class DowntimeLog(persistent.Persistent):
         :return: A dict containing the total downtime per day.
         """
         return {
-            date: self._total_downtime[date] for date in _date_range(start, end)
+            date.strftime('%Y-%m-%d'): self._total_downtime[date] for date in _date_range(start, end)
         }
 
 
