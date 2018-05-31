@@ -31,6 +31,7 @@ class UptimeLog(persistent.Persistent):
                     date = start.date()
                     interval = (start.timetz(), end.timetz())
                     self._downtime_intervals[date].append(interval)
+                    self._total_downtime[date] += (end - start) + datetime.timedelta(microseconds=1)
 
                     start = _day_start(start + datetime.timedelta(days=1))
                     end = min(ping_datetime, _day_end(start))
