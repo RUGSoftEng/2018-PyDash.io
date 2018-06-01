@@ -2,6 +2,8 @@
 Allows retrieval of dashboard downtime information.
 """
 
+import datetime
+
 from flask import jsonify
 from flask_login import current_user
 
@@ -34,5 +36,53 @@ def dashboard_downtime(dashboard_id):
         return jsonify(result), 403
 
     logger.info(f'Dashboard downtime successful for {dashboard}')
-    result = dashboard.get_downtime_data()
-    return result
+
+    result = _render_downtime_data(dashboard)
+
+    return jsonify(result), 200
+
+
+def _render_downtime_data(dashboard):
+    data = dashboard.get_downtime_data()
+
+    return {
+        'downtime_intervals': {
+            date: [_render_interval(interval) for interval in intervals]
+            for (date, intervals) in data['downtime_intervals'].items()
+        },
+        'downtime_percentage': data['downtime_percentage'],
+        'precise_downtimes': {
+            date: _render_timedelta(delta)
+            for (date, delta) in data['total_downtimes'].items()
+        },
+        'hour_downtimes': {
+            date: delta / datetime.timedelta(hours=1)
+            for (date, delta) in data['total_downtimes'].items()
+        }
+    }
+
+
+def _render_interval(interval):
+    return interval[0].isoformat(), interval[1].isoformat()
+
+
+def _render_timedelta(delta):
+    try:
+        hours, remainder = divmod(delta.total_seconds(), 3600)
+        minutes, seconds = divmod(remainder, 60)
+    except AttributeError:
+        hours = 0
+        minutes = 0
+        seconds = 0
+
+    try:
+        microseconds = delta.microseconds
+    except AttributeError:
+        microseconds = 0
+
+    return {
+        'hours': hours,
+        'minutes': minutes,
+        'seconds': seconds,
+        'microseconds': microseconds
+    }
