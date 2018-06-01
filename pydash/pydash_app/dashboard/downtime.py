@@ -29,6 +29,8 @@ class DowntimeLog(persistent.Persistent):
         """
         if is_up:
             if self._downtime_start:
+                # Split the downtime into intervals of at most 24 hours
+
                 start = self._downtime_start
                 end = min(ping_datetime, _day_end(start))
 
@@ -56,6 +58,9 @@ class DowntimeLog(persistent.Persistent):
         :param end: The end date (inclusive; defaults to the current day).
         :return: A dict containing a list of downtime intervals per day.
         """
+        if end - start <= 0:
+            ValueError('Date range cannot be negative or zero')
+
         return {
             date.strftime('%Y-%m-%d'): list(self._downtime_intervals[date]) for date in _date_range(start, end)
         }
@@ -70,6 +75,9 @@ class DowntimeLog(persistent.Persistent):
         :param end: The end date (inclusive; defaults to the current day).
         :return: A dict containing the total downtime per day.
         """
+        if end - start <= 0:
+            raise ValueError('Date range cannot be negative or zero')
+
         return {
             date.strftime('%Y-%m-%d'): self._total_downtime[date] for date in _date_range(start, end)
         }
@@ -88,11 +96,13 @@ class DowntimeLog(persistent.Persistent):
         if total_time <= 0:
             raise ValueError('Date range cannot be negative or zero')
 
-        total_downtime = sum(self._total_downtime[date] for date in _date_range(start, end))
+        total_downtime = sum(
+            (self._total_downtime[date] for date in _date_range(start, end)),
+            datetime.timedelta(0)
+        )
 
         percentage = total_downtime/total_time*100
 
-        # TODO: check values
         return percentage
 
 

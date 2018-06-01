@@ -12,6 +12,8 @@ logger = pydash_logger.Logger(__name__)
 
 
 def dashboard_downtime(dashboard_id):
+    # TODO: accept variable date range
+
     try:
         dashboard = pydash_app.dashboard.find(dashboard_id)
     except KeyError:
@@ -31,6 +33,6 @@ def dashboard_downtime(dashboard_id):
                        f'User {current_user} is not allowed to access dashboard {dashboard_id}')
         return jsonify(result), 403
 
-
-def _downtime_data(dashboard):
-    data = dashboard.get_downtime_data()
+    logger.info(f'Dashboard downtime successful for {dashboard}')
+    result = dashboard.get_downtime_data()
+    return result
