@@ -27,7 +27,7 @@ def schedule_all_periodic_dashboard_pinging(
     :param scheduler: The task scheduler to schedule the tasks to, defaults to the default scheduler.
     """
     for dashboard in dashboard_repository.all():
-        schedule_periodic_dashboard_pinging(dashboard.id, interval, scheduler)
+        schedule_periodic_dashboard_pinging(dashboard, interval, scheduler)
 
 
 def schedule_periodic_dashboard_pinging(
@@ -41,7 +41,7 @@ def schedule_periodic_dashboard_pinging(
     :param scheduler: The task scheduler to schedule this task to, defaults to the default scheduler.
     """
 
-    if dashboard.monitor_uptime:
+    if dashboard.monitor_downtime:
         periodic_tasks.add_periodic_task(
             name=('dashboard', dashboard.id, 'pinging'),
             task=partial(_ping_dashboard, dashboard.id),
@@ -56,10 +56,10 @@ def _ping_dashboard(dashboard_id):
         logger.warning('Dashboard does not exist')
         return
 
-    if _is_dashboard_up(dashboard.url):
-        pass
-    else:
-        pass
+    is_up = _is_dashboard_up(dashboard.url)
+    dashboard.add_ping_result(is_up)
+
+    dashboard_repository.update(dashboard)
 
 
 def _is_dashboard_up(url):
