@@ -99,11 +99,11 @@ def get_unique_visitor_heatmap(dashboard_id):
 
 @api.route("/api/dashboards/<dashboard_id>/execution_times_per_version", methods=["GET"])
 @login_required
-def get_response_time_per_version_dashboard(dashboard_id):
+def get_execution_times_per_version_dashboard(dashboard_id):
     return controller.execution_times_per_version(dashboard_id=dashboard_id)
 
 
 @api.route("/api/dashboards/<dashboard_id>/endpoints/<endpoint_name>/execution_times_per_version", methods=["GET"])
 @login_required
-def get_response_time_per_version_endpoint(dashboard_id, endpoint_name):
+def get_execution_times_per_version_endpoint(dashboard_id, endpoint_name):
     return controller.execution_times_per_version(dashboard_id=dashboard_id, endpoint_name=endpoint_name)
