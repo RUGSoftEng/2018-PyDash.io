@@ -25,11 +25,11 @@ Involved usage example:
 >>> d.add_endpoint_call(ec4)
 >>> d.add_endpoint_call(ec5)
 >>> d.aggregated_data()
-{'total_visits': 5, 'total_execution_time': 1.2, 'average_execution_time': 0.24, 'visits_per_ip': {'127.0.0.1': 4, '127.0.0.2': 1}, 'unique_visitors': 2, 'fastest_measured_execution_time': 0.1, 'fastest_quartile_execution_time': 0.14, 'median_execution_time': 0.2, 'slowest_quartile_execution_time': 0.39, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
+{'total_visits': 5, 'total_execution_time': 1.2, 'average_execution_time': 0.24, 'visits_per_ip': {'127.0.0.1': 4, '127.0.0.2': 1}, 'unique_visitors': 2, 'fastest_measured_execution_time': 0.1, 'fastest_quartile_execution_time': 0.14, 'median_execution_time': 0.2, 'slowest_quartile_execution_time': 0.39, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5, 'versions': ['0.1']}
 >>> d.endpoints['foo'].aggregated_data()
-{'total_visits': 2, 'total_execution_time': 0.6, 'average_execution_time': 0.3, 'visits_per_ip': {'127.0.0.1': 1, '127.0.0.2': 1}, 'unique_visitors': 2, 'fastest_measured_execution_time': 0.1, 'fastest_quartile_execution_time': 0.1, 'median_execution_time': 0.3, 'slowest_quartile_execution_time': 0.5, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
+{'total_visits': 2, 'total_execution_time': 0.6, 'average_execution_time': 0.3, 'visits_per_ip': {'127.0.0.1': 1, '127.0.0.2': 1}, 'unique_visitors': 2, 'fastest_measured_execution_time': 0.1, 'fastest_quartile_execution_time': 0.1, 'median_execution_time': 0.3, 'slowest_quartile_execution_time': 0.5, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5, 'versions': ['0.1']}
 >>> d.endpoints['bar'].aggregated_data()
-{'total_visits': 3, 'total_execution_time': 0.6, 'average_execution_time': 0.2, 'visits_per_ip': {'127.0.0.1': 3}, 'unique_visitors': 1, 'fastest_measured_execution_time': 0.2, 'fastest_quartile_execution_time': 0.2, 'median_execution_time': 0.2, 'slowest_quartile_execution_time': 0.2, 'ninetieth_percentile_execution_time': 0.2, 'ninety-ninth_percentile_execution_time': 0.2, 'slowest_measured_execution_time': 0.2}
+{'total_visits': 3, 'total_execution_time': 0.6, 'average_execution_time': 0.2, 'visits_per_ip': {'127.0.0.1': 3}, 'unique_visitors': 1, 'fastest_measured_execution_time': 0.2, 'fastest_quartile_execution_time': 0.2, 'median_execution_time': 0.2, 'slowest_quartile_execution_time': 0.2, 'ninetieth_percentile_execution_time': 0.2, 'ninety-ninth_percentile_execution_time': 0.2, 'slowest_measured_execution_time': 0.2, 'versions': ['0.1']}
 
 """
 
