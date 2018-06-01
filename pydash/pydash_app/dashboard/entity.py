@@ -36,10 +36,11 @@ Involved usage example:
 import uuid
 import persistent
 from enum import Enum
-from datetime import datetime, timedelta
 
 from pydash_app.dashboard.endpoint import Endpoint
+from ..dashboard.aggregator import Aggregator
 from pydash_app.dashboard.aggregator.aggregator_group import AggregatorGroup
+
 
 class DashboardState(Enum):
     """
@@ -178,28 +179,85 @@ class Dashboard(persistent.Persistent):
         """
         return self._aggregator_group.fetch_aggregator_inclusive_daterange({}, start_date, end_date, granularity).as_dict()
 
-    def statistic(self, statistic, filters):
+    def statistic(self, statistic, filters={}):
         """
+        Returns the desired statistic of this dashboard, filtered by the specified filters.
+        :param statistic: A string denoting the specific statistic that should be queried.
+        """ \
+        f'  The following filters are allowed:{[stat_class.field_name(stat_class) for stat_class in Aggregator.contained_statistics_classes]}.' \
+        """
+        :param filters: A dictionary containing property_name-value pairs to filter on. The keys are assumed to be strings.
+          This is in the gist of `{'day':'2018-05-20', 'ip':'127.0.0.1'}`
+          Defaults to an empty dictionary.
 
-        :param statistic:
-        :param filters:
-        :return:
+          The currently allowed filter_names are:
+            - Time:
+              * 'year'   - e.g. '2018'
+              * 'month'  - e.g. '2018-05'
+              * 'week'   - e.g. '2018-W17'
+              * 'day'    - e.g. '2018-05-20'
+              * 'hour'   - e.g. '2018-05-20T20'
+              * 'minute' - e.g. '2018-05-20T20-10'
+            Note that for Time filter-values, the formatting is crucial.
+
+            - Version:
+              * 'version' - e.g. '1.0.1'
+
+            - IP:
+              * 'ip' - e.g. '127.0.0.1'
+
+            - Group-by:
+              * 'group_by' - e.g. 'None'
+
+        :return: The desired statistic of this dashboard.
+        :raises ValueError: This happens when the filters are not supported by the dashboard, or when two filters of
+          the same type are provided.
+        :raises KeyError: This happens when the statistic is not supported by the dashboard.
         """
         return self._aggregator_group.fetch_aggregator(filters).as_dict()[statistic]
 
-    def statistic_per_timeslice(self, statistic, filters, timeslice, start_datetime, end_datetime):
-        """
+    def statistic_per_timeslice(self, statistic, timeslice, start_datetime, end_datetime, filters={}):
+        f"""
+        Slices up the specified datetime range (=[start_datetime, end_datetime]) by chunks of the size of `timeslice`.
+        For each datetime_slice it computes the value of the denoted statistic and returns a dictionary containing these pairs.
+        (Note that a returned datetime_slice is a string: represented as the start of that slice and formatted according
+         to the ISO-8601 standard.
+        Filters can be applied to narrow down the search.
 
-        :param statistic:
-        :param filters: A dict containing filter_name-filter_value pairs to filter on. May not contain time-based filters.
-        :param timeslice:
-        :param start_datetime:
-        :param end_datetime:
-        :return: A dictionary consisting of a datetime string (key)(formatted according to the ISO-8601 standard)
-             and the corresponding statistic, over the specified datetime range.
+        :param statistic: A string denoting the specific statistic that should be queried.
+        """ \
+        f'  The following filters are allowed:{[stat_class.field_name(stat_class) for stat_class in Aggregator.contained_statistics_classes]}.' \
+        """
+        :param timeslice: A string denoting at what granularity the indicated datetime range should be split.
+          The currently supported values for this are: 'year', 'month', 'week', 'day', 'hour' and 'minute'.
+        :param start_datetime: A datetime object indicating the inclusive lower bound for the datetime range to
+         aggregate over.
+        :param end_datetime:  A datetime object indicating the inclusive upper bound for the datetime range to
+         aggregate over.
+        :param filters: A dictionary containing property_name-value pairs to filter on. The keys are assumed to be strings.
+          This is in the gist of `{'day':'2018-05-20', 'ip':'127.0.0.1'}`
+          Defaults to an empty dictionary.
+
+          The currently allowed filter_names are:
+            - Version:
+              * 'version' - e.g. '1.0.1'
+
+            - IP:
+              * 'ip' - e.g. '127.0.0.1'
+
+            - Group-by:
+              * 'group_by' - e.g. 'None'
+
+            Note that, contrary to `statistic` method, Time based filters are not allowed.
+        :return: The desired statistic of this dashboard.
+        :raises ValueError: This happens when the filters are not supported by the dashboard, or when two filters of
+          the same type are provided, or when a Time based filter is provided.
+        :raises KeyError: This happens when the statistic is not supported by the dashboard.
         """
         return_dict = {}
-        for datetime, aggregator in self._aggregator_group.fetch_aggregators_per_timeslice(filters, timeslice, start_datetime, end_datetime).items():
+        for datetime, aggregator in self._aggregator_group.fetch_aggregators_per_timeslice(filters, timeslice,
+                                                                                           start_datetime,
+                                                                                           end_datetime).items():
             return_dict[datetime] = aggregator.as_dict()[statistic]
 
         return return_dict
