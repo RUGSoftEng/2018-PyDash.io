@@ -21,7 +21,7 @@ def execution_times_per_version(dashboard_id, endpoint_name=None):
     else:
         valid_endpoint = valid_dashboard.endpoints.get(endpoint_name)
         if not valid_endpoint:
-            logger.warning(f'In response_time_per_version: Endpoint name {endpoint_name} is invalid.')
+            logger.warning(f'In execution_times_per_version: Endpoint name {endpoint_name} is invalid.')
             result = {'message': f'Endpoint name {endpoint_name} is invalid.'}
             return jsonify(result), 400
         aggregator_group_containter = valid_endpoint
