@@ -14,7 +14,7 @@ logger = pydash_logger.Logger(__name__)
 def schedule_periodic_pruning_task(
         interval=timedelta(days=1),
         scheduler=periodic_tasks.default_task_scheduler):
-    scheduler.add_periodic_task(
+    periodic_tasks.add_periodic_task(
         name=('users', 'pruning'),
         task=_prune_unverified_users,
         interval=interval,
