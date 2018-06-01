@@ -46,7 +46,7 @@ def visitor_heatmap(dashboard_id, field='total_visits'):
     # Generate list for each day that contains all the hourly data.
     data = [get_hourly_data(valid_dashboard, single_date, field) for single_date in daterange(start_date, end_date)]
 
-    logger.info(f"visitor_heatmap successful - data from dashboard {dashboard} requested")
+    logger.info(f"visitor_heatmap successful - data from dashboard {valid_dashboard} requested")
 
     return jsonify(data), 200
 

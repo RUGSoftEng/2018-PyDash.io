@@ -5,6 +5,7 @@ Manages the registration of a new user.
 from flask import jsonify, request
 from flask_mail import Message
 from pydash_mail import mail
+from pydash_mail.templates import format_verification_mail_html, format_verification_mail_plain
 
 import pydash_app.user
 import pydash_logger
@@ -42,11 +43,11 @@ def register_user():
         return jsonify(result), 400
 
     if pydash_app.user.find_by_name(username) is not None:
-        logger.warning(f'While registering a user: {message}')
+        logger.warning(f'While registering a user: User with username {username} already exists.')
         result = {'message': f'User with username {username} already exists.'}
         return jsonify(result), 400
     else:
-        user = pydash_app.user.User(username, password)
+        user = pydash_app.user.User(username, password, email_address)
         pydash_app.user.add_to_repository(user)
         
         logger.info(f'User successfully registered with username: {username}'
@@ -57,17 +58,12 @@ def register_user():
                                  email_address,
                                  user.name)
 
-        result = {'message': 'User successfully registered.',
-                  'verification_code': f'{user.get_verification_code()}'}
-
-        return jsonify(result), 200
-
 
 def _send_verification_email(verification_code, expiration_date, recipient_email_address, username):
     """
     Sends a verification email to the user with a link to the appropriate front-end page.
     For now the backend-api is directly given though.
-    :param smart_verification_code: The verification code to send. Should be a VerificationCode instance.
+    :param verification_code: The verification code to send. Should be a VerificationCode instance.
     :param recipient_email_address: The email address of the recipient. Should be a string.
     :param username: The name of the User. Should be a string.
     """
@@ -77,28 +73,15 @@ def _send_verification_email(verification_code, expiration_date, recipient_email
 
     protocol = 'http'  # this or https  #Todo: change to https once that has been set up.
     host = 'localhost:5000'  # Todo: change from localhost to deployment server once that has been set up.
-    verification_url = f'{protocol}://{host}/api/user/verify/{verification_code}'
+    verification_url = f'{protocol}://{host}/verify/{verification_code}'
 
-    # Todo: perhaps read this in from a file, for flexibility.
-    # Todo: still doesn't look all that great, but it will suffice for now.
-
-    message_body = f'Dear {username}\n\n' \
-                   f'To verify your account, please copy and paste the following url into your internet browser' \
-                   f'and hit enter: {verification_url}.\n\n' \
-                   f'The link will expire at {expiration_date}.' \
-
-    message_html = f'<p>Dear {username},</p>' \
-                   f'<p>To verify your account, please click on this ' \
-                   f'<a href=\"{verification_url}\">link</a>.' \
-                   f'<br>(or copy and paste the following url into your internet browser and hit enter:' \
-                   f' {verification_url} )</p>' \
-                   f'<p>The link will expire at {expiration_date}.</p>'
+    message_plain = format_verification_mail_plain(username, verification_url, expiration_date)
+    message_html = format_verification_mail_html(username, verification_url, expiration_date)
 
     # No sender is specified, such that we use DEFAULT_MAIL_SENDER as specified in config.py
     message = Message(subject=message_subject,
                       recipients=message_recipients,
-                      body=message_body,
-                      html=message_html
-                      )
+                      body=message_plain,
+                      html=message_html)
 
     mail.send(message)

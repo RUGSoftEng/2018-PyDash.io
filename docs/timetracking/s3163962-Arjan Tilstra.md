@@ -53,3 +53,17 @@
 | *2018-05-13* | 20:00-21:45 | Hooking up dashboard creation form to API |
 | *2018-05-14* | 15:00-17:30 | Weekly TA meeting + regular meeting + Frontend meeting |
 | *2018-05-14* | 19:00-22:30 | Filling endpoint page |
+| *2018-05-19* | 15:30-15:45 | Fixing master PR |
+| *2018-05-21* | 0:25-0:40 | Researching React routing for meta-monitoring |
+| *2018-05-21* | 19:00-20:00 | Creating email verification page |
+| *2018-05-22* | 17:00-18:00 | Work on email verification page |
+| *2018-05-22* | 18:45-19:30 | Work on email verification page |
+| *2018-05-22* | 19:30-20:45 | Work on heatmap |
+| *2018-05-24* | 13:00-15:00 | TA meeting + team meeting |
+| *2018-05-27* | 16:30-18:00 | Work on heatmap |
+| *2018-05-27* | 20:00-21:30 | Finishing heatmap |
+| *2018-05-27* | 21:30-22:00 | Various small issues |
+| *2018-05-28* | 15:00-16:00 | TA meeting + team meeting |
+| *2018-05-29* | 10:15-11:00 | Troubleshooting |
+| *2018-05-29* | 17:00-18:00 | Heatmap |
+| *2018-05-29* | 19:00-22:00 | Troubleshooting meta-monitoring |

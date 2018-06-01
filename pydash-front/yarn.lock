@@ -41,6 +41,32 @@
     react-motion "^0.5.2"
     recompose "^0.26.0"
 
+"@nivo/core@0.36.0":
+  version "0.36.0"
+  resolved "https://registry.yarnpkg.com/@nivo/core/-/core-0.36.0.tgz#f111071790aa258bd7a035cf27646caf58a69567"
+  dependencies:
+    d3-color "^1.0.3"
+    d3-format "^1.2.0"
+    d3-hierarchy "^1.1.5"
+    d3-interpolate "^1.1.5"
+    d3-scale "^1.0.6"
+    d3-scale-chromatic "^1.1.1"
+    d3-shape "^1.2.0"
+    lodash "^4.17.4"
+    react-measure "^2.0.2"
+    react-motion "^0.5.2"
+    recompose "^0.26.0"
+
+"@nivo/heatmap@^0.37.0":
+  version "0.37.0"
+  resolved "https://registry.yarnpkg.com/@nivo/heatmap/-/heatmap-0.37.0.tgz#b1224451ec635a50b073866dd010dafdf32245c3"
+  dependencies:
+    "@nivo/core" "0.36.0"
+    d3-scale "^1.0.6"
+    lodash "^4.17.4"
+    react-motion "^0.5.2"
+    recompose "^0.26.0"
+
 "@nivo/legends@0.33.0":
   version "0.33.0"
   resolved "https://registry.yarnpkg.com/@nivo/legends/-/legends-0.33.0.tgz#8eb5a228b2cfb81dfc464ddb854c266768f039c2"
@@ -4510,11 +4536,7 @@ jsx-ast-utils@^2.0.0:
   dependencies:
     array-includes "^3.0.3"
 
-keycode@^2.1.7:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/keycode/-/keycode-2.2.0.tgz#3d0af56dc7b8b8e5cba8d0a97f107204eec22b04"
-
-keycode@^2.1.9:
+keycode@^2.1.7, keycode@^2.1.9:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/keycode/-/keycode-2.2.0.tgz#3d0af56dc7b8b8e5cba8d0a97f107204eec22b04"
 

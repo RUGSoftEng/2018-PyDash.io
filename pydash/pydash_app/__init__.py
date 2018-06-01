@@ -5,6 +5,7 @@ The `pydash_app` package contains all business domain logic of the PyDash applic
 import periodic_tasks
 
 import pydash_app.user
+import pydash_app.user.services.pruning
 import pydash_app.user.services.seeding
 
 import pydash_app.dashboard.services.fetching
@@ -25,6 +26,8 @@ def schedule_periodic_tasks():
     dashboard.services.fetching.schedule_all_periodic_dashboards_tasks(
         interval=datetime.timedelta(minutes=1)
     )
+
+    pydash_app.user.services.pruning.schedule_periodic_pruning_task()
 
 
 def seed_datastructures():

@@ -8,7 +8,7 @@ Involved usage example:
 >>> from pydash_app.dashboard.endpoint_call import EndpointCall
 >>> import uuid
 >>> from datetime import datetime, timedelta
->>> user = User("Gandalf", "pass")
+>>> user = User("Gandalf", "pass", 'some@email.com')
 >>> d = Dashboard("http://foo.io", str(uuid.uuid4()), str(user.id))
 >>> e1 = Endpoint("foo", True)
 >>> e2 = Endpoint("bar", True)
@@ -35,8 +35,8 @@ Involved usage example:
 
 import uuid
 import persistent
-import datetime
 from enum import Enum
+from datetime import datetime, timedelta, timezone
 
 from pydash_app.dashboard.endpoint import Endpoint
 from pydash_app.dashboard.aggregator.aggregator_group import AggregatorGroup
@@ -163,7 +163,23 @@ class Dashboard(persistent.Persistent):
         """
         return self._aggregator_group.fetch_aggregator({}).as_dict()
 
-    def add_ping_result(self, is_up, ping_datetime=datetime.datetime.now(tz=datetime.timezone.utc)):
+    def aggregated_data_daterange(self, start_date, end_date, granularity):
+        """
+        Returns the aggregated data on this dashboard over the specified daterange.
+        :param start_date: A datetime object that is treated as the inclusive lower bound of the daterange.
+        :param end_date: A datetime object that is treated as the inclusive upper bound of the daterange.
+        :param granularity: A string denoting the granularity of the daterange.
+        :return: A dictionary with all aggregated statistics and their values.
+        """
+        return self._aggregator_group.fetch_aggregator_inclusive_daterange({}, start_date, end_date, granularity).as_dict()
+
+    def first_endpoint_call_time(self):
+        if not self._endpoint_calls:
+            return None
+        else:
+            return self._endpoint_calls[0].time
+
+    def add_ping_result(self, is_up, ping_datetime=datetime.now(tz=timezone.utc)):
         """
         Adds the result of a ping request to the dashboard.
         :param is_up: Whether the dashboard's web service is up.
@@ -173,8 +189,8 @@ class Dashboard(persistent.Persistent):
 
     def get_downtime_data(
             self,
-            start=datetime.datetime.now(tz=datetime.timezone.utc).date() - datetime.timedelta(days=90),
-            end=datetime.datetime.now(tz=datetime.timezone.utc).date()):
+            start=datetime.now(tz=timezone.utc).date() - timedelta(days=90),
+            end=datetime.now(tz=timezone.utc).date()):
         """
         Returns a dict containing this dashboard's downtime data for a given date range.
         :param start: The start date (exclusive; defaults to 90 days before the current date).
