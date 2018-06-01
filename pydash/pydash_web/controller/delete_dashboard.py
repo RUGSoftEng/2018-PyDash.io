@@ -3,34 +3,31 @@ Manages the deletion of a dashboard.
 """
 
 from flask import jsonify
-from flask_login import current_user
+import uuid
 
-import pydash_app.dashboard
+from pydash_app.dashboard import find_verified_dashboard, remove_from_repository
+import periodic_tasks
 import pydash_logger
 
 logger = pydash_logger.Logger(__name__)
 
 
 def delete_dashboard(dashboard_id):
-    try:
-        dashboard = pydash_app.dashboard.find(dashboard_id)
-    except KeyError:
-        logger.warning(f"Could not find dashboard matching with {dashboard_id}")
-        return jsonify({"message": "Could not find a matching dashboard"}), 404
-    except ValueError:  # Happens when called without a proper UUID
-        logger.warning(f"Invalid dashboard_id: {dashboard_id}")
-        return jsonify({"message": "Invalid dashboard_id"}), 400
+    # Check dashboard_id
+    valid_dashboard, result, http_error = find_verified_dashboard(dashboard_id)
 
-    if dashboard.user_id != current_user.id:
-        logger.warning(f"{current_user} is not authorised to view {dashboard}")
-        return jsonify({"message": "Not authorised to delete this dashboard"}), 403
+    if not valid_dashboard:
+        return result, http_error
 
     try:
         # TODO: only remove if owned by one user, otherwise just remove the user's id from the dashboard
-        pydash_app.dashboard.remove_from_repository(dashboard)
+        remove_from_repository(valid_dashboard)
     except KeyError:
-        logger.warning(f'Dashboard {dashboard} does not seem to exist in the database')
+        logger.warning(f'Dashboard {valid_dashboard} does not seem to exist in the database')
         jsonify({"message": "Could not find a matching dashboard"}), 404
+
+    periodic_tasks.remove_task(('dashboard', valid_dashboard.id, 'historic_fetching'))
+    periodic_tasks.remove_task(('dashboard', valid_dashboard.id, 'fetching'))
 
     result = {'message': 'Successfully removed dashboard'}
     return jsonify(result), 200

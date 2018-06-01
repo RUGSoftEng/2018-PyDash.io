@@ -1,8 +1,31 @@
 from collections import defaultdict
 import abc
 from tdigest import tdigest
+from math import trunc
 
 import persistent
+
+
+def reduce_precision(value, nr_of_digits):
+    """
+    Reduces the precision of `value` based on the amount of non-zero digits before the decimal point
+    and `nr_of_digits`.
+
+    Examples:
+    >>> x = 2/3
+    >>> reduce_precision(x, 3)
+    0.67
+    >>> x = 1234.5678
+    >>> reduce_precision(x, 3)
+    1235
+
+    """
+    x = len(str(trunc(value)))
+    y = (nr_of_digits-x)
+    if y <= 0:
+        return trunc(round(value, 0))
+    else:
+        return round(value, y)
 
 
 def date_dict(dict):
@@ -30,8 +53,12 @@ class Statistic(persistent.Persistent, abc.ABC):
     def empty(self):
         return None
 
-    @abc.abstractmethod
     def append(self, endpoint_call, dependencies):
+        self.perform_append(endpoint_call, dependencies)
+        self._p_changed = True # ZODB mark object as changed
+
+    @abc.abstractmethod
+    def perform_append(self, endpoint_call, dependencies):
         pass
 
     @abc.abstractmethod
@@ -48,6 +75,26 @@ class Statistic(persistent.Persistent, abc.ABC):
             dependency.add_to_collection(collection)
         collection.add(cls)
 
+    @abc.abstractmethod
+    def add_together(self, other, dependencies_self, dependencies_other):
+        """Should return a new statistic where the internals of self and other are added together."""
+        pass
+
+
+class FloatStatisticABC(Statistic):
+    """
+    The FloatStatisticABC is the abstract base class for statistics that render a single floating point number.
+    It specifies the default amount of digits to round its rendered value to as 3.
+    (E.g. 2.54, 123, 0.3, but not 0.123)
+    """
+
+    @property
+    def nr_of_digits(self):
+        return 3
+
+    def rendered_value(self):
+        return reduce_precision(self.value, self.nr_of_digits)
+
 
 class TotalVisits(Statistic):
     def should_be_rendered(self):
@@ -59,11 +106,16 @@ class TotalVisits(Statistic):
     def field_name(self):
         return 'total_visits'
 
-    def append(self, endpoint_call, dependencies):
+    def perform_append(self, endpoint_call, dependencies):
         self.value += 1
 
+    def add_together(self, other, dependencies_self, dependencies_other):
+        tv = TotalVisits()
+        tv.value = self.value + other.value
+        return tv
 
-class TotalExecutionTime(Statistic):
+
+class TotalExecutionTime(FloatStatisticABC):
     def should_be_rendered(self):
         return True
 
@@ -73,11 +125,18 @@ class TotalExecutionTime(Statistic):
     def field_name(self):
         return 'total_execution_time'
 
-    def append(self, endpoint_call, dependencies):
+    def perform_append(self, endpoint_call, dependencies):
         self.value += endpoint_call.execution_time
 
+    def add_together(self, other, dependencies_self, dependencies_other):
+        te = TotalExecutionTime()
+        te.value = self.value + other.value
+        return te
 
-class AverageExecutionTime(Statistic):
+
+class AverageExecutionTime(FloatStatisticABC):
+    """Keeps track of the average execution time of all endpoints that have been appended to it.
+    Rendered value is rounded to 3 decimal places by default."""
     dependencies = [TotalVisits, TotalExecutionTime]
 
     def should_be_rendered(self):
@@ -89,11 +148,27 @@ class AverageExecutionTime(Statistic):
     def field_name(self):
         return 'average_execution_time'
 
-    def append(self, endpoint_call, dependencies):
+    def perform_append(self, endpoint_call, dependencies):
         if dependencies[TotalVisits].value == 0:
             self.value = 0
         else:
             self.value = dependencies[TotalExecutionTime].value / dependencies[TotalVisits].value
+
+    def add_together(self, other, dependencies_self, dependencies_other):
+        aet = AverageExecutionTime()
+        self_tv = dependencies_self[TotalVisits].value
+        other_tv = dependencies_other[TotalVisits].value
+        self_tet = dependencies_self[TotalExecutionTime].value
+        other_tet = dependencies_other[TotalExecutionTime].value
+
+        if self_tv == 0:
+            aet.value = other.value
+        elif other_tv == 0:
+            aet.value = self.value
+        else:
+            aet.value = (self_tet + other_tet)/(self_tv + other_tv)
+
+        return aet
 
 
 class VisitsPerDay(Statistic):
@@ -106,12 +181,19 @@ class VisitsPerDay(Statistic):
     def field_name(self):
         return 'visits_per_day'
 
-    def append(self, endpoint_call, dependencies):
+    def perform_append(self, endpoint_call, dependencies):
         date = endpoint_call.time.date()
         self.value[date] += 1
 
     def rendered_value(self):
         return date_dict(self.value)
+
+    def add_together(self, other, dependencies_self, dependencies_other):
+        vpd = VisitsPerDay()
+        keyset = set(self.value.keys()).union(set(other.value.keys()))
+        for key in keyset:
+            vpd.value[key] = self.value[key] + other.value[key]
+        return vpd
 
 
 class VisitsPerIP(Statistic):
@@ -124,11 +206,18 @@ class VisitsPerIP(Statistic):
     def field_name(self):
         return 'visits_per_ip'
 
-    def append(self, endpoint_call, dependencies):
+    def perform_append(self, endpoint_call, dependencies):
         self.value[endpoint_call.ip] += 1
 
     def rendered_value(self):
         return dict(self.value)
+
+    def add_together(self, other, dependencies_self, dependencies_other):
+        vpd = VisitsPerIP()
+        keyset = set(self.value.keys()).union(set(other.value.keys()))
+        for key in keyset:
+            vpd.value[key] = self.value[key] + other.value[key]
+        return vpd
 
 
 class UniqueVisitorsAllTime(Statistic):
@@ -141,11 +230,16 @@ class UniqueVisitorsAllTime(Statistic):
     def field_name(self):
         return 'unique_visitors'
 
-    def append(self, endpoint_call, dependencies):
+    def perform_append(self, endpoint_call, dependencies):
         self.value.add(endpoint_call.ip)
 
     def rendered_value(self):
         return len(self.value)
+
+    def add_together(self, other, dependencies_self, dependencies_other):
+        uvat = UniqueVisitorsAllTime()
+        uvat.value = self.value.union(other.value)
+        return uvat
 
 
 class UniqueVisitorsPerDay(Statistic):
@@ -158,12 +252,19 @@ class UniqueVisitorsPerDay(Statistic):
     def field_name(self):
         return 'unique_visitors_per_day'
 
-    def append(self, endpoint_call, dependencies):
+    def perform_append(self, endpoint_call, dependencies):
         date = endpoint_call.time.date()
         self.value[date].add(endpoint_call.ip)
 
     def rendered_value(self):
         return date_dict({k: len(v) for k, v in self.value.items()})
+
+    def add_together(self, other, dependencies_self, dependencies_other):
+        uvpd = UniqueVisitorsPerDay()
+        keyset = set(self.value.keys()).union(set(other.value.keys()))
+        for key in keyset:
+            uvpd.value[key] = self.value[key].union(other.value[key])
+        return uvpd
 
 
 class ExecutionTimeTDigest(Statistic):
@@ -183,11 +284,16 @@ class ExecutionTimeTDigest(Statistic):
     def field_name(self):  # Implemented in order to be able to instantiate this class.
         return 'execution_time_tdigest'
 
-    def append(self, endpoint_call, dependencies):
+    def perform_append(self, endpoint_call, dependencies):
         self.value.update(endpoint_call.execution_time)
 
+    def add_together(self, other, dependencies_self, dependencies_other):
+        ettd = ExecutionTimeTDigest()
+        ettd.value = self.value + other.value
+        return ettd
 
-class ExecutionTimePercentileAbstractBaseClass(Statistic):
+
+class ExecutionTimePercentileABC(FloatStatisticABC):
     """Abstract base class for execution time percentile statistics."""
     dependencies = [ExecutionTimeTDigest]
     _NoDataErrorValue = -1
@@ -196,67 +302,87 @@ class ExecutionTimePercentileAbstractBaseClass(Statistic):
         super().__init__()
         self.value = self.empty()
 
+    @property
+    @abc.abstractmethod
+    def percentile_nr(self):
+        pass
+
     def should_be_rendered(self):
         return True
 
     def empty(self):
-        return ExecutionTimePercentileAbstractBaseClass._NoDataErrorValue
+        return ExecutionTimePercentileABC._NoDataErrorValue
 
-    def rendered_value(self):
-        return self.value
+    def perform_append(self, endpoint_call, dependencies):
+        # self.percentile_nr is called here, as in child classes it is interpreted as a method instead of a value
+        #  for some reason.
+        self.value = dependencies[ExecutionTimeTDigest].value.percentile(self.percentile_nr())
+
+    def add_together(self, other, dependencies_self, dependencies_other):
+        etp = self.__class__()
+
+        if other.value == other.empty():
+            etp.value = self.value
+        else:
+            # self.percentile_nr is called here, as in child classes it is interpreted as a method instead of a value
+            #  for some reason.
+            etp.value = (dependencies_self[ExecutionTimeTDigest].value +
+                         dependencies_other[ExecutionTimeTDigest].value) \
+                .percentile(self.percentile_nr())
+        return etp
 
 
-class FastestExecutionTime(ExecutionTimePercentileAbstractBaseClass):
+class FastestExecutionTime(ExecutionTimePercentileABC):
     def field_name(self):
         return 'fastest_measured_execution_time'
 
-    def append(self, endpoint_call, dependencies):
-        self.value = dependencies[ExecutionTimeTDigest].value.percentile(0)
+    def percentile_nr(self):
+        return 0
 
 
-class FastestQuartileExecutionTime(ExecutionTimePercentileAbstractBaseClass):
+class FastestQuartileExecutionTime(ExecutionTimePercentileABC):
     def field_name(self):
         return 'fastest_quartile_execution_time'
 
-    def append(self, endpoint_call, dependencies):
-        self.value = dependencies[ExecutionTimeTDigest].value.percentile(25)
+    def percentile_nr(self):
+        return 25
 
 
-class MedianExecutionTime(ExecutionTimePercentileAbstractBaseClass):
+class MedianExecutionTime(ExecutionTimePercentileABC):
     def field_name(self):
         return 'median_execution_time'
 
-    def append(self, endpoint_call, dependencies):
-        self.value = dependencies[ExecutionTimeTDigest].value.percentile(50)
+    def percentile_nr(self):
+        return 50
 
 
-class SlowestQuartileExecutionTime(ExecutionTimePercentileAbstractBaseClass):
+class SlowestQuartileExecutionTime(ExecutionTimePercentileABC):
     def field_name(self):
         return 'slowest_quartile_execution_time'
 
-    def append(self, endpoint_call, dependencies):
-        self.value = dependencies[ExecutionTimeTDigest].value.percentile(75)
+    def percentile_nr(self):
+        return 75
 
 
-class NinetiethPercentileExecutionTime(ExecutionTimePercentileAbstractBaseClass):
+class NinetiethPercentileExecutionTime(ExecutionTimePercentileABC):
     def field_name(self):
         return 'ninetieth_percentile_execution_time'
 
-    def append(self, endpoint_call, dependencies):
-        self.value = dependencies[ExecutionTimeTDigest].value.percentile(90)
+    def percentile_nr(self):
+        return 90
 
 
-class NinetyNinthPercentileExecutionTime(ExecutionTimePercentileAbstractBaseClass):
+class NinetyNinthPercentileExecutionTime(ExecutionTimePercentileABC):
     def field_name(self):
         return 'ninety-ninth_percentile_execution_time'
 
-    def append(self, endpoint_call, dependencies):
-        self.value = dependencies[ExecutionTimeTDigest].value.percentile(99)
+    def percentile_nr(self):
+        return 99
 
 
-class SlowestExecutionTime(ExecutionTimePercentileAbstractBaseClass):
+class SlowestExecutionTime(ExecutionTimePercentileABC):
     def field_name(self):
         return 'slowest_measured_execution_time'
 
-    def append(self, endpoint_call, dependencies):
-        self.value = dependencies[ExecutionTimeTDigest].value.percentile(100)
+    def percentile_nr(self):
+        return 100

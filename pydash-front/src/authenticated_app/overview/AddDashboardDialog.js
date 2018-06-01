@@ -7,7 +7,9 @@ import Dialog, {
     DialogContentText,
     DialogTitle,
 } from 'material-ui/Dialog';
-
+import Snackbar from 'material-ui/Snackbar';
+import IconButton from 'material-ui/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import axios from 'axios';
 
 class AddDashboardDialog extends Component {
@@ -19,7 +21,10 @@ class AddDashboardDialog extends Component {
             token: '',
             message: '',
             error: false,
+            errorURL: false,
+            errorToken: false,
             loading: false,
+            openS: false,
             success: false,
         }
     }
@@ -42,30 +47,60 @@ class AddDashboardDialog extends Component {
         this.setState({ open: false });
     };
 
-    tryCreation = (e) => {
-        e.preventDefault();
+    handleSubmit = (e) => {
+        this.setState({ openS: true });
+        this.tryCreation(e);
+        //alert("Settings saved!");
+      };
+
+    handleCloseSnack = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+
+      this.setState({ openS: false });
+    };
+
+    preventEmpty = () =>{
+        let url = this.state.url,
+            token = this.state.token;
+        if (!(token.trim())||!(url.trim())) {
+            if(!token.trim()){
+                this.setState(prevState => ({
+                    ...prevState,
+                    errorToken: true,
+                    open: false,
+                    helperText: 'These fields are required!',
+                }))
+            }
+            if(!url.trim()){
+                this.setState(prevState => ({
+                    ...prevState,
+                    errorURL: true,
+                    open: false,
+                    helperText: 'These fields are required!',
+                }))
+            }
+            return 0;
+        }
+        return 1;
+    }
+https://se2018-pydashio.slack.com/messages/C9A0LP9HV/
+    resetState = () => {
+        this.setState(prevState => ({
+            ...prevState,
+            helperText: '',
+            error: false,
+            errorToken: false,
+            errorURL: false,
+        })) 
+    };
+
+    registerCall = () =>{
         let url = this.state.url,
             name = this.state.name,
             token = this.state.token;
-
-        if (!(url.trim()) || !(token.trim())) {
-            this.setState(prevState => ({
-                ...prevState,
-                error: true,
-                open: false,
-                helperText: 'These fields are required!',
-            }))
-
-            return;
-        }
-
-        this.setState(prevState => ({
-            ...prevState,
-            error: false,
-            helperText: '',
-            loading: true
-        }))
-
+            
         axios.post(window.api_path + '/api/dashboards/register', {
             url,
             name,
@@ -75,7 +110,6 @@ class AddDashboardDialog extends Component {
             console.log(response);
             this.setState(prevState => ({
                 ...prevState,
-                error: false,
                 helperText: '',
                 success: true,
                 loading: false,
@@ -92,10 +126,22 @@ class AddDashboardDialog extends Component {
                 }));
             }
         });
+    }
+
+    tryCreation = (e) => {
+        e.preventDefault();
+
+        this.resetState()
+        if(this.preventEmpty()===0){
+            return;
+        }
+
+        this.registerCall()
         
     }
 
     render() {
+
         return (
             <div>
                 <Dialog
@@ -116,7 +162,7 @@ class AddDashboardDialog extends Component {
                             value={this.state.url}
                             fullWidth
                             required
-                            error={this.state.error}
+                            error={this.state.errorURL||this.state.error}
                             onChange={this.handleChange('url')}
                         />
                         <TextField
@@ -125,7 +171,6 @@ class AddDashboardDialog extends Component {
                             type="text"
                             value={this.state.name}
                             fullWidth 
-                            error={this.state.error}
                             onChange={this.handleChange('name')}
                         />
                         <TextField 
@@ -135,20 +180,48 @@ class AddDashboardDialog extends Component {
                             value={this.state.token}
                             fullWidth 
                             required
-                            error={this.state.error}
+                            error={this.state.errorToken||this.state.error}
                             helperText={this.state.helperText}
                             onChange={this.handleChange('token')}
                         />
-                    </DialogContent>
-                    <DialogActions>
+                         <DialogActions>
                         <Button onClick={this.props.onClose} color="default">
                             Cancel
                         </Button>
-                        <Button onClick={this.tryCreation} color="primary" disabled={this.state.loading} variant="raised">
+                        <Button onClick={this.handleSubmit} color="primary" disabled={this.state.loading} variant="raised">
                             {this.state.loading ? "Adding dashboard" : "Save"}
                         </Button>
+                       
                     </DialogActions>
+                    </DialogContent>
+                    
+
+                    
                 </Dialog>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.openS}
+                    autoHideDuration={6000}
+                    onClose={this.handleCloseSnack}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">Changes have been saved!</span>}
+                    action={[
+                        <IconButton
+                        key="close"
+                        aria-label="Close"
+                        color="inherit"
+                        //className={classes.close}
+                        onClick={this.handleCloseSnack}
+                        >
+                        <CloseIcon />
+                        </IconButton>,
+                    ]}
+                    />
             </div>
         );
     }

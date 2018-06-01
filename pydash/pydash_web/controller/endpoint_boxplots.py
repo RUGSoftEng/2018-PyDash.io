@@ -10,24 +10,28 @@ logger = pydash_logger.Logger(__name__)
 
 
 def endpoint_boxplots(dashboard_id):
-    # Check whether dashboard_id is valid.
 
-    # TODO split the exceptions into key and value errors (see delete_dashboard.py)
+    # Check dashboard_id
     try:
         dashboard = pydash_app.dashboard.find(dashboard_id)
-    except Exception:
-        result = {'message': f'Dashboard_id {dashboard_id} is invalid.'}
-        logger.warning(f'Endpoint_boxplots failure - Dashboard_id {dashboard_id} is invalid. '
+    except KeyError:
+        result = {'message': f'Dashboard_id {dashboard_id} is not found.'}
+        logger.warning(f'Endpoint_boxplots failure - Dashboard_id {dashboard_id} is not found. '
+                       f'Current user: {current_user}')
+        return jsonify(result), 400
+    except ValueError:  # Happens when called without a proper UUID
+        result = {'message': f'Dashboard_id {dashboard_id} is invalid UUID.'}
+        logger.warning(f'Endpoint_boxplots failure - Dashboard_id {dashboard_id} is invalid UUID. '
                        f'Current user: {current_user}')
         return jsonify(result), 400
 
     # Check whether user may view dashboard.
     if str(dashboard.user_id) != str(current_user.id):
         result = {'message': f'Current user is not allowed to access dashboard {dashboard_id}'}
-        logger.warning(f'Endpoint_boxplots failure - User {current_user} is not allowed to access dashboard {dashboard_id}')
+        logger.warning(f'Endpoint_boxplots failure - '
+                       f'User {current_user} is not allowed to access dashboard {dashboard_id}')
         return jsonify(result), 403
 
-    dashboard = pydash_app.dashboard.find(dashboard_id)
     endpoint_boxplot_list = [_boxplot_data(endpoint) for endpoint in dashboard.endpoints.values()]
     logger.info(f'Endpoint boxplots successful -  data from dashboard {dashboard} requested')
     return jsonify(endpoint_boxplot_list), 200

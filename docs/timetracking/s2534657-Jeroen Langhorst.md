@@ -63,3 +63,13 @@
 | *2018-05-15* | 18:00-18:30 | Write customer meeting log  |
 | *2018-05-15* | 18:30-19:30 | Updating backend API description |
 | *2018-05-15* | 19:30-21:30 | Fix backend password checking |
+| *2018-05-21* | 12:00-16:30 | Write heatmap API call |
+| *2018-05-21* | 16:30-18:00 | Looking into remote server hosting |
+| *2018-05-22* | 12:00-14:00 | Refactoring dashboard validation |
+| *2018-05-25* | 21:00-0:00 | SERVER! |
+| *2018-05-26* | 21:00-23:00 | More server |
+| *2018-05-27* | 18:00-19:00 | Fixing up tests |
+| *2018-05-28* | 13:00-14:00 | Adding email to changing settings route |
+| *2018-05-28* | 15:00-17:00 | Weekly meeting + TA meeting |
+| *2018-05-29* | 9:30-10:30 | Fix email change PR |
+| *2018-05-29* | 21:00-22:00 | More fixing and PR checking |

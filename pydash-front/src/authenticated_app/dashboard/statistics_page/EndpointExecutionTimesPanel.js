@@ -17,83 +17,6 @@ import ExpansionPanel, {
 // Utils:
 import { api_to_bar_data} from "../../../utils";
 
-// Dummy data for testing average endpoint execution time visualisation.
-const endpoints = {
-    '0': {
-        'aggregates': {
-            'average_execution_time': 23
-        },
-        'name': "index"
-    },
-    '1': {
-        'aggregates': {
-            'average_execution_time': 48
-        },
-        'name': "user"
-    },
-    '2': {
-        'aggregates': {
-            'average_execution_time': 10
-        },
-        'name': "dashboard"
-    },
-    '3': {
-        'aggregates': {
-            'average_execution_time': 25
-        },
-        'name': "testpage"
-    },
-    '4': {
-        'aggregates': {
-            'average_execution_time': 2
-        },
-        'name': "overview"
-    }, 
-    '5': {
-        'aggregates': {
-            'average_execution_time': 2
-        },
-        'name': "overview4"
-    },
-    '6': {
-        'aggregates': {
-            'average_execution_time': 23
-        },
-        'name': "index2"
-    },
-    '7': {
-        'aggregates': {
-            'average_execution_time': 48
-        },
-        'name': "user2"
-    },
-    '8': {
-        'aggregates': {
-            'average_execution_time': 10
-        },
-        'name': "dashboard2"
-    },
-    '9': {
-        'aggregates': {
-            'average_execution_time': 25
-        },
-        'name': "testpage2"
-    },
-    '10': {
-        'aggregates': {
-            'average_execution_time': 2
-        },
-        'name': "overview2"
-    }, 
-    '11': {
-        'aggregates': {
-            'average_execution_time': 2
-        },
-        'name': "overview3"
-    },
-
-};
-
 class EndpointExecutionTimesPanel extends Component {
     constructor(props) {
         super(props);
@@ -103,15 +26,15 @@ class EndpointExecutionTimesPanel extends Component {
     }
 
     componentDidMount() {
-        // TODO Once back-end has proper API endpoints, use that one instead of the overall one.
         axios(window.api_path + '/api/dashboards/' + this.props.dashboard_id, {
             method: 'get',
             withCredentials: true
         }).then((response) => {
+            console.log("Returned data", response);
             this.setState(prevState => {
                 return {
                     ...prevState,
-                    average_execution_times: api_to_bar_data(endpoints),
+                    average_execution_times: api_to_bar_data(response.data.endpoints),
                 }
             });
         }).catch((error) => {

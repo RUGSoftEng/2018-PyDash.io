@@ -2,6 +2,7 @@ from ordered_set import OrderedSet
 from collections import OrderedDict
 
 import persistent
+from copy import deepcopy
 
 from . import statistics
 
@@ -70,6 +71,7 @@ class Aggregator(persistent.Persistent):
             value.append(endpoint_call, self.statistics)
 
         self.endpoint_calls.append(endpoint_call)
+        self._p_changed = True  # ZODB mark object as changed
 
     #Workaround here again
         date = endpoint_call.time.date()
@@ -87,18 +89,35 @@ class Aggregator(persistent.Persistent):
         Return aggregated data in a dict. Only includes statistics that should be rendered.
         :return: A dict containing several aggregated data points
         """
-        # return {
-        #     statistic.field_name(): statistic.rendered_value()
-        #     for statistic in self.statistics.values() if statistic.should_be_rendered
-        # }
 
-        initial_dict = {
+        return {
             statistic.field_name(): statistic.rendered_value()
             for statistic in self.statistics.values() if statistic.should_be_rendered
         }
-        initial_dict['visits_per_day'] = self._visits_per_day
-        initial_dict['visits_per_ip'] = self._visits_per_ip
-        initial_dict['unique_visitors'] = self._unique_visitors
-        initial_dict['unique_visitors_per_day'] = self._unique_visitors_per_day
 
-        return initial_dict
+    def __add__(self, other):
+        """Creates a new aggregator object that combines the aggregates of both aggegators."""
+        if other is None:
+            return deepcopy(self)
+
+        new = Aggregator()
+        new.endpoint_calls += self.endpoint_calls
+        new.endpoint_calls += other.endpoint_calls
+        for key, _ in new.statistics.items():
+            new.statistics[key] = self.statistics[key].add_together(other.statistics[key], self.statistics, other.statistics)
+        return new
+
+    def __radd__(self, other):
+        # Return a deep copy in case sum(<Aggregator iterable>) is called
+        if other == 0:
+            return self.deepcopy()
+        else:
+            return self.__add__(other)
+
+    def __iadd__(self, other):
+        if other is None:
+            return self
+        self.endpoint_calls += other.endpoint_calls
+        for key, _ in self.statistics.items():
+            self.statistics[key] = self.statistics[key].add_together(other.statistics[key], self.statistics, other.statistics)
+        return self

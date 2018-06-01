@@ -63,8 +63,8 @@ def all():
 
     >>> list(all())
     []
-    >>> gandalf = User("Gandalf", "pass")
-    >>> dumbledore = User("Dumbledore", "secret")
+    >>> gandalf = User("Gandalf", "pass", 'some@email.com')
+    >>> dumbledore = User("Dumbledore", "secret", 'some@email.com')
     >>> add(gandalf)
     >>> add(dumbledore)
     >>> sorted([user.name for user in all()])
@@ -76,6 +76,11 @@ def all():
     return database_root().users.values()
 
 
+def all_unverified():
+    """Returns a collection of all unverified users (in no guaranteed order)."""
+    return database_root().users.values('_verification_code')
+
+
 def add(user):
     """
     Adds the User-entity to the repository. Will raise a (KeyError, DuplicateIndexError) tuple on failure.
@@ -83,8 +88,8 @@ def add(user):
 
     >>> list(all())
     []
-    >>> gandalf = User("Gandalf", "pass")
-    >>> dumbledore = User("Dumbledore", "secret")
+    >>> gandalf = User("Gandalf", "pass", 'some@email.com')
+    >>> dumbledore = User("Dumbledore", "secret", 'some@email.com')
     >>> add(gandalf)
     >>> add(dumbledore)
     >>> sorted([user.name for user in all()])
@@ -122,7 +127,7 @@ def delete_by_id(user_id):
     :param user_id: The ID of the User-entity to be removed. This can be either a UUID-entity or the corresponding
         string representation.
 
-    >>> gandalf = User("Gandalf", "pass")
+    >>> gandalf = User("Gandalf", "pass", 'some@email.com')
     >>> add(gandalf)
     >>> find_by_name("Gandalf") == gandalf
     True
@@ -150,7 +155,7 @@ def update(user):
     Changes the user's information
 
 
-    >>> gandalf = User("GandalfTheGrey", "pass")
+    >>> gandalf = User("GandalfTheGrey", "pass", 'some@email.com')
     >>> add(gandalf)
     >>> gandalf.name = "GandalfTheWhite"
     >>> update(gandalf)
@@ -171,8 +176,8 @@ def clear_all():
     """
     Flushes the database.
 
-    >>> gandalf = User("Gandalf", "pass")
-    >>> dumbledore = User("Dumbledore", "secret")
+    >>> gandalf = User("Gandalf", "pass", 'some@email.com')
+    >>> dumbledore = User("Dumbledore", "secret", 'some@email.com')
     >>> add(gandalf)
     >>> add(dumbledore)
     >>> sorted([user.name for user in all()])

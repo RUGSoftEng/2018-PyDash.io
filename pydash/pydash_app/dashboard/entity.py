@@ -8,7 +8,7 @@ Involved usage example:
 >>> from pydash_app.dashboard.endpoint_call import EndpointCall
 >>> import uuid
 >>> from datetime import datetime, timedelta
->>> user = User("Gandalf", "pass")
+>>> user = User("Gandalf", "pass", 'some@email.com')
 >>> d = Dashboard("http://foo.io", str(uuid.uuid4()), str(user.id))
 >>> e1 = Endpoint("foo", True)
 >>> e2 = Endpoint("bar", True)
@@ -25,21 +25,21 @@ Involved usage example:
 >>> d.add_endpoint_call(ec4)
 >>> d.add_endpoint_call(ec5)
 >>> d.aggregated_data()
-{'total_visits': 5, 'total_execution_time': 1.2, 'average_execution_time': 0.24, 'visits_per_day': {'2018-04-25': 3, '2018-04-24': 1, '2018-04-23': 1}, 'visits_per_ip': defaultdict(<class 'int'>, {'127.0.0.1': 4, '127.0.0.2': 1}), 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2, '2018-04-24': 1, '2018-04-23': 1}, 'fastest_measured_execution_time': 0.1, 'fastest_quartile_execution_time': 0.1375, 'median_execution_time': 0.2, 'slowest_quartile_execution_time': 0.3875, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
+{'total_visits': 5, 'total_execution_time': 1.2, 'average_execution_time': 0.24, 'visits_per_day': {'2018-04-25': 3, '2018-04-24': 1, '2018-04-23': 1}, 'visits_per_ip': {'127.0.0.1': 4, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2, '2018-04-24': 1, '2018-04-23': 1}, 'fastest_measured_execution_time': 0.1, 'fastest_quartile_execution_time': 0.14, 'median_execution_time': 0.2, 'slowest_quartile_execution_time': 0.39, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
 >>> d.endpoints['foo'].aggregated_data()
-{'total_visits': 2, 'total_execution_time': 0.6, 'average_execution_time': 0.3, 'visits_per_day': {'2018-04-25': 2}, 'visits_per_ip': defaultdict(<class 'int'>, {'127.0.0.1': 1, '127.0.0.2': 1}), 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2}, 'fastest_measured_execution_time': 0.1, 'fastest_quartile_execution_time': 0.1, 'median_execution_time': 0.3, 'slowest_quartile_execution_time': 0.5, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
+{'total_visits': 2, 'total_execution_time': 0.6, 'average_execution_time': 0.3, 'visits_per_day': {'2018-04-25': 2}, 'visits_per_ip': {'127.0.0.1': 1, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2}, 'fastest_measured_execution_time': 0.1, 'fastest_quartile_execution_time': 0.1, 'median_execution_time': 0.3, 'slowest_quartile_execution_time': 0.5, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
 >>> d.endpoints['bar'].aggregated_data()
-{'total_visits': 3, 'total_execution_time': 0.6000000000000001, 'average_execution_time': 0.20000000000000004, 'visits_per_day': {'2018-04-25': 1, '2018-04-24': 1, '2018-04-23': 1}, 'visits_per_ip': defaultdict(<class 'int'>, {'127.0.0.1': 3}), 'unique_visitors': 1, 'unique_visitors_per_day': {'2018-04-25': 1, '2018-04-24': 1, '2018-04-23': 1}, 'fastest_measured_execution_time': 0.2, 'fastest_quartile_execution_time': 0.2, 'median_execution_time': 0.2, 'slowest_quartile_execution_time': 0.2, 'ninetieth_percentile_execution_time': 0.2, 'ninety-ninth_percentile_execution_time': 0.2, 'slowest_measured_execution_time': 0.2}
-
+{'total_visits': 3, 'total_execution_time': 0.6, 'average_execution_time': 0.2, 'visits_per_day': {'2018-04-25': 1, '2018-04-24': 1, '2018-04-23': 1}, 'visits_per_ip': {'127.0.0.1': 3}, 'unique_visitors': 1, 'unique_visitors_per_day': {'2018-04-25': 1, '2018-04-24': 1, '2018-04-23': 1}, 'fastest_measured_execution_time': 0.2, 'fastest_quartile_execution_time': 0.2, 'median_execution_time': 0.2, 'slowest_quartile_execution_time': 0.2, 'ninetieth_percentile_execution_time': 0.2, 'ninety-ninth_percentile_execution_time': 0.2, 'slowest_measured_execution_time': 0.2}
 
 """
 
 import uuid
 import persistent
 from enum import Enum
+from datetime import datetime, timedelta
 
 from pydash_app.dashboard.endpoint import Endpoint
-from pydash_app.dashboard.aggregator import Aggregator
+from pydash_app.dashboard.aggregator.aggregator_group import AggregatorGroup
 
 
 class DashboardState(Enum):
@@ -109,7 +109,7 @@ class Dashboard(persistent.Persistent):
         self.error = None
 
         self._endpoint_calls = []  # list of unfiltered endpoint calls, for use with an aggregator.
-        self._aggregator = Aggregator(self._endpoint_calls)
+        self._aggregator_group = AggregatorGroup()
 
     def __repr__(self):
         return f'<{self.__class__.__name__} id={self.id} url={self.url}>'
@@ -142,20 +142,36 @@ class Dashboard(persistent.Persistent):
          not been done yet.
         :param endpoint_call: The endpoint call to add
         """
-        self._endpoint_calls.append(endpoint_call)
-        self._aggregator.add_endpoint_call(endpoint_call)
-
         # Adds endpoint to list of endpoints if it has not been registered yet.
         if endpoint_call.endpoint not in self.endpoints:  # Note: this is possible, because the names are the keys.
             self.add_endpoint(Endpoint(endpoint_call.endpoint, True))
         self.endpoints[endpoint_call.endpoint].add_endpoint_call(endpoint_call)
+
+        self._endpoint_calls.append(endpoint_call)
+        self._aggregator_group.add_endpoint_call(endpoint_call)
 
     def aggregated_data(self):
         """
         Returns aggregated data on this dashboard.
         :return: A dict containing aggregated data points.
         """
-        return self._aggregator.as_dict()
+        return self._aggregator_group.fetch_aggregator({}).as_dict()
+
+    def aggregated_data_daterange(self, start_date, end_date, granularity):
+        """
+        Returns the aggregated data on this dashboard over the specified daterange.
+        :param start_date: A datetime object that is treated as the inclusive lower bound of the daterange.
+        :param end_date: A datetime object that is treated as the inclusive upper bound of the daterange.
+        :param granularity: A string denoting the granularity of the daterange.
+        :return: A dictionary with all aggregated statistics and their values.
+        """
+        return self._aggregator_group.fetch_aggregator_inclusive_daterange({}, start_date, end_date, granularity).as_dict()
+
+    def first_endpoint_call_time(self):
+        if not self._endpoint_calls:
+            return None
+        else:
+            return self._endpoint_calls[0].time
 
     # Required because `multi_indexed_collection` puts dashboards in a set,
     #  that needs to order its keys for fast lookup.

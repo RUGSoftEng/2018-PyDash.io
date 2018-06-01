@@ -113,3 +113,25 @@
 | *2018-05-14* | 17:00-17:30 | Removing Flask-RESTPlus dependency |
 | *2018-05-15* | 13:30-15:00 | Fixing backend settings changing bug |
 | *2018-05-15* | 15:00-16:55 | Investigating aggregator bug |
+| *2018-05-19* | 14:15-17:02 | Removing Flask-RESTPlus dependency |
+| *2018-05-19* | 17:02-17:10 | Fixing password changing |
+| *2018-05-19* | 17:50-18:30 | Refactoring password requirements checking |
+| *2018-05-19* | 18:45-19:40 | Refactoring password requirements checking |
+| *2018-05-19* | 20:10-20:55 | Reviewing pull requests, organizing issues |
+| *2018-05-19* | 21:15-22:00 | Preparing merge of Flask-RESTPlus removal |
+| *2018-05-19* | 22:00-22:10 | Preparing merge of password change fix |
+| *2018-05-20* | 13:35-13:40 | Reducing user verification expiration time to 1 day |
+| *2018-05-20* | 13:40-14:05 | Setting up dashboard settings changing |
+| *2018-05-20* | 20:00-23:30 | Implementing dashboard settings changing |
+| *2018-05-20* | 23:30-0:00 | Implementing meta monitoring |
+| *2018-05-21* | 0:00-0:45 | Implementing meta monitoring |
+| *2018-05-23* | 12:30-15:50 | Improving email verification |
+| *2018-05-23* | 16:30-17:15 | Improving dashboard deletion |
+| *2018-05-23* | 17:15-17:25 | Starting dashboard uptime checking |
+| *2018-05-24* | 13:00-15:00 | TA meeting + team meeting |
+| *2018-05-24* | 17:00-18:00 | Implementing dashboard uptime checking |
+| *2018-05-25* | 14:30-16:30 | Implementing dashboard uptime checking |
+| *2018-05-26* | 18:30-23:00 | Designing dashboard uptime checking |
+| *2018-05-27* | 15:00-21:00 | Implementing dashboard uptime checking |
+| *2018-05-28* | 15:00-17:00 | TA meeting + team meeting |
+| *2018-05-29* | 21:00-21:45 | Meta monitoring |

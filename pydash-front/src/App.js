@@ -5,6 +5,7 @@ import { Redirect } from 'react-router'
 
 import './App.css';
 import Routes from './Routes'
+import Notifier, { showNotification } from './Notifier'
 
 
 class App extends Component {
@@ -25,6 +26,7 @@ class App extends Component {
             username: username,
             isAuthenticated: true
         });
+        showNotification({ message: "Logged in successfully!"});
     };
 
     signOutHandler = () => {
@@ -32,6 +34,7 @@ class App extends Component {
             username: '',
             isAuthenticated: false
         })
+        showNotification({ message: "Logged out successfully!"});
     }
 
     redirectBasedOnAuthentication = () => {
@@ -39,7 +42,7 @@ class App extends Component {
             return <Redirect to='/overview' />;
         }
 
-        if(!this.state.isAuthenticated && (window.location.pathname !== "/" && window.location.pathname !== '/register')){
+        if(!this.state.isAuthenticated && (window.location.pathname !== "/" && window.location.pathname !== '/register' && window.location.pathname.substring(0,8) !== '/verify/')){
             return <Redirect to='/' />;
         }
     }
@@ -55,6 +58,7 @@ class App extends Component {
                     username={this.state.username}
                     isAuthenticated={this.state.isAuthenticated}
                 />
+                <Notifier />
             </div>
         );
     }
