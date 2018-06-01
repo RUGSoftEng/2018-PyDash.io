@@ -62,7 +62,8 @@ class DowntimeLog(persistent.Persistent):
             ValueError('Date range cannot be negative or zero')
 
         return {
-            date.strftime('%Y-%m-%d'): list(self._downtime_intervals[date]) for date in _date_range(start, end)
+            date.strftime('%Y-%m-%d'): list(self._downtime_intervals[date])
+            for date in _date_range(start, end)
         }
 
     def get_total_downtimes(
@@ -79,7 +80,8 @@ class DowntimeLog(persistent.Persistent):
             raise ValueError('Date range cannot be negative or zero')
 
         return {
-            date.strftime('%Y-%m-%d'): self._total_downtime[date] for date in _date_range(start, end)
+            date.strftime('%Y-%m-%d'): self._total_downtime[date]
+            for date in _date_range(start, end)
         }
 
     def get_downtime_percentage(
