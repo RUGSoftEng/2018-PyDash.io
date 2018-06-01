@@ -36,8 +36,9 @@ flask_webapp.register_blueprint(react_server_blueprint)
 
 mail.init_app(flask_webapp)
 
-#pydash_app.schedule_periodic_tasks()
 login_manager = LoginManager(flask_webapp)
+
+pydash_app.schedule_periodic_tasks()
 
 
 @login_manager.user_loader
@@ -56,8 +57,6 @@ def unauthorized():
 def seed_command():
     """Initializes our datastore with some preliminary values"""
     pydash_app.seed_datastructures()
-
-# pydash_app.schedule_periodic_tasks()
 
 
 # Don't autostart scheduler in the testing environment.
