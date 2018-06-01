@@ -44,6 +44,7 @@ def delete_user():
 
             periodic_tasks.remove_task(('dashboard', dash.id, 'historic_fetching'))
             periodic_tasks.remove_task(('dashboard', dash.id, 'fetching'))
+            periodic_tasks.remove_task(('dashboard', dash.id, 'pinging'))
         except KeyError:
             logger.warning(f'Dashboard {dash} from user {current_user} has already been removed.')
 
