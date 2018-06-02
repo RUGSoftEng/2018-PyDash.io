@@ -67,7 +67,7 @@ class SettingsPage extends Component {
   state = {
     username: '',
     new_username: '',
-    email: this.props.email_address,
+    email: this.props.mail,
     new_email:'',
     password:'',
     new_password:'',
@@ -78,6 +78,7 @@ class SettingsPage extends Component {
     openDeletion: false,
     checked: true,
     SoundSettings: true,
+    play_sounds: true,
     openS: false,
     loading: false
   };
@@ -200,11 +201,21 @@ handleOkButton = (e) => {
         mail = this.state.new_email,
         new_password = this.state.new_password,
         current_password = this.state.current_password
+      if ((!(new_password.trim()) && (current_password.trim())) || ((new_password.trim()) && !(current_password.trim()))) {
+        this.setState(prevState => ({
+            ...prevState,
+            error:true,
+            openS:false,
+            helperText: 'Both fields are required!',
+            
+        }))
+  }
+
     if (!(username.trim()) && !(mail.trim()) && !(new_password.trim()) && !(current_password.trim())) {
         this.setState(prevState => ({
             ...prevState,
             error:true,
-            snackbar:false,
+            openS:false,
             
         }))
       
@@ -473,6 +484,8 @@ handleOkButton = (e) => {
               type="password"
               error={this.state.error}   
               className={classes.textField}
+              helperText={this.state.helperText}
+
    
             />
               <TextField
