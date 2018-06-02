@@ -17,6 +17,8 @@ import Snackbar from 'material-ui/Snackbar';
 import IconButton from 'material-ui/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
+
+
 import { showNotification } from "../../Notifier";
 
 const styles = theme => ({
@@ -41,6 +43,12 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
     width: 200,
+  },
+  textField2: {
+    flexBasis: 200,
+  },
+  margin: {
+    margin: theme.spacing.unit,
   },
 
   EditDeleteIcons: {
@@ -74,13 +82,16 @@ class SettingsPage extends Component {
     current_password:'',
     passConfirm:'',
     error:false,
+    error2:false,
     open: false,
     openDeletion: false,
     checked: true,
     SoundSettings: true,
     play_sounds: true,
     openS: false,
-    loading: false
+    loading: false,
+    showPassword: false,
+
   };
 componentWillMount = () => {
     this.setState({
@@ -102,6 +113,13 @@ handleType = key => event => {
   this.setState({
       [key]: event.target.value
   });
+};
+handleMouseDownPassword = event => {
+  event.preventDefault();
+};
+
+handleClickShowPassword = () => {
+  this.setState({ showPassword: !this.state.showPassword });
 };
 
 handleDelete = (e) => {
@@ -215,11 +233,12 @@ handleOkButton = (e) => {
         this.setState(prevState => ({
             ...prevState,
             error:true,
+            error2:true,
             openS:false,
-            
+            helperText2:"All fields cannot be empty!"
         }))
       
-      return alert("All fields cannot be empty!");
+      
   }
       if(((username.trim()) && (mail.trim()) && (new_password.trim()) && (current_password.trim()))){
       
@@ -474,8 +493,7 @@ handleOkButton = (e) => {
               className={classes.textField}
    
               
-            />
-            
+            />            
             <TextField
               id="currentPassword"
               label="Old password"
@@ -487,7 +505,7 @@ handleOkButton = (e) => {
               helperText={this.state.helperText}
 
    
-            />
+              />
               <TextField
               autoFocus
               margin="dense"
@@ -496,6 +514,8 @@ handleOkButton = (e) => {
               type="new_username"
               onChange={this.handleChange('new_username')}
               fullWidth
+              error={this.state.error2}
+              
               className={classes.textField}
 
             />
@@ -507,6 +527,8 @@ handleOkButton = (e) => {
               type="name" 
               onChange={this.handleChange('new_email')}
               fullWidth   
+              error={this.state.error2}
+              helperText={this.state.helperText2}
               className={classes.textField}
 
             />
