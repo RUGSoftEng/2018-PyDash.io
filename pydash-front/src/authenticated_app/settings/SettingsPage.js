@@ -210,14 +210,14 @@ handleOkButton = (e) => {
       
       return alert("All fields cannot be empty!");
   }
-      if(((username.trim())&& mail.trim())){
+      if(((username.trim()) && (mail.trim()) && (new_password.trim()) && (current_password.trim()))){
       
              this.setState(prevState => ({
               ...prevState,
               loading: true,
           }))
                 axios.post(window.api_path + '/api/user/change_settings', {
-                username,mail},{
+                username,mail,new_password,current_password},{
                 method: 'post',
                 withCredentials: true, 
             }).then((response) => {
@@ -229,7 +229,7 @@ handleOkButton = (e) => {
             }))
                 console.log(response);
                 this.handleClose();
-                window.location.reload();
+                //window.location.reload();
             }).catch((error) => {
                 this.setState(prevState => ({
                 snackbar: false,
@@ -239,7 +239,36 @@ handleOkButton = (e) => {
                 this.handleClose();
             });
           }
-        else if((!(username.trim())&& mail.trim())){
+          else if(((username.trim()) && (mail.trim()))){
+      
+            this.setState(prevState => ({
+             ...prevState,
+             loading: true,
+         }))
+               axios.post(window.api_path + '/api/user/change_settings', {
+               username,mail},{
+               method: 'post',
+               withCredentials: true, 
+           }).then((response) => {
+             this.setState(prevState => ({
+               ...prevState,
+               error:true,
+               snackbar:false,
+               
+           }))
+               console.log(response);
+               this.handleClose();
+               window.location.reload();
+           }).catch((error) => {
+               this.setState(prevState => ({
+               snackbar: false,
+               error:true,
+           }))
+               console.log('changing settings failed');
+               this.handleClose();
+           });
+         }
+    else if((!(username.trim())&& mail.trim())){
       
             this.setState(prevState => ({
              ...prevState,
@@ -268,7 +297,7 @@ handleOkButton = (e) => {
                this.handleClose();
            });
          }
-         else if(((username.trim()) && !mail.trim())){
+      else if(((username.trim()) && !mail.trim())){
       
           this.setState(prevState => ({
            ...prevState,
@@ -297,7 +326,7 @@ handleOkButton = (e) => {
              this.handleClose();
          });
        }
-    else if(((new_password.trim())||current_password.trim())){
+    else if(((new_password.trim())&&current_password.trim())){
 
               this.setState(prevState => ({
                 ...prevState,
