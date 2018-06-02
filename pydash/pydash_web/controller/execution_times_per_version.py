@@ -6,6 +6,7 @@ from flask import jsonify
 
 import pydash_app.dashboard.repository
 import pydash_logger
+from .utils import execution_times
 
 logger = pydash_logger.Logger(__name__)
 
@@ -36,28 +37,6 @@ def _execution_times_per_version(aggregator_group_container):
     return_dict = {}
     versions = aggregator_group_container.statistic('versions', {})
     for version in versions:
-        return_dict[version] = {
-            'fastest_measured_execution_time': aggregator_group_container.statistic('fastest_measured_execution_time',
-                                                                                    {'version': version}
-                                                                                    ),
-            'fastest_quartile_execution_time': aggregator_group_container.statistic('fastest_quartile_execution_time',
-                                                                                    {'version': version}
-                                                                                    ),
-            'median_execution_time': aggregator_group_container.statistic('median_execution_time',
-                                                                          {'version': version}
-                                                                          ),
-            'slowest_quartile_execution_time': aggregator_group_container.statistic('slowest_quartile_execution_time',
-                                                                                    {'version': version}
-                                                                                    ),
-            'ninetieth_percentile_execution_time': aggregator_group_container.statistic('ninetieth_percentile_execution_time',
-                                                                                        {'version': version}
-                                                                                        ),
-            'ninety-ninth_percentile_execution_time': aggregator_group_container.statistic('ninety-ninth_percentile_execution_time',
-                                                                                           {'version': version}
-                                                                                           ),
-            'slowest_measured_execution_time': aggregator_group_container.statistic('slowest_measured_execution_time',
-                                                                                    {'version': version}
-                                                                                    )
+        return_dict[version] = execution_times(aggregator_group_container, filters={'version': version})
 
-        }
     return return_dict

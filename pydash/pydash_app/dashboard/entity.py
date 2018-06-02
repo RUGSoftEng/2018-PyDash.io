@@ -162,22 +162,61 @@ class Dashboard(persistent.Persistent):
     def __lt__(self, other):
         return self.id < other.id
 
-    def aggregated_data(self):
+    def aggregated_data(self, filters={}):
         """
         Returns aggregated data on this dashboard.
+        :param filters: A dictionary containing property_name-value pairs to filter on. The keys are assumed to be strings.
+          This is in the gist of `{'day':'2018-05-20', 'ip':'127.0.0.1'}`
+          Defaults to an empty dictionary.
+
+          The currently allowed filter_names are:
+            - Time:
+              * 'year'   - e.g. '2018'
+              * 'month'  - e.g. '2018-05'
+              * 'week'   - e.g. '2018-W17'
+              * 'day'    - e.g. '2018-05-20'
+              * 'hour'   - e.g. '2018-05-20T20'
+              * 'minute' - e.g. '2018-05-20T20-10'
+            Note that for Time filter-values, the formatting is crucial.
+
+            - Version:
+              * 'version' - e.g. '1.0.1'
+
+            - IP:
+              * 'ip' - e.g. '127.0.0.1'
+
+            - Group-by:
+              * 'group_by' - e.g. 'None'
+
         :return: A dict containing aggregated data points.
         """
-        return self._aggregator_group.fetch_aggregator({}).as_dict()
+        return self._aggregator_group.fetch_aggregator(filters).as_dict()
 
-    def aggregated_data_daterange(self, start_date, end_date, granularity):
+    def aggregated_data_daterange(self, start_date, end_date, granularity, filters={}):
         """
         Returns the aggregated data on this dashboard over the specified daterange.
         :param start_date: A datetime object that is treated as the inclusive lower bound of the daterange.
         :param end_date: A datetime object that is treated as the inclusive upper bound of the daterange.
         :param granularity: A string denoting the granularity of the daterange.
+        :param filters: A dictionary containing property_name-value pairs to filter on. The keys are assumed to be strings.
+          This is in the gist of `{'day':'2018-05-20', 'ip':'127.0.0.1'}`
+          Defaults to an empty dictionary.
+
+          The currently allowed filter_names are:
+            - Version:
+              * 'version' - e.g. '1.0.1'
+
+            - IP:
+              * 'ip' - e.g. '127.0.0.1'
+
+            - Group-by:
+              * 'group_by' - e.g. 'None'
+
+            Note that, contrary to `aggregated_data` method, Time based filters are not allowed.
+
         :return: A dictionary with all aggregated statistics and their values.
         """
-        return self._aggregator_group.fetch_aggregator_inclusive_daterange({}, start_date, end_date, granularity).as_dict()
+        return self._aggregator_group.fetch_aggregator_inclusive_daterange(filters, start_date, end_date, granularity).as_dict()
 
     def statistic(self, statistic, filters={}):
         """
