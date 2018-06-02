@@ -216,8 +216,8 @@ handleOkButton = (e) => {
               ...prevState,
               loading: true,
           }))
-                axios.post(window.api_path + '/api/user/change_settings', {
-                username,mail,new_password,current_password},{
+                axios.post(window.api_path + '/api/user/change_settings',  {
+                username,mail},{
                 method: 'post',
                 withCredentials: true, 
             }).then((response) => {
@@ -238,6 +238,30 @@ handleOkButton = (e) => {
                 console.log('changing settings failed');
                 this.handleClose();
             });
+            axios.post(window.api_path + '/api/user/change_password', {
+              new_password,
+              current_password,
+          },{
+              method: 'post',
+              withCredentials: true,
+            }).then((response) => {
+              console.log(response);
+              this.handleClose();
+              window.location.reload();
+          }).catch((error) => {
+            this.setState(prevState => ({
+              snackbar: false,
+              error:true,
+          }))
+          this.setState(prevState => ({
+            ...prevState,
+            error:true,
+            snackbar:false,
+            
+        }))
+              console.log('changing password failed');
+              this.handleClose();
+    });
           }
           else if(((username.trim()) && (mail.trim()))){
       
