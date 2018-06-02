@@ -197,10 +197,10 @@ handleCloseSnack = (event, reason) => {
 handleOkButton = (e) => {
     e.preventDefault()
     let username = this.state.new_username,
-        email = this.state.new_email,
+        mail = this.state.new_email,
         new_password = this.state.new_password,
         current_password = this.state.current_password
-    if (!(username.trim()) && !(email.trim()) && !(new_password.trim()) && !(current_password.trim())) {
+    if (!(username.trim()) && !(mail.trim()) && !(new_password.trim()) && !(current_password.trim())) {
         this.setState(prevState => ({
             ...prevState,
             error:true,
@@ -210,14 +210,14 @@ handleOkButton = (e) => {
       
       return alert("All fields cannot be empty!");
   }
-      if(((username.trim())||email.trim())){
+      if(((username.trim())&& mail.trim())){
       
              this.setState(prevState => ({
               ...prevState,
               loading: true,
           }))
                 axios.post(window.api_path + '/api/user/change_settings', {
-                username,email},{
+                username,mail},{
                 method: 'post',
                 withCredentials: true, 
             }).then((response) => {
@@ -239,6 +239,64 @@ handleOkButton = (e) => {
                 this.handleClose();
             });
           }
+        else if((!(username.trim())&& mail.trim())){
+      
+            this.setState(prevState => ({
+             ...prevState,
+             loading: true,
+         }))
+               axios.post(window.api_path + '/api/user/change_settings', {
+               mail},{
+               method: 'post',
+               withCredentials: true, 
+           }).then((response) => {
+             this.setState(prevState => ({
+               ...prevState,
+               error:true,
+               snackbar:false,
+               
+           }))
+               console.log(response);
+               this.handleClose();
+               window.location.reload();
+           }).catch((error) => {
+               this.setState(prevState => ({
+               snackbar: false,
+               error:true,
+           }))
+               console.log('changing settings failed');
+               this.handleClose();
+           });
+         }
+         else if(((username.trim()) && !mail.trim())){
+      
+          this.setState(prevState => ({
+           ...prevState,
+           loading: true,
+       }))
+             axios.post(window.api_path + '/api/user/change_settings', {
+             username},{
+             method: 'post',
+             withCredentials: true, 
+         }).then((response) => {
+           this.setState(prevState => ({
+             ...prevState,
+             error:true,
+             snackbar:false,
+             
+         }))
+             console.log(response);
+             this.handleClose();
+             window.location.reload();
+         }).catch((error) => {
+             this.setState(prevState => ({
+             snackbar: false,
+             error:true,
+         }))
+             console.log('changing settings failed');
+             this.handleClose();
+         });
+       }
     else if(((new_password.trim())||current_password.trim())){
 
               this.setState(prevState => ({
@@ -356,7 +414,7 @@ handleOkButton = (e) => {
             
             <TextField
               id="currentPassword"
-              label={this.props.password}
+              label="Old password"
               onChange={this.handleType('current_password')}
               margin="normal"
               type="password"
@@ -379,7 +437,7 @@ handleOkButton = (e) => {
               autoFocus
               margin="normal"
               id="full-width"
-              label={this.state.email_address}
+              label="New email"
               type="name" 
               onChange={this.handleChange('new_email')}
               fullWidth   
