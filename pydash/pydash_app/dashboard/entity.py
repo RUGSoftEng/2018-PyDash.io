@@ -25,21 +25,22 @@ Involved usage example:
 >>> d.add_endpoint_call(ec4)
 >>> d.add_endpoint_call(ec5)
 >>> d.aggregated_data()
-{'total_visits': 5, 'total_execution_time': 1.2, 'average_execution_time': 0.24, 'visits_per_day': {'2018-04-25': 3, '2018-04-24': 1, '2018-04-23': 1}, 'visits_per_ip': {'127.0.0.1': 4, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2, '2018-04-24': 1, '2018-04-23': 1}, 'fastest_measured_execution_time': 0.1, 'fastest_quartile_execution_time': 0.14, 'median_execution_time': 0.2, 'slowest_quartile_execution_time': 0.39, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
+{'total_visits': 5, 'total_execution_time': 1.2, 'average_execution_time': 0.24, 'visits_per_ip': {'127.0.0.1': 4, '127.0.0.2': 1}, 'unique_visitors': 2, 'fastest_measured_execution_time': 0.1, 'fastest_quartile_execution_time': 0.14, 'median_execution_time': 0.2, 'slowest_quartile_execution_time': 0.39, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5, 'versions': ['0.1']}
 >>> d.endpoints['foo'].aggregated_data()
-{'total_visits': 2, 'total_execution_time': 0.6, 'average_execution_time': 0.3, 'visits_per_day': {'2018-04-25': 2}, 'visits_per_ip': {'127.0.0.1': 1, '127.0.0.2': 1}, 'unique_visitors': 2, 'unique_visitors_per_day': {'2018-04-25': 2}, 'fastest_measured_execution_time': 0.1, 'fastest_quartile_execution_time': 0.1, 'median_execution_time': 0.3, 'slowest_quartile_execution_time': 0.5, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5}
+{'total_visits': 2, 'total_execution_time': 0.6, 'average_execution_time': 0.3, 'visits_per_ip': {'127.0.0.1': 1, '127.0.0.2': 1}, 'unique_visitors': 2, 'fastest_measured_execution_time': 0.1, 'fastest_quartile_execution_time': 0.1, 'median_execution_time': 0.3, 'slowest_quartile_execution_time': 0.5, 'ninetieth_percentile_execution_time': 0.5, 'ninety-ninth_percentile_execution_time': 0.5, 'slowest_measured_execution_time': 0.5, 'versions': ['0.1']}
 >>> d.endpoints['bar'].aggregated_data()
-{'total_visits': 3, 'total_execution_time': 0.6, 'average_execution_time': 0.2, 'visits_per_day': {'2018-04-25': 1, '2018-04-24': 1, '2018-04-23': 1}, 'visits_per_ip': {'127.0.0.1': 3}, 'unique_visitors': 1, 'unique_visitors_per_day': {'2018-04-25': 1, '2018-04-24': 1, '2018-04-23': 1}, 'fastest_measured_execution_time': 0.2, 'fastest_quartile_execution_time': 0.2, 'median_execution_time': 0.2, 'slowest_quartile_execution_time': 0.2, 'ninetieth_percentile_execution_time': 0.2, 'ninety-ninth_percentile_execution_time': 0.2, 'slowest_measured_execution_time': 0.2}
+{'total_visits': 3, 'total_execution_time': 0.6, 'average_execution_time': 0.2, 'visits_per_ip': {'127.0.0.1': 3}, 'unique_visitors': 1, 'fastest_measured_execution_time': 0.2, 'fastest_quartile_execution_time': 0.2, 'median_execution_time': 0.2, 'slowest_quartile_execution_time': 0.2, 'ninetieth_percentile_execution_time': 0.2, 'ninety-ninth_percentile_execution_time': 0.2, 'slowest_measured_execution_time': 0.2, 'versions': ['0.1']}
 
 """
 
 import uuid
 import persistent
 from enum import Enum
-from datetime import datetime, timedelta
 
 from pydash_app.dashboard.endpoint import Endpoint
+from ..dashboard.aggregator import Aggregator
 from pydash_app.dashboard.aggregator.aggregator_group import AggregatorGroup
+
 
 class DashboardState(Enum):
     """
@@ -149,6 +150,18 @@ class Dashboard(persistent.Persistent):
         self._endpoint_calls.append(endpoint_call)
         self._aggregator_group.add_endpoint_call(endpoint_call)
 
+    def first_endpoint_call_time(self):
+        if not self._endpoint_calls:
+            return None
+        else:
+            return self._endpoint_calls[0].time
+
+    # Required because `multi_indexed_collection` puts dashboards in a set,
+    #  that needs to order its keys for fast lookup.
+    # Because the IDs are unchanging integer values, use that.
+    def __lt__(self, other):
+        return self.id < other.id
+
     def aggregated_data(self):
         """
         Returns aggregated data on this dashboard.
@@ -166,14 +179,85 @@ class Dashboard(persistent.Persistent):
         """
         return self._aggregator_group.fetch_aggregator_inclusive_daterange({}, start_date, end_date, granularity).as_dict()
 
-    def first_endpoint_call_time(self):
-        if not self._endpoint_calls:
-            return None
-        else:
-            return self._endpoint_calls[0].time
+    def statistic(self, statistic, filters={}):
+        """
+        Returns the desired statistic of this dashboard, filtered by the specified filters.
+        :param statistic: A string denoting the specific statistic that should be queried.
+        """ \
+        f'  The following filters are allowed:{[stat_class.field_name(stat_class) for stat_class in Aggregator.contained_statistics_classes]}.' \
+        """
+        :param filters: A dictionary containing property_name-value pairs to filter on. The keys are assumed to be strings.
+          This is in the gist of `{'day':'2018-05-20', 'ip':'127.0.0.1'}`
+          Defaults to an empty dictionary.
 
-    # Required because `multi_indexed_collection` puts dashboards in a set,
-    #  that needs to order its keys for fast lookup.
-    # Because the IDs are unchanging integer values, use that.
-    def __lt__(self, other):
-        return self.id < other.id
+          The currently allowed filter_names are:
+            - Time:
+              * 'year'   - e.g. '2018'
+              * 'month'  - e.g. '2018-05'
+              * 'week'   - e.g. '2018-W17'
+              * 'day'    - e.g. '2018-05-20'
+              * 'hour'   - e.g. '2018-05-20T20'
+              * 'minute' - e.g. '2018-05-20T20-10'
+            Note that for Time filter-values, the formatting is crucial.
+
+            - Version:
+              * 'version' - e.g. '1.0.1'
+
+            - IP:
+              * 'ip' - e.g. '127.0.0.1'
+
+            - Group-by:
+              * 'group_by' - e.g. 'None'
+
+        :return: The desired statistic of this dashboard.
+        :raises ValueError: This happens when the filters are not supported by the dashboard, or when two filters of
+          the same type are provided.
+        :raises KeyError: This happens when the statistic is not supported by the dashboard.
+        """
+        return self._aggregator_group.fetch_aggregator(filters).as_dict()[statistic]
+
+    def statistic_per_timeslice(self, statistic, timeslice, start_datetime, end_datetime, filters={}):
+        f"""
+        Slices up the specified datetime range (=[start_datetime, end_datetime]) by chunks of the size of `timeslice`.
+        For each datetime_slice it computes the value of the denoted statistic and returns a dictionary containing these pairs.
+        (Note that a returned datetime_slice is a string: represented as the start of that slice and formatted according
+         to the ISO-8601 standard.
+        Filters can be applied to narrow down the search.
+
+        :param statistic: A string denoting the specific statistic that should be queried.
+        """ \
+        f'  The following filters are allowed:{[stat_class.field_name(stat_class) for stat_class in Aggregator.contained_statistics_classes]}.' \
+        """
+        :param timeslice: A string denoting at what granularity the indicated datetime range should be split.
+          The currently supported values for this are: 'year', 'month', 'week', 'day', 'hour' and 'minute'.
+        :param start_datetime: A datetime object indicating the inclusive lower bound for the datetime range to
+         aggregate over.
+        :param end_datetime:  A datetime object indicating the inclusive upper bound for the datetime range to
+         aggregate over.
+        :param filters: A dictionary containing property_name-value pairs to filter on. The keys are assumed to be strings.
+          This is in the gist of `{'day':'2018-05-20', 'ip':'127.0.0.1'}`
+          Defaults to an empty dictionary.
+
+          The currently allowed filter_names are:
+            - Version:
+              * 'version' - e.g. '1.0.1'
+
+            - IP:
+              * 'ip' - e.g. '127.0.0.1'
+
+            - Group-by:
+              * 'group_by' - e.g. 'None'
+
+            Note that, contrary to `statistic` method, Time based filters are not allowed.
+        :return: The desired statistic of this dashboard.
+        :raises ValueError: This happens when the filters are not supported by the dashboard, or when two filters of
+          the same type are provided, or when a Time based filter is provided.
+        :raises KeyError: This happens when the statistic is not supported by the dashboard.
+        """
+        return_dict = {}
+        for datetime, aggregator in self._aggregator_group.fetch_aggregators_per_timeslice(filters, timeslice,
+                                                                                           start_datetime,
+                                                                                           end_datetime).items():
+            return_dict[datetime] = aggregator.as_dict()[statistic]
+
+        return return_dict
