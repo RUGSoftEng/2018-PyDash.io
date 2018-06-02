@@ -25,13 +25,13 @@ def stop_task_scheduler():
 def schedule_periodic_tasks():
     import datetime  # <- remove this line when custom interval no longer necessary for testing.
 
-    # pydash_app.dashboard.services.fetching.schedule_all_periodic_dashboards_tasks(
-    #     interval=datetime.timedelta(minutes=1)
-    # )
-
-    pydash_app.dashboard.services.pinging.schedule_all_periodic_dashboard_pinging(
-        interval=datetime.timedelta(seconds=15)
+    pydash_app.dashboard.services.fetching.schedule_all_periodic_dashboards_tasks(
+        interval=datetime.timedelta(minutes=1)
     )
+
+    # pydash_app.dashboard.services.pinging.schedule_all_periodic_dashboard_pinging(
+    #     interval=datetime.timedelta(seconds=15)
+    # )
 
     pydash_app.user.services.pruning.schedule_periodic_pruning_task()
 

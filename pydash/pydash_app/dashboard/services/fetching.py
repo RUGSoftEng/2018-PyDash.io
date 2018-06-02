@@ -40,17 +40,17 @@ def schedule_all_periodic_dashboards_tasks(
 
 
 def schedule_periodic_dashboard_fetching(
-        dashboard,
+        dashboard_id,
         interval=timedelta(hours=1),
         scheduler=periodic_tasks.default_task_scheduler):
     """
     Schedules the periodic EndpointCall fetching task for this dashboard.
     """
-    logger.info(f'Creating periodic fetching task for {dashboard}')
+    logger.info(f'Creating periodic fetching task for {dashboard_id}')
 
     periodic_tasks.add_periodic_task(
-        name=("dashboard", dashboard.id, "fetching"),
-        task=partial(fetch_and_update_new_dashboard_info, dashboard.id),
+        name=("dashboard", dashboard_id, "fetching"),
+        task=partial(fetch_and_update_new_dashboard_info, dashboard_id),
         interval=interval,
         scheduler=scheduler)
 
@@ -62,14 +62,15 @@ def schedule_historic_dashboard_fetching(
     The periodic fetching of new EndpointCall information is scheduled as soon as this task completes.
     """
 
-    def task(dashboard_id):
-        fetch_and_update_historic_dashboard_info(dashboard_id)
-        schedule_periodic_dashboard_fetching(dashboard_id)
-
     periodic_tasks.add_background_task(
         name=("dashboard", dashboard.id, "historic_fetching"),
-        task=partial(task, dashboard.id),
+        task=partial(_task_historic_dashboard_fetching, dashboard.id),
         scheduler=scheduler)
+
+
+def _task_historic_dashboard_fetching(dashboard_id):
+    fetch_and_update_historic_dashboard_info(dashboard_id)
+    schedule_periodic_dashboard_fetching(dashboard_id)
 
 
 def fetch_and_update_new_dashboard_info(dashboard_id):
