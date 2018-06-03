@@ -114,6 +114,7 @@ https://se2018-pydashio.slack.com/messages/C9A0LP9HV/
                 success: true,
                 loading: false,
             }));
+            this.props.callBack();
         }).catch((err) => {
             console.log(err);
             console.log(err.response);
