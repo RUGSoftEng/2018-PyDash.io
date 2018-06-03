@@ -14,6 +14,12 @@ import TextField from 'material-ui/TextField';
 import Logo from '../images/logo.png';
 import Warning from '@material-ui/icons/Warning';
 
+import IconButton from 'material-ui/IconButton';
+import {Input,InputLabel,InputAdornment} from 'material-ui/Input';
+import {FormControl,FormHelperText} from 'material-ui/Form';
+import Visibility from 'material-ui-icons/Visibility';
+import VisibilityOff from 'material-ui-icons/VisibilityOff';
+
 // Sound:
 import {Howl} from 'howler';
 import login_soundfile from "./boot.mp3";
@@ -31,6 +37,12 @@ const styles = theme => ({
         width: theme.spacing.unit * 4,
         height: theme.spacing.unit * 4,
     },
+    rightIcon: {
+        marginLeft: theme.spacing.unit,
+      },
+      textpanel: {
+        marginLeft: '50px',
+      },
 });
 
 class LoginPage extends Component {
@@ -42,6 +54,8 @@ class LoginPage extends Component {
         success: false,
         loading: false,
         IsPasswordTooShort: true,
+        showPassword: false,
+
     };
 
     handleChange = key => event => {
@@ -67,6 +81,14 @@ class LoginPage extends Component {
         }
 
     };
+
+    handleMouseDownPassword = event => {
+        event.preventDefault();
+      };
+    
+      handleClickShowPassword = () => {
+        this.setState({ showPassword: !this.state.showPassword });
+      };
 
     tryLogin = (e) => {
         e.preventDefault()
@@ -122,6 +144,8 @@ class LoginPage extends Component {
     }
 
     render() {
+        const { classes } = this.props;
+
         return this.state.success ? (
             <Redirect to="/overview" />
         ) : (
@@ -141,16 +165,29 @@ class LoginPage extends Component {
                         error={this.state.error}
                     />
                     <br />
-                    <TextField
+                    <div >
+                    <TextField className={classes.textpanel}
                         id="password"
                         label="Password"
                         value={this.state.password}
                         onChange={this.handleChange('password')}
                         margin="normal"
-                        type="password"
+                        type={this.state.showPassword ? 'text' : 'password'}
                         error={this.state.error}
                         helperText={this.state.helperText}
                     />
+                    <IconButton className={classes.rightIcon}
+
+                    
+                    aria-label="Toggle password visibility"
+                    onClick={this.handleClickShowPassword}
+                    onMouseDown={this.handleMouseDownPassword}
+                    >
+                    {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                    </div>
+
+
                     {(this.state.isPasswordUnsafe ?
                       <p className="password-safety-warning" >
                           <Warning /><br/>
@@ -175,6 +212,7 @@ class LoginPage extends Component {
 }
 LoginPage.propTypes = {
     signInHandler: PropTypes.func.isRequired,
+    classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(LoginPage);
