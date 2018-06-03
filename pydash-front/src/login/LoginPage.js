@@ -210,7 +210,6 @@ class LoginPage extends Component {
 }
 LoginPage.propTypes = {
     signInHandler: PropTypes.func.isRequired,
-    classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(LoginPage);
