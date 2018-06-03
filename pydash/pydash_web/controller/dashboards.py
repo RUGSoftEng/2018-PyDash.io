@@ -32,11 +32,7 @@ def dashboard(dashboard_id):
     :return: The returned value consists of a tuple of dashboard information, together with a http status code.
     This route supports the following request arguments:
     - statistic: The name of the statistic of which aggregated information should be returned.
-      The currently supported statistics are:['total_visits', 'total_execution_time', 'average_execution_time', 'visits_per_ip',
-                         'unique_visitors', 'fastest_measured_execution_time', 'fastest_quartile_execution_time',
-                         'median_execution_time', 'slowest_quartile_execution_time', 'ninetieth_percentile_execution_time',
-                         'ninety-ninth_percentile_execution_time', 'slowest_measured_execution_time']
-#     or perhaps
+      The currently supported statistics are:
         * total_visits
         * total_execution_time
         * average_execution_time
@@ -142,7 +138,8 @@ def handle_statistic_without_timeslice(dashboard, statistic, start_datetime, end
     :param granularity:
     :return: The value of a single statistic over the specified datetime range.
     """
-    return dashboard.aggregated_data_daterange(start_datetime, end_datetime, granularity)[statistic]
+    return dashboard.aggregated_data_daterange(start_datetime=start_datetime, end_datetime=end_datetime,
+                                               granularity=granularity)[statistic]
 
 
 def handle_statistic_per_timeslice(dashboard, statistic, timeslice, start_datetime, end_datetime):
@@ -156,7 +153,8 @@ def handle_statistic_per_timeslice(dashboard, statistic, timeslice, start_dateti
     :return: A dictionary consisting of a datetime string (key)(formatted according to the ISO-8601 standard)
              and the corresponding statistic, over the specified datetime range.
     """
-    return dashboard.statistic_per_timeslice(statistic, {}, timeslice, start_datetime, end_datetime)
+    return dashboard.statistic_per_timeslice(statistic=statistic, timeslice=timeslice, start_datetime=start_datetime,
+                                             end_datetime=end_datetime, filters={})
 
 
 def match_datetime_string_with_formats(datetime_string):
