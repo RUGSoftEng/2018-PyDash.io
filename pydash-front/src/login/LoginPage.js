@@ -128,7 +128,7 @@ class LoginPage extends Component {
             if(error.response && error.response.status === 401) {
                 this.setState(prevState => ({
                     error: true,
-                    helperText: 'Incorrect credentials 😱',
+                    helperText: 'Incorrect credentials',
                     loading: false,
                 }))
             } else {
