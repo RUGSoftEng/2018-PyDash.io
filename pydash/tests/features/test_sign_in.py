@@ -91,4 +91,4 @@ def then_i_should_see_error_both_fields_required(browser):
 
 @then("I should see the error 'incorrect credentials'")
 def then_i_should_see_error_message(browser):
-    assert browser.is_text_present("Incorrect credentials")
+    assert browser.is_text_present("Incorrect credentials 😱")
