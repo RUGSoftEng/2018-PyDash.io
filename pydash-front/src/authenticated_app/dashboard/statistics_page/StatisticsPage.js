@@ -84,7 +84,7 @@ class StatisticsPage extends Component {
             method: 'get',
             withCredentials: true
         }).then((response) => {
-            //console.log(response);
+            console.log("Response: ", response);
             if (response.data.hasOwnProperty('error')) {
                 this.setState(prevState => {
                     return {
@@ -94,8 +94,6 @@ class StatisticsPage extends Component {
                         
 
                         total_visits: response.data.aggregates.total_visits,
-                        visits_per_day: dict_to_xy_arr(response.data.aggregates.visits_per_day),
-                        unique_visitors_per_day: dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day),
                         error: response.data.error,
                     }
                 });
@@ -108,8 +106,6 @@ class StatisticsPage extends Component {
                         dashboard: response.data,
 
                         total_visits: response.data.aggregates.total_visits,
-                        visits_per_day: dict_to_xy_arr(response.data.aggregates.visits_per_day),
-                        unique_visitors_per_day: dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day),
                     };
                 });
             }
