@@ -17,6 +17,7 @@ import Warning from '@material-ui/icons/Warning';
 import IconButton from 'material-ui/IconButton';
 import Visibility from 'material-ui-icons/Visibility';
 import VisibilityOff from 'material-ui-icons/VisibilityOff';
+import {InputAdornment} from 'material-ui/Input'
 
 // Sound:
 import {Howl} from 'howler';
@@ -39,8 +40,10 @@ const styles = theme => ({
         marginLeft: theme.spacing.unit,
       },
       textpanel: {
-        marginLeft: '50px',
-      },
+        width: '200px',
+        marginLeft: '45%',
+
+             },
 });
 
 class LoginPage extends Component {
@@ -152,7 +155,7 @@ class LoginPage extends Component {
                     <img alt="PyDash logo" width="200" src={Logo} />
                 </header>
 
-                <form onSubmit={this.tryLogin}>
+                <form onSubmit={this.tryLogin} className={classes.textpanel}>
                     <br />
                     <TextField
                         id="username"
@@ -160,30 +163,38 @@ class LoginPage extends Component {
                         value={this.state.username}
                         onChange={this.handleChange('username')}
                         margin="normal"
+                        fullWidth
                         error={this.state.error}
                     />
                     <br />
-                    <div >
-                    <TextField className={classes.textpanel}
+                    <TextField 
                         id="password"
                         label="Password"
                         value={this.state.password}
                         onChange={this.handleChange('password')}
                         margin="normal"
+                        fullWidth
                         type={this.state.showPassword ? 'text' : 'password'}
                         error={this.state.error}
                         helperText={this.state.helperText}
-                    />
-                    <IconButton className={classes.rightIcon}
+                        InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton className={classes.rightIcon}
 
-                    
-                    aria-label="Toggle password visibility"
-                    onClick={this.handleClickShowPassword}
-                    onMouseDown={this.handleMouseDownPassword}
-                    >
-                    {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                    </div>
+                                    aria-label="Toggle password visibility"
+                                    onClick={this.handleClickShowPassword}
+                                    onMouseDown={this.handleMouseDownPassword}
+                                    >
+                                    {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          }}
+                  
+                    />
+
+
 
 
                     {(this.state.isPasswordUnsafe ?
