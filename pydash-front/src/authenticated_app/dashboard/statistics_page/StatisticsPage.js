@@ -23,11 +23,6 @@ import { Button } from 'material-ui';
 import Dialog, { DialogActions, DialogContent, DialogContentText, DialogTitle,} from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 
-
-// Helper:
-import {dict_to_xy_arr} from "../../../utils";
-
-
 function TabContainer({ children, dir }) {
   return (
     <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
