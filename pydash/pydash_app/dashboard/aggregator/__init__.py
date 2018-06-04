@@ -7,10 +7,6 @@ from copy import deepcopy
 from . import statistics
 
 
-def date_dict(dict):
-    # JS expects dates in the ISO 8601 Date format (example: 2018-03)
-    return {k.strftime("%Y-%m-%d"): v for (k, v) in dict.items()}
-
 class Aggregator(persistent.Persistent):
     """
     Maintains aggregate data for either a dashboard or a single endpoint.
