@@ -14,5 +14,4 @@ class Config(object):
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = ('PyDash', 'noreply.pydashtestmail@gmail.com')
     MAIL_PYDASH_HOST = os.environ.get('MAIL_PYDASH_HOST') or 'localhost:5000'
-    # MAIL_PYDASH_PORT = os.environ.get('MAIL_PYDASH_PORT') or '5000'
     MAIL_PROTOCOL = os.environ.get('MAIL_PROTOCOL') or 'http'
