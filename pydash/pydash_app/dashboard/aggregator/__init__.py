@@ -43,6 +43,7 @@ class Aggregator(persistent.Persistent):
         })
         for endpoint_call in endpoint_calls:
             self.add_endpoint_call(endpoint_call)
+    
 
     def add_endpoint_call(self, endpoint_call):
         """
@@ -55,6 +56,7 @@ class Aggregator(persistent.Persistent):
 
         self.endpoint_calls.append(endpoint_call)
         self._p_changed = True  # ZODB mark object as changed
+
 
     def as_dict(self):
         """
