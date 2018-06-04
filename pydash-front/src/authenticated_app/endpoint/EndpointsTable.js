@@ -32,7 +32,7 @@ class EndpointsTable extends Component {
 
         return (
 
-            <div className="EndpointsTable">
+            <div className="EndpointsTable" >
                 <TextField
                 id="filter"
                 label="Filter endpoints"
