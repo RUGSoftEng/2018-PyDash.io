@@ -191,12 +191,7 @@ class LoginPage extends Component {
                               </InputAdornment>
                             ),
                           }}
-                  
                     />
-
-
-
-
                     {(this.state.isPasswordUnsafe ?
                       <p className="password-safety-warning" >
                           <Warning /><br/>
