@@ -41,7 +41,7 @@ const styles = theme => ({
       },
       textpanel: {
         width: '200px',
-        marginLeft: '45%',
+        
 
              },
 });
@@ -155,9 +155,9 @@ class LoginPage extends Component {
                     <img alt="PyDash logo" width="200" src={Logo} />
                 </header>
 
-                <form onSubmit={this.tryLogin} className={classes.textpanel}>
+                <form onSubmit={this.tryLogin} >
                     <br />
-                    <TextField
+                    <TextField className={classes.textpanel}
                         id="username"
                         label="Username"
                         value={this.state.username}
@@ -167,7 +167,7 @@ class LoginPage extends Component {
                         error={this.state.error}
                     />
                     <br />
-                    <TextField 
+                    <TextField className={classes.textpanel}
                         id="password"
                         label="Password"
                         value={this.state.password}
