@@ -79,12 +79,6 @@ def delete_dashboard(dashboard_id):
     return controller.delete_dashboard(dashboard_id)
 
 
-@api.route("/api/dashboards/<dashboard_id>/endpoint_boxplots", methods=["GET"])
-@login_required
-def get_endpoint_boxplots(dashboard_id):
-    return controller.endpoint_boxplots(dashboard_id)
-
-
 @api.route("/api/dashboards/<dashboard_id>/visitor_heatmap", methods=["GET"])
 @login_required
 def get_visitor_heatmap(dashboard_id):
@@ -95,6 +89,18 @@ def get_visitor_heatmap(dashboard_id):
 @login_required
 def get_unique_visitor_heatmap(dashboard_id):
     return controller.visitor_heatmap(dashboard_id, 'unique_visitors')
+
+
+@api.route("/api/dashboards/<dashboard_id>/endpoint_execution_times_boxplots", methods=["GET"])
+@login_required
+def get_endpoint_execution_times_boxplots(dashboard_id):
+    return controller.endpoint_execution_times_boxplots(dashboard_id)
+
+
+@api.route("/api/dashboards/<dashboard_id>/endpoints/<endpoint_name>/execution_times_boxplot", methods=["GET"])
+@login_required
+def get_execution_times_boxplot(dashboard_id, endpoint_name):
+    return controller.endpoint_execution_times_boxplots(dashboard_id, endpoint_name)
 
 
 @api.route("/api/dashboards/<dashboard_id>/execution_times_per_version", methods=["GET"])
