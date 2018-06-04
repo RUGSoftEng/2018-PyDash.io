@@ -64,7 +64,7 @@ def dashboard(dashboard_id):
       datetimes like '2018-05-29T15:45')
 
 
-    Note that if the dashboard has not yet received any endpoint calls, it will simply return {"message": "Dashboard is empty"}
+    Note that if the dashboard has not yet received any endpoint calls, it will simply return an empty dictionary.
     """
     # Check dashboard_id
     valid_dashboard, result, http_error = pydash_app.dashboard.find_verified_dashboard(dashboard_id)
@@ -76,7 +76,7 @@ def dashboard(dashboard_id):
     first_endpoint_call_time = valid_dashboard.first_endpoint_call_time()
     if not first_endpoint_call_time:
         logger.info(f"Retrieved empty dashboard {valid_dashboard}")
-        result = {"message": "Dashboard is empty"}
+        result = {}
         return jsonify(result), 200
 
     statistic = params.get('statistic')
