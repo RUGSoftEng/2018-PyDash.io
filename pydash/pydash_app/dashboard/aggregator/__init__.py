@@ -48,18 +48,7 @@ class Aggregator(persistent.Persistent):
         })
         for endpoint_call in endpoint_calls:
             self.add_endpoint_call(endpoint_call)
-
-    # Workaround for aggregator problem #323 for now
-        from collections import defaultdict
-        self._visits_per_day_dict = defaultdict(int)
-        self._visits_per_day = defaultdict(int)
-        self._visits_per_ip = defaultdict(int)
-        self._unique_visitors = 0
-        self._unique_visitors_set = set()
-        self._unique_visitors_per_day = defaultdict(int)
-        self._unique_visitors_per_day_set = defaultdict(set)
-
-    # Workaround stops here
+    
 
     def add_endpoint_call(self, endpoint_call):
         """
@@ -73,16 +62,6 @@ class Aggregator(persistent.Persistent):
         self.endpoint_calls.append(endpoint_call)
         self._p_changed = True  # ZODB mark object as changed
 
-    #Workaround here again
-        date = endpoint_call.time.date()
-        self._visits_per_day_dict[date] += 1
-        self._visits_per_day = date_dict(self._visits_per_day_dict)
-        self._visits_per_ip[endpoint_call.ip] += 1
-        self._unique_visitors_set.add(endpoint_call.ip)
-        self._unique_visitors = len(self._unique_visitors_set)
-        self._unique_visitors_per_day_set[date].add(endpoint_call.ip)
-        self._unique_visitors_per_day = date_dict({k: len(v) for k, v in self._unique_visitors_per_day_set.items()})
-    #Workaround stops here again
 
     def as_dict(self):
         """
