@@ -22,7 +22,7 @@ class EndpointsTable extends Component {
 
     render = () => {
         console.log("ENDPOINTS TABLE", this.props.data);
-        if(this.props.data.length === 0) {
+        if(this.props.data === undefined || this.props.data.length === 0) {
             return (
                 <em>
                     No Endpoints could currently be found for this Dashboard.
