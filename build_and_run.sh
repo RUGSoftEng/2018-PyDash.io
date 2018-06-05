@@ -100,6 +100,14 @@ RunTests()
     PydashPrint "Done!"
 }
 
+RunProduction()
+{
+
+    source /home/pydash/.bashrc
+    RunDatabase
+    RunFlask
+}
+
 
 if [ $# -gt 0 ];
 then
@@ -121,6 +129,10 @@ then
         if [ $i == "databasebg" ];
         then
             RunDatabase
+        fi
+        if [ $i == "production" ];
+        then
+            RunProduction
         fi
         if [ $i == "server" ];
         then
