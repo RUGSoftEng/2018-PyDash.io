@@ -19,7 +19,8 @@ def seed():
 
     repository.clear_all()
 
-    for user in user_repository.all():
+    # for user in user_repository.all():
+    for user in [user_repository.find_by_name("Arjan")]:
         dashboard_new = Dashboard('http://flask-sample.koenbolhuis.nl/dashboard',
                                   'cc83733cb0af8b884ff6577086b87909',
                                   user.get_id(),
