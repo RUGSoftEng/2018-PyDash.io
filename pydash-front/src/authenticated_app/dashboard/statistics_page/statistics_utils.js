@@ -38,12 +38,29 @@ function getDateString(timeslice) {
     return dateString;
 }
 
+// function getGranularity(timeslice) {
+//     switch (timeslice) {
+//     case "hour":
+//         return "minute";
+//     case "day":
+//         return "hour";
+//     case "week":
+//         return "day";
+//     case "month":
+//         return "day";
+//     case "year":
+//         return "month";
+//     default:
+//         return "day";
+//     }
+// }
+
 async function requestStatisticData(dashboard_id, statistic, timeslice, callback) {
     let dateString = getDateString(timeslice);
     return await axios({
         method: 'get',
         withCredentials: true,
-        url: window.api_path + '/api/dashboards/' + dashboard_id + '?statistic=' + statistic + '&timeslice=' + timeslice + dateString,
+        url: window.api_path + '/api/dashboards/' + dashboard_id + '?statistic=' + statistic + '&timeslice=' + timeslice + '&granularity=' + timeslice + dateString,
     }).then((response) => {
         console.log("Statistics data returned: ", response);
         const timeslice_statistics_data = dict_to_xy_arr(response.data);
