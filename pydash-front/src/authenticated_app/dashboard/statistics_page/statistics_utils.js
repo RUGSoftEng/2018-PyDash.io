@@ -17,7 +17,7 @@ function getDateString(timeslice) {
             date.setDate(date.getDate() - 56);
             break;
         case "month":
-            date.setMonth(date.getMonth() - 13);
+            date.setMonth(date.getMonth() - 12);
             console.log("calculated date: ", date);
             break;
         case "year":
