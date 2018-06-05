@@ -28,7 +28,11 @@ def seed():
                                   'cc83733cb0af8b884ff6577086b87909',
                                   user.get_id(),
                                   'Unsupported Dashboard (FMD v1.11.5)')
-        for dashboard in [dashboard_new, dashboard_old]:
+        zeeguu = Dashboard('https://zeeguu.unibe.ch/api/dashboard',
+                                  'cc83733cb0af8b884ff6577086b87909',
+                                  user.get_id(),
+                                  'Zeeguu')
+        for dashboard in [dashboard_new, dashboard_old, zeeguu]:
             print(f'Adding dashboard {dashboard}')
             repository.add(dashboard)
             print(f'Fetching remote info for dashboard {dashboard}.')
