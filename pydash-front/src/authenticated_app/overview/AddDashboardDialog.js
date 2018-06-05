@@ -85,7 +85,7 @@ class AddDashboardDialog extends Component {
         }
         return 1;
     }
-https://se2018-pydashio.slack.com/messages/C9A0LP9HV/
+
     resetState = () => {
         this.setState(prevState => ({
             ...prevState,
@@ -132,13 +132,12 @@ https://se2018-pydashio.slack.com/messages/C9A0LP9HV/
     tryCreation = (e) => {
         e.preventDefault();
 
-        this.resetState()
         if(this.preventEmpty()===0){
             return;
         }
 
         this.registerCall()
-        
+        this.resetState()
     }
 
     render() {
