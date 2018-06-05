@@ -102,8 +102,10 @@ RunTests()
 
 RunProduction()
 {
-
-    source /home/pydash/.bashrc
+    PydashPrint "Starting Production Server..."
+    export FLASK_DEBUG=0;
+    export FLASK_ENV=production;
+    export ENV=production;
     RunDatabase
     RunFlask
 }
