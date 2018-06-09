@@ -32,7 +32,7 @@ class EndpointsTable extends Component {
 
         return (
 
-            <div className="EndpointsTable">
+            <div className="EndpointsTable" >
                 <TextField
                 id="filter"
                 label="Filter endpoints"
@@ -80,31 +80,6 @@ class EndpointsTable extends Component {
                     )}
 
                 </table>
-                {/*<Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell></TableCell>
-                            <WideTableCell>Number of hits</WideTableCell>
-                            <WideTableCell>Median response time</WideTableCell>
-                            <TableCell></TableCell>
-                            <TableCell></TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>Endpoint</TableCell>
-                            <TableCell>Today</TableCell>
-                            <TableCell>Last 7 days</TableCell>
-                            <TableCell>Overall</TableCell>
-                            <TableCell>Today</TableCell>
-                            <TableCell>Last 7 days</TableCell>
-                            <TableCell>Overall</TableCell>
-                            <TableCell>Last accessed</TableCell>
-                            <TableCell>Details</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                                                
-                    </TableBody>
-                </Table>*/}
             </div>
         );
     }

@@ -17,7 +17,6 @@ async function tryLogin(){
         // Make a request for a user with a given ID
         axios.post(window.api_path + '/api/login', {}, {withCredentials: true})
              .then((response) => {
-                 console.log('person logged in', response);
                  resolve({
                      isAuthenticated: true,
                      username: response.data.user.username
@@ -25,7 +24,6 @@ async function tryLogin(){
                  /* renderReact({isAuthenticated: true, username: response.data.user.username});*/
              })
              .catch((error) => {
-                 console.log('person not logged in', error);
                  resolve({
                      isAuthenticated: false,
                      username: null

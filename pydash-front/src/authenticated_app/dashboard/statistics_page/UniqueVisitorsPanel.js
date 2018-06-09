@@ -17,7 +17,7 @@ import VisitsGraph from './VisitsGraph';
 
 
 class UniqueVisitsFetcher extends StatisticFetcher {
-    statistic_name = "unique_visitors_per_day";
+    statistic_name = "unique_visitors";
 
     render = () => {
         console.log("statistic data:", this.state.statistic_data);
