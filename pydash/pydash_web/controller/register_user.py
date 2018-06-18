@@ -2,7 +2,7 @@
 Manages the registration of a new user.
 """
 
-from flask import jsonify, request
+from flask import jsonify, request, current_app
 from flask_mail import Message
 from pydash_mail import mail
 from pydash_mail.templates import format_verification_mail_html, format_verification_mail_plain
@@ -57,6 +57,8 @@ def register_user():
                                  user.get_verification_code_expiration_date(),
                                  email_address,
                                  user.name)
+        result = {'message': 'Registration success.'}
+        return jsonify(result), 200
 
 
 def _send_verification_email(verification_code, expiration_date, recipient_email_address, username):
@@ -71,8 +73,8 @@ def _send_verification_email(verification_code, expiration_date, recipient_email
     message_recipients = [recipient_email_address]
     expiration_date = expiration_date.ctime() + ' GMT+0000'
 
-    protocol = 'http'  # this or https  #Todo: change to https once that has been set up.
-    host = 'localhost:5000'  # Todo: change from localhost to deployment server once that has been set up.
+    protocol = current_app.config.get('MAIL_PROTOCOL')
+    host = current_app.config.get('MAIL_PYDASH_HOST')
     verification_url = f'{protocol}://{host}/verify/{verification_code}'
 
     message_plain = format_verification_mail_plain(username, verification_url, expiration_date)
