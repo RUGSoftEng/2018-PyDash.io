@@ -100,6 +100,17 @@ RunTests()
     PydashPrint "Done!"
 }
 
+BuildDocumentation()
+{
+    RunDatabase
+    PydashPrint "Starting Documentation generation"
+    cd pydash/sphinx_docs
+    pipenv run make latexpdf
+    xdg-open ./_build/latex/PyDash.pdf
+    cd ../..
+    PydashPrint "Resulting PDF can be found in ./pydash/sphinx_docs/_build/latex/PyDash.pdf"
+}
+
 
 if [ $# -gt 0 ];
 then
@@ -138,6 +149,10 @@ then
         if [ $i == "shell" ];
         then
             RunFlaskConsole
+        fi
+	if [ $i == "documentation" ];
+	then
+	    BuildDocumentation
         fi
     done;
     PydashPrint "Done! Goodbye :-)"
