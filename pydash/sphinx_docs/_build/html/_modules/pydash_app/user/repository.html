@@ -1,0 +1,273 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pydash_app.user.repository &#8212; PyDash 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pydash_app.user.repository</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module handles the persistence of `User` entities:</span>
+
+<span class="sd">It is an adapter of the actual persistence layer, to insulate the application</span>
+<span class="sd">from datastore-specific details.</span>
+
+<span class="sd">It handles a subset of the following tasks</span>
+<span class="sd">(specifically, it only actually contains functions for the tasks the application needs in its current state!):</span>
+<span class="sd">- Creating new entities of the specified type</span>
+<span class="sd">- Finding them based on certain attributes</span>
+<span class="sd">- Persisting updated versions of existing entities.</span>
+<span class="sd">- Deleting entities from the persistence layer.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">import</span> <span class="nn">transaction</span>
+<span class="kn">from</span> <span class="nn">pydash_database</span> <span class="k">import</span> <span class="n">database_root</span><span class="p">,</span> <span class="n">MultiIndexedPersistentCollection</span>
+<span class="kn">from</span> <span class="nn">multi_indexed_collection</span> <span class="k">import</span> <span class="n">DuplicateIndexError</span>
+
+<span class="kn">from</span> <span class="nn">.entity</span> <span class="k">import</span> <span class="n">User</span>
+
+
+<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">database_root</span><span class="p">(),</span> <span class="s1">&#39;users&#39;</span><span class="p">):</span>
+    <span class="n">transaction</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
+    <span class="n">database_root</span><span class="p">()</span><span class="o">.</span><span class="n">users</span> <span class="o">=</span> <span class="n">MultiIndexedPersistentCollection</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;_verification_code&#39;</span><span class="p">})</span>
+    <span class="n">transaction</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="find"><a class="viewcode-back" href="../../../pydash_app.user.html#pydash_app.user.repository.find">[docs]</a><span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finds a user in the database.</span>
+<span class="sd">    :param user_id: UUID for the user to be retrieved.</span>
+<span class="sd">    :return: User object or None if no user could be found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Ensure that also callable with strings or integers:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+        <span class="n">user_id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">database_root</span><span class="p">()</span><span class="o">.</span><span class="n">users</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">user_id</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="find_by_name"><a class="viewcode-back" href="../../../pydash_app.user.html#pydash_app.user.repository.find_by_name">[docs]</a><span class="k">def</span> <span class="nf">find_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a single User-entity with the given `name`, or None if it could not be found.</span>
+
+<span class="sd">    name -- Name of the user we hope to find.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">database_root</span><span class="p">()</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="find_by_verification_code"><a class="viewcode-back" href="../../../pydash_app.user.html#pydash_app.user.repository.find_by_verification_code">[docs]</a><span class="k">def</span> <span class="nf">find_by_verification_code</span><span class="p">(</span><span class="n">verification_code</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a single User-entity with the given `verification_code`, or None if it could not be found.</span>
+<span class="sd">    The latter case might indicate that the user does not exist, or that the verification code has expired.</span>
+<span class="sd">    :param verification_code: The verification code of the user we hope to find.</span>
+<span class="sd">    Should be a pydash_app.user.verification_code.VerificationCode object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">database_root</span><span class="p">()</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;_verification_code&#39;</span><span class="p">,</span> <span class="n">verification_code</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="all"><a class="viewcode-back" href="../../../pydash_app.user.html#pydash_app.user.repository.all">[docs]</a><span class="k">def</span> <span class="nf">all</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a (lazy) collection of all users (in no guaranteed order).</span>
+
+<span class="sd">    &gt;&gt;&gt; list(all())</span>
+<span class="sd">    []</span>
+<span class="sd">    &gt;&gt;&gt; gandalf = User(&quot;Gandalf&quot;, &quot;pass&quot;, &#39;some@email.com&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; dumbledore = User(&quot;Dumbledore&quot;, &quot;secret&quot;, &#39;some@email.com&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; add(gandalf)</span>
+<span class="sd">    &gt;&gt;&gt; add(dumbledore)</span>
+<span class="sd">    &gt;&gt;&gt; sorted([user.name for user in all()])</span>
+<span class="sd">    [&#39;Dumbledore&#39;, &#39;Gandalf&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; clear_all()</span>
+<span class="sd">    &gt;&gt;&gt; sorted([user.name for user in all()])</span>
+<span class="sd">    []</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">database_root</span><span class="p">()</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">values</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="all_unverified"><a class="viewcode-back" href="../../../pydash_app.user.html#pydash_app.user.repository.all_unverified">[docs]</a><span class="k">def</span> <span class="nf">all_unverified</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Returns a collection of all unverified users (in no guaranteed order).&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">database_root</span><span class="p">()</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s1">&#39;_verification_code&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="add"><a class="viewcode-back" href="../../../pydash_app.user.html#pydash_app.user.repository.add">[docs]</a><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds the User-entity to the repository. Will raise a (KeyError, DuplicateIndexError) tuple on failure.</span>
+<span class="sd">    :param user: The User-entity to add.</span>
+
+<span class="sd">    &gt;&gt;&gt; list(all())</span>
+<span class="sd">    []</span>
+<span class="sd">    &gt;&gt;&gt; gandalf = User(&quot;Gandalf&quot;, &quot;pass&quot;, &#39;some@email.com&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; dumbledore = User(&quot;Dumbledore&quot;, &quot;secret&quot;, &#39;some@email.com&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; add(gandalf)</span>
+<span class="sd">    &gt;&gt;&gt; add(dumbledore)</span>
+<span class="sd">    &gt;&gt;&gt; sorted([user.name for user in all()])</span>
+<span class="sd">    [&#39;Dumbledore&#39;, &#39;Gandalf&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">transaction</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
+        <span class="n">database_root</span><span class="p">()</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">transaction</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="n">DuplicateIndexError</span><span class="p">):</span>
+        <span class="n">transaction</span><span class="o">.</span><span class="n">abort</span><span class="p">()</span>
+        <span class="k">raise</span></div>
+
+
+<span class="k">def</span> <span class="nf">_delete</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes the provided User-entity from the repository. Will raise a KeyError if said user is not in the repository.</span>
+<span class="sd">    :param user: The User-entity to remove.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">transaction</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
+        <span class="n">database_root</span><span class="p">()</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">transaction</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">transaction</span><span class="o">.</span><span class="n">abort</span><span class="p">()</span>
+        <span class="k">raise</span>
+
+
+<div class="viewcode-block" id="delete_by_id"><a class="viewcode-back" href="../../../pydash_app.user.html#pydash_app.user.repository.delete_by_id">[docs]</a><span class="k">def</span> <span class="nf">delete_by_id</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes the User-entity whose user_id is `user_id` from the repository.</span>
+<span class="sd">    Will raise a KeyError if said user is not in the repository.</span>
+<span class="sd">    Note that this might also occur when delete_by_id(user_id) is called in the middle of the deletion,</span>
+<span class="sd">     in a multiprocessing environment.</span>
+<span class="sd">    :param user_id: The ID of the User-entity to be removed. This can be either a UUID-entity or the corresponding</span>
+<span class="sd">        string representation.</span>
+
+<span class="sd">    &gt;&gt;&gt; gandalf = User(&quot;Gandalf&quot;, &quot;pass&quot;, &#39;some@email.com&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; add(gandalf)</span>
+<span class="sd">    &gt;&gt;&gt; find_by_name(&quot;Gandalf&quot;) == gandalf</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; delete_by_id(gandalf.get_id())</span>
+<span class="sd">    &gt;&gt;&gt; find_by_name(&quot;Gandalf&quot;) == gandalf</span>
+<span class="sd">    False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Ensure that also callable with strings or integers:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+        <span class="n">user_id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>  <span class="c1"># In case user is already deleted due to potential multiprocessing issues.</span>
+            <span class="n">_delete</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span></div>
+
+
+<div class="viewcode-block" id="update"><a class="viewcode-back" href="../../../pydash_app.user.html#pydash_app.user.repository.update">[docs]</a><span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Changes the user&#39;s information</span>
+
+
+<span class="sd">    &gt;&gt;&gt; gandalf = User(&quot;GandalfTheGrey&quot;, &quot;pass&quot;, &#39;some@email.com&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; add(gandalf)</span>
+<span class="sd">    &gt;&gt;&gt; gandalf.name = &quot;GandalfTheWhite&quot;</span>
+<span class="sd">    &gt;&gt;&gt; update(gandalf)</span>
+<span class="sd">    &gt;&gt;&gt; find_by_name(&quot;GandalfTheGrey&quot;) == gandalf</span>
+<span class="sd">    False</span>
+<span class="sd">    &gt;&gt;&gt; find_by_name(&quot;GandalfTheWhite&quot;) == gandalf</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transaction</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="n">transaction</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">attempts</span><span class="p">():</span>
+        <span class="k">with</span> <span class="n">attempt</span><span class="p">:</span>
+            <span class="n">database_root</span><span class="p">()</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">update_item</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">transaction</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="clear_all"><a class="viewcode-back" href="../../../pydash_app.user.html#pydash_app.user.repository.clear_all">[docs]</a><span class="k">def</span> <span class="nf">clear_all</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Flushes the database.</span>
+
+<span class="sd">    &gt;&gt;&gt; gandalf = User(&quot;Gandalf&quot;, &quot;pass&quot;, &#39;some@email.com&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; dumbledore = User(&quot;Dumbledore&quot;, &quot;secret&quot;, &#39;some@email.com&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; add(gandalf)</span>
+<span class="sd">    &gt;&gt;&gt; add(dumbledore)</span>
+<span class="sd">    &gt;&gt;&gt; sorted([user.name for user in all()])</span>
+<span class="sd">    [&#39;Dumbledore&#39;, &#39;Gandalf&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; clear_all()</span>
+<span class="sd">    &gt;&gt;&gt; list(all())</span>
+<span class="sd">    []</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">transaction</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
+    <span class="n">database_root</span><span class="p">()</span><span class="o">.</span><span class="n">users</span> <span class="o">=</span> <span class="n">MultiIndexedPersistentCollection</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;_verification_code&#39;</span><span class="p">})</span>
+    <span class="n">transaction</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../../pydash_app.html">pydash_app</a><ul>
+  <li><a href="../user.html">pydash_app.user</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, The PyDash Team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

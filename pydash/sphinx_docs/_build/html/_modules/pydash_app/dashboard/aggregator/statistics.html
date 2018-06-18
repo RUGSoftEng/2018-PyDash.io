@@ -1,0 +1,445 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pydash_app.dashboard.aggregator.statistics &#8212; PyDash 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pydash_app.dashboard.aggregator.statistics</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">tdigest</span> <span class="k">import</span> <span class="n">tdigest</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">trunc</span>
+
+<span class="kn">import</span> <span class="nn">persistent</span>
+
+
+<div class="viewcode-block" id="reduce_precision"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.reduce_precision">[docs]</a><span class="k">def</span> <span class="nf">reduce_precision</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">nr_of_digits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reduces the precision of `value` based on the amount of non-zero digits before the decimal point</span>
+<span class="sd">    and `nr_of_digits`.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">    &gt;&gt;&gt; x = 2/3</span>
+<span class="sd">    &gt;&gt;&gt; reduce_precision(x, 3)</span>
+<span class="sd">    0.67</span>
+<span class="sd">    &gt;&gt;&gt; x = 1234.5678</span>
+<span class="sd">    &gt;&gt;&gt; reduce_precision(x, 3)</span>
+<span class="sd">    1235</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">trunc</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">nr_of_digits</span><span class="o">-</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">trunc</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="date_dict"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.date_dict">[docs]</a><span class="k">def</span> <span class="nf">date_dict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+    <span class="c1"># JS expects dates in the ISO 8601 Date format (example: 2018-03)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
+
+
+<div class="viewcode-block" id="Statistic"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.Statistic">[docs]</a><span class="k">class</span> <span class="nc">Statistic</span><span class="p">(</span><span class="n">persistent</span><span class="o">.</span><span class="n">Persistent</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">should_be_rendered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Note: implementing subclasses should add the @property decorator.</span>
+<span class="sd">        There was some strange behaviour where without adding the decorator,</span>
+<span class="sd">        subclasses implementing it as `return True` behaved normally, but those implementing it as `return False` still</span>
+<span class="sd">        were treated as if it returned True. Adding the @property decorator fixed it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="Statistic.empty"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.Statistic.empty">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Statistic.append"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.Statistic.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint_call</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">perform_append</span><span class="p">(</span><span class="n">endpoint_call</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_p_changed</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># ZODB mark object as changed</span></div>
+
+<div class="viewcode-block" id="Statistic.perform_append"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.Statistic.perform_append">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">perform_append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint_call</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Statistic.field_name"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.Statistic.field_name">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">field_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Statistic.rendered_value"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.Statistic.rendered_value">[docs]</a>    <span class="k">def</span> <span class="nf">rendered_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span></div>
+
+<div class="viewcode-block" id="Statistic.add_to_collection"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.Statistic.add_to_collection">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">add_to_collection</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;cls should only be a class instead of an instance.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">dependency</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">dependencies</span><span class="p">:</span>
+            <span class="n">dependency</span><span class="o">.</span><span class="n">add_to_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
+        <span class="n">collection</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Statistic.add_together"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.Statistic.add_together">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">add_together</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">dependencies_self</span><span class="p">,</span> <span class="n">dependencies_other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Should return a new statistic where the internals of self and other are added together.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="FloatStatisticABC"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.FloatStatisticABC">[docs]</a><span class="k">class</span> <span class="nc">FloatStatisticABC</span><span class="p">(</span><span class="n">Statistic</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The FloatStatisticABC is the abstract base class for statistics that render a single floating point number.</span>
+<span class="sd">    It specifies the default amount of digits to round its rendered value to as 3.</span>
+<span class="sd">    (E.g. 2.54, 123, 0.3, but not 0.123)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nr_of_digits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">3</span>
+
+<div class="viewcode-block" id="FloatStatisticABC.rendered_value"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.FloatStatisticABC.rendered_value">[docs]</a>    <span class="k">def</span> <span class="nf">rendered_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">reduce_precision</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nr_of_digits</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="TotalVisits"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.TotalVisits">[docs]</a><span class="k">class</span> <span class="nc">TotalVisits</span><span class="p">(</span><span class="n">Statistic</span><span class="p">):</span>
+<div class="viewcode-block" id="TotalVisits.should_be_rendered"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.TotalVisits.should_be_rendered">[docs]</a>    <span class="k">def</span> <span class="nf">should_be_rendered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="TotalVisits.empty"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.TotalVisits.empty">[docs]</a>    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="TotalVisits.field_name"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.TotalVisits.field_name">[docs]</a>    <span class="k">def</span> <span class="nf">field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;total_visits&#39;</span></div>
+
+<div class="viewcode-block" id="TotalVisits.perform_append"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.TotalVisits.perform_append">[docs]</a>    <span class="k">def</span> <span class="nf">perform_append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint_call</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="TotalVisits.add_together"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.TotalVisits.add_together">[docs]</a>    <span class="k">def</span> <span class="nf">add_together</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">dependencies_self</span><span class="p">,</span> <span class="n">dependencies_other</span><span class="p">):</span>
+        <span class="n">tv</span> <span class="o">=</span> <span class="n">TotalVisits</span><span class="p">()</span>
+        <span class="n">tv</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="n">tv</span></div></div>
+
+
+<div class="viewcode-block" id="TotalExecutionTime"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.TotalExecutionTime">[docs]</a><span class="k">class</span> <span class="nc">TotalExecutionTime</span><span class="p">(</span><span class="n">FloatStatisticABC</span><span class="p">):</span>
+<div class="viewcode-block" id="TotalExecutionTime.should_be_rendered"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.TotalExecutionTime.should_be_rendered">[docs]</a>    <span class="k">def</span> <span class="nf">should_be_rendered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="TotalExecutionTime.empty"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.TotalExecutionTime.empty">[docs]</a>    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="TotalExecutionTime.field_name"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.TotalExecutionTime.field_name">[docs]</a>    <span class="k">def</span> <span class="nf">field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;total_execution_time&#39;</span></div>
+
+<div class="viewcode-block" id="TotalExecutionTime.perform_append"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.TotalExecutionTime.perform_append">[docs]</a>    <span class="k">def</span> <span class="nf">perform_append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint_call</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">+=</span> <span class="n">endpoint_call</span><span class="o">.</span><span class="n">execution_time</span></div>
+
+<div class="viewcode-block" id="TotalExecutionTime.add_together"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.TotalExecutionTime.add_together">[docs]</a>    <span class="k">def</span> <span class="nf">add_together</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">dependencies_self</span><span class="p">,</span> <span class="n">dependencies_other</span><span class="p">):</span>
+        <span class="n">te</span> <span class="o">=</span> <span class="n">TotalExecutionTime</span><span class="p">()</span>
+        <span class="n">te</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="n">te</span></div></div>
+
+
+<div class="viewcode-block" id="AverageExecutionTime"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.AverageExecutionTime">[docs]</a><span class="k">class</span> <span class="nc">AverageExecutionTime</span><span class="p">(</span><span class="n">FloatStatisticABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Keeps track of the average execution time of all endpoints that have been appended to it.</span>
+<span class="sd">    Rendered value is rounded to 3 decimal places by default.&quot;&quot;&quot;</span>
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="n">TotalVisits</span><span class="p">,</span> <span class="n">TotalExecutionTime</span><span class="p">]</span>
+
+<div class="viewcode-block" id="AverageExecutionTime.should_be_rendered"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.AverageExecutionTime.should_be_rendered">[docs]</a>    <span class="k">def</span> <span class="nf">should_be_rendered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="AverageExecutionTime.empty"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.AverageExecutionTime.empty">[docs]</a>    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="AverageExecutionTime.field_name"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.AverageExecutionTime.field_name">[docs]</a>    <span class="k">def</span> <span class="nf">field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;average_execution_time&#39;</span></div>
+
+<div class="viewcode-block" id="AverageExecutionTime.perform_append"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.AverageExecutionTime.perform_append">[docs]</a>    <span class="k">def</span> <span class="nf">perform_append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint_call</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">dependencies</span><span class="p">[</span><span class="n">TotalVisits</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">dependencies</span><span class="p">[</span><span class="n">TotalExecutionTime</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="n">dependencies</span><span class="p">[</span><span class="n">TotalVisits</span><span class="p">]</span><span class="o">.</span><span class="n">value</span></div>
+
+<div class="viewcode-block" id="AverageExecutionTime.add_together"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.AverageExecutionTime.add_together">[docs]</a>    <span class="k">def</span> <span class="nf">add_together</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">dependencies_self</span><span class="p">,</span> <span class="n">dependencies_other</span><span class="p">):</span>
+        <span class="n">aet</span> <span class="o">=</span> <span class="n">AverageExecutionTime</span><span class="p">()</span>
+        <span class="n">self_tv</span> <span class="o">=</span> <span class="n">dependencies_self</span><span class="p">[</span><span class="n">TotalVisits</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">other_tv</span> <span class="o">=</span> <span class="n">dependencies_other</span><span class="p">[</span><span class="n">TotalVisits</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">self_tet</span> <span class="o">=</span> <span class="n">dependencies_self</span><span class="p">[</span><span class="n">TotalExecutionTime</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">other_tet</span> <span class="o">=</span> <span class="n">dependencies_other</span><span class="p">[</span><span class="n">TotalExecutionTime</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="k">if</span> <span class="n">self_tv</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">aet</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">elif</span> <span class="n">other_tv</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">aet</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">aet</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">self_tet</span> <span class="o">+</span> <span class="n">other_tet</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">self_tv</span> <span class="o">+</span> <span class="n">other_tv</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">aet</span></div></div>
+
+
+<div class="viewcode-block" id="VisitsPerIP"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.VisitsPerIP">[docs]</a><span class="k">class</span> <span class="nc">VisitsPerIP</span><span class="p">(</span><span class="n">Statistic</span><span class="p">):</span>
+<div class="viewcode-block" id="VisitsPerIP.should_be_rendered"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.VisitsPerIP.should_be_rendered">[docs]</a>    <span class="k">def</span> <span class="nf">should_be_rendered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="VisitsPerIP.empty"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.VisitsPerIP.empty">[docs]</a>    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VisitsPerIP.field_name"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.VisitsPerIP.field_name">[docs]</a>    <span class="k">def</span> <span class="nf">field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;visits_per_ip&#39;</span></div>
+
+<div class="viewcode-block" id="VisitsPerIP.perform_append"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.VisitsPerIP.perform_append">[docs]</a>    <span class="k">def</span> <span class="nf">perform_append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint_call</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="n">endpoint_call</span><span class="o">.</span><span class="n">ip</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="VisitsPerIP.rendered_value"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.VisitsPerIP.rendered_value">[docs]</a>    <span class="k">def</span> <span class="nf">rendered_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VisitsPerIP.add_together"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.VisitsPerIP.add_together">[docs]</a>    <span class="k">def</span> <span class="nf">add_together</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">dependencies_self</span><span class="p">,</span> <span class="n">dependencies_other</span><span class="p">):</span>
+        <span class="n">vpd</span> <span class="o">=</span> <span class="n">VisitsPerIP</span><span class="p">()</span>
+        <span class="n">keyset</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keyset</span><span class="p">:</span>
+            <span class="n">vpd</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">vpd</span></div></div>
+
+
+<div class="viewcode-block" id="UniqueVisitorsAllTime"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.UniqueVisitorsAllTime">[docs]</a><span class="k">class</span> <span class="nc">UniqueVisitorsAllTime</span><span class="p">(</span><span class="n">Statistic</span><span class="p">):</span>
+<div class="viewcode-block" id="UniqueVisitorsAllTime.should_be_rendered"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.UniqueVisitorsAllTime.should_be_rendered">[docs]</a>    <span class="k">def</span> <span class="nf">should_be_rendered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="UniqueVisitorsAllTime.empty"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.UniqueVisitorsAllTime.empty">[docs]</a>    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="UniqueVisitorsAllTime.field_name"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.UniqueVisitorsAllTime.field_name">[docs]</a>    <span class="k">def</span> <span class="nf">field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;unique_visitors&#39;</span></div>
+
+<div class="viewcode-block" id="UniqueVisitorsAllTime.perform_append"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.UniqueVisitorsAllTime.perform_append">[docs]</a>    <span class="k">def</span> <span class="nf">perform_append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint_call</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">endpoint_call</span><span class="o">.</span><span class="n">ip</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UniqueVisitorsAllTime.rendered_value"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.UniqueVisitorsAllTime.rendered_value">[docs]</a>    <span class="k">def</span> <span class="nf">rendered_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UniqueVisitorsAllTime.add_together"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.UniqueVisitorsAllTime.add_together">[docs]</a>    <span class="k">def</span> <span class="nf">add_together</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">dependencies_self</span><span class="p">,</span> <span class="n">dependencies_other</span><span class="p">):</span>
+        <span class="n">uvat</span> <span class="o">=</span> <span class="n">UniqueVisitorsAllTime</span><span class="p">()</span>
+        <span class="n">uvat</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">uvat</span></div></div>
+
+
+<div class="viewcode-block" id="ExecutionTimeTDigest"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.ExecutionTimeTDigest">[docs]</a><span class="k">class</span> <span class="nc">ExecutionTimeTDigest</span><span class="p">(</span><span class="n">Statistic</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Acts as the general execution time tdigest, from which its dependants take their data from.</span>
+<span class="sd">     This class is supposed to be instantiated, but not rendered.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">tdigest</span><span class="o">.</span><span class="n">TDigest</span><span class="p">()</span>
+
+    <span class="nd">@property</span>  <span class="c1"># See Statistic.should_be_rendered</span>
+    <span class="k">def</span> <span class="nf">should_be_rendered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="ExecutionTimeTDigest.empty"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.ExecutionTimeTDigest.empty">[docs]</a>    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># Implemented in order to be able to instantiate this class.</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="ExecutionTimeTDigest.field_name"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.ExecutionTimeTDigest.field_name">[docs]</a>    <span class="k">def</span> <span class="nf">field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># Implemented in order to be able to instantiate this class.</span>
+        <span class="k">return</span> <span class="s1">&#39;execution_time_tdigest&#39;</span></div>
+
+<div class="viewcode-block" id="ExecutionTimeTDigest.perform_append"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.ExecutionTimeTDigest.perform_append">[docs]</a>    <span class="k">def</span> <span class="nf">perform_append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint_call</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">endpoint_call</span><span class="o">.</span><span class="n">execution_time</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ExecutionTimeTDigest.add_together"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.ExecutionTimeTDigest.add_together">[docs]</a>    <span class="k">def</span> <span class="nf">add_together</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">dependencies_self</span><span class="p">,</span> <span class="n">dependencies_other</span><span class="p">):</span>
+        <span class="n">ettd</span> <span class="o">=</span> <span class="n">ExecutionTimeTDigest</span><span class="p">()</span>
+        <span class="n">ettd</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="n">ettd</span></div></div>
+
+
+<div class="viewcode-block" id="ExecutionTimePercentileABC"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.ExecutionTimePercentileABC">[docs]</a><span class="k">class</span> <span class="nc">ExecutionTimePercentileABC</span><span class="p">(</span><span class="n">FloatStatisticABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Abstract base class for execution time percentile statistics.&quot;&quot;&quot;</span>
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="n">ExecutionTimeTDigest</span><span class="p">]</span>
+    <span class="n">_NoDataErrorValue</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">percentile_nr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="ExecutionTimePercentileABC.should_be_rendered"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.ExecutionTimePercentileABC.should_be_rendered">[docs]</a>    <span class="k">def</span> <span class="nf">should_be_rendered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ExecutionTimePercentileABC.empty"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.ExecutionTimePercentileABC.empty">[docs]</a>    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ExecutionTimePercentileABC</span><span class="o">.</span><span class="n">_NoDataErrorValue</span></div>
+
+<div class="viewcode-block" id="ExecutionTimePercentileABC.perform_append"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.ExecutionTimePercentileABC.perform_append">[docs]</a>    <span class="k">def</span> <span class="nf">perform_append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint_call</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">):</span>
+        <span class="c1"># self.percentile_nr is called here, as in child classes it is interpreted as a method instead of a value</span>
+        <span class="c1">#  for some reason.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">dependencies</span><span class="p">[</span><span class="n">ExecutionTimeTDigest</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">percentile_nr</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="ExecutionTimePercentileABC.add_together"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.ExecutionTimePercentileABC.add_together">[docs]</a>    <span class="k">def</span> <span class="nf">add_together</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">dependencies_self</span><span class="p">,</span> <span class="n">dependencies_other</span><span class="p">):</span>
+        <span class="n">etp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+            <span class="n">etp</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># self.percentile_nr is called here, as in child classes it is interpreted as a method instead of a value</span>
+            <span class="c1">#  for some reason.</span>
+            <span class="n">etp</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">dependencies_self</span><span class="p">[</span><span class="n">ExecutionTimeTDigest</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">+</span>
+                         <span class="n">dependencies_other</span><span class="p">[</span><span class="n">ExecutionTimeTDigest</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> \
+                <span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">percentile_nr</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">etp</span></div></div>
+
+
+<div class="viewcode-block" id="FastestExecutionTime"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.FastestExecutionTime">[docs]</a><span class="k">class</span> <span class="nc">FastestExecutionTime</span><span class="p">(</span><span class="n">ExecutionTimePercentileABC</span><span class="p">):</span>
+<div class="viewcode-block" id="FastestExecutionTime.field_name"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.FastestExecutionTime.field_name">[docs]</a>    <span class="k">def</span> <span class="nf">field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;fastest_measured_execution_time&#39;</span></div>
+
+<div class="viewcode-block" id="FastestExecutionTime.percentile_nr"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.FastestExecutionTime.percentile_nr">[docs]</a>    <span class="k">def</span> <span class="nf">percentile_nr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span></div></div>
+
+
+<div class="viewcode-block" id="FastestQuartileExecutionTime"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.FastestQuartileExecutionTime">[docs]</a><span class="k">class</span> <span class="nc">FastestQuartileExecutionTime</span><span class="p">(</span><span class="n">ExecutionTimePercentileABC</span><span class="p">):</span>
+<div class="viewcode-block" id="FastestQuartileExecutionTime.field_name"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.FastestQuartileExecutionTime.field_name">[docs]</a>    <span class="k">def</span> <span class="nf">field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;fastest_quartile_execution_time&#39;</span></div>
+
+<div class="viewcode-block" id="FastestQuartileExecutionTime.percentile_nr"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.FastestQuartileExecutionTime.percentile_nr">[docs]</a>    <span class="k">def</span> <span class="nf">percentile_nr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">25</span></div></div>
+
+
+<div class="viewcode-block" id="MedianExecutionTime"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.MedianExecutionTime">[docs]</a><span class="k">class</span> <span class="nc">MedianExecutionTime</span><span class="p">(</span><span class="n">ExecutionTimePercentileABC</span><span class="p">):</span>
+<div class="viewcode-block" id="MedianExecutionTime.field_name"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.MedianExecutionTime.field_name">[docs]</a>    <span class="k">def</span> <span class="nf">field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;median_execution_time&#39;</span></div>
+
+<div class="viewcode-block" id="MedianExecutionTime.percentile_nr"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.MedianExecutionTime.percentile_nr">[docs]</a>    <span class="k">def</span> <span class="nf">percentile_nr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">50</span></div></div>
+
+
+<div class="viewcode-block" id="SlowestQuartileExecutionTime"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.SlowestQuartileExecutionTime">[docs]</a><span class="k">class</span> <span class="nc">SlowestQuartileExecutionTime</span><span class="p">(</span><span class="n">ExecutionTimePercentileABC</span><span class="p">):</span>
+<div class="viewcode-block" id="SlowestQuartileExecutionTime.field_name"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.SlowestQuartileExecutionTime.field_name">[docs]</a>    <span class="k">def</span> <span class="nf">field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;slowest_quartile_execution_time&#39;</span></div>
+
+<div class="viewcode-block" id="SlowestQuartileExecutionTime.percentile_nr"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.SlowestQuartileExecutionTime.percentile_nr">[docs]</a>    <span class="k">def</span> <span class="nf">percentile_nr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">75</span></div></div>
+
+
+<div class="viewcode-block" id="NinetiethPercentileExecutionTime"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.NinetiethPercentileExecutionTime">[docs]</a><span class="k">class</span> <span class="nc">NinetiethPercentileExecutionTime</span><span class="p">(</span><span class="n">ExecutionTimePercentileABC</span><span class="p">):</span>
+<div class="viewcode-block" id="NinetiethPercentileExecutionTime.field_name"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.NinetiethPercentileExecutionTime.field_name">[docs]</a>    <span class="k">def</span> <span class="nf">field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;ninetieth_percentile_execution_time&#39;</span></div>
+
+<div class="viewcode-block" id="NinetiethPercentileExecutionTime.percentile_nr"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.NinetiethPercentileExecutionTime.percentile_nr">[docs]</a>    <span class="k">def</span> <span class="nf">percentile_nr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">90</span></div></div>
+
+
+<div class="viewcode-block" id="NinetyNinthPercentileExecutionTime"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.NinetyNinthPercentileExecutionTime">[docs]</a><span class="k">class</span> <span class="nc">NinetyNinthPercentileExecutionTime</span><span class="p">(</span><span class="n">ExecutionTimePercentileABC</span><span class="p">):</span>
+<div class="viewcode-block" id="NinetyNinthPercentileExecutionTime.field_name"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.NinetyNinthPercentileExecutionTime.field_name">[docs]</a>    <span class="k">def</span> <span class="nf">field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;ninety-ninth_percentile_execution_time&#39;</span></div>
+
+<div class="viewcode-block" id="NinetyNinthPercentileExecutionTime.percentile_nr"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.NinetyNinthPercentileExecutionTime.percentile_nr">[docs]</a>    <span class="k">def</span> <span class="nf">percentile_nr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">99</span></div></div>
+
+
+<div class="viewcode-block" id="SlowestExecutionTime"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.SlowestExecutionTime">[docs]</a><span class="k">class</span> <span class="nc">SlowestExecutionTime</span><span class="p">(</span><span class="n">ExecutionTimePercentileABC</span><span class="p">):</span>
+<div class="viewcode-block" id="SlowestExecutionTime.field_name"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.SlowestExecutionTime.field_name">[docs]</a>    <span class="k">def</span> <span class="nf">field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;slowest_measured_execution_time&#39;</span></div>
+
+<div class="viewcode-block" id="SlowestExecutionTime.percentile_nr"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.SlowestExecutionTime.percentile_nr">[docs]</a>    <span class="k">def</span> <span class="nf">percentile_nr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">100</span></div></div>
+
+
+<div class="viewcode-block" id="Versions"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.Versions">[docs]</a><span class="k">class</span> <span class="nc">Versions</span><span class="p">(</span><span class="n">Statistic</span><span class="p">):</span>
+<div class="viewcode-block" id="Versions.should_be_rendered"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.Versions.should_be_rendered">[docs]</a>    <span class="k">def</span> <span class="nf">should_be_rendered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Versions.empty"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.Versions.empty">[docs]</a>    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Versions.field_name"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.Versions.field_name">[docs]</a>    <span class="k">def</span> <span class="nf">field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;versions&#39;</span></div>
+
+<div class="viewcode-block" id="Versions.rendered_value"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.Versions.rendered_value">[docs]</a>    <span class="k">def</span> <span class="nf">rendered_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Versions.perform_append"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.Versions.perform_append">[docs]</a>    <span class="k">def</span> <span class="nf">perform_append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint_call</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">endpoint_call</span><span class="o">.</span><span class="n">version</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Versions.add_together"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.statistics.Versions.add_together">[docs]</a>    <span class="k">def</span> <span class="nf">add_together</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">dependencies_self</span><span class="p">,</span> <span class="n">dependencies_other</span><span class="p">):</span>
+        <span class="n">versions</span> <span class="o">=</span> <span class="n">Versions</span><span class="p">()</span>
+        <span class="n">versions</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">versions</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  <li><a href="../../../pydash_app.html">pydash_app</a><ul>
+  <li><a href="../../dashboard.html">pydash_app.dashboard</a><ul>
+  <li><a href="../aggregator.html">pydash_app.dashboard.aggregator</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, The PyDash Team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

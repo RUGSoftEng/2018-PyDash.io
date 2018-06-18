@@ -1,0 +1,167 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pydash_web.controller.register_user &#8212; PyDash 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pydash_web.controller.register_user</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Manages the registration of a new user.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">request</span>
+<span class="kn">from</span> <span class="nn">flask_mail</span> <span class="k">import</span> <span class="n">Message</span>
+<span class="kn">from</span> <span class="nn">pydash_mail</span> <span class="k">import</span> <span class="n">mail</span>
+<span class="kn">from</span> <span class="nn">pydash_mail.templates</span> <span class="k">import</span> <span class="n">format_verification_mail_html</span><span class="p">,</span> <span class="n">format_verification_mail_plain</span>
+
+<span class="kn">import</span> <span class="nn">pydash_app.user</span>
+<span class="kn">import</span> <span class="nn">pydash_logger</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">pydash_logger</span><span class="o">.</span><span class="n">Logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="register_user"><a class="viewcode-back" href="../../../pydash_web.controller.html#pydash_web.controller.register_user.register_user">[docs]</a><span class="k">def</span> <span class="nf">register_user</span><span class="p">():</span>
+    <span class="n">request_data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">(</span><span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">request_data</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;User registration failed - data missing&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Data missing&#39;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span><span class="p">),</span> <span class="mi">400</span>
+
+    <span class="n">username</span> <span class="o">=</span> <span class="n">request_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">)</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">request_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">)</span>
+    <span class="n">email_address</span> <span class="o">=</span> <span class="n">request_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email_address&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">username</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">password</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">email_address</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;User registration failed - username, password or email address missing&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Username, password or email address missing&#39;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span><span class="p">),</span> <span class="mi">400</span>
+
+    <span class="c1"># In case username, password or email_address are &#39;&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">username</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">password</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">email_address</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;User registration failed - username, password or email address cannot be empty&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Username, password or email address cannot be empty&#39;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span><span class="p">),</span> <span class="mi">400</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">pydash_app</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">check_password_requirements</span><span class="p">(</span><span class="n">password</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;User registration failed - password does not conform to the requirements.&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;User registration failed - password does not conform to the requirements.&#39;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span><span class="p">),</span> <span class="mi">400</span>
+
+    <span class="k">if</span> <span class="n">pydash_app</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="n">username</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;While registering a user: User with username </span><span class="si">{username}</span><span class="s1"> already exists.&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">f</span><span class="s1">&#39;User with username </span><span class="si">{username}</span><span class="s1"> already exists.&#39;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span><span class="p">),</span> <span class="mi">400</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">pydash_app</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">email_address</span><span class="p">)</span>
+        <span class="n">pydash_app</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">add_to_repository</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;User successfully registered with username: </span><span class="si">{username}</span><span class="s1">&#39;</span>
+                    <span class="n">f</span><span class="s1">&#39; and verification code {user.get_verification_code()}&#39;</span><span class="p">)</span>
+
+        <span class="n">_send_verification_email</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">get_verification_code</span><span class="p">(),</span>
+                                 <span class="n">user</span><span class="o">.</span><span class="n">get_verification_code_expiration_date</span><span class="p">(),</span>
+                                 <span class="n">email_address</span><span class="p">,</span>
+                                 <span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_send_verification_email</span><span class="p">(</span><span class="n">verification_code</span><span class="p">,</span> <span class="n">expiration_date</span><span class="p">,</span> <span class="n">recipient_email_address</span><span class="p">,</span> <span class="n">username</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sends a verification email to the user with a link to the appropriate front-end page.</span>
+<span class="sd">    For now the backend-api is directly given though.</span>
+<span class="sd">    :param verification_code: The verification code to send. Should be a VerificationCode instance.</span>
+<span class="sd">    :param recipient_email_address: The email address of the recipient. Should be a string.</span>
+<span class="sd">    :param username: The name of the User. Should be a string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">message_subject</span> <span class="o">=</span> <span class="s1">&#39;PyDash.io - Account verification&#39;</span>
+    <span class="n">message_recipients</span> <span class="o">=</span> <span class="p">[</span><span class="n">recipient_email_address</span><span class="p">]</span>
+    <span class="n">expiration_date</span> <span class="o">=</span> <span class="n">expiration_date</span><span class="o">.</span><span class="n">ctime</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39; GMT+0000&#39;</span>
+
+    <span class="n">protocol</span> <span class="o">=</span> <span class="s1">&#39;http&#39;</span>  <span class="c1"># this or https  #Todo: change to https once that has been set up.</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="s1">&#39;localhost:5000&#39;</span>  <span class="c1"># Todo: change from localhost to deployment server once that has been set up.</span>
+    <span class="n">verification_url</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{protocol}</span><span class="s1">://</span><span class="si">{host}</span><span class="s1">/verify/</span><span class="si">{verification_code}</span><span class="s1">&#39;</span>
+
+    <span class="n">message_plain</span> <span class="o">=</span> <span class="n">format_verification_mail_plain</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">verification_url</span><span class="p">,</span> <span class="n">expiration_date</span><span class="p">)</span>
+    <span class="n">message_html</span> <span class="o">=</span> <span class="n">format_verification_mail_html</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">verification_url</span><span class="p">,</span> <span class="n">expiration_date</span><span class="p">)</span>
+
+    <span class="c1"># No sender is specified, such that we use DEFAULT_MAIL_SENDER as specified in config.py</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">subject</span><span class="o">=</span><span class="n">message_subject</span><span class="p">,</span>
+                      <span class="n">recipients</span><span class="o">=</span><span class="n">message_recipients</span><span class="p">,</span>
+                      <span class="n">body</span><span class="o">=</span><span class="n">message_plain</span><span class="p">,</span>
+                      <span class="n">html</span><span class="o">=</span><span class="n">message_html</span><span class="p">)</span>
+
+    <span class="n">mail</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../../pydash_web.html">pydash_web</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, The PyDash Team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

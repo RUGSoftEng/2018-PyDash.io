@@ -40,9 +40,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pydash_app.user.services.html">pydash_app.user.services package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pydash_app.user.services.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pydash_app.user.services.html#pydash-app-user-services-pruning-module">pydash_app.user.services.pruning module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pydash_app.user.services.html#pydash-app-user-services-seeding-module">pydash_app.user.services.seeding module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pydash_app.user.services.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydash_app.user.services.html#module-pydash_app.user.services.pruning">pydash_app.user.services.pruning module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydash_app.user.services.html#module-pydash_app.user.services.seeding">pydash_app.user.services.seeding module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydash_app.user.services.html#module-pydash_app.user.services">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -51,20 +51,420 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="pydash-app-user-entity-module">
-<h2>pydash_app.user.entity module<a class="headerlink" href="#pydash-app-user-entity-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pydash_app.user.entity">
+<span id="pydash-app-user-entity-module"></span><h2>pydash_app.user.entity module<a class="headerlink" href="#module-pydash_app.user.entity" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pydash_app.user.entity.User">
+<em class="property">class </em><code class="descclassname">pydash_app.user.entity.</code><code class="descname">User</code><span class="sig-paren">(</span><em>name</em>, <em>password</em>, <em>mail</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/entity.html#User"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.entity.User" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">persistent.Persistent</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">flask_login.mixins.UserMixin</span></code></p>
+<p>The User entity knows about:</p>
+<ul class="simple">
+<li>What properties a User has</li>
+<li>What functionality makes sense to have this User interact with information from elsewhere.</li>
+</ul>
+<p>Per Domain Driven Design, it does _not_ contain information on how to persistently store/load a user!
+(That is instead handled by the <cite>user_repository</cite>).</p>
+<p>The User entity checks its parameters on creation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">User</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+  <span class="c">...</span>
+<span class="gr">TypeError</span>
+</pre></div>
 </div>
-<div class="section" id="pydash-app-user-repository-module">
-<h2>pydash_app.user.repository module<a class="headerlink" href="#pydash-app-user-repository-module" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="pydash_app.user.entity.User.check_password">
+<code class="descname">check_password</code><span class="sig-paren">(</span><em>password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/entity.html#User.check_password"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.entity.User.check_password" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.user.entity.User.generate_new_verification_code">
+<code class="descname">generate_new_verification_code</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/entity.html#User.generate_new_verification_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.entity.User.generate_new_verification_code" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.user.entity.User.get_id">
+<code class="descname">get_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/entity.html#User.get_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.entity.User.get_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.user.entity.User.get_verification_code">
+<code class="descname">get_verification_code</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/entity.html#User.get_verification_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.entity.User.get_verification_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns this User’s verification code or None if it has expired or this User has already been verified</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.user.entity.User.get_verification_code_expiration_date">
+<code class="descname">get_verification_code_expiration_date</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/entity.html#User.get_verification_code_expiration_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.entity.User.get_verification_code_expiration_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a datetime object of when this User’s verification code is about to expire,
+or None if it has already expired or this User has already been verified</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.user.entity.User.has_verification_code_expired">
+<code class="descname">has_verification_code_expired</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/entity.html#User.has_verification_code_expired"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.entity.User.has_verification_code_expired" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a boolean whether this User’s verification code has expired, if it has one.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.user.entity.User.is_verified">
+<code class="descname">is_verified</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/entity.html#User.is_verified"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.entity.User.is_verified" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.user.entity.User.set_password">
+<code class="descname">set_password</code><span class="sig-paren">(</span><em>password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/entity.html#User.set_password"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.entity.User.set_password" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="pydash-app-user-verification-module">
-<h2>pydash_app.user.verification module<a class="headerlink" href="#pydash-app-user-verification-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pydash_app.user.repository">
+<span id="pydash-app-user-repository-module"></span><h2>pydash_app.user.repository module<a class="headerlink" href="#module-pydash_app.user.repository" title="Permalink to this headline">¶</a></h2>
+<p>This module handles the persistence of <cite>User</cite> entities:</p>
+<p>It is an adapter of the actual persistence layer, to insulate the application
+from datastore-specific details.</p>
+<p>It handles a subset of the following tasks
+(specifically, it only actually contains functions for the tasks the application needs in its current state!):
+- Creating new entities of the specified type
+- Finding them based on certain attributes
+- Persisting updated versions of existing entities.
+- Deleting entities from the persistence layer.</p>
+<dl class="function">
+<dt id="pydash_app.user.repository.add">
+<code class="descclassname">pydash_app.user.repository.</code><code class="descname">add</code><span class="sig-paren">(</span><em>user</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/repository.html#add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.repository.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the User-entity to the repository. Will raise a (KeyError, DuplicateIndexError) tuple on failure.
+:param user: The User-entity to add.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">all</span><span class="p">())</span>
+<span class="go">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gandalf</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="s2">&quot;Gandalf&quot;</span><span class="p">,</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span> <span class="s1">&#39;some@email.com&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dumbledore</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="s2">&quot;Dumbledore&quot;</span><span class="p">,</span> <span class="s2">&quot;secret&quot;</span><span class="p">,</span> <span class="s1">&#39;some@email.com&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add</span><span class="p">(</span><span class="n">gandalf</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add</span><span class="p">(</span><span class="n">dumbledore</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">([</span><span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="nb">all</span><span class="p">()])</span>
+<span class="go">[&#39;Dumbledore&#39;, &#39;Gandalf&#39;]</span>
+</pre></div>
 </div>
-<div class="section" id="pydash-app-user-verification-code-module">
-<h2>pydash_app.user.verification_code module<a class="headerlink" href="#pydash-app-user-verification-code-module" title="Permalink to this headline">¶</a></h2>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.user.repository.all">
+<code class="descclassname">pydash_app.user.repository.</code><code class="descname">all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/repository.html#all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.repository.all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a (lazy) collection of all users (in no guaranteed order).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">all</span><span class="p">())</span>
+<span class="go">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gandalf</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="s2">&quot;Gandalf&quot;</span><span class="p">,</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span> <span class="s1">&#39;some@email.com&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dumbledore</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="s2">&quot;Dumbledore&quot;</span><span class="p">,</span> <span class="s2">&quot;secret&quot;</span><span class="p">,</span> <span class="s1">&#39;some@email.com&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add</span><span class="p">(</span><span class="n">gandalf</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add</span><span class="p">(</span><span class="n">dumbledore</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">([</span><span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="nb">all</span><span class="p">()])</span>
+<span class="go">[&#39;Dumbledore&#39;, &#39;Gandalf&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">clear_all</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">([</span><span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="nb">all</span><span class="p">()])</span>
+<span class="go">[]</span>
+</pre></div>
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.user.repository.all_unverified">
+<code class="descclassname">pydash_app.user.repository.</code><code class="descname">all_unverified</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/repository.html#all_unverified"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.repository.all_unverified" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a collection of all unverified users (in no guaranteed order).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.user.repository.clear_all">
+<code class="descclassname">pydash_app.user.repository.</code><code class="descname">clear_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/repository.html#clear_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.repository.clear_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flushes the database.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gandalf</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="s2">&quot;Gandalf&quot;</span><span class="p">,</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span> <span class="s1">&#39;some@email.com&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dumbledore</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="s2">&quot;Dumbledore&quot;</span><span class="p">,</span> <span class="s2">&quot;secret&quot;</span><span class="p">,</span> <span class="s1">&#39;some@email.com&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add</span><span class="p">(</span><span class="n">gandalf</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add</span><span class="p">(</span><span class="n">dumbledore</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">([</span><span class="n">user</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="nb">all</span><span class="p">()])</span>
+<span class="go">[&#39;Dumbledore&#39;, &#39;Gandalf&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">clear_all</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">all</span><span class="p">())</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.user.repository.delete_by_id">
+<code class="descclassname">pydash_app.user.repository.</code><code class="descname">delete_by_id</code><span class="sig-paren">(</span><em>user_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/repository.html#delete_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.repository.delete_by_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes the User-entity whose user_id is <cite>user_id</cite> from the repository.
+Will raise a KeyError if said user is not in the repository.
+Note that this might also occur when delete_by_id(user_id) is called in the middle of the deletion,</p>
+<blockquote>
+<div>in a multiprocessing environment.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_id</strong> – The ID of the User-entity to be removed. This can be either a UUID-entity or the corresponding
+string representation.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gandalf</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="s2">&quot;Gandalf&quot;</span><span class="p">,</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span> <span class="s1">&#39;some@email.com&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add</span><span class="p">(</span><span class="n">gandalf</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Gandalf&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">gandalf</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">delete_by_id</span><span class="p">(</span><span class="n">gandalf</span><span class="o">.</span><span class="n">get_id</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Gandalf&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">gandalf</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.user.repository.find">
+<code class="descclassname">pydash_app.user.repository.</code><code class="descname">find</code><span class="sig-paren">(</span><em>user_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/repository.html#find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.repository.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds a user in the database.
+:param user_id: UUID for the user to be retrieved.
+:return: User object or None if no user could be found.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.user.repository.find_by_name">
+<code class="descclassname">pydash_app.user.repository.</code><code class="descname">find_by_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/repository.html#find_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.repository.find_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a single User-entity with the given <cite>name</cite>, or None if it could not be found.</p>
+<p>name – Name of the user we hope to find.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.user.repository.find_by_verification_code">
+<code class="descclassname">pydash_app.user.repository.</code><code class="descname">find_by_verification_code</code><span class="sig-paren">(</span><em>verification_code</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/repository.html#find_by_verification_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.repository.find_by_verification_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a single User-entity with the given <cite>verification_code</cite>, or None if it could not be found.
+The latter case might indicate that the user does not exist, or that the verification code has expired.
+:param verification_code: The verification code of the user we hope to find.
+Should be a pydash_app.user.verification_code.VerificationCode object.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.user.repository.update">
+<code class="descclassname">pydash_app.user.repository.</code><code class="descname">update</code><span class="sig-paren">(</span><em>user</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/repository.html#update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.repository.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the user’s information</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gandalf</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="s2">&quot;GandalfTheGrey&quot;</span><span class="p">,</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span> <span class="s1">&#39;some@email.com&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add</span><span class="p">(</span><span class="n">gandalf</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gandalf</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;GandalfTheWhite&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">update</span><span class="p">(</span><span class="n">gandalf</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;GandalfTheGrey&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">gandalf</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;GandalfTheWhite&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">gandalf</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pydash_app.user.verification">
+<span id="pydash-app-user-verification-module"></span><h2>pydash_app.user.verification module<a class="headerlink" href="#module-pydash_app.user.verification" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="pydash_app.user.verification.InvalidVerificationCodeError">
+<em class="property">exception </em><code class="descclassname">pydash_app.user.verification.</code><code class="descname">InvalidVerificationCodeError</code><a class="reference internal" href="_modules/pydash_app/user/verification.html#InvalidVerificationCodeError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.verification.InvalidVerificationCodeError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pydash_app.user.verification.VerificationCodeExpiredError">
+<em class="property">exception </em><code class="descclassname">pydash_app.user.verification.</code><code class="descname">VerificationCodeExpiredError</code><a class="reference internal" href="_modules/pydash_app/user/verification.html#VerificationCodeExpiredError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.verification.VerificationCodeExpiredError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.user.verification.verify">
+<code class="descclassname">pydash_app.user.verification.</code><code class="descname">verify</code><span class="sig-paren">(</span><em>verification_code</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/verification.html#verify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.verification.verify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempts to verify a user with the provided verification code.
+This is intended as a one-time action per user after registration.
+:param verification_code: The verification code that should match the User-entity’s verification code.</p>
+<blockquote>
+<div>Can be a string or UUID object.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Returns True if both verification codes are equal, returns False otherwise.
+Raises an InvalidVerificationCodeError when the provided verification code is invalid.
+Raises an VerificationCodeExpiredError when the provided verification code has expired.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pydash_app.user.verification_code">
+<span id="pydash-app-user-verification-code-module"></span><h2>pydash_app.user.verification_code module<a class="headerlink" href="#module-pydash_app.user.verification_code" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pydash_app.user.verification_code.VerificationCode">
+<em class="property">class </em><code class="descclassname">pydash_app.user.verification_code.</code><code class="descname">VerificationCode</code><span class="sig-paren">(</span><em>expiration_time=datetime.timedelta(1)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/verification_code.html#VerificationCode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.verification_code.VerificationCode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A ‘smart’ randomly generated verification code that keeps track of whether it has expired.
+Default expiration time is 7 days.</p>
+<dl class="method">
+<dt id="pydash_app.user.verification_code.VerificationCode.is_expired">
+<code class="descname">is_expired</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/verification_code.html#VerificationCode.is_expired"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.verification_code.VerificationCode.is_expired" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pydash_app.user">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pydash_app.user" title="Permalink to this headline">¶</a></h2>
+<p>This module is the public interface (available to the web-application pydash_web)
+for interacting with Users.</p>
+<p>Example Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gandalf</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="s2">&quot;Gandalf&quot;</span><span class="p">,</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span> <span class="s1">&#39;some@email.com&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_to_repository</span><span class="p">(</span><span class="n">gandalf</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">found_user</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">gandalf</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">found_user</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Gandalf&quot;</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>You can also use a string-version of the ID to find the user again:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">found_user</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">gandalf</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">found_user</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Gandalf&quot;</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">found_user2</span> <span class="o">=</span> <span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Gandalf&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">found_user2</span> <span class="o">==</span> <span class="n">found_user</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Dumbledore&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># ^Returns nothing</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_user</span> <span class="o">=</span> <span class="n">authenticate</span><span class="p">(</span><span class="s2">&quot;Gandalf&quot;</span><span class="p">,</span> <span class="s2">&quot;pass&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res_user</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Gandalf&quot;</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">authenticate</span><span class="p">(</span><span class="s2">&quot;Gandalf&quot;</span><span class="p">,</span> <span class="s2">&quot;youshallnot&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># ^Returns nothing</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">authenticate</span><span class="p">(</span><span class="s2">&quot;Dumbledore&quot;</span><span class="p">,</span> <span class="s2">&quot;secrets&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># ^Returns nothing</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="pydash_app.user.add_to_repository">
+<code class="descclassname">pydash_app.user.</code><code class="descname">add_to_repository</code><span class="sig-paren">(</span><em>user</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user.html#add_to_repository"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.add_to_repository" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the given User-entity to the user_repository. Raises a KeyError if the user is already in the repository.
+:param user: The User-entity in question.</p>
+<p>Adding the same user twice with the same name is not allowed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; gandalf1 = User(&quot;Gandalf&quot;, &quot;pass&quot;, &#39;some@email.com&#39;)
+&gt;&gt;&gt; add_to_repository(gandalf1)
+&gt;&gt;&gt; gandalf2 = User(&quot;Gandalf&quot;, &quot;balrog&quot;, &#39;some@email.com&#39;)
+&gt;&gt;&gt; add_to_repository(gandalf2)
+Traceback (most recent call last):
+  ...
+multi_indexed_collection.DuplicateIndexError
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.user.authenticate">
+<code class="descclassname">pydash_app.user.</code><code class="descname">authenticate</code><span class="sig-paren">(</span><em>name</em>, <em>password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user.html#authenticate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.authenticate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempts to authenticate the user with name <cite>name</cite>
+and password <cite>password</cite>.</p>
+<p>If authentication fails (unknown user or incorrect password), returns None.
+Otherwise, returns the user object.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.user.check_password_requirements">
+<code class="descclassname">pydash_app.user.</code><code class="descname">check_password_requirements</code><span class="sig-paren">(</span><em>password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user.html#check_password_requirements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.check_password_requirements" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.user.find">
+<code class="descclassname">pydash_app.user.</code><code class="descname">find</code><span class="sig-paren">(</span><em>user_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user.html#find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a single User-entity with the given UUID or None if it could not be found.</p>
+<p>user_id- UUID of the user we hope to find.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.user.find_by_name">
+<code class="descclassname">pydash_app.user.</code><code class="descname">find_by_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user.html#find_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.find_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a single User-entity with the given <cite>name</cite>, or None if it could not be found.</p>
+<p>name – Name of the user we hope to find.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.user.find_by_verification_code">
+<code class="descclassname">pydash_app.user.</code><code class="descname">find_by_verification_code</code><span class="sig-paren">(</span><em>verification_code</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user.html#find_by_verification_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.find_by_verification_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a single User-entity with the given <cite>verification_code</cite>, or None if it could not be found.
+:param verification_code: The verification code of the user we hope to find.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.user.maybe_find_user">
+<code class="descclassname">pydash_app.user.</code><code class="descname">maybe_find_user</code><span class="sig-paren">(</span><em>user_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user.html#maybe_find_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.maybe_find_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the User entity, or <cite>None</cite> if it does not exist.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="s2">&quot;Gandalf&quot;</span><span class="p">,</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span> <span class="s1">&#39;some@email.com&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_to_repository</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">found_user</span> <span class="o">=</span> <span class="n">maybe_find_user</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">found_user</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Gandalf&quot;</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unexistent_uuid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="s1">&#39;ced84534-7a55-440f-ad77-9912466fe022&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unexistent_user</span> <span class="o">=</span> <span class="n">maybe_find_user</span><span class="p">(</span><span class="n">unexistent_uuid</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unexistent_user</span> <span class="o">==</span> <span class="kc">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.user.remove_from_repository">
+<code class="descclassname">pydash_app.user.</code><code class="descname">remove_from_repository</code><span class="sig-paren">(</span><em>user_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user.html#remove_from_repository"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.remove_from_repository" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes the User-entity whose user_id is <cite>user_id</cite> from the repository.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gandalf1</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="s2">&quot;Gandalf&quot;</span><span class="p">,</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span> <span class="s1">&#39;some@email.com&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_to_repository</span><span class="p">(</span><span class="n">gandalf1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">remove_from_repository</span><span class="p">(</span><span class="n">gandalf1</span><span class="o">.</span><span class="n">get_id</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">found_user</span> <span class="o">=</span> <span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Gandalf&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">found_user</span> <span class="o">==</span> <span class="kc">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Will raise a KeyError if said user is not in the repository.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gandalf1</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="s2">&quot;Gandalf&quot;</span><span class="p">,</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span> <span class="s1">&#39;some@email.com&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_to_repository</span><span class="p">(</span><span class="n">gandalf1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">remove_from_repository</span><span class="p">(</span><span class="n">gandalf1</span><span class="o">.</span><span class="n">get_id</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">remove_from_repository</span><span class="p">(</span><span class="n">gandalf1</span><span class="o">.</span><span class="n">get_id</span><span class="p">())</span>
+<span class="gt">Traceback (most recent call last):</span>
+  <span class="c">...</span>
+<span class="gr">KeyError</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_id</strong> – The ID of the User-entity to be removed. This can be either a UUID-entity or the corresponding
+string representation.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.user.verify">
+<code class="descclassname">pydash_app.user.</code><code class="descname">verify</code><span class="sig-paren">(</span><em>verification_code</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user.html#verify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.verify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempts to verify a user with the provided verification code.
+This is intended as a one-time action per user after registration.
+:param verification_code: The verification code that should match the User-entity’s verification code.</p>
+<blockquote>
+<div>Can be a string or UUID object.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Returns True if both verification codes are equal, returns False otherwise.
+Raises an InvalidVerificationCodeError when the provided verification code is invalid.
+Raises an VerificationCodeExpiredError when the provided verification code has expired.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 
@@ -79,11 +479,11 @@
 <li><a class="reference internal" href="#">pydash_app.user package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#pydash-app-user-entity-module">pydash_app.user.entity module</a></li>
-<li><a class="reference internal" href="#pydash-app-user-repository-module">pydash_app.user.repository module</a></li>
-<li><a class="reference internal" href="#pydash-app-user-verification-module">pydash_app.user.verification module</a></li>
-<li><a class="reference internal" href="#pydash-app-user-verification-code-module">pydash_app.user.verification_code module</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-pydash_app.user.entity">pydash_app.user.entity module</a></li>
+<li><a class="reference internal" href="#module-pydash_app.user.repository">pydash_app.user.repository module</a></li>
+<li><a class="reference internal" href="#module-pydash_app.user.verification">pydash_app.user.verification module</a></li>
+<li><a class="reference internal" href="#module-pydash_app.user.verification_code">pydash_app.user.verification_code module</a></li>
+<li><a class="reference internal" href="#module-pydash_app.user">Module contents</a></li>
 </ul>
 </li>
 </ul>

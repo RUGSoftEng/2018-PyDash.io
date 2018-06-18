@@ -1,0 +1,559 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pydash_app.dashboard.aggregator.aggregator_group &#8212; PyDash 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pydash_app.dashboard.aggregator.aggregator_group</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">chain</span><span class="p">,</span> <span class="n">combinations</span>
+<span class="kn">import</span> <span class="nn">persistent</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">copy</span><span class="p">,</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">dtrange</span> <span class="k">import</span> <span class="n">dtrange</span>
+<span class="kn">from</span> <span class="nn">more_itertools</span> <span class="k">import</span> <span class="n">peekable</span>
+
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Aggregator</span>
+
+
+<div class="viewcode-block" id="powerset_generator"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.powerset_generator">[docs]</a><span class="k">def</span> <span class="nf">powerset_generator</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">subset</span> <span class="ow">in</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">combinations</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)):</span>
+        <span class="k">yield</span> <span class="nb">list</span><span class="p">(</span><span class="n">subset</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AggregatorPartitionFun"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.AggregatorPartitionFun">[docs]</a><span class="k">class</span> <span class="nc">AggregatorPartitionFun</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">fun</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field_name</span> <span class="o">=</span> <span class="n">field_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fun</span> <span class="o">=</span> <span class="n">fun</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">category</span> <span class="o">=</span> <span class="n">category</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint_call</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fun</span><span class="p">(</span><span class="n">endpoint_call</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">f</span><span class="s2">&quot;&lt;</span><span class="si">{self.__class__.__name__}</span><span class="s2"> field_name=</span><span class="si">{self.field_name}</span><span class="s2"> category=</span><span class="si">{self.category}</span><span class="s2"> &gt;&quot;</span></div>
+
+
+<span class="n">datetime_formats</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="s1">&#39;%Y&#39;</span><span class="p">}</span>
+<span class="n">datetime_formats</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime_formats</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-%m&#39;</span>
+<span class="n">datetime_formats</span><span class="p">[</span><span class="s1">&#39;week&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime_formats</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-W%W&#39;</span>
+<span class="n">datetime_formats</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime_formats</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-</span><span class="si">%d</span><span class="s1">&#39;</span>
+<span class="n">datetime_formats</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime_formats</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;T%H&#39;</span>
+<span class="n">datetime_formats</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime_formats</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;-%M&#39;</span>
+
+
+<span class="n">allowed_timeslices</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;week&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;hour&#39;</span><span class="p">,</span> <span class="s1">&#39;minute&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="partition_by_year_fun"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.partition_by_year_fun">[docs]</a><span class="k">def</span> <span class="nf">partition_by_year_fun</span><span class="p">(</span><span class="n">endpoint_call</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">endpoint_call</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">datetime_formats</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">])</span></div>
+<span class="n">PartitionByYear</span> <span class="o">=</span> <span class="n">AggregatorPartitionFun</span><span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">partition_by_year_fun</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="partition_by_month_fun"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.partition_by_month_fun">[docs]</a><span class="k">def</span> <span class="nf">partition_by_month_fun</span><span class="p">(</span><span class="n">endpoint_call</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">endpoint_call</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">datetime_formats</span><span class="p">[</span><span class="s1">&#39;month&#39;</span><span class="p">])</span></div>
+<span class="n">PartitionByMonth</span> <span class="o">=</span> <span class="n">AggregatorPartitionFun</span><span class="p">(</span><span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">partition_by_month_fun</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="partition_by_week_fun"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.partition_by_week_fun">[docs]</a><span class="k">def</span> <span class="nf">partition_by_week_fun</span><span class="p">(</span><span class="n">endpoint_call</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">endpoint_call</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">datetime_formats</span><span class="p">[</span><span class="s1">&#39;week&#39;</span><span class="p">])</span></div>
+<span class="n">PartitionByWeek</span> <span class="o">=</span> <span class="n">AggregatorPartitionFun</span><span class="p">(</span><span class="s1">&#39;week&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">partition_by_week_fun</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="partition_by_day_fun"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.partition_by_day_fun">[docs]</a><span class="k">def</span> <span class="nf">partition_by_day_fun</span><span class="p">(</span><span class="n">endpoint_call</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">endpoint_call</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">datetime_formats</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">])</span></div>
+<span class="n">PartitionByDay</span> <span class="o">=</span> <span class="n">AggregatorPartitionFun</span><span class="p">(</span><span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">partition_by_day_fun</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="partition_by_hour_fun"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.partition_by_hour_fun">[docs]</a><span class="k">def</span> <span class="nf">partition_by_hour_fun</span><span class="p">(</span><span class="n">endpoint_call</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">endpoint_call</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">datetime_formats</span><span class="p">[</span><span class="s1">&#39;hour&#39;</span><span class="p">])</span></div>
+<span class="n">PartitionByHour</span> <span class="o">=</span> <span class="n">AggregatorPartitionFun</span><span class="p">(</span><span class="s1">&#39;hour&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">partition_by_hour_fun</span><span class="p">)</span>
+
+<div class="viewcode-block" id="partition_by_minute_fun"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.partition_by_minute_fun">[docs]</a><span class="k">def</span> <span class="nf">partition_by_minute_fun</span><span class="p">(</span><span class="n">endpoint_call</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">endpoint_call</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">datetime_formats</span><span class="p">[</span><span class="s1">&#39;minute&#39;</span><span class="p">])</span></div>
+<span class="n">PartitionByMinute</span> <span class="o">=</span> <span class="n">AggregatorPartitionFun</span><span class="p">(</span><span class="s1">&#39;minute&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">partition_by_minute_fun</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="partition_by_version_fun"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.partition_by_version_fun">[docs]</a><span class="k">def</span> <span class="nf">partition_by_version_fun</span><span class="p">(</span><span class="n">endpoint_call</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">endpoint_call</span><span class="o">.</span><span class="n">version</span></div>
+<span class="n">PartitionByVersion</span> <span class="o">=</span> <span class="n">AggregatorPartitionFun</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="n">partition_by_version_fun</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="partition_by_ip_fun"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.partition_by_ip_fun">[docs]</a><span class="k">def</span> <span class="nf">partition_by_ip_fun</span><span class="p">(</span><span class="n">endpoint_call</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">endpoint_call</span><span class="o">.</span><span class="n">ip</span></div>
+<span class="n">PartitionByIP</span> <span class="o">=</span> <span class="n">AggregatorPartitionFun</span><span class="p">(</span><span class="s1">&#39;ip&#39;</span><span class="p">,</span> <span class="s1">&#39;ip&#39;</span><span class="p">,</span> <span class="n">partition_by_ip_fun</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="partition_by_group_by_fun"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.partition_by_group_by_fun">[docs]</a><span class="k">def</span> <span class="nf">partition_by_group_by_fun</span><span class="p">(</span><span class="n">endpoint_call</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">endpoint_call</span><span class="o">.</span><span class="n">group_by</span></div>
+<span class="n">PartitionByGroupBy</span> <span class="o">=</span> <span class="n">AggregatorPartitionFun</span><span class="p">(</span><span class="s1">&#39;group_by&#39;</span><span class="p">,</span> <span class="s1">&#39;group_by&#39;</span><span class="p">,</span> <span class="n">partition_by_group_by_fun</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="remove_duplicate_categories"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.remove_duplicate_categories">[docs]</a><span class="k">def</span> <span class="nf">remove_duplicate_categories</span><span class="p">(</span><span class="n">partition_funs</span><span class="p">):</span>
+    <span class="n">categories</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">partition_fun</span> <span class="ow">in</span> <span class="n">partition_funs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">partition_fun</span><span class="o">.</span><span class="n">category</span> <span class="ow">in</span> <span class="n">categories</span><span class="p">:</span>
+            <span class="nb">next</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">categories</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">partition_fun</span><span class="o">.</span><span class="n">category</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">partition_fun</span></div>
+
+
+<div class="viewcode-block" id="calc_endpoint_call_identifier"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.calc_endpoint_call_identifier">[docs]</a><span class="k">def</span> <span class="nf">calc_endpoint_call_identifier</span><span class="p">(</span><span class="n">partition</span><span class="p">,</span> <span class="n">endpoint_call</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">partition_fun</span><span class="p">(</span><span class="n">endpoint_call</span><span class="p">)</span> <span class="k">for</span> <span class="n">partition_fun</span> <span class="ow">in</span> <span class="n">partition</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="partition_field_names"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.partition_field_names">[docs]</a><span class="k">def</span> <span class="nf">partition_field_names</span><span class="p">(</span><span class="n">partition</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">partition_fun</span> <span class="ow">in</span> <span class="n">partition</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">partition_fun</span><span class="o">.</span><span class="n">field_name</span></div>
+
+
+<div class="viewcode-block" id="AggregatorGroup"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.AggregatorGroup">[docs]</a><span class="k">class</span> <span class="nc">AggregatorGroup</span><span class="p">(</span><span class="n">persistent</span><span class="o">.</span><span class="n">Persistent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Maintains a powerset of dicts of aggregators,</span>
+<span class="sd">    such that we can filter based on:</span>
+<span class="sd">    - time</span>
+<span class="sd">    - IP</span>
+<span class="sd">    - FMD&#39;s group_by</span>
+<span class="sd">    - etc.</span>
+
+<span class="sd">    Involved usage example:</span>
+<span class="sd">    &gt;&gt;&gt; from datetime import datetime</span>
+<span class="sd">    &gt;&gt;&gt; from pydash_app.dashboard.endpoint_call import EndpointCall</span>
+<span class="sd">    &gt;&gt;&gt; from pydash_app.dashboard.aggregator.aggregator_group import AggregatorGroup</span>
+<span class="sd">    &gt;&gt;&gt; ag = AggregatorGroup()</span>
+<span class="sd">    &gt;&gt;&gt; ec1 = EndpointCall(&quot;foo&quot;, 0.5, datetime.strptime(&quot;2018-04-25 15:29:23&quot;, &quot;%Y-%m-%d %H:%M:%S&quot;), &quot;0.1&quot;, &quot;None&quot;, &quot;127.0.0.1&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ec2 = EndpointCall(&quot;foo&quot;, 0.5, datetime.strptime(&quot;2018-04-26 15:29:23&quot;, &quot;%Y-%m-%d %H:%M:%S&quot;), &quot;0.1&quot;, &quot;None&quot;, &quot;127.0.0.1&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ec3 = EndpointCall(&quot;foo&quot;, 0.5, datetime.strptime(&quot;2018-04-25 15:29:23&quot;, &quot;%Y-%m-%d %H:%M:%S&quot;), &quot;0.1&quot;, &quot;None&quot;, &quot;127.0.0.2&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ag.add_endpoint_call(ec1)</span>
+<span class="sd">    &gt;&gt;&gt; ag.add_endpoint_call(ec2)</span>
+<span class="sd">    &gt;&gt;&gt; ag.add_endpoint_call(ec3)</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; # Filter by day</span>
+<span class="sd">    ... a_day = ag.fetch_aggregator({&#39;day&#39;:&#39;2018-04-25&#39;})</span>
+<span class="sd">    &gt;&gt;&gt; a_day.as_dict()[&#39;total_visits&#39;] == 2</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; # Filter by week</span>
+<span class="sd">    ... a_week = ag.fetch_aggregator({&#39;week&#39;:&#39;2018-W17&#39;})</span>
+<span class="sd">    &gt;&gt;&gt; a_week.as_dict()[&#39;total_visits&#39;] == 3</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; # Filter by day and ip</span>
+<span class="sd">    ... a_day_ip = ag.fetch_aggregator({&#39;day&#39;:&#39;2018-04-25&#39;, &#39;ip&#39;:&#39;127.0.0.1&#39;})</span>
+<span class="sd">    &gt;&gt;&gt; a_day_ip.as_dict()[&#39;total_visits&#39;] == 1</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; # No filtering (all endpoint calls are included in this aggregator)</span>
+<span class="sd">    ... a_all = ag.fetch_aggregator({})</span>
+<span class="sd">    &gt;&gt;&gt; a_all.as_dict()[&#39;total_visits&#39;] == 3</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; # Filter over a datetime range</span>
+<span class="sd">    ... start_datetime = datetime(ec1.time.year, ec1.time.month, ec1.time.day)</span>
+<span class="sd">    &gt;&gt;&gt; end_datetime = datetime(ec2.time.year, ec2.time.month, ec2.time.day + 1)</span>
+<span class="sd">    &gt;&gt;&gt; a_all2 = ag.fetch_aggregator_daterange({}, start_datetime, end_datetime)</span>
+<span class="sd">    &gt;&gt;&gt; a_all2.as_dict()[&#39;total_visits&#39;] == 3</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; a_all.as_dict() == a_all2.as_dict()</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">partition_funs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">PartitionByYear</span><span class="p">,</span>
+        <span class="n">PartitionByMonth</span><span class="p">,</span>
+        <span class="n">PartitionByWeek</span><span class="p">,</span>
+        <span class="n">PartitionByDay</span><span class="p">,</span>
+        <span class="n">PartitionByHour</span><span class="p">,</span>
+        <span class="n">PartitionByMinute</span><span class="p">,</span>
+        <span class="n">PartitionByGroupBy</span><span class="p">,</span>
+        <span class="n">PartitionByIP</span><span class="p">,</span>
+        <span class="n">PartitionByVersion</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="sd">&quot;&quot;&quot; Note to our internal dev team:</span>
+<span class="sd">    To add more partitions to filter on, a corresponding AggregatorPartitionFun class instance should be created</span>
+<span class="sd">    (together with its corresponding &#39;partition_by_&#39; function) and added to the `partition_funs` list above.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">partition_powerset</span> <span class="o">=</span> <span class="n">powerset_generator</span><span class="p">(</span><span class="n">partition_funs</span><span class="p">)</span>
+    <span class="n">partitions_set</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">remove_duplicate_categories</span><span class="p">(</span><span class="n">elem</span><span class="p">))</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">partition_powerset</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint_calls</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets up the aggregator group that will lazily create new Aggregators when needed.</span>
+<span class="sd">        :param endpoint_calls: An iterable collection of endpoint calls to seed the AggregatorGroup with.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">partitions</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># frozenset(partitions) -&gt; defaultdict(Aggregator)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">partition_names</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># frozenset(partition field names) -&gt; frozenset(partitions)</span>
+        <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">partitions_set</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">partitions</span><span class="p">[</span><span class="n">elem</span><span class="p">]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">Aggregator</span><span class="p">)</span>  <span class="c1"># frozenset(partition field names) -&gt; Aggregator</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">partition_names</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">partition_field_names</span><span class="p">(</span><span class="n">elem</span><span class="p">))]</span> <span class="o">=</span> <span class="n">elem</span>
+        <span class="k">for</span> <span class="n">endpoint_call</span> <span class="ow">in</span> <span class="n">endpoint_calls</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_endpoint_call</span><span class="p">(</span><span class="n">endpoint_call</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AggregatorGroup.add_endpoint_call"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.AggregatorGroup.add_endpoint_call">[docs]</a>    <span class="k">def</span> <span class="nf">add_endpoint_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint_call</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds the given endpoint call to the right aggregators within the group.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">partition</span><span class="p">,</span> <span class="n">aggregator_dict</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">partitions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">endpoint_call_identifier</span> <span class="o">=</span> <span class="n">calc_endpoint_call_identifier</span><span class="p">(</span><span class="n">partition</span><span class="p">,</span> <span class="n">endpoint_call</span><span class="p">)</span>
+            <span class="n">aggregator_dict</span><span class="p">[</span><span class="n">endpoint_call_identifier</span><span class="p">]</span><span class="o">.</span><span class="n">add_endpoint_call</span><span class="p">(</span><span class="n">endpoint_call</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_p_changed</span> <span class="o">=</span> <span class="kc">True</span> <span class="c1"># ZODB mark object as changed</span></div>
+
+<div class="viewcode-block" id="AggregatorGroup.fetch_aggregator"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.AggregatorGroup.fetch_aggregator">[docs]</a>    <span class="k">def</span> <span class="nf">fetch_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_dict</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Filters the internal collection of aggregators and returns the right one depending on filter_dict.</span>
+<span class="sd">        :param filter_dict: A dictionary containing property_name-value pairs to filter on.</span>
+<span class="sd">          This is in the gist of `{&#39;day&#39;:&#39;2018-05-20&#39;, &#39;ip&#39;:&#39;127.0.0.1&#39;}`</span>
+
+<span class="sd">          The current filter_names are:</span>
+<span class="sd">            - Time:</span>
+<span class="sd">              * &#39;year&#39;   - e.g. &#39;2018&#39;</span>
+<span class="sd">              * &#39;month&#39;  - e.g. &#39;2018-05&#39;</span>
+<span class="sd">              * &#39;week&#39;   - e.g. &#39;2018-W17&#39;</span>
+<span class="sd">              * &#39;day&#39;    - e.g. &#39;2018-05-20&#39;</span>
+<span class="sd">              * &#39;hour&#39;   - e.g. &#39;2018-05-20T20&#39;</span>
+<span class="sd">              * &#39;minute&#39; - e.g. &#39;2018-05-20T20-10&#39;</span>
+<span class="sd">            Note that for Time filter-values, the formatting is crucial.</span>
+
+<span class="sd">            - Version:</span>
+<span class="sd">              * &#39;version&#39; - e.g. &#39;1.0.1&#39;</span>
+
+<span class="sd">            - IP:</span>
+<span class="sd">              * &#39;ip&#39; - e.g. &#39;127.0.0.1&#39;</span>
+
+<span class="sd">            - Group-by:</span>
+<span class="sd">              * &#39;group_by&#39; - e.g. &#39;None&#39;</span>
+
+<span class="sd">          Note that when providing two filters of the same type, a ValueError is raised.</span>
+
+<span class="sd">        :return: An Aggregator instance that contains the right aggregated data for this query.</span>
+<span class="sd">          Note that if an invalid value is given, a new (and empty) Aggregator is returned, due to the lazy addition.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">partition</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">partition_names</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">filter_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="c1"># TODO: discern what exactly goes wrong higher up in the callback chain.</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Bad input value: input filter type is not supported,&quot;</span>
+                             <span class="s2">&quot; input filter-value not formatted correctly,&quot;</span>
+                             <span class="s2">&quot; or multiple input filters of the same type.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">partitions</span><span class="p">[</span><span class="n">partition</span><span class="p">][</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">filter_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())]</span></div>
+
+<div class="viewcode-block" id="AggregatorGroup.fetch_aggregator_daterange"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.AggregatorGroup.fetch_aggregator_daterange">[docs]</a>    <span class="k">def</span> <span class="nf">fetch_aggregator_daterange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">datetime_begin</span><span class="p">,</span> <span class="n">datetime_end</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fetches an aggregator over the entire provided datetime range.</span>
+<span class="sd">        :param filters: A dictionary that contains property_name-value pairs to filter on.</span>
+<span class="sd">          This is in the gist of {&#39;ip&#39;: &#39;127.0.0.1&#39;, &#39;version&#39;: &#39;1.0.1&#39;}</span>
+<span class="sd">          For the complete set of possible filters, see AggregatorGroup.fetch_aggregator.</span>
+<span class="sd">          Note: may not contain time-based filters, for obvious reasons.</span>
+<span class="sd">        :param datetime_begin: A datetime object indicating the inclusive lower bound for the datetime range to</span>
+<span class="sd">         aggregate over.</span>
+<span class="sd">        :param datetime_end:  A datetime object indicating the exclusive upper bound for the datetime range to</span>
+<span class="sd">         aggregate over.</span>
+<span class="sd">        :return: An Aggregator object that contains the aggregated data over the entirety of the specified datetime</span>
+<span class="sd">         range.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">filters</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;week&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">,</span> <span class="s1">&#39;hour&#39;</span><span class="p">,</span> <span class="s1">&#39;minute&#39;</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;filters may not contain time-based properties&#39;</span><span class="p">)</span>
+
+        <span class="n">date_chunks</span> <span class="o">=</span> <span class="n">_chop_date_range_into_chunks</span><span class="p">(</span><span class="n">datetime_begin</span><span class="p">,</span> <span class="n">datetime_end</span><span class="p">)</span>
+        <span class="n">aggregator</span> <span class="o">=</span> <span class="n">Aggregator</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">date_chunks</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">filters_cpy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">datetime</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">filters_cpy</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">datetime_formats</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                <span class="n">aggregator</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_aggregator</span><span class="p">(</span><span class="n">filters_cpy</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">aggregator</span></div>
+
+<div class="viewcode-block" id="AggregatorGroup.fetch_aggregator_inclusive_daterange"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.AggregatorGroup.fetch_aggregator_inclusive_daterange">[docs]</a>    <span class="k">def</span> <span class="nf">fetch_aggregator_inclusive_daterange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">datetime_begin</span><span class="p">,</span> <span class="n">datetime_end</span><span class="p">,</span> <span class="n">granularity</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fetches an aggregator over the entire provided datetime range.</span>
+<span class="sd">        :param filters: A dictionary that contains property_name-value pairs to filter on.</span>
+<span class="sd">          This is in the gist of {&#39;ip&#39;: &#39;127.0.0.1&#39;, &#39;version&#39;: &#39;1.0.1&#39;}</span>
+<span class="sd">          For the complete set of possible filters, see AggregatorGroup.fetch_aggregator.</span>
+<span class="sd">          Note: May not contain time-based filters, for obvious reasons.</span>
+<span class="sd">        :param datetime_begin: A datetime object indicating the inclusive lower bound for the datetime range to</span>
+<span class="sd">         aggregate over.</span>
+<span class="sd">        :param datetime_end:  A datetime object indicating the inclusive upper bound for the datetime range to</span>
+<span class="sd">         aggregate over.</span>
+<span class="sd">        :param granularity: A string denoting the granularity of the daterange.</span>
+<span class="sd">        :return: An Aggregator object that contains the aggregated data over the entirety of the specified datetime</span>
+<span class="sd">         range.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">granularity_adaptor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;week&#39;</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">weeks</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                               <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">1</span><span class="p">)}</span>
+
+        <span class="k">def</span> <span class="nf">inclusive_to_exclusive_datetime_adaptor</span><span class="p">(</span><span class="n">end_date</span><span class="p">,</span> <span class="n">granularity</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">granularity</span> <span class="ow">in</span> <span class="n">granularity_adaptor</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">end_date</span> <span class="o">+</span> <span class="n">granularity_adaptor</span><span class="p">[</span><span class="n">granularity</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">granularity</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">granularity</span> <span class="o">==</span> <span class="s1">&#39;year&#39;</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">datetime</span><span class="p">(</span><span class="n">end_date</span><span class="o">.</span><span class="n">year</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">end_date</span><span class="o">.</span><span class="n">month</span> <span class="o">==</span> <span class="mi">12</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">datetime</span><span class="p">(</span><span class="n">end_date</span><span class="o">.</span><span class="n">year</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">datetime</span><span class="p">(</span><span class="n">end_date</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">end_date</span><span class="o">.</span><span class="n">month</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Granularity </span><span class="si">{granularity}</span><span class="s1"> is not supported.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_aggregator_daterange</span><span class="p">(</span><span class="n">filters</span><span class="p">,</span> <span class="n">datetime_begin</span><span class="p">,</span> <span class="n">inclusive_to_exclusive_datetime_adaptor</span><span class="p">(</span><span class="n">datetime_end</span><span class="p">,</span> <span class="n">granularity</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="AggregatorGroup.fetch_aggregators_per_timeslice"><a class="viewcode-back" href="../../../../pydash_app.dashboard.aggregator.html#pydash_app.dashboard.aggregator.aggregator_group.AggregatorGroup.fetch_aggregators_per_timeslice">[docs]</a>    <span class="k">def</span> <span class="nf">fetch_aggregators_per_timeslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">timeslice</span><span class="p">,</span> <span class="n">start_datetime</span><span class="p">,</span> <span class="n">end_datetime</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;These datetimes are treated as inclusive boundaries of a datetime range (e.g. [start_datetime, end_datetime].</span>
+<span class="sd">        Assumes start_datetime and end_datetime are both from utc.</span>
+<span class="sd">        :param filters: A dictionary that contains property_name-value pairs to filter on.</span>
+<span class="sd">          This is in the gist of {&#39;ip&#39;: &#39;127.0.0.1&#39;, &#39;version&#39;: &#39;1.0.1&#39;}</span>
+<span class="sd">          For the complete set of possible filters, see AggregatorGroup.fetch_aggregator.</span>
+<span class="sd">          Note: May not contain time-based filters, for obvious reasons.</span>
+<span class="sd">        :param timeslice: A string denoting at what granularity the indicated datetime range should be split.</span>
+<span class="sd">          The currently supported values for this are: &#39;year&#39;, &#39;month&#39;, &#39;week&#39;, &#39;day&#39;, &#39;hour&#39; and &#39;minute&#39;.</span>
+<span class="sd">        :param start_datetime: A datetime object indicating the inclusive lower bound for the datetime range to</span>
+<span class="sd">         aggregate over.</span>
+<span class="sd">        :param end_datetime:  A datetime object indicating the inclusive upper bound for the datetime range to</span>
+<span class="sd">         aggregate over.</span>
+<span class="sd">        :return: A list of tuples consisting of a datetime string (formatted according to the ISO-8601 standard)</span>
+<span class="sd">                 and the corresponding aggregator, over the specified datetime range.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">statistics_aggregators</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">timeslice_to_dtrange_unit_adaptor</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span>
+                                             <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span>
+                                             <span class="s1">&#39;week&#39;</span><span class="p">:</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span>
+                                             <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+                                             <span class="s1">&#39;hour&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>
+                                             <span class="s1">&#39;minute&#39;</span><span class="p">:</span> <span class="s1">&#39;min&#39;</span>
+                                             <span class="p">}</span>
+
+        <span class="n">datetime_range</span> <span class="o">=</span> <span class="n">peekable</span><span class="p">(</span><span class="n">dtrange</span><span class="p">(</span><span class="n">start_datetime</span><span class="p">,</span> <span class="n">end_datetime</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                          <span class="n">units</span><span class="o">=</span><span class="n">timeslice_to_dtrange_unit_adaptor</span><span class="p">[</span><span class="n">timeslice</span><span class="p">],</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                                  <span class="p">)</span>
+        <span class="k">for</span> <span class="n">datetime_value</span> <span class="ow">in</span> <span class="n">datetime_range</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">next_value</span> <span class="o">=</span> <span class="n">datetime_range</span><span class="o">.</span><span class="n">peek</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                <span class="n">next_value</span> <span class="o">=</span> <span class="n">end_datetime</span>
+            <span class="n">date</span><span class="p">,</span> <span class="n">statistic_aggregator</span> <span class="o">=</span> <span class="p">(</span><span class="n">datetime_value</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">datetime_formats</span><span class="p">[</span><span class="n">timeslice</span><span class="p">]),</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">fetch_aggregator_inclusive_daterange</span><span class="p">(</span><span class="n">filters</span><span class="p">,</span> <span class="n">datetime_value</span><span class="p">,</span> <span class="n">next_value</span><span class="p">,</span> <span class="n">timeslice</span><span class="p">))</span>
+            <span class="n">statistics_aggregators</span><span class="p">[</span><span class="n">date</span><span class="p">]</span> <span class="o">=</span> <span class="n">statistic_aggregator</span>
+
+        <span class="k">return</span> <span class="n">statistics_aggregators</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">_chop_date_range_into_chunks</span><span class="p">(</span><span class="n">datetime_begin</span><span class="p">,</span> <span class="n">datetime_end</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Chops the given datetime range into chunks of full days, hours and minutes. Does account for leap seconds.</span>
+<span class="sd">    :param datetime_begin: A datetime object that indicates the inclusive lower bound of the datetime range.</span>
+<span class="sd">    :param datetime_end: A datetime object that indicates the exclusive upper bound of the datetime range.</span>
+<span class="sd">    :return: A dict with the keys &quot;days&quot;, &quot;hours&quot; and &quot;minutes&quot;, where the values are lists of corresponding datetime</span>
+<span class="sd">     granulates.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">chunks</span> <span class="o">=</span> <span class="p">{</span>
+              <span class="s2">&quot;day&quot;</span><span class="p">:</span> <span class="p">[],</span>
+              <span class="s2">&quot;hour&quot;</span><span class="p">:</span> <span class="p">[],</span>
+              <span class="s2">&quot;minute&quot;</span><span class="p">:</span> <span class="p">[]</span>
+             <span class="p">}</span>
+
+    <span class="n">days</span><span class="p">,</span> <span class="p">(</span><span class="n">complete_l</span><span class="p">,</span> <span class="n">complete_r</span><span class="p">)</span> <span class="o">=</span> <span class="n">_chop_date_range_into_days</span><span class="p">(</span><span class="n">datetime_begin</span><span class="p">,</span> <span class="n">datetime_end</span><span class="p">)</span>
+    <span class="n">chunks</span><span class="p">[</span><span class="s2">&quot;day&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">days</span>
+    <span class="k">if</span> <span class="n">complete_l</span> <span class="ow">and</span> <span class="n">complete_r</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">chunks</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">days</span><span class="p">:</span>
+        <span class="n">hours</span><span class="p">,</span> <span class="p">(</span><span class="n">complete_l</span><span class="p">,</span> <span class="n">complete_r</span><span class="p">)</span> <span class="o">=</span> <span class="n">_chop_date_range_into_hours</span><span class="p">(</span><span class="n">datetime_begin</span><span class="p">,</span> <span class="n">datetime_end</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">complete_l</span><span class="p">:</span>
+            <span class="n">hours_l</span><span class="p">,</span> <span class="p">(</span><span class="n">complete_l</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">_chop_date_range_into_hours</span><span class="p">(</span><span class="n">datetime_begin</span><span class="p">,</span>
+                                                                   <span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">days</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+                                                                            <span class="n">month</span><span class="o">=</span><span class="n">days</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
+                                                                            <span class="n">day</span><span class="o">=</span><span class="n">days</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
+                                                                            <span class="p">)</span>
+                                                                   <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hours_l</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">complete_r</span><span class="p">:</span>
+            <span class="n">hours_r</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">complete_r</span><span class="p">)</span> <span class="o">=</span> <span class="n">_chop_date_range_into_hours</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">datetime_end</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+                                                                            <span class="n">month</span><span class="o">=</span><span class="n">datetime_end</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
+                                                                            <span class="n">day</span><span class="o">=</span><span class="n">datetime_end</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
+                                                                            <span class="p">),</span>
+                                                                   <span class="n">datetime_end</span>
+                                                                   <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hours_r</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">hours</span> <span class="o">=</span> <span class="n">hours_l</span> <span class="o">+</span> <span class="n">hours_r</span>
+    <span class="n">chunks</span><span class="p">[</span><span class="s2">&quot;hour&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hours</span>
+    <span class="k">if</span> <span class="n">complete_l</span> <span class="ow">and</span> <span class="n">complete_r</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">chunks</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">days</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">hours</span><span class="p">:</span>
+        <span class="n">minutes</span> <span class="o">=</span> <span class="n">_chop_date_range_into_minutes</span><span class="p">(</span><span class="n">datetime_begin</span><span class="p">,</span> <span class="n">datetime_end</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">complete_l</span><span class="p">:</span>
+            <span class="n">minutes_l</span> <span class="o">=</span> <span class="n">_chop_date_range_into_minutes</span><span class="p">(</span><span class="n">datetime_begin</span><span class="p">,</span>
+                                                      <span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">hours</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+                                                               <span class="n">month</span><span class="o">=</span><span class="n">hours</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
+                                                               <span class="n">day</span><span class="o">=</span><span class="n">hours</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
+                                                               <span class="n">hour</span><span class="o">=</span><span class="n">hours</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span>
+                                                               <span class="p">)</span>
+                                                      <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">minutes_l</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">complete_r</span><span class="p">:</span>
+            <span class="n">minutes_r</span> <span class="o">=</span> <span class="n">_chop_date_range_into_minutes</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">datetime_end</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+                                                               <span class="n">month</span><span class="o">=</span><span class="n">datetime_end</span><span class="o">.</span><span class="n">month</span><span class="p">,</span>
+                                                               <span class="n">day</span><span class="o">=</span><span class="n">datetime_end</span><span class="o">.</span><span class="n">day</span><span class="p">,</span>
+                                                               <span class="n">hour</span><span class="o">=</span><span class="n">datetime_end</span><span class="o">.</span><span class="n">hour</span><span class="p">,</span>
+                                                               <span class="p">),</span>
+                                                      <span class="n">datetime_end</span>
+                                                      <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">minutes_r</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">minutes</span> <span class="o">=</span> <span class="n">minutes_l</span> <span class="o">+</span> <span class="n">minutes_r</span>
+    <span class="n">chunks</span><span class="p">[</span><span class="s2">&quot;minute&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">minutes</span>
+    <span class="k">return</span> <span class="n">chunks</span>
+
+
+<span class="k">def</span> <span class="nf">_chop_date_range_into_days</span><span class="p">(</span><span class="n">datetime_begin</span><span class="p">,</span> <span class="n">datetime_end</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a range of days (datetimes) that are fully within the given date range. Does account for leap seconds.</span>
+<span class="sd">    :param datetime_begin: a datetime object that indicates the inclusive lower bound of the desired date-range</span>
+<span class="sd">    :param datetime_end: a datetime object that indicates the exclusive upper bound of the desired date-range</span>
+<span class="sd">    :return: An ordered list of datetime objects containing the days that are fully within the given range,</span>
+<span class="sd">        as well as a tuple containing whether the left part and the right part of the date range have been consumed completely.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">datetime_begin</span> <span class="o">&gt;</span> <span class="n">datetime_end</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;date_begin cannot be larger than date_end&quot;</span><span class="p">)</span>
+    <span class="n">range_begin</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">datetime_begin</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">datetime_begin</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">datetime_begin</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+    <span class="n">range_end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">datetime_end</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">datetime_end</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">datetime_end</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+    <span class="n">complete_l</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">complete_r</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">datetime_begin</span><span class="o">.</span><span class="n">hour</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">datetime_begin</span><span class="o">.</span><span class="n">minute</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">range_begin</span> <span class="o">+=</span> <span class="n">timedelta</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">complete_l</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">datetime_end</span><span class="o">.</span><span class="n">hour</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">datetime_end</span><span class="o">.</span><span class="n">minute</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">complete_r</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">day</span> <span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="n">dtrange</span><span class="p">(</span><span class="n">range_begin</span><span class="p">,</span> <span class="n">range_end</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">)],</span> <span class="p">(</span><span class="n">complete_l</span><span class="p">,</span> <span class="n">complete_r</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_chop_date_range_into_hours</span><span class="p">(</span><span class="n">datetime_begin</span><span class="p">,</span> <span class="n">datetime_end</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a range of hours (datetimes) that are fully within the given date range. Does account for leap seconds.</span>
+<span class="sd">    :param datetime_begin: a datetime object that indicates the inclusive lower bound of the desired date-range</span>
+<span class="sd">    :param datetime_end: a datetime object that indicates the exclusive upper bound of the desired date-range</span>
+<span class="sd">    :return: An ordered list of datetime objects containing the hours that are fully within the given range,</span>
+<span class="sd">        as well as a tuple containing whether the left part and the right part of the date range have been consumed completely.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">datetime_begin</span> <span class="o">&gt;</span> <span class="n">datetime_end</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;date_begin cannot be larger than date_end&quot;</span><span class="p">)</span>
+    <span class="n">range_begin</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">datetime_begin</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">datetime_begin</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">datetime_begin</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> <span class="n">datetime_begin</span><span class="o">.</span><span class="n">hour</span><span class="p">)</span>
+    <span class="n">range_end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">datetime_end</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">datetime_end</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">datetime_end</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> <span class="n">datetime_end</span><span class="o">.</span><span class="n">hour</span><span class="p">)</span>
+    <span class="n">complete_l</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">complete_r</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="n">datetime_begin</span><span class="o">.</span><span class="n">minute</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">range_begin</span> <span class="o">+=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">complete_l</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">datetime_end</span><span class="o">.</span><span class="n">minute</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">complete_r</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">hour</span> <span class="k">for</span> <span class="n">hour</span> <span class="ow">in</span> <span class="n">dtrange</span><span class="p">(</span><span class="n">range_begin</span><span class="p">,</span> <span class="n">range_end</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">)],</span> <span class="p">(</span><span class="n">complete_l</span><span class="p">,</span> <span class="n">complete_r</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_chop_date_range_into_minutes</span><span class="p">(</span><span class="n">datetime_begin</span><span class="p">,</span> <span class="n">datetime_end</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a range of minutes (datetimes) that are fully within the given date range. Does account for leap seconds.</span>
+<span class="sd">    :param datetime_begin: a datetime object that indicates the inclusive lower bound of the desired date-range</span>
+<span class="sd">    :param datetime_end: a datetime object that indicates the exclusive upper bound of the desired date-range</span>
+<span class="sd">    :return: An ordered list of datetime objects containing the minutes that are fully within the given range.</span>
+<span class="sd">    Note that this function will not take any lower kind of granularity into account than datetime.minute,</span>
+<span class="sd">      so the input `datetime(..., minute=6, second=20)` will be treated as `datetime(..., minute=6, second=0)`, etc.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">datetime_begin</span> <span class="o">&gt;</span> <span class="n">datetime_end</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;date_begin cannot be larger than date_end&quot;</span><span class="p">)</span>
+    <span class="c1"># Reset both datetime_begin and datetime_end to the beginning of their minutes.</span>
+    <span class="n">datetime_begin</span> <span class="o">-=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">datetime_begin</span><span class="o">.</span><span class="n">second</span><span class="p">)</span>
+    <span class="n">datetime_end</span> <span class="o">-=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">datetime_end</span><span class="o">.</span><span class="n">second</span><span class="p">)</span>
+
+    <span class="n">num_minutes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">datetime_end</span> <span class="o">-</span> <span class="n">datetime_begin</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span> <span class="o">/</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">datetime_begin</span> <span class="o">+</span> <span class="n">minute</span> <span class="o">*</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span> <span class="k">for</span> <span class="n">minute</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_minutes</span><span class="p">)]</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  <li><a href="../../../pydash_app.html">pydash_app</a><ul>
+  <li><a href="../../dashboard.html">pydash_app.dashboard</a><ul>
+  <li><a href="../aggregator.html">pydash_app.dashboard.aggregator</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, The PyDash Team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

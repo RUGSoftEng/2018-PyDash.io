@@ -37,14 +37,86 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="pydash-app-dashboard-services-fetching-module">
-<h2>pydash_app.dashboard.services.fetching module<a class="headerlink" href="#pydash-app-dashboard-services-fetching-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pydash_app.dashboard.services.fetching">
+<span id="pydash-app-dashboard-services-fetching-module"></span><h2>pydash_app.dashboard.services.fetching module<a class="headerlink" href="#module-pydash_app.dashboard.services.fetching" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pydash_app.dashboard.services.fetching.fetch_and_add_endpoint_calls">
+<code class="descclassname">pydash_app.dashboard.services.fetching.</code><code class="descname">fetch_and_add_endpoint_calls</code><span class="sig-paren">(</span><em>dashboard</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/services/fetching.html#fetch_and_add_endpoint_calls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.services.fetching.fetch_and_add_endpoint_calls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the latest endpoint calls of the given dashboard and add them to it.
+:param dashboard: The dashboard for which to update endpoint calls.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.dashboard.services.fetching.fetch_and_add_endpoints">
+<code class="descclassname">pydash_app.dashboard.services.fetching.</code><code class="descname">fetch_and_add_endpoints</code><span class="sig-paren">(</span><em>dashboard</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/services/fetching.html#fetch_and_add_endpoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.services.fetching.fetch_and_add_endpoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>For a given dashboard, initialize it with the endpoints it has registered.
+Note that this will not add endpoint call data.
+:param dashboard: The dashboard to initialize with endpoints.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.dashboard.services.fetching.fetch_and_add_historic_endpoint_calls">
+<code class="descclassname">pydash_app.dashboard.services.fetching.</code><code class="descname">fetch_and_add_historic_endpoint_calls</code><span class="sig-paren">(</span><em>dashboard</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/services/fetching.html#fetch_and_add_historic_endpoint_calls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.services.fetching.fetch_and_add_historic_endpoint_calls" title="Permalink to this definition">¶</a></dt>
+<dd><p>For a given dashboard, retrieve all historical endpoint calls and add them to it.
+:param dashboard: The dashboard to initialize with historical data.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.dashboard.services.fetching.fetch_and_update_historic_dashboard_info">
+<code class="descclassname">pydash_app.dashboard.services.fetching.</code><code class="descname">fetch_and_update_historic_dashboard_info</code><span class="sig-paren">(</span><em>dashboard_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/services/fetching.html#fetch_and_update_historic_dashboard_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.services.fetching.fetch_and_update_historic_dashboard_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the dashboard with the historic EndpointCall information that is fetched from the Dashboard’s remote location.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.dashboard.services.fetching.fetch_and_update_new_dashboard_info">
+<code class="descclassname">pydash_app.dashboard.services.fetching.</code><code class="descname">fetch_and_update_new_dashboard_info</code><span class="sig-paren">(</span><em>dashboard_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/services/fetching.html#fetch_and_update_new_dashboard_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.services.fetching.fetch_and_update_new_dashboard_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the dashboard with the new EndpointCall information that is fetched from the Dashboard’s remote location.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.dashboard.services.fetching.schedule_all_periodic_dashboards_tasks">
+<code class="descclassname">pydash_app.dashboard.services.fetching.</code><code class="descname">schedule_all_periodic_dashboards_tasks</code><span class="sig-paren">(</span><em>interval=datetime.timedelta(0</em>, <em>3600)</em>, <em>scheduler=&lt;periodic_tasks.task_scheduler.TaskScheduler object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/services/fetching.html#schedule_all_periodic_dashboards_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.services.fetching.schedule_all_periodic_dashboards_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets up all tasks that should be run periodically for each of the dashboards.
+(For now, that is only the EndpointCall fetching task.)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.dashboard.services.fetching.schedule_historic_dashboard_fetching">
+<code class="descclassname">pydash_app.dashboard.services.fetching.</code><code class="descname">schedule_historic_dashboard_fetching</code><span class="sig-paren">(</span><em>dashboard</em>, <em>scheduler=&lt;periodic_tasks.task_scheduler.TaskScheduler object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/services/fetching.html#schedule_historic_dashboard_fetching"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.services.fetching.schedule_historic_dashboard_fetching" title="Permalink to this definition">¶</a></dt>
+<dd><p>Schedules the fetching of historic EndpointCall information as a background task.
+The periodic fetching of new EndpointCall information is scheduled as soon as this task completes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.dashboard.services.fetching.schedule_periodic_dashboard_fetching">
+<code class="descclassname">pydash_app.dashboard.services.fetching.</code><code class="descname">schedule_periodic_dashboard_fetching</code><span class="sig-paren">(</span><em>dashboard</em>, <em>interval=datetime.timedelta(0</em>, <em>3600)</em>, <em>scheduler=&lt;periodic_tasks.task_scheduler.TaskScheduler object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/services/fetching.html#schedule_periodic_dashboard_fetching"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.services.fetching.schedule_periodic_dashboard_fetching" title="Permalink to this definition">¶</a></dt>
+<dd><p>Schedules the periodic EndpointCall fetching task for this dashboard.</p>
+</dd></dl>
+
 </div>
-<div class="section" id="pydash-app-dashboard-services-seeding-module">
-<h2>pydash_app.dashboard.services.seeding module<a class="headerlink" href="#pydash-app-dashboard-services-seeding-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pydash_app.dashboard.services.seeding">
+<span id="pydash-app-dashboard-services-seeding-module"></span><h2>pydash_app.dashboard.services.seeding module<a class="headerlink" href="#module-pydash_app.dashboard.services.seeding" title="Permalink to this headline">¶</a></h2>
+<p>Fills the application with some preliminary dashboards
+to make it easier to test code in development and staging environments.</p>
+<dl class="function">
+<dt id="pydash_app.dashboard.services.seeding.seed">
+<code class="descclassname">pydash_app.dashboard.services.seeding.</code><code class="descname">seed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/services/seeding.html#seed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.services.seeding.seed" title="Permalink to this definition">¶</a></dt>
+<dd><p>For each user, stores some preliminary debug dashboards in the datastore,
+to be used during development.</p>
+</dd></dl>
+
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pydash_app.dashboard.services">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pydash_app.dashboard.services" title="Permalink to this headline">¶</a></h2>
+<p>Contains services for the ‘Dashboard’ concern.</p>
+<p>These are things that use or manipulate ‘Dashboard’ entities to perform tasks,
+where these tasks are either too complex to put in the Dashboard Entity,
+or where these are heavily interacting with outside logic that the business domain entity should not concern itself with directly.</p>
+<dl class="function">
+<dt id="pydash_app.dashboard.services.is_valid_dashboard">
+<code class="descclassname">pydash_app.dashboard.services.</code><code class="descname">is_valid_dashboard</code><span class="sig-paren">(</span><em>url</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/services.html#is_valid_dashboard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.services.is_valid_dashboard" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 </div>
 
@@ -58,9 +130,9 @@
   <ul>
 <li><a class="reference internal" href="#">pydash_app.dashboard.services package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#pydash-app-dashboard-services-fetching-module">pydash_app.dashboard.services.fetching module</a></li>
-<li><a class="reference internal" href="#pydash-app-dashboard-services-seeding-module">pydash_app.dashboard.services.seeding module</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-pydash_app.dashboard.services.fetching">pydash_app.dashboard.services.fetching module</a></li>
+<li><a class="reference internal" href="#module-pydash_app.dashboard.services.seeding">pydash_app.dashboard.services.seeding module</a></li>
+<li><a class="reference internal" href="#module-pydash_app.dashboard.services">Module contents</a></li>
 </ul>
 </li>
 </ul>

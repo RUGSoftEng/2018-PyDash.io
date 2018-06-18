@@ -37,14 +37,49 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="pydash-app-user-services-pruning-module">
-<h2>pydash_app.user.services.pruning module<a class="headerlink" href="#pydash-app-user-services-pruning-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pydash_app.user.services.pruning">
+<span id="pydash-app-user-services-pruning-module"></span><h2>pydash_app.user.services.pruning module<a class="headerlink" href="#module-pydash_app.user.services.pruning" title="Permalink to this headline">¶</a></h2>
+<p>Provides functionality to periodically remove all users that have not verified their account.</p>
+<dl class="function">
+<dt id="pydash_app.user.services.pruning.schedule_periodic_pruning_task">
+<code class="descclassname">pydash_app.user.services.pruning.</code><code class="descname">schedule_periodic_pruning_task</code><span class="sig-paren">(</span><em>interval=datetime.timedelta(1)</em>, <em>scheduler=&lt;periodic_tasks.task_scheduler.TaskScheduler object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/services/pruning.html#schedule_periodic_pruning_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.services.pruning.schedule_periodic_pruning_task" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
-<div class="section" id="pydash-app-user-services-seeding-module">
-<h2>pydash_app.user.services.seeding module<a class="headerlink" href="#pydash-app-user-services-seeding-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pydash_app.user.services.seeding">
+<span id="pydash-app-user-services-seeding-module"></span><h2>pydash_app.user.services.seeding module<a class="headerlink" href="#module-pydash_app.user.services.seeding" title="Permalink to this headline">¶</a></h2>
+<p>Fills the application with some preliminary users
+to make it easier to test code in development and staging environments.</p>
+<dl class="function">
+<dt id="pydash_app.user.services.seeding.seed">
+<code class="descclassname">pydash_app.user.services.seeding.</code><code class="descname">seed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/user/services/seeding.html#seed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.user.services.seeding.seed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores some preliminary debug users in the datastore,
+to be used during development.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">seed</span><span class="p">()</span> 
+<span class="go">Adding user &lt;User id=... name=Alberto&gt;</span>
+<span class="go">Adding user &lt;User id=... name=Arjan&gt;</span>
+<span class="go">Adding user &lt;User id=... name=JeroenO&gt;</span>
+<span class="go">Adding user &lt;User id=... name=JeroenL&gt;</span>
+<span class="go">Adding user &lt;User id=... name=Koen&gt;</span>
+<span class="go">Adding user &lt;User id=... name=Lars&gt;</span>
+<span class="go">Adding user &lt;User id=... name=Patrick&gt;</span>
+<span class="go">Adding user &lt;User id=... name=Tom&gt;</span>
+<span class="go">Adding user &lt;User id=... name=W-M&gt;</span>
+<span class="go">Seeding of users is done!</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">found_user</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="s2">&quot;Alberto&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">found_user</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Alberto&quot;</span>
+<span class="go">True</span>
+</pre></div>
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pydash_app.user.services">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pydash_app.user.services" title="Permalink to this headline">¶</a></h2>
+<p>Contains services for the ‘User’ concern.</p>
+<p>These are things that use or manipulate ‘User’ entities to perform tasks,
+where these tasks are either too complex to put in the User Entity,
+or where these are heavily interacting with outside logic that the business domain entity should not concern itself with directly.</p>
 </div>
 </div>
 
@@ -58,9 +93,9 @@
   <ul>
 <li><a class="reference internal" href="#">pydash_app.user.services package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#pydash-app-user-services-pruning-module">pydash_app.user.services.pruning module</a></li>
-<li><a class="reference internal" href="#pydash-app-user-services-seeding-module">pydash_app.user.services.seeding module</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-pydash_app.user.services.pruning">pydash_app.user.services.pruning module</a></li>
+<li><a class="reference internal" href="#module-pydash_app.user.services.seeding">pydash_app.user.services.seeding module</a></li>
+<li><a class="reference internal" href="#module-pydash_app.user.services">Module contents</a></li>
 </ul>
 </li>
 </ul>

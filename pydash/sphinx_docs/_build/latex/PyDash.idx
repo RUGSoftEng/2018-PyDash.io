@@ -1,0 +1,347 @@
+\indexentry{config (module)|hyperpage}{1}
+\indexentry{Config (class in config)|hyperpage}{1}
+\indexentry{MAIL\_DEFAULT\_SENDER (config.Config attribute)|hyperpage}{1}
+\indexentry{MAIL\_PASSWORD (config.Config attribute)|hyperpage}{1}
+\indexentry{MAIL\_PORT (config.Config attribute)|hyperpage}{1}
+\indexentry{MAIL\_SERVER (config.Config attribute)|hyperpage}{1}
+\indexentry{MAIL\_USERNAME (config.Config attribute)|hyperpage}{1}
+\indexentry{MAIL\_USE\_TLS (config.Config attribute)|hyperpage}{1}
+\indexentry{SECRET\_KEY (config.Config attribute)|hyperpage}{1}
+\indexentry{conftest (module)|hyperpage}{1}
+\indexentry{clean\_in\_memory\_database() (in module conftest)|hyperpage}{1}
+\indexentry{flask\_monitoring\_dashboard\_client (module)|hyperpage}{1}
+\indexentry{get\_data() (in module flask\_monitoring\_dashboard\_client)|hyperpage}{1}
+\indexentry{get\_details() (in module flask\_monitoring\_dashboard\_client)|hyperpage}{1}
+\indexentry{get\_monitor\_rules() (in module flask\_monitoring\_dashboard\_client)|hyperpage}{2}
+\indexentry{periodic\_tasks.pqdict\_iter\_upto\_priority (module)|hyperpage}{2}
+\indexentry{pqdict\_iter\_upto\_priority (class in periodic\_tasks.pqdict\_iter\_upto\_priority)|hyperpage}{2}
+\indexentry{periodic\_tasks.queue\_nonblocking\_iter (module)|hyperpage}{2}
+\indexentry{queue\_nonblocking\_iter (class in periodic\_tasks.queue\_nonblocking\_iter)|hyperpage}{2}
+\indexentry{periodic\_tasks.task\_scheduler (module)|hyperpage}{2}
+\indexentry{TaskScheduler (class in periodic\_tasks.task\_scheduler)|hyperpage}{2}
+\indexentry{add\_background\_task() (periodic\_tasks.task\_scheduler.TaskScheduler method)|hyperpage}{3}
+\indexentry{add\_periodic\_task() (periodic\_tasks.task\_scheduler.TaskScheduler method)|hyperpage}{3}
+\indexentry{remove\_task() (periodic\_tasks.task\_scheduler.TaskScheduler method)|hyperpage}{3}
+\indexentry{start() (periodic\_tasks.task\_scheduler.TaskScheduler method)|hyperpage}{3}
+\indexentry{stop() (periodic\_tasks.task\_scheduler.TaskScheduler method)|hyperpage}{3}
+\indexentry{periodic\_tasks (module)|hyperpage}{4}
+\indexentry{add\_background\_task() (in module periodic\_tasks)|hyperpage}{5}
+\indexentry{add\_periodic\_task() (in module periodic\_tasks)|hyperpage}{5}
+\indexentry{bar() (in module periodic\_tasks)|hyperpage}{5}
+\indexentry{baz() (in module periodic\_tasks)|hyperpage}{5}
+\indexentry{foo() (in module periodic\_tasks)|hyperpage}{5}
+\indexentry{periodic\_task() (in module periodic\_tasks)|hyperpage}{5}
+\indexentry{qux() (in module periodic\_tasks)|hyperpage}{5}
+\indexentry{remove\_task() (in module periodic\_tasks)|hyperpage}{5}
+\indexentry{start\_default\_scheduler() (in module periodic\_tasks)|hyperpage}{6}
+\indexentry{pydash (module)|hyperpage}{6}
+\indexentry{pydash\_app.dashboard.aggregator.aggregator\_group (module)|hyperpage}{6}
+\indexentry{AggregatorGroup (class in pydash\_app.dashboard.aggregator.aggregator\_group)|hyperpage}{6}
+\indexentry{add\_endpoint\_call() (pydash\_app.dashboard.aggregator.aggregator\_group.AggregatorGroup method)|hyperpage}{6}
+\indexentry{fetch\_aggregator() (pydash\_app.dashboard.aggregator.aggregator\_group.AggregatorGroup method)|hyperpage}{6}
+\indexentry{fetch\_aggregator\_daterange() (pydash\_app.dashboard.aggregator.aggregator\_group.AggregatorGroup method)|hyperpage}{7}
+\indexentry{fetch\_aggregator\_inclusive\_daterange() (pydash\_app.dashboard.aggregator.aggregator\_group.AggregatorGroup method)|hyperpage}{7}
+\indexentry{fetch\_aggregators\_per\_timeslice() (pydash\_app.dashboard.aggregator.aggregator\_group.AggregatorGroup method)|hyperpage}{7}
+\indexentry{partition\_funs (pydash\_app.dashboard.aggregator.aggregator\_group.AggregatorGroup attribute)|hyperpage}{8}
+\indexentry{partition\_powerset (pydash\_app.dashboard.aggregator.aggregator\_group.AggregatorGroup attribute)|hyperpage}{8}
+\indexentry{partitions\_set (pydash\_app.dashboard.aggregator.aggregator\_group.AggregatorGroup attribute)|hyperpage}{8}
+\indexentry{AggregatorPartitionFun (class in pydash\_app.dashboard.aggregator.aggregator\_group)|hyperpage}{8}
+\indexentry{calc\_endpoint\_call\_identifier() (in module pydash\_app.dashboard.aggregator.aggregator\_group)|hyperpage}{8}
+\indexentry{partition\_by\_day\_fun() (in module pydash\_app.dashboard.aggregator.aggregator\_group)|hyperpage}{8}
+\indexentry{partition\_by\_group\_by\_fun() (in module pydash\_app.dashboard.aggregator.aggregator\_group)|hyperpage}{8}
+\indexentry{partition\_by\_hour\_fun() (in module pydash\_app.dashboard.aggregator.aggregator\_group)|hyperpage}{8}
+\indexentry{partition\_by\_ip\_fun() (in module pydash\_app.dashboard.aggregator.aggregator\_group)|hyperpage}{8}
+\indexentry{partition\_by\_minute\_fun() (in module pydash\_app.dashboard.aggregator.aggregator\_group)|hyperpage}{8}
+\indexentry{partition\_by\_month\_fun() (in module pydash\_app.dashboard.aggregator.aggregator\_group)|hyperpage}{8}
+\indexentry{partition\_by\_version\_fun() (in module pydash\_app.dashboard.aggregator.aggregator\_group)|hyperpage}{8}
+\indexentry{partition\_by\_week\_fun() (in module pydash\_app.dashboard.aggregator.aggregator\_group)|hyperpage}{8}
+\indexentry{partition\_by\_year\_fun() (in module pydash\_app.dashboard.aggregator.aggregator\_group)|hyperpage}{8}
+\indexentry{partition\_field\_names() (in module pydash\_app.dashboard.aggregator.aggregator\_group)|hyperpage}{8}
+\indexentry{powerset\_generator() (in module pydash\_app.dashboard.aggregator.aggregator\_group)|hyperpage}{8}
+\indexentry{remove\_duplicate\_categories() (in module pydash\_app.dashboard.aggregator.aggregator\_group)|hyperpage}{8}
+\indexentry{pydash\_app.dashboard.aggregator.statistics (module)|hyperpage}{9}
+\indexentry{AverageExecutionTime (class in pydash\_app.dashboard.aggregator.statistics)|hyperpage}{9}
+\indexentry{add\_together() (pydash\_app.dashboard.aggregator.statistics.AverageExecutionTime method)|hyperpage}{9}
+\indexentry{dependencies (pydash\_app.dashboard.aggregator.statistics.AverageExecutionTime attribute)|hyperpage}{9}
+\indexentry{empty() (pydash\_app.dashboard.aggregator.statistics.AverageExecutionTime method)|hyperpage}{9}
+\indexentry{field\_name() (pydash\_app.dashboard.aggregator.statistics.AverageExecutionTime method)|hyperpage}{9}
+\indexentry{perform\_append() (pydash\_app.dashboard.aggregator.statistics.AverageExecutionTime method)|hyperpage}{9}
+\indexentry{should\_be\_rendered() (pydash\_app.dashboard.aggregator.statistics.AverageExecutionTime method)|hyperpage}{9}
+\indexentry{ExecutionTimePercentileABC (class in pydash\_app.dashboard.aggregator.statistics)|hyperpage}{9}
+\indexentry{add\_together() (pydash\_app.dashboard.aggregator.statistics.ExecutionTimePercentileABC method)|hyperpage}{9}
+\indexentry{dependencies (pydash\_app.dashboard.aggregator.statistics.ExecutionTimePercentileABC attribute)|hyperpage}{9}
+\indexentry{empty() (pydash\_app.dashboard.aggregator.statistics.ExecutionTimePercentileABC method)|hyperpage}{9}
+\indexentry{percentile\_nr (pydash\_app.dashboard.aggregator.statistics.ExecutionTimePercentileABC attribute)|hyperpage}{9}
+\indexentry{perform\_append() (pydash\_app.dashboard.aggregator.statistics.ExecutionTimePercentileABC method)|hyperpage}{9}
+\indexentry{should\_be\_rendered() (pydash\_app.dashboard.aggregator.statistics.ExecutionTimePercentileABC method)|hyperpage}{9}
+\indexentry{ExecutionTimeTDigest (class in pydash\_app.dashboard.aggregator.statistics)|hyperpage}{9}
+\indexentry{add\_together() (pydash\_app.dashboard.aggregator.statistics.ExecutionTimeTDigest method)|hyperpage}{9}
+\indexentry{empty() (pydash\_app.dashboard.aggregator.statistics.ExecutionTimeTDigest method)|hyperpage}{9}
+\indexentry{field\_name() (pydash\_app.dashboard.aggregator.statistics.ExecutionTimeTDigest method)|hyperpage}{9}
+\indexentry{perform\_append() (pydash\_app.dashboard.aggregator.statistics.ExecutionTimeTDigest method)|hyperpage}{9}
+\indexentry{should\_be\_rendered (pydash\_app.dashboard.aggregator.statistics.ExecutionTimeTDigest attribute)|hyperpage}{9}
+\indexentry{FastestExecutionTime (class in pydash\_app.dashboard.aggregator.statistics)|hyperpage}{10}
+\indexentry{field\_name() (pydash\_app.dashboard.aggregator.statistics.FastestExecutionTime method)|hyperpage}{10}
+\indexentry{percentile\_nr() (pydash\_app.dashboard.aggregator.statistics.FastestExecutionTime method)|hyperpage}{10}
+\indexentry{FastestQuartileExecutionTime (class in pydash\_app.dashboard.aggregator.statistics)|hyperpage}{10}
+\indexentry{field\_name() (pydash\_app.dashboard.aggregator.statistics.FastestQuartileExecutionTime method)|hyperpage}{10}
+\indexentry{percentile\_nr() (pydash\_app.dashboard.aggregator.statistics.FastestQuartileExecutionTime method)|hyperpage}{10}
+\indexentry{FloatStatisticABC (class in pydash\_app.dashboard.aggregator.statistics)|hyperpage}{10}
+\indexentry{nr\_of\_digits (pydash\_app.dashboard.aggregator.statistics.FloatStatisticABC attribute)|hyperpage}{10}
+\indexentry{rendered\_value() (pydash\_app.dashboard.aggregator.statistics.FloatStatisticABC method)|hyperpage}{10}
+\indexentry{MedianExecutionTime (class in pydash\_app.dashboard.aggregator.statistics)|hyperpage}{10}
+\indexentry{field\_name() (pydash\_app.dashboard.aggregator.statistics.MedianExecutionTime method)|hyperpage}{10}
+\indexentry{percentile\_nr() (pydash\_app.dashboard.aggregator.statistics.MedianExecutionTime method)|hyperpage}{10}
+\indexentry{NinetiethPercentileExecutionTime (class in pydash\_app.dashboard.aggregator.statistics)|hyperpage}{10}
+\indexentry{field\_name() (pydash\_app.dashboard.aggregator.statistics.NinetiethPercentileExecutionTime method)|hyperpage}{10}
+\indexentry{percentile\_nr() (pydash\_app.dashboard.aggregator.statistics.NinetiethPercentileExecutionTime method)|hyperpage}{10}
+\indexentry{NinetyNinthPercentileExecutionTime (class in pydash\_app.dashboard.aggregator.statistics)|hyperpage}{10}
+\indexentry{field\_name() (pydash\_app.dashboard.aggregator.statistics.NinetyNinthPercentileExecutionTime method)|hyperpage}{10}
+\indexentry{percentile\_nr() (pydash\_app.dashboard.aggregator.statistics.NinetyNinthPercentileExecutionTime method)|hyperpage}{10}
+\indexentry{SlowestExecutionTime (class in pydash\_app.dashboard.aggregator.statistics)|hyperpage}{10}
+\indexentry{field\_name() (pydash\_app.dashboard.aggregator.statistics.SlowestExecutionTime method)|hyperpage}{10}
+\indexentry{percentile\_nr() (pydash\_app.dashboard.aggregator.statistics.SlowestExecutionTime method)|hyperpage}{10}
+\indexentry{SlowestQuartileExecutionTime (class in pydash\_app.dashboard.aggregator.statistics)|hyperpage}{10}
+\indexentry{field\_name() (pydash\_app.dashboard.aggregator.statistics.SlowestQuartileExecutionTime method)|hyperpage}{10}
+\indexentry{percentile\_nr() (pydash\_app.dashboard.aggregator.statistics.SlowestQuartileExecutionTime method)|hyperpage}{10}
+\indexentry{Statistic (class in pydash\_app.dashboard.aggregator.statistics)|hyperpage}{11}
+\indexentry{add\_to\_collection() (pydash\_app.dashboard.aggregator.statistics.Statistic class method)|hyperpage}{11}
+\indexentry{add\_together() (pydash\_app.dashboard.aggregator.statistics.Statistic method)|hyperpage}{11}
+\indexentry{append() (pydash\_app.dashboard.aggregator.statistics.Statistic method)|hyperpage}{11}
+\indexentry{dependencies (pydash\_app.dashboard.aggregator.statistics.Statistic attribute)|hyperpage}{11}
+\indexentry{empty() (pydash\_app.dashboard.aggregator.statistics.Statistic method)|hyperpage}{11}
+\indexentry{field\_name() (pydash\_app.dashboard.aggregator.statistics.Statistic class method)|hyperpage}{11}
+\indexentry{perform\_append() (pydash\_app.dashboard.aggregator.statistics.Statistic method)|hyperpage}{11}
+\indexentry{rendered\_value() (pydash\_app.dashboard.aggregator.statistics.Statistic method)|hyperpage}{11}
+\indexentry{should\_be\_rendered (pydash\_app.dashboard.aggregator.statistics.Statistic attribute)|hyperpage}{11}
+\indexentry{TotalExecutionTime (class in pydash\_app.dashboard.aggregator.statistics)|hyperpage}{11}
+\indexentry{add\_together() (pydash\_app.dashboard.aggregator.statistics.TotalExecutionTime method)|hyperpage}{11}
+\indexentry{empty() (pydash\_app.dashboard.aggregator.statistics.TotalExecutionTime method)|hyperpage}{11}
+\indexentry{field\_name() (pydash\_app.dashboard.aggregator.statistics.TotalExecutionTime method)|hyperpage}{11}
+\indexentry{perform\_append() (pydash\_app.dashboard.aggregator.statistics.TotalExecutionTime method)|hyperpage}{11}
+\indexentry{should\_be\_rendered() (pydash\_app.dashboard.aggregator.statistics.TotalExecutionTime method)|hyperpage}{11}
+\indexentry{TotalVisits (class in pydash\_app.dashboard.aggregator.statistics)|hyperpage}{11}
+\indexentry{add\_together() (pydash\_app.dashboard.aggregator.statistics.TotalVisits method)|hyperpage}{11}
+\indexentry{empty() (pydash\_app.dashboard.aggregator.statistics.TotalVisits method)|hyperpage}{11}
+\indexentry{field\_name() (pydash\_app.dashboard.aggregator.statistics.TotalVisits method)|hyperpage}{11}
+\indexentry{perform\_append() (pydash\_app.dashboard.aggregator.statistics.TotalVisits method)|hyperpage}{11}
+\indexentry{should\_be\_rendered() (pydash\_app.dashboard.aggregator.statistics.TotalVisits method)|hyperpage}{11}
+\indexentry{UniqueVisitorsAllTime (class in pydash\_app.dashboard.aggregator.statistics)|hyperpage}{11}
+\indexentry{add\_together() (pydash\_app.dashboard.aggregator.statistics.UniqueVisitorsAllTime method)|hyperpage}{12}
+\indexentry{empty() (pydash\_app.dashboard.aggregator.statistics.UniqueVisitorsAllTime method)|hyperpage}{12}
+\indexentry{field\_name() (pydash\_app.dashboard.aggregator.statistics.UniqueVisitorsAllTime method)|hyperpage}{12}
+\indexentry{perform\_append() (pydash\_app.dashboard.aggregator.statistics.UniqueVisitorsAllTime method)|hyperpage}{12}
+\indexentry{rendered\_value() (pydash\_app.dashboard.aggregator.statistics.UniqueVisitorsAllTime method)|hyperpage}{12}
+\indexentry{should\_be\_rendered() (pydash\_app.dashboard.aggregator.statistics.UniqueVisitorsAllTime method)|hyperpage}{12}
+\indexentry{Versions (class in pydash\_app.dashboard.aggregator.statistics)|hyperpage}{12}
+\indexentry{add\_together() (pydash\_app.dashboard.aggregator.statistics.Versions method)|hyperpage}{12}
+\indexentry{empty() (pydash\_app.dashboard.aggregator.statistics.Versions method)|hyperpage}{12}
+\indexentry{field\_name() (pydash\_app.dashboard.aggregator.statistics.Versions method)|hyperpage}{12}
+\indexentry{perform\_append() (pydash\_app.dashboard.aggregator.statistics.Versions method)|hyperpage}{12}
+\indexentry{rendered\_value() (pydash\_app.dashboard.aggregator.statistics.Versions method)|hyperpage}{12}
+\indexentry{should\_be\_rendered() (pydash\_app.dashboard.aggregator.statistics.Versions method)|hyperpage}{12}
+\indexentry{VisitsPerIP (class in pydash\_app.dashboard.aggregator.statistics)|hyperpage}{12}
+\indexentry{add\_together() (pydash\_app.dashboard.aggregator.statistics.VisitsPerIP method)|hyperpage}{12}
+\indexentry{empty() (pydash\_app.dashboard.aggregator.statistics.VisitsPerIP method)|hyperpage}{12}
+\indexentry{field\_name() (pydash\_app.dashboard.aggregator.statistics.VisitsPerIP method)|hyperpage}{12}
+\indexentry{perform\_append() (pydash\_app.dashboard.aggregator.statistics.VisitsPerIP method)|hyperpage}{12}
+\indexentry{rendered\_value() (pydash\_app.dashboard.aggregator.statistics.VisitsPerIP method)|hyperpage}{12}
+\indexentry{should\_be\_rendered() (pydash\_app.dashboard.aggregator.statistics.VisitsPerIP method)|hyperpage}{12}
+\indexentry{date\_dict() (in module pydash\_app.dashboard.aggregator.statistics)|hyperpage}{12}
+\indexentry{reduce\_precision() (in module pydash\_app.dashboard.aggregator.statistics)|hyperpage}{12}
+\indexentry{pydash\_app.dashboard.aggregator (module)|hyperpage}{13}
+\indexentry{Aggregator (class in pydash\_app.dashboard.aggregator)|hyperpage}{13}
+\indexentry{add\_endpoint\_call() (pydash\_app.dashboard.aggregator.Aggregator method)|hyperpage}{13}
+\indexentry{as\_dict() (pydash\_app.dashboard.aggregator.Aggregator method)|hyperpage}{13}
+\indexentry{contained\_statistics\_classes (pydash\_app.dashboard.aggregator.Aggregator attribute)|hyperpage}{13}
+\indexentry{statistic (pydash\_app.dashboard.aggregator.Aggregator attribute)|hyperpage}{13}
+\indexentry{statistics\_classes\_with\_dependencies (pydash\_app.dashboard.aggregator.Aggregator attribute)|hyperpage}{13}
+\indexentry{pydash\_app.dashboard.services.fetching (module)|hyperpage}{13}
+\indexentry{fetch\_and\_add\_endpoint\_calls() (in module pydash\_app.dashboard.services.fetching)|hyperpage}{13}
+\indexentry{fetch\_and\_add\_endpoints() (in module pydash\_app.dashboard.services.fetching)|hyperpage}{13}
+\indexentry{fetch\_and\_add\_historic\_endpoint\_calls() (in module pydash\_app.dashboard.services.fetching)|hyperpage}{13}
+\indexentry{fetch\_and\_update\_historic\_dashboard\_info() (in module pydash\_app.dashboard.services.fetching)|hyperpage}{13}
+\indexentry{fetch\_and\_update\_new\_dashboard\_info() (in module pydash\_app.dashboard.services.fetching)|hyperpage}{13}
+\indexentry{schedule\_all\_periodic\_dashboards\_tasks() (in module pydash\_app.dashboard.services.fetching)|hyperpage}{13}
+\indexentry{schedule\_historic\_dashboard\_fetching() (in module pydash\_app.dashboard.services.fetching)|hyperpage}{14}
+\indexentry{schedule\_periodic\_dashboard\_fetching() (in module pydash\_app.dashboard.services.fetching)|hyperpage}{14}
+\indexentry{pydash\_app.dashboard.services.seeding (module)|hyperpage}{14}
+\indexentry{seed() (in module pydash\_app.dashboard.services.seeding)|hyperpage}{14}
+\indexentry{pydash\_app.dashboard.services (module)|hyperpage}{14}
+\indexentry{is\_valid\_dashboard() (in module pydash\_app.dashboard.services)|hyperpage}{14}
+\indexentry{pydash\_app.dashboard.endpoint (module)|hyperpage}{14}
+\indexentry{Endpoint (class in pydash\_app.dashboard.endpoint)|hyperpage}{14}
+\indexentry{add\_endpoint\_call() (pydash\_app.dashboard.endpoint.Endpoint method)|hyperpage}{14}
+\indexentry{aggregated\_data() (pydash\_app.dashboard.endpoint.Endpoint method)|hyperpage}{15}
+\indexentry{aggregated\_data\_daterange() (pydash\_app.dashboard.endpoint.Endpoint method)|hyperpage}{15}
+\indexentry{get\_id() (pydash\_app.dashboard.endpoint.Endpoint method)|hyperpage}{15}
+\indexentry{remove\_endpoint\_call() (pydash\_app.dashboard.endpoint.Endpoint method)|hyperpage}{15}
+\indexentry{set\_monitored() (pydash\_app.dashboard.endpoint.Endpoint method)|hyperpage}{15}
+\indexentry{statistic() (pydash\_app.dashboard.endpoint.Endpoint method)|hyperpage}{15}
+\indexentry{statistic\_per\_timeslice() (pydash\_app.dashboard.endpoint.Endpoint method)|hyperpage}{15}
+\indexentry{pydash\_app.dashboard.endpoint\_call (module)|hyperpage}{16}
+\indexentry{EndpointCall (class in pydash\_app.dashboard.endpoint\_call)|hyperpage}{16}
+\indexentry{as\_dict() (pydash\_app.dashboard.endpoint\_call.EndpointCall method)|hyperpage}{16}
+\indexentry{pydash\_app.dashboard.entity (module)|hyperpage}{16}
+\indexentry{Dashboard (class in pydash\_app.dashboard.entity)|hyperpage}{17}
+\indexentry{add\_endpoint() (pydash\_app.dashboard.entity.Dashboard method)|hyperpage}{17}
+\indexentry{add\_endpoint\_call() (pydash\_app.dashboard.entity.Dashboard method)|hyperpage}{17}
+\indexentry{aggregated\_data() (pydash\_app.dashboard.entity.Dashboard method)|hyperpage}{17}
+\indexentry{aggregated\_data\_daterange() (pydash\_app.dashboard.entity.Dashboard method)|hyperpage}{17}
+\indexentry{first\_endpoint\_call\_time() (pydash\_app.dashboard.entity.Dashboard method)|hyperpage}{18}
+\indexentry{get\_id() (pydash\_app.dashboard.entity.Dashboard method)|hyperpage}{18}
+\indexentry{remove\_endpoint() (pydash\_app.dashboard.entity.Dashboard method)|hyperpage}{18}
+\indexentry{statistic() (pydash\_app.dashboard.entity.Dashboard method)|hyperpage}{18}
+\indexentry{statistic\_per\_timeslice() (pydash\_app.dashboard.entity.Dashboard method)|hyperpage}{18}
+\indexentry{DashboardState (class in pydash\_app.dashboard.entity)|hyperpage}{18}
+\indexentry{fetch\_endpoint\_calls\_failure (pydash\_app.dashboard.entity.DashboardState attribute)|hyperpage}{18}
+\indexentry{fetched\_endpoint\_calls (pydash\_app.dashboard.entity.DashboardState attribute)|hyperpage}{18}
+\indexentry{initialize\_endpoint\_calls\_failure (pydash\_app.dashboard.entity.DashboardState attribute)|hyperpage}{18}
+\indexentry{initialize\_endpoints\_failure (pydash\_app.dashboard.entity.DashboardState attribute)|hyperpage}{18}
+\indexentry{initialized\_endpoint\_calls (pydash\_app.dashboard.entity.DashboardState attribute)|hyperpage}{18}
+\indexentry{initialized\_endpoints (pydash\_app.dashboard.entity.DashboardState attribute)|hyperpage}{18}
+\indexentry{not\_initialized (pydash\_app.dashboard.entity.DashboardState attribute)|hyperpage}{18}
+\indexentry{pydash\_app.dashboard.repository (module)|hyperpage}{19}
+\indexentry{add() (in module pydash\_app.dashboard.repository)|hyperpage}{20}
+\indexentry{all() (in module pydash\_app.dashboard.repository)|hyperpage}{20}
+\indexentry{clear\_all() (in module pydash\_app.dashboard.repository)|hyperpage}{20}
+\indexentry{delete() (in module pydash\_app.dashboard.repository)|hyperpage}{20}
+\indexentry{find() (in module pydash\_app.dashboard.repository)|hyperpage}{20}
+\indexentry{update() (in module pydash\_app.dashboard.repository)|hyperpage}{20}
+\indexentry{pydash\_app.dashboard (module)|hyperpage}{20}
+\indexentry{add\_to\_repository() (in module pydash\_app.dashboard)|hyperpage}{20}
+\indexentry{dashboards\_of\_user() (in module pydash\_app.dashboard)|hyperpage}{20}
+\indexentry{find() (in module pydash\_app.dashboard)|hyperpage}{20}
+\indexentry{find\_verified\_dashboard() (in module pydash\_app.dashboard)|hyperpage}{20}
+\indexentry{remove\_from\_repository() (in module pydash\_app.dashboard)|hyperpage}{20}
+\indexentry{pydash\_app.user.services.pruning (module)|hyperpage}{20}
+\indexentry{schedule\_periodic\_pruning\_task() (in module pydash\_app.user.services.pruning)|hyperpage}{20}
+\indexentry{pydash\_app.user.services.seeding (module)|hyperpage}{21}
+\indexentry{seed() (in module pydash\_app.user.services.seeding)|hyperpage}{21}
+\indexentry{pydash\_app.user.services (module)|hyperpage}{21}
+\indexentry{pydash\_app.user.entity (module)|hyperpage}{21}
+\indexentry{User (class in pydash\_app.user.entity)|hyperpage}{21}
+\indexentry{check\_password() (pydash\_app.user.entity.User method)|hyperpage}{21}
+\indexentry{generate\_new\_verification\_code() (pydash\_app.user.entity.User method)|hyperpage}{21}
+\indexentry{get\_id() (pydash\_app.user.entity.User method)|hyperpage}{21}
+\indexentry{get\_verification\_code() (pydash\_app.user.entity.User method)|hyperpage}{22}
+\indexentry{get\_verification\_code\_expiration\_date() (pydash\_app.user.entity.User method)|hyperpage}{22}
+\indexentry{has\_verification\_code\_expired() (pydash\_app.user.entity.User method)|hyperpage}{22}
+\indexentry{is\_verified() (pydash\_app.user.entity.User method)|hyperpage}{22}
+\indexentry{set\_password() (pydash\_app.user.entity.User method)|hyperpage}{22}
+\indexentry{pydash\_app.user.repository (module)|hyperpage}{22}
+\indexentry{add() (in module pydash\_app.user.repository)|hyperpage}{22}
+\indexentry{all() (in module pydash\_app.user.repository)|hyperpage}{22}
+\indexentry{all\_unverified() (in module pydash\_app.user.repository)|hyperpage}{22}
+\indexentry{clear\_all() (in module pydash\_app.user.repository)|hyperpage}{22}
+\indexentry{delete\_by\_id() (in module pydash\_app.user.repository)|hyperpage}{23}
+\indexentry{find() (in module pydash\_app.user.repository)|hyperpage}{23}
+\indexentry{find\_by\_name() (in module pydash\_app.user.repository)|hyperpage}{23}
+\indexentry{find\_by\_verification\_code() (in module pydash\_app.user.repository)|hyperpage}{23}
+\indexentry{update() (in module pydash\_app.user.repository)|hyperpage}{23}
+\indexentry{pydash\_app.user.verification (module)|hyperpage}{24}
+\indexentry{InvalidVerificationCodeError|hyperpage}{24}
+\indexentry{VerificationCodeExpiredError|hyperpage}{24}
+\indexentry{verify() (in module pydash\_app.user.verification)|hyperpage}{24}
+\indexentry{pydash\_app.user.verification\_code (module)|hyperpage}{24}
+\indexentry{VerificationCode (class in pydash\_app.user.verification\_code)|hyperpage}{24}
+\indexentry{is\_expired() (pydash\_app.user.verification\_code.VerificationCode method)|hyperpage}{24}
+\indexentry{pydash\_app.user (module)|hyperpage}{24}
+\indexentry{add\_to\_repository() (in module pydash\_app.user)|hyperpage}{25}
+\indexentry{authenticate() (in module pydash\_app.user)|hyperpage}{25}
+\indexentry{check\_password\_requirements() (in module pydash\_app.user)|hyperpage}{25}
+\indexentry{find() (in module pydash\_app.user)|hyperpage}{25}
+\indexentry{find\_by\_name() (in module pydash\_app.user)|hyperpage}{25}
+\indexentry{find\_by\_verification\_code() (in module pydash\_app.user)|hyperpage}{25}
+\indexentry{maybe\_find\_user() (in module pydash\_app.user)|hyperpage}{25}
+\indexentry{remove\_from\_repository() (in module pydash\_app.user)|hyperpage}{25}
+\indexentry{verify() (in module pydash\_app.user)|hyperpage}{26}
+\indexentry{pydash\_app (module)|hyperpage}{26}
+\indexentry{schedule\_periodic\_tasks() (in module pydash\_app)|hyperpage}{26}
+\indexentry{seed\_datastructures() (in module pydash\_app)|hyperpage}{26}
+\indexentry{start\_task\_scheduler() (in module pydash\_app)|hyperpage}{26}
+\indexentry{stop\_task\_scheduler() (in module pydash\_app)|hyperpage}{26}
+\indexentry{pydash\_database (module)|hyperpage}{26}
+\indexentry{MultiIndexedPersistentCollection (class in pydash\_database)|hyperpage}{26}
+\indexentry{database\_connection() (in module pydash\_database)|hyperpage}{26}
+\indexentry{database\_root() (in module pydash\_database)|hyperpage}{26}
+\indexentry{pydash\_logger.logger (module)|hyperpage}{27}
+\indexentry{Logger (class in pydash\_logger.logger)|hyperpage}{27}
+\indexentry{debug() (pydash\_logger.logger.Logger method)|hyperpage}{27}
+\indexentry{error() (pydash\_logger.logger.Logger method)|hyperpage}{27}
+\indexentry{info() (pydash\_logger.logger.Logger method)|hyperpage}{27}
+\indexentry{warning() (pydash\_logger.logger.Logger method)|hyperpage}{27}
+\indexentry{pydash\_logger (module)|hyperpage}{27}
+\indexentry{pydash\_mail.templates (module)|hyperpage}{27}
+\indexentry{format\_verification\_mail\_html() (in module pydash\_mail.templates)|hyperpage}{27}
+\indexentry{format\_verification\_mail\_plain() (in module pydash\_mail.templates)|hyperpage}{27}
+\indexentry{pydash\_mail (module)|hyperpage}{28}
+\indexentry{pydash\_web.controller.change\_dashboard\_settings (module)|hyperpage}{28}
+\indexentry{change\_dashboard\_settings() (in module pydash\_web.controller.change\_dashboard\_settings)|hyperpage}{28}
+\indexentry{pydash\_web.controller.change\_password (module)|hyperpage}{28}
+\indexentry{change\_password() (in module pydash\_web.controller.change\_password)|hyperpage}{28}
+\indexentry{pydash\_web.controller.change\_settings (module)|hyperpage}{28}
+\indexentry{change\_settings() (in module pydash\_web.controller.change\_settings)|hyperpage}{28}
+\indexentry{pydash\_web.controller.dashboards (module)|hyperpage}{28}
+\indexentry{check\_allowed\_statistics() (in module pydash\_web.controller.dashboards)|hyperpage}{28}
+\indexentry{check\_allowed\_timeslices() (in module pydash\_web.controller.dashboards)|hyperpage}{28}
+\indexentry{dashboard() (in module pydash\_web.controller.dashboards)|hyperpage}{28}
+\indexentry{dashboards() (in module pydash\_web.controller.dashboards)|hyperpage}{29}
+\indexentry{handle\_statistic\_per\_timeslice() (in module pydash\_web.controller.dashboards)|hyperpage}{29}
+\indexentry{handle\_statistic\_without\_timeslice() (in module pydash\_web.controller.dashboards)|hyperpage}{29}
+\indexentry{match\_datetime\_string\_with\_formats() (in module pydash\_web.controller.dashboards)|hyperpage}{30}
+\indexentry{pydash\_web.controller.delete\_dashboard (module)|hyperpage}{30}
+\indexentry{delete\_dashboard() (in module pydash\_web.controller.delete\_dashboard)|hyperpage}{30}
+\indexentry{pydash\_web.controller.delete\_user (module)|hyperpage}{30}
+\indexentry{delete\_user() (in module pydash\_web.controller.delete\_user)|hyperpage}{30}
+\indexentry{pydash\_web.controller.execution\_times\_boxplots (module)|hyperpage}{30}
+\indexentry{endpoint\_execution\_times\_boxplots() (in module pydash\_web.controller.execution\_times\_boxplots)|hyperpage}{30}
+\indexentry{pydash\_web.controller.execution\_times\_per\_version (module)|hyperpage}{30}
+\indexentry{execution\_times\_per\_version() (in module pydash\_web.controller.execution\_times\_per\_version)|hyperpage}{30}
+\indexentry{pydash\_web.controller.login (module)|hyperpage}{30}
+\indexentry{login() (in module pydash\_web.controller.login)|hyperpage}{30}
+\indexentry{pydash\_web.controller.logout (module)|hyperpage}{30}
+\indexentry{logout() (in module pydash\_web.controller.logout)|hyperpage}{30}
+\indexentry{pydash\_web.controller.register\_dashboard (module)|hyperpage}{30}
+\indexentry{register\_dashboard() (in module pydash\_web.controller.register\_dashboard)|hyperpage}{30}
+\indexentry{pydash\_web.controller.register\_user (module)|hyperpage}{31}
+\indexentry{register\_user() (in module pydash\_web.controller.register\_user)|hyperpage}{31}
+\indexentry{pydash\_web.controller.user\_verification (module)|hyperpage}{31}
+\indexentry{verify\_user() (in module pydash\_web.controller.user\_verification)|hyperpage}{31}
+\indexentry{pydash\_web.controller.utils (module)|hyperpage}{31}
+\indexentry{execution\_times() (in module pydash\_web.controller.utils)|hyperpage}{31}
+\indexentry{pydash\_web.controller.visitor\_heatmap (module)|hyperpage}{31}
+\indexentry{daterange() (in module pydash\_web.controller.visitor\_heatmap)|hyperpage}{31}
+\indexentry{get\_hourly\_data() (in module pydash\_web.controller.visitor\_heatmap)|hyperpage}{31}
+\indexentry{visitor\_heatmap() (in module pydash\_web.controller.visitor\_heatmap)|hyperpage}{31}
+\indexentry{pydash\_web.controller (module)|hyperpage}{31}
+\indexentry{pydash\_web.api (module)|hyperpage}{31}
+\indexentry{pydash\_web.api\_routes (module)|hyperpage}{31}
+\indexentry{change\_dashboard\_settings() (in module pydash\_web.api\_routes)|hyperpage}{31}
+\indexentry{change\_password() (in module pydash\_web.api\_routes)|hyperpage}{31}
+\indexentry{change\_settings() (in module pydash\_web.api\_routes)|hyperpage}{32}
+\indexentry{delete\_dashboard() (in module pydash\_web.api\_routes)|hyperpage}{32}
+\indexentry{delete\_user() (in module pydash\_web.api\_routes)|hyperpage}{32}
+\indexentry{get\_dashboard() (in module pydash\_web.api\_routes)|hyperpage}{32}
+\indexentry{get\_dashboards() (in module pydash\_web.api\_routes)|hyperpage}{32}
+\indexentry{get\_endpoint\_execution\_times\_boxplots() (in module pydash\_web.api\_routes)|hyperpage}{32}
+\indexentry{get\_execution\_times\_boxplot() (in module pydash\_web.api\_routes)|hyperpage}{32}
+\indexentry{get\_execution\_times\_per\_version\_dashboard() (in module pydash\_web.api\_routes)|hyperpage}{32}
+\indexentry{get\_execution\_times\_per\_version\_endpoint() (in module pydash\_web.api\_routes)|hyperpage}{32}
+\indexentry{get\_unique\_visitor\_heatmap() (in module pydash\_web.api\_routes)|hyperpage}{32}
+\indexentry{get\_visitor\_heatmap() (in module pydash\_web.api\_routes)|hyperpage}{32}
+\indexentry{login() (in module pydash\_web.api\_routes)|hyperpage}{32}
+\indexentry{logout() (in module pydash\_web.api\_routes)|hyperpage}{32}
+\indexentry{register\_dashboard() (in module pydash\_web.api\_routes)|hyperpage}{32}
+\indexentry{register\_user() (in module pydash\_web.api\_routes)|hyperpage}{32}
+\indexentry{verify\_user() (in module pydash\_web.api\_routes)|hyperpage}{32}
+\indexentry{pydash\_web.react\_server (module)|hyperpage}{32}
+\indexentry{serve() (in module pydash\_web.react\_server)|hyperpage}{32}
+\indexentry{pydash\_web (module)|hyperpage}{32}
+\indexentry{load\_user() (in module pydash\_web)|hyperpage}{32}
+\indexentry{unauthorized() (in module pydash\_web)|hyperpage}{32}
+\indexentry{tests.common\_fixtures (module)|hyperpage}{32}
+\indexentry{tests.conftest (module)|hyperpage}{32}
+\indexentry{splinter\_driver\_kwargs() (in module tests.conftest)|hyperpage}{32}
+\indexentry{testserver() (in module tests.conftest)|hyperpage}{33}
+\indexentry{tests (module)|hyperpage}{33}

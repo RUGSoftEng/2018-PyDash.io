@@ -40,16 +40,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pydash_app.dashboard.aggregator.html">pydash_app.dashboard.aggregator package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pydash_app.dashboard.aggregator.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pydash_app.dashboard.aggregator.html#pydash-app-dashboard-aggregator-aggregator-group-module">pydash_app.dashboard.aggregator.aggregator_group module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pydash_app.dashboard.aggregator.html#pydash-app-dashboard-aggregator-statistics-module">pydash_app.dashboard.aggregator.statistics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pydash_app.dashboard.aggregator.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydash_app.dashboard.aggregator.html#module-pydash_app.dashboard.aggregator.aggregator_group">pydash_app.dashboard.aggregator.aggregator_group module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydash_app.dashboard.aggregator.html#module-pydash_app.dashboard.aggregator.statistics">pydash_app.dashboard.aggregator.statistics module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydash_app.dashboard.aggregator.html#module-pydash_app.dashboard.aggregator">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pydash_app.dashboard.services.html">pydash_app.dashboard.services package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pydash_app.dashboard.services.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pydash_app.dashboard.services.html#pydash-app-dashboard-services-fetching-module">pydash_app.dashboard.services.fetching module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pydash_app.dashboard.services.html#pydash-app-dashboard-services-seeding-module">pydash_app.dashboard.services.seeding module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pydash_app.dashboard.services.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydash_app.dashboard.services.html#module-pydash_app.dashboard.services.fetching">pydash_app.dashboard.services.fetching module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydash_app.dashboard.services.html#module-pydash_app.dashboard.services.seeding">pydash_app.dashboard.services.seeding module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydash_app.dashboard.services.html#module-pydash_app.dashboard.services">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -58,20 +58,531 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="pydash-app-dashboard-endpoint-module">
-<h2>pydash_app.dashboard.endpoint module<a class="headerlink" href="#pydash-app-dashboard-endpoint-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pydash_app.dashboard.endpoint">
+<span id="pydash-app-dashboard-endpoint-module"></span><h2>pydash_app.dashboard.endpoint module<a class="headerlink" href="#module-pydash_app.dashboard.endpoint" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pydash_app.dashboard.endpoint.Endpoint">
+<em class="property">class </em><code class="descclassname">pydash_app.dashboard.endpoint.</code><code class="descname">Endpoint</code><span class="sig-paren">(</span><em>name</em>, <em>is_monitored</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/endpoint.html#Endpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.endpoint.Endpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">persistent.Persistent</span></code></p>
+<p>The Endpoint entity knows about:
+- Its own properties
+- The functionalities for Endpoint interactions with information from elsewhere.</p>
+<p>It does not contain information on how to persistently store/load an endpoint,
+as currently endpoints only exist in combination with dashboard objects.
+If endpoints were to exist on their own, the <cite>endpoint_repository</cite> would handle their persistence.</p>
+<dl class="method">
+<dt id="pydash_app.dashboard.endpoint.Endpoint.add_endpoint_call">
+<code class="descname">add_endpoint_call</code><span class="sig-paren">(</span><em>call</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/endpoint.html#Endpoint.add_endpoint_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.endpoint.Endpoint.add_endpoint_call" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an EndpointCall to its internal collection of endpoint calls.
+:param call: The endpoint call to add.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.dashboard.endpoint.Endpoint.aggregated_data">
+<code class="descname">aggregated_data</code><span class="sig-paren">(</span><em>filters={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/endpoint.html#Endpoint.aggregated_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.endpoint.Endpoint.aggregated_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns aggregated data on this endpoint.
+:param filters: A dictionary containing property_name-value pairs to filter on. The keys are assumed to be strings.</p>
+<blockquote>
+<div><p>This is in the gist of <cite>{‘day’:‘2018-05-20’, ‘ip’:‘127.0.0.1’}</cite>
+Defaults to an empty dictionary.</p>
+<dl class="docutils">
+<dt>The currently allowed filter_names are:</dt>
+<dd><ul class="first simple">
+<li>Time:
+* ‘year’   - e.g. ‘2018’
+* ‘month’  - e.g. ‘2018-05’
+* ‘week’   - e.g. ‘2018-W17’
+* ‘day’    - e.g. ‘2018-05-20’
+* ‘hour’   - e.g. ‘2018-05-20T20’
+* ‘minute’ - e.g. ‘2018-05-20T20-10’</li>
+</ul>
+<p>Note that for Time filter-values, the formatting is crucial.</p>
+<ul class="last simple">
+<li>Version:
+* ‘version’ - e.g. ‘1.0.1’</li>
+<li>IP:
+* ‘ip’ - e.g. ‘127.0.0.1’</li>
+<li>Group-by:
+* ‘group_by’ - e.g. ‘None’</li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A dict containing aggregated data points.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.dashboard.endpoint.Endpoint.aggregated_data_daterange">
+<code class="descname">aggregated_data_daterange</code><span class="sig-paren">(</span><em>start_date</em>, <em>end_date</em>, <em>granularity</em>, <em>filters={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/endpoint.html#Endpoint.aggregated_data_daterange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.endpoint.Endpoint.aggregated_data_daterange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the aggregated data on this endpoint over the specified daterange.
+:param start_date: A datetime object that is treated as the inclusive lower bound of the daterange.
+:param end_date: A datetime object that is treated as the inclusive upper bound of the daterange.
+:param granularity: A string denoting the granularity of the daterange.
+:param filters: A dictionary containing property_name-value pairs to filter on. The keys are assumed to be strings.</p>
+<blockquote>
+<div><p>This is in the gist of <cite>{‘day’:‘2018-05-20’, ‘ip’:‘127.0.0.1’}</cite>
+Defaults to an empty dictionary.</p>
+<dl class="docutils">
+<dt>The currently allowed filter_names are:</dt>
+<dd><ul class="first simple">
+<li>Version:
+* ‘version’ - e.g. ‘1.0.1’</li>
+<li>IP:
+* ‘ip’ - e.g. ‘127.0.0.1’</li>
+<li>Group-by:
+* ‘group_by’ - e.g. ‘None’</li>
+</ul>
+<p class="last">Note that, contrary to <cite>aggregated_data</cite> method, Time based filters are not allowed.</p>
+</dd>
+</dl>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A dictionary with all aggregated statistics and their values.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.dashboard.endpoint.Endpoint.get_id">
+<code class="descname">get_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/endpoint.html#Endpoint.get_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.endpoint.Endpoint.get_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.dashboard.endpoint.Endpoint.remove_endpoint_call">
+<code class="descname">remove_endpoint_call</code><span class="sig-paren">(</span><em>call</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/endpoint.html#Endpoint.remove_endpoint_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.endpoint.Endpoint.remove_endpoint_call" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes an EndpointCall from this endpoint’s internal collection of endpoint calls.
+Raises a ValueError if no such call exists.
+Note: does not remove it from its aggregated dataset yet.
+:param call: The endpoint call to remove.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.dashboard.endpoint.Endpoint.set_monitored">
+<code class="descname">set_monitored</code><span class="sig-paren">(</span><em>is_monitored</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/endpoint.html#Endpoint.set_monitored"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.endpoint.Endpoint.set_monitored" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.dashboard.endpoint.Endpoint.statistic">
+<code class="descname">statistic</code><span class="sig-paren">(</span><em>statistic</em>, <em>filters={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/endpoint.html#Endpoint.statistic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.endpoint.Endpoint.statistic" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.dashboard.endpoint.Endpoint.statistic_per_timeslice">
+<code class="descname">statistic_per_timeslice</code><span class="sig-paren">(</span><em>statistic</em>, <em>timeslice</em>, <em>start_datetime</em>, <em>end_datetime</em>, <em>filters={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/endpoint.html#Endpoint.statistic_per_timeslice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.endpoint.Endpoint.statistic_per_timeslice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="pydash-app-dashboard-endpoint-call-module">
-<h2>pydash_app.dashboard.endpoint_call module<a class="headerlink" href="#pydash-app-dashboard-endpoint-call-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pydash_app.dashboard.endpoint_call">
+<span id="pydash-app-dashboard-endpoint-call-module"></span><h2>pydash_app.dashboard.endpoint_call module<a class="headerlink" href="#module-pydash_app.dashboard.endpoint_call" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pydash_app.dashboard.endpoint_call.EndpointCall">
+<em class="property">class </em><code class="descclassname">pydash_app.dashboard.endpoint_call.</code><code class="descname">EndpointCall</code><span class="sig-paren">(</span><em>endpoint</em>, <em>execution_time</em>, <em>time</em>, <em>version</em>, <em>group_by</em>, <em>ip</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/endpoint_call.html#EndpointCall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.endpoint_call.EndpointCall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">persistent.Persistent</span></code></p>
+<p>An EndpointCall entity only serves to store JSON data pulled from the external dashboards.</p>
+<p>As with the other entity classes, it does not concern itself with the implementation of its persistence,
+as it doesn’t exist on its own.
+If this were the case, the <cite>endpointcall_repository</cite> would handle this concern.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">endpoint_call</span> <span class="o">=</span> <span class="n">EndpointCall</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="s2">&quot;2018-04-25 15:29:23&quot;</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">),</span> <span class="s2">&quot;0.1&quot;</span><span class="p">,</span> <span class="s2">&quot;None&quot;</span><span class="p">,</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">endpoint_call</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+<span class="go">{&#39;endpoint&#39;: &#39;foo&#39;, &#39;execution_time&#39;: 0.5, &#39;time&#39;: datetime.datetime(2018, 4, 25, 15, 29, 23), &#39;version&#39;: &#39;0.1&#39;, &#39;group_by&#39;: &#39;None&#39;, &#39;ip&#39;: &#39;127.0.0.1&#39;}</span>
+</pre></div>
 </div>
-<div class="section" id="pydash-app-dashboard-entity-module">
-<h2>pydash_app.dashboard.entity module<a class="headerlink" href="#pydash-app-dashboard-entity-module" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="pydash_app.dashboard.endpoint_call.EndpointCall.as_dict">
+<code class="descname">as_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/endpoint_call.html#EndpointCall.as_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.endpoint_call.EndpointCall.as_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns a dict containing the data of the EndpointCall</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="pydash-app-dashboard-repository-module">
-<h2>pydash_app.dashboard.repository module<a class="headerlink" href="#pydash-app-dashboard-repository-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pydash_app.dashboard.entity">
+<span id="pydash-app-dashboard-entity-module"></span><h2>pydash_app.dashboard.entity module<a class="headerlink" href="#module-pydash_app.dashboard.entity" title="Permalink to this headline">¶</a></h2>
+<p>Involved usage example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydash_app.dashboard.entity</span> <span class="k">import</span> <span class="n">Dashboard</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydash_app.user.entity</span> <span class="k">import</span> <span class="n">User</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydash_app.dashboard.endpoint</span> <span class="k">import</span> <span class="n">Endpoint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pydash_app.dashboard.endpoint_call</span> <span class="k">import</span> <span class="n">EndpointCall</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="s2">&quot;Gandalf&quot;</span><span class="p">,</span> <span class="s2">&quot;pass&quot;</span><span class="p">,</span> <span class="s1">&#39;some@email.com&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">Dashboard</span><span class="p">(</span><span class="s2">&quot;http://foo.io&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()),</span> <span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e1</span> <span class="o">=</span> <span class="n">Endpoint</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e2</span> <span class="o">=</span> <span class="n">Endpoint</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">add_endpoint</span><span class="p">(</span><span class="n">e1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">add_endpoint</span><span class="p">(</span><span class="n">e2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ec1</span> <span class="o">=</span> <span class="n">EndpointCall</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="s2">&quot;2018-04-25 15:29:23&quot;</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">),</span> <span class="s2">&quot;0.1&quot;</span><span class="p">,</span> <span class="s2">&quot;None&quot;</span><span class="p">,</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ec2</span> <span class="o">=</span> <span class="n">EndpointCall</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="s2">&quot;2018-04-25 15:29:23&quot;</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">),</span> <span class="s2">&quot;0.1&quot;</span><span class="p">,</span> <span class="s2">&quot;None&quot;</span><span class="p">,</span> <span class="s2">&quot;127.0.0.2&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ec3</span> <span class="o">=</span> <span class="n">EndpointCall</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="s2">&quot;2018-04-25 15:29:23&quot;</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">),</span> <span class="s2">&quot;0.1&quot;</span><span class="p">,</span> <span class="s2">&quot;None&quot;</span><span class="p">,</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ec4</span> <span class="o">=</span> <span class="n">EndpointCall</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="s2">&quot;2018-04-25 15:29:23&quot;</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;0.1&quot;</span><span class="p">,</span> <span class="s2">&quot;None&quot;</span><span class="p">,</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ec5</span> <span class="o">=</span> <span class="n">EndpointCall</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="s2">&quot;2018-04-25 15:29:23&quot;</span><span class="p">,</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="s2">&quot;0.1&quot;</span><span class="p">,</span> <span class="s2">&quot;None&quot;</span><span class="p">,</span> <span class="s2">&quot;127.0.0.1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">add_endpoint_call</span><span class="p">(</span><span class="n">ec1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">add_endpoint_call</span><span class="p">(</span><span class="n">ec2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">add_endpoint_call</span><span class="p">(</span><span class="n">ec3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">add_endpoint_call</span><span class="p">(</span><span class="n">ec4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">add_endpoint_call</span><span class="p">(</span><span class="n">ec5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">aggregated_data</span><span class="p">()</span>
+<span class="go">{&#39;total_visits&#39;: 5, &#39;total_execution_time&#39;: 1.2, &#39;average_execution_time&#39;: 0.24, &#39;visits_per_ip&#39;: {&#39;127.0.0.1&#39;: 4, &#39;127.0.0.2&#39;: 1}, &#39;unique_visitors&#39;: 2, &#39;fastest_measured_execution_time&#39;: 0.1, &#39;fastest_quartile_execution_time&#39;: 0.14, &#39;median_execution_time&#39;: 0.2, &#39;slowest_quartile_execution_time&#39;: 0.39, &#39;ninetieth_percentile_execution_time&#39;: 0.5, &#39;ninety-ninth_percentile_execution_time&#39;: 0.5, &#39;slowest_measured_execution_time&#39;: 0.5, &#39;versions&#39;: [&#39;0.1&#39;]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">endpoints</span><span class="p">[</span><span class="s1">&#39;foo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">aggregated_data</span><span class="p">()</span>
+<span class="go">{&#39;total_visits&#39;: 2, &#39;total_execution_time&#39;: 0.6, &#39;average_execution_time&#39;: 0.3, &#39;visits_per_ip&#39;: {&#39;127.0.0.1&#39;: 1, &#39;127.0.0.2&#39;: 1}, &#39;unique_visitors&#39;: 2, &#39;fastest_measured_execution_time&#39;: 0.1, &#39;fastest_quartile_execution_time&#39;: 0.1, &#39;median_execution_time&#39;: 0.3, &#39;slowest_quartile_execution_time&#39;: 0.5, &#39;ninetieth_percentile_execution_time&#39;: 0.5, &#39;ninety-ninth_percentile_execution_time&#39;: 0.5, &#39;slowest_measured_execution_time&#39;: 0.5, &#39;versions&#39;: [&#39;0.1&#39;]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">endpoints</span><span class="p">[</span><span class="s1">&#39;bar&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">aggregated_data</span><span class="p">()</span>
+<span class="go">{&#39;total_visits&#39;: 3, &#39;total_execution_time&#39;: 0.6, &#39;average_execution_time&#39;: 0.2, &#39;visits_per_ip&#39;: {&#39;127.0.0.1&#39;: 3}, &#39;unique_visitors&#39;: 1, &#39;fastest_measured_execution_time&#39;: 0.2, &#39;fastest_quartile_execution_time&#39;: 0.2, &#39;median_execution_time&#39;: 0.2, &#39;slowest_quartile_execution_time&#39;: 0.2, &#39;ninetieth_percentile_execution_time&#39;: 0.2, &#39;ninety-ninth_percentile_execution_time&#39;: 0.2, &#39;slowest_measured_execution_time&#39;: 0.2, &#39;versions&#39;: [&#39;0.1&#39;]}</span>
+</pre></div>
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pydash_app.dashboard.entity.Dashboard">
+<em class="property">class </em><code class="descclassname">pydash_app.dashboard.entity.</code><code class="descname">Dashboard</code><span class="sig-paren">(</span><em>url</em>, <em>token</em>, <em>user_id</em>, <em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/entity.html#Dashboard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.entity.Dashboard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">persistent.Persistent</span></code></p>
+<p>The Dashboard entity knows about:
+- Its own properties (id, url, user_id, endpoints, endpoint_calls and last_fetch_time)
+- The functionalities for Dashboard interactions with information from elsewhere.</p>
+<p>It does not contain information on how to persistently store/load a dashboard.
+This task is handled by the <cite>dashboard_repository</cite>.</p>
+<dl class="method">
+<dt id="pydash_app.dashboard.entity.Dashboard.add_endpoint">
+<code class="descname">add_endpoint</code><span class="sig-paren">(</span><em>endpoint</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/entity.html#Dashboard.add_endpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.entity.Dashboard.add_endpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an endpoint to this dashboard’s internal collection of endpoints.
+:param endpoint:  The endpoint to add, expects an Endpoint object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.dashboard.entity.Dashboard.add_endpoint_call">
+<code class="descname">add_endpoint_call</code><span class="sig-paren">(</span><em>endpoint_call</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/entity.html#Dashboard.add_endpoint_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.entity.Dashboard.add_endpoint_call" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Adds an endpoint call to the dashboard. Will register the corresponding endpoint to the dashboard if this has</dt>
+<dd>not been done yet.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>endpoint_call</strong> – The endpoint call to add</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.dashboard.entity.Dashboard.aggregated_data">
+<code class="descname">aggregated_data</code><span class="sig-paren">(</span><em>filters={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/entity.html#Dashboard.aggregated_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.entity.Dashboard.aggregated_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns aggregated data on this dashboard.
+:param filters: A dictionary containing property_name-value pairs to filter on. The keys are assumed to be strings.</p>
+<blockquote>
+<div><p>This is in the gist of <cite>{‘day’:‘2018-05-20’, ‘ip’:‘127.0.0.1’}</cite>
+Defaults to an empty dictionary.</p>
+<dl class="docutils">
+<dt>The currently allowed filter_names are:</dt>
+<dd><ul class="first simple">
+<li>Time:
+* ‘year’   - e.g. ‘2018’
+* ‘month’  - e.g. ‘2018-05’
+* ‘week’   - e.g. ‘2018-W17’
+* ‘day’    - e.g. ‘2018-05-20’
+* ‘hour’   - e.g. ‘2018-05-20T20’
+* ‘minute’ - e.g. ‘2018-05-20T20-10’</li>
+</ul>
+<p>Note that for Time filter-values, the formatting is crucial.</p>
+<ul class="last simple">
+<li>Version:
+* ‘version’ - e.g. ‘1.0.1’</li>
+<li>IP:
+* ‘ip’ - e.g. ‘127.0.0.1’</li>
+<li>Group-by:
+* ‘group_by’ - e.g. ‘None’</li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A dict containing aggregated data points.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.dashboard.entity.Dashboard.aggregated_data_daterange">
+<code class="descname">aggregated_data_daterange</code><span class="sig-paren">(</span><em>start_date</em>, <em>end_date</em>, <em>granularity</em>, <em>filters={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/entity.html#Dashboard.aggregated_data_daterange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.entity.Dashboard.aggregated_data_daterange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the aggregated data on this dashboard over the specified daterange.
+:param start_date: A datetime object that is treated as the inclusive lower bound of the daterange.
+:param end_date: A datetime object that is treated as the inclusive upper bound of the daterange.
+:param granularity: A string denoting the granularity of the daterange.
+:param filters: A dictionary containing property_name-value pairs to filter on. The keys are assumed to be strings.</p>
+<blockquote>
+<div><p>This is in the gist of <cite>{‘day’:‘2018-05-20’, ‘ip’:‘127.0.0.1’}</cite>
+Defaults to an empty dictionary.</p>
+<dl class="docutils">
+<dt>The currently allowed filter_names are:</dt>
+<dd><ul class="first simple">
+<li>Version:
+* ‘version’ - e.g. ‘1.0.1’</li>
+<li>IP:
+* ‘ip’ - e.g. ‘127.0.0.1’</li>
+<li>Group-by:
+* ‘group_by’ - e.g. ‘None’</li>
+</ul>
+<p class="last">Note that, contrary to <cite>aggregated_data</cite> method, Time based filters are not allowed.</p>
+</dd>
+</dl>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A dictionary with all aggregated statistics and their values.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.dashboard.entity.Dashboard.first_endpoint_call_time">
+<code class="descname">first_endpoint_call_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/entity.html#Dashboard.first_endpoint_call_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.entity.Dashboard.first_endpoint_call_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.dashboard.entity.Dashboard.get_id">
+<code class="descname">get_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/entity.html#Dashboard.get_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.entity.Dashboard.get_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.dashboard.entity.Dashboard.remove_endpoint">
+<code class="descname">remove_endpoint</code><span class="sig-paren">(</span><em>endpoint</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/entity.html#Dashboard.remove_endpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.entity.Dashboard.remove_endpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes an endpoint from this dashboard’s internal collection of endpoints.</p>
+<p>Raises a ValueError if no such endpoint exists.
+:param endpoint: The endpoint to remove.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.dashboard.entity.Dashboard.statistic">
+<code class="descname">statistic</code><span class="sig-paren">(</span><em>statistic</em>, <em>filters={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/entity.html#Dashboard.statistic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.entity.Dashboard.statistic" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pydash_app.dashboard.entity.Dashboard.statistic_per_timeslice">
+<code class="descname">statistic_per_timeslice</code><span class="sig-paren">(</span><em>statistic</em>, <em>timeslice</em>, <em>start_datetime</em>, <em>end_datetime</em>, <em>filters={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/entity.html#Dashboard.statistic_per_timeslice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.entity.Dashboard.statistic_per_timeslice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pydash_app.dashboard.entity.DashboardState">
+<em class="property">class </em><code class="descclassname">pydash_app.dashboard.entity.</code><code class="descname">DashboardState</code><a class="reference internal" href="_modules/pydash_app/dashboard/entity.html#DashboardState"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.entity.DashboardState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<p>The DashboardState enum indicates the state in which a Dashboard can remain, regarding remote fetching:</p>
+<ul class="simple">
+<li>not_initialized indicates the dashboard is newly created and not initialized with Endpoints and
+historic EndpointCalls;</li>
+<li>initialized_endpoints indicates the dashboard has successfully initialized Endpoints,
+but not yet historical EndpointCalls;</li>
+<li>initialize_endpoints_failure indicates something went wrong while initializing Endpoints, which means
+initialization of Endpoints needs to be retried;</li>
+<li>initialized_endpoint_calls indicates the dashboard has successfully initialized historical EndpointCalls,
+and can start fetching new EndpointCalls in a periodic task;</li>
+<li>initialize_endpoint_calls_failure indicates something went wrong while initializing historical EndpointCalls,
+which means this needs to be retried;</li>
+<li>fetched_endpoint_calls indicates last time new EndpointCalls were fetched, it was done successfully;</li>
+<li>fetch_endpoint_calls_failure indicates something went wrong while fetching new EndpointCalls,
+which means this needs to be retried.</li>
+</ul>
+<dl class="attribute">
+<dt id="pydash_app.dashboard.entity.DashboardState.fetch_endpoint_calls_failure">
+<code class="descname">fetch_endpoint_calls_failure</code><em class="property"> = 31</em><a class="headerlink" href="#pydash_app.dashboard.entity.DashboardState.fetch_endpoint_calls_failure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pydash_app.dashboard.entity.DashboardState.fetched_endpoint_calls">
+<code class="descname">fetched_endpoint_calls</code><em class="property"> = 30</em><a class="headerlink" href="#pydash_app.dashboard.entity.DashboardState.fetched_endpoint_calls" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pydash_app.dashboard.entity.DashboardState.initialize_endpoint_calls_failure">
+<code class="descname">initialize_endpoint_calls_failure</code><em class="property"> = 21</em><a class="headerlink" href="#pydash_app.dashboard.entity.DashboardState.initialize_endpoint_calls_failure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pydash_app.dashboard.entity.DashboardState.initialize_endpoints_failure">
+<code class="descname">initialize_endpoints_failure</code><em class="property"> = 11</em><a class="headerlink" href="#pydash_app.dashboard.entity.DashboardState.initialize_endpoints_failure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pydash_app.dashboard.entity.DashboardState.initialized_endpoint_calls">
+<code class="descname">initialized_endpoint_calls</code><em class="property"> = 20</em><a class="headerlink" href="#pydash_app.dashboard.entity.DashboardState.initialized_endpoint_calls" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pydash_app.dashboard.entity.DashboardState.initialized_endpoints">
+<code class="descname">initialized_endpoints</code><em class="property"> = 10</em><a class="headerlink" href="#pydash_app.dashboard.entity.DashboardState.initialized_endpoints" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pydash_app.dashboard.entity.DashboardState.not_initialized">
+<code class="descname">not_initialized</code><em class="property"> = 0</em><a class="headerlink" href="#pydash_app.dashboard.entity.DashboardState.not_initialized" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pydash_app.dashboard.repository">
+<span id="pydash-app-dashboard-repository-module"></span><h2>pydash_app.dashboard.repository module<a class="headerlink" href="#module-pydash_app.dashboard.repository" title="Permalink to this headline">¶</a></h2>
+<p>This module handles the persistence of <cite>Dashboard</cite> entities:</p>
+<p>It is an adapter of the actual persistence layer, to insulate the application
+from datastore-specific details.</p>
+<p>It handles a subset of the following tasks
+(specifically, it only actually contains functions for the tasks the application needs in its current state!):</p>
+<ul class="simple">
+<li>Creating new entities of the specified type and finding them based on id.</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pydash_app.dashboard.entity</span> <span class="k">as</span> <span class="nn">dashboard</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dashboard</span> <span class="o">=</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">Dashboard</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">found_dashboard</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">dashboard</span><span class="o">.</span><span class="n">get_id</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">found_dashboard</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span> <span class="o">==</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Asking for all dashboards is also possible!</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">all</span><span class="p">()</span> 
+<span class="go">&lt;OOBTreeItems object at 0x...&gt;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Adding multiple instances of the same dashboard will return a KeyError or a DuplicateIndexError</li>
+</ul>
+<p>TODO fix it so that it actually errors??
+&gt;&gt;&gt; import pydash_app.dashboard.entity as dashboard
+&gt;&gt;&gt; import uuid
+&gt;&gt;&gt; dashboard = dashboard.Dashboard(“”, “”, str(uuid.uuid4()))
+&gt;&gt;&gt; add(dashboard)
+&gt;&gt;&gt; add(dashboard)</p>
+<ul class="simple">
+<li>Persisting updated versions of existing entities.</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pydash_app.dashboard.entity</span> <span class="k">as</span> <span class="nn">dashboard</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dashboard</span> <span class="o">=</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">Dashboard</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dashboard</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="s2">&quot;newToken&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">update</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">found_dashboard</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">dashboard</span><span class="o">.</span><span class="n">get_id</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">found_dashboard</span><span class="o">.</span><span class="n">token</span> <span class="o">==</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">token</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Deleting entities from the persistence layer, note that find() will return a KeyError if no dashboard was found.</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">delete</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">found_dashboard</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">dashboard</span><span class="o">.</span><span class="n">get_id</span><span class="p">())</span>
+<span class="gt">Traceback (most recent call last):</span>
+    <span class="o">...</span>
+<span class="gr">KeyError</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>Deleting non-existent dashboards will result in a KeyError.</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pydash_app.dashboard.entity</span> <span class="k">as</span> <span class="nn">dashboard</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dashboard</span> <span class="o">=</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">Dashboard</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">delete</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">delete</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+    <span class="o">...</span>
+<span class="gr">KeyError</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="pydash_app.dashboard.repository.add">
+<code class="descclassname">pydash_app.dashboard.repository.</code><code class="descname">add</code><span class="sig-paren">(</span><em>dashboard</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/repository.html#add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.repository.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.dashboard.repository.all">
+<code class="descclassname">pydash_app.dashboard.repository.</code><code class="descname">all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/repository.html#all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.repository.all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.dashboard.repository.clear_all">
+<code class="descclassname">pydash_app.dashboard.repository.</code><code class="descname">clear_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/repository.html#clear_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.repository.clear_all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.dashboard.repository.delete">
+<code class="descclassname">pydash_app.dashboard.repository.</code><code class="descname">delete</code><span class="sig-paren">(</span><em>dashboard</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/repository.html#delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.repository.delete" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.dashboard.repository.find">
+<code class="descclassname">pydash_app.dashboard.repository.</code><code class="descname">find</code><span class="sig-paren">(</span><em>dashboard_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/repository.html#find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.repository.find" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.dashboard.repository.update">
+<code class="descclassname">pydash_app.dashboard.repository.</code><code class="descname">update</code><span class="sig-paren">(</span><em>dashboard</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard/repository.html#update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.repository.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pydash_app.dashboard">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pydash_app.dashboard" title="Permalink to this headline">¶</a></h2>
+<p>This module is the public interface (available to the web-application pydash_web)
+for interacting with Dashboards.</p>
+<dl class="function">
+<dt id="pydash_app.dashboard.add_to_repository">
+<code class="descclassname">pydash_app.dashboard.</code><code class="descname">add_to_repository</code><span class="sig-paren">(</span><em>dashboard</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard.html#add_to_repository"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.add_to_repository" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.dashboard.dashboards_of_user">
+<code class="descclassname">pydash_app.dashboard.</code><code class="descname">dashboards_of_user</code><span class="sig-paren">(</span><em>user_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard.html#dashboards_of_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.dashboards_of_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of Dashboard-entities that are connected to the given user.
+:param user_id: The UUID of the user whose dashboards we’re requesting.
+:return: A list of Dashboard-entities.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.dashboard.find">
+<code class="descclassname">pydash_app.dashboard.</code><code class="descname">find</code><span class="sig-paren">(</span><em>dashboard_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard.html#find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a single Dashboard-entity with the given UUID or None if it could not be found.
+:param dashboard_id: UUID of the dashboard we hope to find.
+:return: The Dashboard-entity with the given UUID or raises an Exception if it could not be found.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.dashboard.find_verified_dashboard">
+<code class="descclassname">pydash_app.dashboard.</code><code class="descname">find_verified_dashboard</code><span class="sig-paren">(</span><em>dashboard_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard.html#find_verified_dashboard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.find_verified_dashboard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verifies if a given dashboard_id is correct and if the current user has access
+to the dashboard.
+:param dashboard_id: The UUID of the dashboard to be validated.
+:return: True if the dashboard is valid, else False followed by the result and
+the http error code.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pydash_app.dashboard.remove_from_repository">
+<code class="descclassname">pydash_app.dashboard.</code><code class="descname">remove_from_repository</code><span class="sig-paren">(</span><em>dashboard</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pydash_app/dashboard.html#remove_from_repository"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pydash_app.dashboard.remove_from_repository" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 </div>
 
@@ -86,11 +597,11 @@
 <li><a class="reference internal" href="#">pydash_app.dashboard package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#pydash-app-dashboard-endpoint-module">pydash_app.dashboard.endpoint module</a></li>
-<li><a class="reference internal" href="#pydash-app-dashboard-endpoint-call-module">pydash_app.dashboard.endpoint_call module</a></li>
-<li><a class="reference internal" href="#pydash-app-dashboard-entity-module">pydash_app.dashboard.entity module</a></li>
-<li><a class="reference internal" href="#pydash-app-dashboard-repository-module">pydash_app.dashboard.repository module</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-pydash_app.dashboard.endpoint">pydash_app.dashboard.endpoint module</a></li>
+<li><a class="reference internal" href="#module-pydash_app.dashboard.endpoint_call">pydash_app.dashboard.endpoint_call module</a></li>
+<li><a class="reference internal" href="#module-pydash_app.dashboard.entity">pydash_app.dashboard.entity module</a></li>
+<li><a class="reference internal" href="#module-pydash_app.dashboard.repository">pydash_app.dashboard.repository module</a></li>
+<li><a class="reference internal" href="#module-pydash_app.dashboard">Module contents</a></li>
 </ul>
 </li>
 </ul>

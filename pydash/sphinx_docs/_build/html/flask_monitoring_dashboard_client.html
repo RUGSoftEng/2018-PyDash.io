@@ -34,8 +34,44 @@
             
   <div class="section" id="flask-monitoring-dashboard-client-package">
 <h1>flask_monitoring_dashboard_client package<a class="headerlink" href="#flask-monitoring-dashboard-client-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-flask_monitoring_dashboard_client">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-flask_monitoring_dashboard_client" title="Permalink to this headline">¶</a></h2>
+<p>Performs the remote requests to the flask-monitoring-dashboard.</p>
+<p>The method names in this module 1:1 reflect the names of the flask-monitoring-dashboard API
+(but without the word ‘JSON’ in them, because conversion from JSON to Python dictionaries/lists
+is one of the thing this module handles for you.)</p>
+<dl class="function">
+<dt id="flask_monitoring_dashboard_client.get_data">
+<code class="descclassname">flask_monitoring_dashboard_client.</code><code class="descname">get_data</code><span class="sig-paren">(</span><em>dashboard_url</em>, <em>dashboard_token</em>, <em>time_from=None</em>, <em>time_to=None</em>, <em>timeout=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flask_monitoring_dashboard_client.html#get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_monitoring_dashboard_client.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get data from a deployed flask-monitoring-dashboard
+:param dashboard_url: The base URL for the deployed dashboard, without trailing slash
+:param dashboard_token: The secret token for the dashboard, used to decode the Json Web Token response
+:param time_from: An optional datetime indicating only data since that moment should be included
+:param time_to: An optional datetime indicating only data up to that point should be included;
+only valid if time_from is also specified
+:param timeout: Optional timeout to wait for a response from the dashboard
+:return: A dict containing all monitoring data, possibly limited to the given time range</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flask_monitoring_dashboard_client.get_details">
+<code class="descclassname">flask_monitoring_dashboard_client.</code><code class="descname">get_details</code><span class="sig-paren">(</span><em>dashboard_url</em>, <em>timeout=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flask_monitoring_dashboard_client.html#get_details"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_monitoring_dashboard_client.get_details" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get details from a deployed flask-monitoring-dashboard
+:param dashboard_url: The base URL for the deployed dashboard, without trailing slash
+:param timeout: Optional timeout to wait for a response from the dashboard
+:return: A dict containing details from the dashboard, or None if the request was unsuccessful</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="flask_monitoring_dashboard_client.get_monitor_rules">
+<code class="descclassname">flask_monitoring_dashboard_client.</code><code class="descname">get_monitor_rules</code><span class="sig-paren">(</span><em>dashboard_url</em>, <em>dashboard_token</em>, <em>timeout=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/flask_monitoring_dashboard_client.html#get_monitor_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#flask_monitoring_dashboard_client.get_monitor_rules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get monitor rules from a deployed flask-monitoring-dashboard
+:param dashboard_url: The base URL for the deployed dashboard, without trailing slash
+:param dashboard_token: The secret token for the dashboard, used to decode the Json Web Token response
+:param timeout: Optional timeout to wait for a response from the dashboard
+:return: A dict containing monitor rules of the dashboard, or None if the request was unsuccessful</p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -48,7 +84,7 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">flask_monitoring_dashboard_client package</a><ul>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-flask_monitoring_dashboard_client">Module contents</a></li>
 </ul>
 </li>
 </ul>

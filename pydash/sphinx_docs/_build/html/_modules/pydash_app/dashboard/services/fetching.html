@@ -1,0 +1,589 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pydash_app.dashboard.services.fetching &#8212; PyDash 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pydash_app.dashboard.services.fetching</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">timezone</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">requests.exceptions</span>
+<span class="kn">import</span> <span class="nn">jwt</span>
+
+<span class="kn">import</span> <span class="nn">flask_monitoring_dashboard_client</span>
+<span class="kn">from</span> <span class="nn">pydash_app.dashboard.endpoint</span> <span class="k">import</span> <span class="n">Endpoint</span>
+<span class="kn">from</span> <span class="nn">pydash_app.dashboard.endpoint_call</span> <span class="k">import</span> <span class="n">EndpointCall</span>
+<span class="kn">from</span> <span class="nn">pydash_app.dashboard.entity</span> <span class="k">import</span> <span class="n">DashboardState</span>
+<span class="kn">import</span> <span class="nn">pydash_app.dashboard.repository</span> <span class="k">as</span> <span class="nn">dashboard_repository</span>
+<span class="kn">import</span> <span class="nn">pydash_logger</span>
+<span class="kn">import</span> <span class="nn">periodic_tasks</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">pydash_logger</span><span class="o">.</span><span class="n">Logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="schedule_all_periodic_dashboards_tasks"><a class="viewcode-back" href="../../../../pydash_app.dashboard.services.html#pydash_app.dashboard.services.fetching.schedule_all_periodic_dashboards_tasks">[docs]</a><span class="k">def</span> <span class="nf">schedule_all_periodic_dashboards_tasks</span><span class="p">(</span>
+        <span class="n">interval</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">scheduler</span><span class="o">=</span><span class="n">periodic_tasks</span><span class="o">.</span><span class="n">default_task_scheduler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets up all tasks that should be run periodically for each of the dashboards.</span>
+<span class="sd">    (For now, that is only the EndpointCall fetching task.)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">initialization_states</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">DashboardState</span><span class="o">.</span><span class="n">not_initialized</span><span class="p">,</span>
+        <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialized_endpoints</span><span class="p">,</span>
+        <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoints_failure</span><span class="p">,</span>
+        <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialized_endpoint_calls</span><span class="p">,</span>
+        <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoint_calls_failure</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">dashboard</span> <span class="ow">in</span> <span class="n">dashboard_repository</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="ow">in</span> <span class="n">initialization_states</span><span class="p">:</span>
+            <span class="n">schedule_historic_dashboard_fetching</span><span class="p">(</span>
+                <span class="n">dashboard</span><span class="p">,</span> <span class="n">scheduler</span><span class="o">=</span><span class="n">scheduler</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">schedule_periodic_dashboard_fetching</span><span class="p">(</span>
+                <span class="n">dashboard</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span> <span class="n">scheduler</span><span class="o">=</span><span class="n">scheduler</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="schedule_periodic_dashboard_fetching"><a class="viewcode-back" href="../../../../pydash_app.dashboard.services.html#pydash_app.dashboard.services.fetching.schedule_periodic_dashboard_fetching">[docs]</a><span class="k">def</span> <span class="nf">schedule_periodic_dashboard_fetching</span><span class="p">(</span>
+        <span class="n">dashboard</span><span class="p">,</span>
+        <span class="n">interval</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">scheduler</span><span class="o">=</span><span class="n">periodic_tasks</span><span class="o">.</span><span class="n">default_task_scheduler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Schedules the periodic EndpointCall fetching task for this dashboard.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Creating periodic fetching task for </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">periodic_tasks</span><span class="o">.</span><span class="n">add_periodic_task</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;dashboard&quot;</span><span class="p">,</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;fetching&quot;</span><span class="p">),</span>
+        <span class="n">task</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">fetch_and_update_new_dashboard_info</span><span class="p">,</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+        <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
+        <span class="n">scheduler</span><span class="o">=</span><span class="n">scheduler</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="schedule_historic_dashboard_fetching"><a class="viewcode-back" href="../../../../pydash_app.dashboard.services.html#pydash_app.dashboard.services.fetching.schedule_historic_dashboard_fetching">[docs]</a><span class="k">def</span> <span class="nf">schedule_historic_dashboard_fetching</span><span class="p">(</span>
+        <span class="n">dashboard</span><span class="p">,</span> <span class="n">scheduler</span><span class="o">=</span><span class="n">periodic_tasks</span><span class="o">.</span><span class="n">default_task_scheduler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Schedules the fetching of historic EndpointCall information as a background task.</span>
+<span class="sd">    The periodic fetching of new EndpointCall information is scheduled as soon as this task completes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">task</span><span class="p">(</span><span class="n">dashboard_id</span><span class="p">):</span>
+        <span class="n">fetch_and_update_historic_dashboard_info</span><span class="p">(</span><span class="n">dashboard_id</span><span class="p">)</span>
+        <span class="n">schedule_periodic_dashboard_fetching</span><span class="p">(</span><span class="n">dashboard_id</span><span class="p">)</span>
+
+    <span class="n">periodic_tasks</span><span class="o">.</span><span class="n">add_background_task</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;dashboard&quot;</span><span class="p">,</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;historic_fetching&quot;</span><span class="p">),</span>
+        <span class="n">task</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+        <span class="n">scheduler</span><span class="o">=</span><span class="n">scheduler</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="fetch_and_update_new_dashboard_info"><a class="viewcode-back" href="../../../../pydash_app.dashboard.services.html#pydash_app.dashboard.services.fetching.fetch_and_update_new_dashboard_info">[docs]</a><span class="k">def</span> <span class="nf">fetch_and_update_new_dashboard_info</span><span class="p">(</span><span class="n">dashboard_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Updates the dashboard with the new EndpointCall information that is fetched from the Dashboard&#39;s remote location.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dashboard</span> <span class="o">=</span> <span class="n">dashboard_repository</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">dashboard_id</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Dashboard does not exist&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;INSIDE FETCH FUNCTION: </span><span class="si">{dashboard_id}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">fetch_and_add_endpoint_calls</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{len(dashboard.endpoints)} endpoints found&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{len(dashboard._endpoint_calls)} endpoint calls&#39;</span><span class="p">)</span>
+
+    <span class="n">dashboard_repository</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Dashboard </span><span class="si">{dashboard_id}</span><span class="s2"> updated&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="fetch_and_update_historic_dashboard_info"><a class="viewcode-back" href="../../../../pydash_app.dashboard.services.html#pydash_app.dashboard.services.fetching.fetch_and_update_historic_dashboard_info">[docs]</a><span class="k">def</span> <span class="nf">fetch_and_update_historic_dashboard_info</span><span class="p">(</span><span class="n">dashboard_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Updates the dashboard with the historic EndpointCall information that is fetched from the Dashboard&#39;s remote location.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dashboard</span> <span class="o">=</span> <span class="n">dashboard_repository</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">dashboard_id</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Dashboard does not exist&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;INSIDE INITIAL FETCHING FUNCTION: </span><span class="si">{dashboard_id}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">fetch_and_add_endpoints</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+    <span class="n">fetch_and_add_historic_endpoint_calls</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{len(dashboard.endpoints)} endpoints found&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{len(dashboard._endpoint_calls)} historical endpoint calls&#39;</span><span class="p">)</span>
+
+    <span class="n">dashboard_repository</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span></div>
+
+
+<span class="c1"># Endpoints</span>
+
+
+<div class="viewcode-block" id="fetch_and_add_endpoints"><a class="viewcode-back" href="../../../../pydash_app.dashboard.services.html#pydash_app.dashboard.services.fetching.fetch_and_add_endpoints">[docs]</a><span class="k">def</span> <span class="nf">fetch_and_add_endpoints</span><span class="p">(</span><span class="n">dashboard</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    For a given dashboard, initialize it with the endpoints it has registered.</span>
+<span class="sd">    Note that this will not add endpoint call data.</span>
+<span class="sd">    :param dashboard: The dashboard to initialize with endpoints.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Only run this function if no endpoints have been added yet</span>
+    <span class="k">if</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">not_initialized</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Tried to add endpoints from a wrong state: </span><span class="si">{dashboard.state}</span><span class="s1"> for dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">details</span> <span class="o">=</span> <span class="n">flask_monitoring_dashboard_client</span><span class="o">.</span><span class="n">get_details</span><span class="p">(</span><span class="n">dashboard</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Connection error in fetch_and_add_endpoints while initializing: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;from dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoints_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not connect to the remote application while initializing endpoint information.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">Timeout</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Timeout in fetch_and_add_endpoints while initializing: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;from dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoints_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;The connection to the remote application timed out while initializing endpoint information.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;HTTP error in fetch_and_add_endpoints while initializing: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;from dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoints_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not connect to the remote application while initializing endpoint information.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;JSON decode error in fetch_and_add_endpoints while initializing: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoints_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not read the remote dashboard&#39;s details while initializing endpoint information.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Unexpected error in fetch_and_add_endpoints while initializing: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;from dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoints_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="n">details</span><span class="p">[</span><span class="s1">&#39;dashboard-version&#39;</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">version</span> <span class="o">=</span> <span class="n">details</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">version</span> <span class="o">=</span> <span class="s1">&#39;?&#39;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Unsupported dashboard version: </span><span class="si">{details}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoints_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;You are running an unsupported version of Flask-MonitoringDashboard (</span><span class="si">{version}</span><span class="s2"> &lt; 1.12.0).&quot;</span>
+        <span class="k">return</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">endpoints</span> <span class="o">=</span> <span class="n">_fetch_endpoints</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Connection error in fetch_and_add_endpoints while fetching: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;from dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoints_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not connect to the remote application while fetching endpoint information.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">Timeout</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Timeout in fetch_and_add_endpoints while fetching: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;from dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoints_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;The connection to the remote application timed out while fetching endpoint information.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;HTTP error in fetch_and_add_endpoints while fetching: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;from dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoints_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not connect to the remote application while fetching endpoint information.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">DecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;JWT decode error in fetch_and_add_endpoints while fetching: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;from dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoints_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not read the remote dashboard&#39;s endpoint information.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Key error in fetch_and_add_endpoints while fetching: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;from dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoints_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not read the remote dashboard&#39;s endpoint information.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;JSON decode error in fetch_and_add_endpoints while fetching: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoints_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not read the remote dashboard&#39;s endpoint information.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Unexpected error in fetch_and_add_endpoints while fetching: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;from dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoints_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">for</span> <span class="n">endpoint</span> <span class="ow">in</span> <span class="n">endpoints</span><span class="p">:</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">add_endpoint</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span>
+
+    <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialized_endpoints</span>
+    <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<span class="k">def</span> <span class="nf">_fetch_endpoints</span><span class="p">(</span><span class="n">dashboard</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetches and returns a list of `Endpoint`s in the given dashboard.</span>
+<span class="sd">    :param dashboard: The dashboard for which to fetch endpoints.</span>
+<span class="sd">    :return: A list of `Endpoint`s for the dashboard.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Note: exceptions raised by flask_monitoring_dashboard_client.get_monitor_rules</span>
+    <span class="c1"># are simply propagated upwards, since this is not the best place</span>
+    <span class="c1"># to handle them; this function is meant to be more or less &quot;pure&quot;</span>
+
+    <span class="n">monitor_rules</span> <span class="o">=</span> <span class="n">flask_monitoring_dashboard_client</span><span class="o">.</span><span class="n">get_monitor_rules</span><span class="p">(</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">token</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">Endpoint</span><span class="p">(</span><span class="n">rule</span><span class="p">[</span><span class="s1">&#39;endpoint&#39;</span><span class="p">],</span> <span class="n">rule</span><span class="p">[</span><span class="s1">&#39;monitor&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">monitor_rules</span>
+    <span class="p">]</span>
+
+
+<span class="c1"># EndpointCalls</span>
+
+
+<div class="viewcode-block" id="fetch_and_add_historic_endpoint_calls"><a class="viewcode-back" href="../../../../pydash_app.dashboard.services.html#pydash_app.dashboard.services.fetching.fetch_and_add_historic_endpoint_calls">[docs]</a><span class="k">def</span> <span class="nf">fetch_and_add_historic_endpoint_calls</span><span class="p">(</span><span class="n">dashboard</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    For a given dashboard, retrieve all historical endpoint calls and add them to it.</span>
+<span class="sd">    :param dashboard: The dashboard to initialize with historical data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Only run this function if no periodic fetching of latest information has happened yet:</span>
+    <span class="k">if</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">!=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialized_endpoints</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="n">f</span><span class="s1">&#39;Tried to add historic endpoint calls from a wrong state: </span><span class="si">{dashboard.state}</span><span class="s1"> for dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">details</span> <span class="o">=</span> <span class="n">flask_monitoring_dashboard_client</span><span class="o">.</span><span class="n">get_details</span><span class="p">(</span><span class="n">dashboard</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Connection error happened while initializing EndpointCalls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;for dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoint_calls_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not connect to the remote application while initializing historical data.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">Timeout</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Timeout happened while initializing EndpointCalls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;for dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoint_calls_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;The connection to the remote application timed out while initializing historical data.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;HTTP error happened while initializing EndpointCalls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;for dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoint_calls_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not connect to the remote application while initializing historical data.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;JSON decode error happened while initializing EndpointCalls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;for dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoint_calls_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not read the remote dashboard&#39;s details while initializing historical data.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Unexpected error happened while initializing EndpointCalls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;from dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoint_calls_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">first_request</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">details</span><span class="p">[</span><span class="s1">&#39;first-request&#39;</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Dashboard details do not contain date of first request: </span><span class="si">{details}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoint_calls_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;The dashboard&#39;s details do not contain the date of the first request.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Dashboard details date of first request is not a timestamp: </span><span class="si">{details[&#39;first_request&#39;]}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoint_calls_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;The dashboard&#39;s time of the first request is not a timestamp.&quot;</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">first_request</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">error_text</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;There are no historic endpoint calls yet&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_text</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoint_calls_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Your application has no recorded request data yet.&quot;</span>
+        <span class="k">return</span>
+
+    <span class="c1"># TODO: for now we start fetching simply one second before the first request because the lower bound</span>
+    <span class="c1"># TODO: of _fetch_endpoint_calls is exclusive</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">first_request</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+    <span class="n">current_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">start_time</span> <span class="o">&lt;</span> <span class="n">current_time</span><span class="p">:</span>
+        <span class="c1"># TODO: for now historical data is pulled in chunks of 1 hour (hardcoded)</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">start_time</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">weeks</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">end_time</span> <span class="o">&gt;</span> <span class="n">current_time</span><span class="p">:</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">current_time</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">endpoint_calls</span> <span class="o">=</span> <span class="n">_fetch_endpoint_calls</span><span class="p">(</span><span class="n">dashboard</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Connection error happened while fetching historical EndpointCalls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                         <span class="n">f</span><span class="s1">&#39;for dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoint_calls_failure</span>
+            <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not connect to the remote application while fetching historical data.&quot;</span>
+            <span class="k">return</span>
+        <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">Timeout</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Timeout happened while fetching EndpointCalls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                         <span class="n">f</span><span class="s1">&#39;for dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoint_calls_failure</span>
+            <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;The connection to the remote application timed out while fetching historical data.&quot;</span>
+            <span class="k">return</span>
+        <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;HTTP error happened while fetching historical EndpointCalls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                         <span class="n">f</span><span class="s1">&#39;for dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoint_calls_failure</span>
+            <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not connect to the remote application while fetching historical data.&quot;</span>
+            <span class="k">return</span>
+        <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">DecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;JWT decode error happened while fetching historical EndpointCalls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                         <span class="n">f</span><span class="s1">&#39;for dashboard </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoint_calls_failure</span>
+            <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not read the remote dashboard&#39;s historical data (is your security code valid?).&quot;</span>
+            <span class="k">return</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Key error happened while fetching historical EndpointCalls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                         <span class="n">f</span><span class="s1">&#39;for dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoint_calls_failure</span>
+            <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not read the remote dashboard&#39;s historical data.&quot;</span>
+            <span class="k">return</span>
+        <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;JSON decode error happened while fetching historical EndpointCalls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                         <span class="n">f</span><span class="s1">&#39;for dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoint_calls_failure</span>
+            <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not read the remote dashboard&#39;s historical data.&quot;</span>
+            <span class="k">return</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Unexpected error happened while fetching historical EndpointCalls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                         <span class="n">f</span><span class="s1">&#39;from dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoints_failure</span>
+            <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">call</span> <span class="ow">in</span> <span class="n">endpoint_calls</span><span class="p">:</span>
+            <span class="n">dashboard</span><span class="o">.</span><span class="n">add_endpoint_call</span><span class="p">(</span><span class="n">call</span><span class="p">)</span>
+            <span class="n">dashboard</span><span class="o">.</span><span class="n">last_fetch_time</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">time</span>
+
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">end_time</span>
+
+    <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialized_endpoint_calls</span>
+    <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="fetch_and_add_endpoint_calls"><a class="viewcode-back" href="../../../../pydash_app.dashboard.services.html#pydash_app.dashboard.services.fetching.fetch_and_add_endpoint_calls">[docs]</a><span class="k">def</span> <span class="nf">fetch_and_add_endpoint_calls</span><span class="p">(</span><span class="n">dashboard</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieve the latest endpoint calls of the given dashboard and add them to it.</span>
+<span class="sd">    :param dashboard: The dashboard for which to update endpoint calls.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Updating endpoint calls for dashboard: </span><span class="si">{dashboard}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Only run this function if historic fetching has happened:</span>
+    <span class="c1"># - in the initialized_endpoint_calls state, we have just successfully fetched historic endpoint calls;</span>
+    <span class="c1"># - in the fetched_endpoint_calls state, we have just successfully fetched new endpoint calls;</span>
+    <span class="c1"># - in the fetch_endpoint_calls_failure state, we have failed to get the latest endpoint calls, so we will retry.</span>
+    <span class="n">allowed_states</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialized_endpoint_calls</span><span class="p">,</span>
+        <span class="n">DashboardState</span><span class="o">.</span><span class="n">fetched_endpoint_calls</span><span class="p">,</span>
+        <span class="n">DashboardState</span><span class="o">.</span><span class="n">fetch_endpoint_calls_failure</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_states</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="n">f</span><span class="s1">&#39;Tried to add new endpoint calls from a wrong state: </span><span class="si">{dashboard.state}</span><span class="s1"> for dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">new_calls</span> <span class="o">=</span> <span class="n">_fetch_endpoint_calls</span><span class="p">(</span>
+            <span class="n">dashboard</span><span class="p">,</span> <span class="n">time_from</span><span class="o">=</span><span class="n">dashboard</span><span class="o">.</span><span class="n">last_fetch_time</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Connection error in fetch_and_add_endpoint_calls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;from dashboard </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">fetch_endpoint_calls_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not connect to the remote application while fetching new data.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">Timeout</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Timeout in fetch_and_add_endpoint_calls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;for dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoint_calls_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;The connection to the remote application timed out while fetching new data.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;HTTP error in fetch_and_add_endpoint_calls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;from dashboard </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">fetch_endpoint_calls_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not connect to the remote application while fetching new data.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">DecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;JWT decode error in fetch_and_add_endpoint_calls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;from dashboard </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">fetch_endpoint_calls_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not read the remote dashboard&#39;s data (is your security code valid?).&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Key error in fetch_and_add_endpoint_calls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;from dashboard </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">fetch_endpoint_calls_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not read the remote dashboard&#39;s new data.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;JSON decode error in fetch_and_add_endpoint_calls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">fetch_endpoint_calls_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not read the remote dashboard&#39;s new data.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Value error in fetch_and_add_endpoint_calls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">fetch_endpoint_calls_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Could not read the remote dashboard&#39;s new data.&quot;</span>
+        <span class="k">return</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Unexpected error in fetch_and_add_endpoint_calls: </span><span class="si">{e}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                     <span class="n">f</span><span class="s1">&#39;from dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">initialize_endpoints_failure</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">new_calls</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;No new calls for dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;New endpoint calls: </span><span class="si">{new_calls}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">call</span> <span class="ow">in</span> <span class="n">new_calls</span><span class="p">:</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">add_endpoint_call</span><span class="p">(</span><span class="n">call</span><span class="p">)</span>
+
+    <span class="n">dashboard</span><span class="o">.</span><span class="n">last_fetch_time</span> <span class="o">=</span> <span class="n">new_calls</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">time</span>
+    <span class="n">dashboard</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">DashboardState</span><span class="o">.</span><span class="n">fetched_endpoint_calls</span>
+    <span class="n">dashboard</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Saved to database: dashboard </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_fetch_endpoint_calls</span><span class="p">(</span><span class="n">dashboard</span><span class="p">,</span> <span class="n">time_from</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_to</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetches and returns a list of `EndpointCall`s for the given dashboard.</span>
+<span class="sd">    :param dashboard: The dashboard for which to fetch endpoint calls.</span>
+<span class="sd">    :param time_from: An operiodic_tasksional datetime indicating only data since that moment should be returned.</span>
+<span class="sd">    :param time_to: An operiodic_tasksional datetime indicating only data up to that point should be returned.</span>
+<span class="sd">    :return: A list of `EndpointCall`s containing the endpoint call data for this dashboard.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Note: exceptions raised by flask_monitoring_dashboard_client.get_data</span>
+    <span class="c1"># are simply propagated upwards, since this is not the best place</span>
+    <span class="c1"># to handle them; this function is meant to be more or less &quot;pure&quot;</span>
+
+    <span class="n">endpoint_requests</span> <span class="o">=</span> <span class="n">flask_monitoring_dashboard_client</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span>
+        <span class="n">dashboard</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">token</span><span class="p">,</span> <span class="n">time_from</span><span class="p">,</span> <span class="n">time_to</span><span class="p">)</span>
+
+    <span class="n">endpoint_calls</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">request</span> <span class="ow">in</span> <span class="n">endpoint_requests</span><span class="p">:</span>
+        <span class="c1"># The raw endpoint call data contains a timestamp formatted</span>
+        <span class="c1"># as &quot;yyyy-mm-dd hh:mm:ss.micro&quot; so we need to parse it</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">request</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S.</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Failed to parse the time of an endpoint call: </span><span class="si">{request}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                         <span class="n">f</span><span class="s1">&#39;from dashboard: </span><span class="si">{dashboard}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+        <span class="n">time</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+        <span class="n">call</span> <span class="o">=</span> <span class="n">EndpointCall</span><span class="p">(</span><span class="n">request</span><span class="p">[</span><span class="s1">&#39;endpoint&#39;</span><span class="p">],</span> <span class="n">request</span><span class="p">[</span><span class="s1">&#39;execution_time&#39;</span><span class="p">],</span>
+                            <span class="n">time</span><span class="p">,</span> <span class="n">request</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">],</span> <span class="n">request</span><span class="p">[</span><span class="s1">&#39;group_by&#39;</span><span class="p">],</span>
+                            <span class="n">request</span><span class="p">[</span><span class="s1">&#39;ip&#39;</span><span class="p">])</span>
+        <span class="n">endpoint_calls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">call</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">endpoint_calls</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  <li><a href="../../../pydash_app.html">pydash_app</a><ul>
+  <li><a href="../../dashboard.html">pydash_app.dashboard</a><ul>
+  <li><a href="../services.html">pydash_app.dashboard.services</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, The PyDash Team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

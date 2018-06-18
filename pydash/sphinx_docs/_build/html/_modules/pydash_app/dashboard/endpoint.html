@@ -1,0 +1,278 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pydash_app.dashboard.endpoint &#8212; PyDash 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pydash_app.dashboard.endpoint</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">import</span> <span class="nn">persistent</span>
+
+<span class="kn">from</span> <span class="nn">.aggregator</span> <span class="k">import</span> <span class="n">Aggregator</span>
+<span class="kn">from</span> <span class="nn">.aggregator.aggregator_group</span> <span class="k">import</span> <span class="n">AggregatorGroup</span>
+
+
+<div class="viewcode-block" id="Endpoint"><a class="viewcode-back" href="../../../pydash_app.dashboard.html#pydash_app.dashboard.endpoint.Endpoint">[docs]</a><span class="k">class</span> <span class="nc">Endpoint</span><span class="p">(</span><span class="n">persistent</span><span class="o">.</span><span class="n">Persistent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Endpoint entity knows about:</span>
+<span class="sd">    - Its own properties</span>
+<span class="sd">    - The functionalities for Endpoint interactions with information from elsewhere.</span>
+
+<span class="sd">    It does not contain information on how to persistently store/load an endpoint,</span>
+<span class="sd">    as currently endpoints only exist in combination with dashboard objects.</span>
+<span class="sd">    If endpoints were to exist on their own, the `endpoint_repository` would handle their persistence.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">is_monitored</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Endpoint expects name to be a string.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_monitored</span> <span class="o">=</span> <span class="n">is_monitored</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calls</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># self._aggregator = Aggregator(self._calls)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_aggregator_group</span> <span class="o">=</span> <span class="n">AggregatorGroup</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.__class__.__name__}</span><span class="s1"> id=</span><span class="si">{self.id}</span><span class="s1"> name=</span><span class="si">{self.name}</span><span class="s1">&#39;</span>
+
+<div class="viewcode-block" id="Endpoint.get_id"><a class="viewcode-back" href="../../../pydash_app.dashboard.html#pydash_app.dashboard.endpoint.Endpoint.get_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Endpoint.add_endpoint_call"><a class="viewcode-back" href="../../../pydash_app.dashboard.html#pydash_app.dashboard.endpoint.Endpoint.add_endpoint_call">[docs]</a>    <span class="k">def</span> <span class="nf">add_endpoint_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">call</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds an EndpointCall to its internal collection of endpoint calls.</span>
+<span class="sd">        :param call: The endpoint call to add.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">call</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_aggregator_group</span><span class="o">.</span><span class="n">add_endpoint_call</span><span class="p">(</span><span class="n">call</span><span class="p">)</span></div>
+        <span class="c1"># self._aggregator.add_endpoint_call(call)</span>
+
+<div class="viewcode-block" id="Endpoint.remove_endpoint_call"><a class="viewcode-back" href="../../../pydash_app.dashboard.html#pydash_app.dashboard.endpoint.Endpoint.remove_endpoint_call">[docs]</a>    <span class="k">def</span> <span class="nf">remove_endpoint_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">call</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes an EndpointCall from this endpoint&#39;s internal collection of endpoint calls.</span>
+<span class="sd">        Raises a ValueError if no such call exists.</span>
+<span class="sd">        Note: does not remove it from its aggregated dataset yet.</span>
+<span class="sd">        :param call: The endpoint call to remove.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calls</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">call</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Endpoint.set_monitored"><a class="viewcode-back" href="../../../pydash_app.dashboard.html#pydash_app.dashboard.endpoint.Endpoint.set_monitored">[docs]</a>    <span class="k">def</span> <span class="nf">set_monitored</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_monitored</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_monitored</span> <span class="o">=</span> <span class="n">is_monitored</span></div>
+
+<div class="viewcode-block" id="Endpoint.aggregated_data"><a class="viewcode-back" href="../../../pydash_app.dashboard.html#pydash_app.dashboard.endpoint.Endpoint.aggregated_data">[docs]</a>    <span class="k">def</span> <span class="nf">aggregated_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns aggregated data on this endpoint.</span>
+<span class="sd">        :param filters: A dictionary containing property_name-value pairs to filter on. The keys are assumed to be strings.</span>
+<span class="sd">          This is in the gist of `{&#39;day&#39;:&#39;2018-05-20&#39;, &#39;ip&#39;:&#39;127.0.0.1&#39;}`</span>
+<span class="sd">          Defaults to an empty dictionary.</span>
+
+<span class="sd">          The currently allowed filter_names are:</span>
+<span class="sd">            - Time:</span>
+<span class="sd">              * &#39;year&#39;   - e.g. &#39;2018&#39;</span>
+<span class="sd">              * &#39;month&#39;  - e.g. &#39;2018-05&#39;</span>
+<span class="sd">              * &#39;week&#39;   - e.g. &#39;2018-W17&#39;</span>
+<span class="sd">              * &#39;day&#39;    - e.g. &#39;2018-05-20&#39;</span>
+<span class="sd">              * &#39;hour&#39;   - e.g. &#39;2018-05-20T20&#39;</span>
+<span class="sd">              * &#39;minute&#39; - e.g. &#39;2018-05-20T20-10&#39;</span>
+<span class="sd">            Note that for Time filter-values, the formatting is crucial.</span>
+
+<span class="sd">            - Version:</span>
+<span class="sd">              * &#39;version&#39; - e.g. &#39;1.0.1&#39;</span>
+
+<span class="sd">            - IP:</span>
+<span class="sd">              * &#39;ip&#39; - e.g. &#39;127.0.0.1&#39;</span>
+
+<span class="sd">            - Group-by:</span>
+<span class="sd">              * &#39;group_by&#39; - e.g. &#39;None&#39;</span>
+
+<span class="sd">        :return: A dict containing aggregated data points.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aggregator_group</span><span class="o">.</span><span class="n">fetch_aggregator</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Endpoint.aggregated_data_daterange"><a class="viewcode-back" href="../../../pydash_app.dashboard.html#pydash_app.dashboard.endpoint.Endpoint.aggregated_data_daterange">[docs]</a>    <span class="k">def</span> <span class="nf">aggregated_data_daterange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">granularity</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the aggregated data on this endpoint over the specified daterange.</span>
+<span class="sd">        :param start_date: A datetime object that is treated as the inclusive lower bound of the daterange.</span>
+<span class="sd">        :param end_date: A datetime object that is treated as the inclusive upper bound of the daterange.</span>
+<span class="sd">        :param granularity: A string denoting the granularity of the daterange.</span>
+<span class="sd">        :param filters: A dictionary containing property_name-value pairs to filter on. The keys are assumed to be strings.</span>
+<span class="sd">          This is in the gist of `{&#39;day&#39;:&#39;2018-05-20&#39;, &#39;ip&#39;:&#39;127.0.0.1&#39;}`</span>
+<span class="sd">          Defaults to an empty dictionary.</span>
+
+<span class="sd">          The currently allowed filter_names are:</span>
+<span class="sd">            - Version:</span>
+<span class="sd">              * &#39;version&#39; - e.g. &#39;1.0.1&#39;</span>
+
+<span class="sd">            - IP:</span>
+<span class="sd">              * &#39;ip&#39; - e.g. &#39;127.0.0.1&#39;</span>
+
+<span class="sd">            - Group-by:</span>
+<span class="sd">              * &#39;group_by&#39; - e.g. &#39;None&#39;</span>
+
+<span class="sd">            Note that, contrary to `aggregated_data` method, Time based filters are not allowed.</span>
+
+<span class="sd">        :return: A dictionary with all aggregated statistics and their values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aggregator_group</span><span class="o">.</span><span class="n">fetch_aggregator_inclusive_daterange</span><span class="p">(</span><span class="n">filters</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span>
+                                                                           <span class="n">granularity</span><span class="p">)</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Endpoint.statistic"><a class="viewcode-back" href="../../../pydash_app.dashboard.html#pydash_app.dashboard.endpoint.Endpoint.statistic">[docs]</a>    <span class="k">def</span> <span class="nf">statistic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statistic</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the desired statistic of this endpoint, filtered by the specified filters.</span>
+<span class="sd">        :param statistic: A string denoting the specific statistic that should be queried.</span>
+<span class="sd">        &quot;&quot;&quot;</span> \
+        <span class="n">f</span><span class="s1">&#39;  The following filters are allowed:{[stat_class.field_name(stat_class) for stat_class in Aggregator.contained_statistics_classes]}.&#39;</span> \
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param filters: A dictionary containing property_name-value pairs to filter on. The keys are assumed to be strings.</span>
+<span class="sd">          This is in the gist of `{&#39;day&#39;:&#39;2018-05-20&#39;, &#39;ip&#39;:&#39;127.0.0.1&#39;}`</span>
+<span class="sd">          Defaults to an empty dictionary.</span>
+
+<span class="sd">          The currently allowed filter_names are:</span>
+<span class="sd">            - Time:</span>
+<span class="sd">              * &#39;year&#39;   - e.g. &#39;2018&#39;</span>
+<span class="sd">              * &#39;month&#39;  - e.g. &#39;2018-05&#39;</span>
+<span class="sd">              * &#39;week&#39;   - e.g. &#39;2018-W17&#39;</span>
+<span class="sd">              * &#39;day&#39;    - e.g. &#39;2018-05-20&#39;</span>
+<span class="sd">              * &#39;hour&#39;   - e.g. &#39;2018-05-20T20&#39;</span>
+<span class="sd">              * &#39;minute&#39; - e.g. &#39;2018-05-20T20-10&#39;</span>
+<span class="sd">            Note that for Time filter-values, the formatting is crucial.</span>
+
+<span class="sd">            - Version:</span>
+<span class="sd">              * &#39;version&#39; - e.g. &#39;1.0.1&#39;</span>
+
+<span class="sd">            - IP:</span>
+<span class="sd">              * &#39;ip&#39; - e.g. &#39;127.0.0.1&#39;</span>
+
+<span class="sd">            - Group-by:</span>
+<span class="sd">              * &#39;group_by&#39; - e.g. &#39;None&#39;</span>
+
+<span class="sd">        :return: The desired statistic of this endpoint.</span>
+<span class="sd">        :raises ValueError: This happens when the filters are not supported by the endpoint, or when two filters of</span>
+<span class="sd">          the same type are provided.</span>
+<span class="sd">        :raises KeyError: This happens when the statistic is not supported by the endpoint.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aggregator_group</span><span class="o">.</span><span class="n">fetch_aggregator</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()[</span><span class="n">statistic</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Endpoint.statistic_per_timeslice"><a class="viewcode-back" href="../../../pydash_app.dashboard.html#pydash_app.dashboard.endpoint.Endpoint.statistic_per_timeslice">[docs]</a>    <span class="k">def</span> <span class="nf">statistic_per_timeslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statistic</span><span class="p">,</span> <span class="n">timeslice</span><span class="p">,</span> <span class="n">start_datetime</span><span class="p">,</span> <span class="n">end_datetime</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="n">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        Slices up the specified datetime range (=[start_datetime, end_datetime]) by chunks of the size of `timeslice`.</span>
+<span class="s2">        For each datetime_slice it computes the value of the denoted statistic and returns a dictionary containing these pairs.</span>
+<span class="s2">        (Note that a returned datetime_slice is a string: represented as the start of that slice and formatted according</span>
+<span class="s2">         to the ISO-8601 standard.</span>
+<span class="s2">        Filters can be applied to narrow down the search.</span>
+
+<span class="s2">        :param statistic: A string denoting the specific statistic that should be queried.</span>
+<span class="s2">        &quot;&quot;&quot;</span> \
+        <span class="n">f</span><span class="s1">&#39;  The following filters are allowed:{[stat_class.field_name(stat_class) for stat_class in Aggregator.contained_statistics_classes]}.&#39;</span> \
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param timeslice: A string denoting at what granularity the indicated datetime range should be split.</span>
+<span class="sd">          The currently supported values for this are: &#39;year&#39;, &#39;month&#39;, &#39;week&#39;, &#39;day&#39;, &#39;hour&#39; and &#39;minute&#39;.</span>
+<span class="sd">        :param start_datetime: A datetime object indicating the inclusive lower bound for the datetime range to</span>
+<span class="sd">         aggregate over.</span>
+<span class="sd">        :param end_datetime:  A datetime object indicating the inclusive upper bound for the datetime range to</span>
+<span class="sd">         aggregate over.</span>
+<span class="sd">        :param filters: A dictionary containing property_name-value pairs to filter on. The keys are assumed to be strings.</span>
+<span class="sd">          This is in the gist of `{&#39;day&#39;:&#39;2018-05-20&#39;, &#39;ip&#39;:&#39;127.0.0.1&#39;}`</span>
+<span class="sd">          Defaults to an empty dictionary.</span>
+
+<span class="sd">          The currently allowed filter_names are:</span>
+<span class="sd">            - Version:</span>
+<span class="sd">              * &#39;version&#39; - e.g. &#39;1.0.1&#39;</span>
+
+<span class="sd">            - IP:</span>
+<span class="sd">              * &#39;ip&#39; - e.g. &#39;127.0.0.1&#39;</span>
+
+<span class="sd">            - Group-by:</span>
+<span class="sd">              * &#39;group_by&#39; - e.g. &#39;None&#39;</span>
+
+<span class="sd">            Note that, contrary to `statistic` method, Time based filters are not allowed.</span>
+<span class="sd">        :return: The desired statistic of this endpoint.</span>
+<span class="sd">        :raises ValueError: This happens when the filters are not supported by the endpoint, or when two filters of</span>
+<span class="sd">          the same type are provided, or when a Time based filter is provided.</span>
+<span class="sd">        :raises KeyError: This happens when the statistic is not supported by the endpoint.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">aggregator</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aggregator_group</span><span class="o">.</span><span class="n">fetch_aggregators_per_timeslice</span><span class="p">(</span><span class="n">filters</span><span class="p">,</span> <span class="n">timeslice</span><span class="p">,</span>
+                                                                                           <span class="n">start_datetime</span><span class="p">,</span>
+                                                                                           <span class="n">end_datetime</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">return_dict</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">aggregator</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()[</span><span class="n">statistic</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">return_dict</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../../pydash_app.html">pydash_app</a><ul>
+  <li><a href="../dashboard.html">pydash_app.dashboard</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, The PyDash Team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

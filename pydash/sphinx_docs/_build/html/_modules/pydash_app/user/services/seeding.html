@@ -1,0 +1,133 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pydash_app.user.services.seeding &#8212; PyDash 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pydash_app.user.services.seeding</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Fills the application with some preliminary users</span>
+<span class="sd">to make it easier to test code in development and staging environments.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">pydash_app.user.entity</span> <span class="k">import</span> <span class="n">User</span>
+<span class="kn">import</span> <span class="nn">pydash_app.user.repository</span> <span class="k">as</span> <span class="nn">repository</span>
+
+
+<span class="c1"># TODO test this not in docstring perhaps?</span>
+<div class="viewcode-block" id="seed"><a class="viewcode-back" href="../../../../pydash_app.user.services.html#pydash_app.user.services.seeding.seed">[docs]</a><span class="k">def</span> <span class="nf">seed</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stores some preliminary debug users in the datastore,</span>
+<span class="sd">    to be used during development.</span>
+
+<span class="sd">    &gt;&gt;&gt; seed() #doctest: +ELLIPSIS</span>
+<span class="sd">    Adding user &lt;User id=... name=Alberto&gt;</span>
+<span class="sd">    Adding user &lt;User id=... name=Arjan&gt;</span>
+<span class="sd">    Adding user &lt;User id=... name=JeroenO&gt;</span>
+<span class="sd">    Adding user &lt;User id=... name=JeroenL&gt;</span>
+<span class="sd">    Adding user &lt;User id=... name=Koen&gt;</span>
+<span class="sd">    Adding user &lt;User id=... name=Lars&gt;</span>
+<span class="sd">    Adding user &lt;User id=... name=Patrick&gt;</span>
+<span class="sd">    Adding user &lt;User id=... name=Tom&gt;</span>
+<span class="sd">    Adding user &lt;User id=... name=W-M&gt;</span>
+<span class="sd">    Seeding of users is done!</span>
+<span class="sd">    &gt;&gt;&gt; found_user = repository.find_by_name(&quot;Alberto&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; found_user.name == &quot;Alberto&quot;</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Clear current DB.</span>
+    <span class="n">repository</span><span class="o">.</span><span class="n">clear_all</span><span class="p">()</span>
+
+    <span class="c1"># Fill in users.</span>
+    <span class="n">_development_users</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">User</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alberto&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;alberto&quot;</span><span class="p">,</span> <span class="n">mail</span><span class="o">=</span><span class="s1">&#39;some@email.com&#39;</span><span class="p">),</span>
+        <span class="n">User</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Arjan&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;arjan&quot;</span><span class="p">,</span> <span class="n">mail</span><span class="o">=</span><span class="s1">&#39;some@email.com&#39;</span><span class="p">),</span>
+        <span class="n">User</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;JeroenO&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;jeroeno&quot;</span><span class="p">,</span> <span class="n">mail</span><span class="o">=</span><span class="s1">&#39;some@email.com&#39;</span><span class="p">),</span>
+        <span class="n">User</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;JeroenL&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;jeroenl&quot;</span><span class="p">,</span> <span class="n">mail</span><span class="o">=</span><span class="s1">&#39;some@email.com&#39;</span><span class="p">),</span>
+        <span class="n">User</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Koen&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;koen&quot;</span><span class="p">,</span> <span class="n">mail</span><span class="o">=</span><span class="s1">&#39;some@email.com&#39;</span><span class="p">),</span>
+        <span class="n">User</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Lars&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;lars&quot;</span><span class="p">,</span> <span class="n">mail</span><span class="o">=</span><span class="s1">&#39;some@email.com&#39;</span><span class="p">),</span>
+        <span class="n">User</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Patrick&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;patrick&quot;</span><span class="p">,</span> <span class="n">mail</span><span class="o">=</span><span class="s1">&#39;some@email.com&#39;</span><span class="p">),</span>
+        <span class="n">User</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Tom&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;tom&quot;</span><span class="p">,</span> <span class="n">mail</span><span class="o">=</span><span class="s1">&#39;some@email.com&#39;</span><span class="p">),</span>
+        <span class="n">User</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;W-M&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;topsecret&quot;</span><span class="p">,</span> <span class="n">mail</span><span class="o">=</span><span class="s1">&#39;some@email.com&#39;</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">_development_users</span><span class="p">:</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">verified</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Adding user </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">user</span><span class="p">))</span>
+        <span class="n">repository</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Seeding of users is done!&quot;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  <li><a href="../../../pydash_app.html">pydash_app</a><ul>
+  <li><a href="../../user.html">pydash_app.user</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, The PyDash Team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
