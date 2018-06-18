@@ -1,6 +1,11 @@
 pydash\_app package
 ===================
 
+.. automodule:: pydash_app
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -9,10 +14,3 @@ Subpackages
     pydash_app.dashboard
     pydash_app.user
 
-Module contents
----------------
-
-.. automodule:: pydash_app
-    :members:
-    :undoc-members:
-    :show-inheritance:

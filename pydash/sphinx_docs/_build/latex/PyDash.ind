@@ -2,108 +2,104 @@
 \def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
 
   \bigletter A
-  \item add() (in module pydash\_app.dashboard.repository), \hyperpage{20}
-  \item add() (in module pydash\_app.user.repository), \hyperpage{22}
-  \item add\_background\_task() (in module periodic\_tasks), \hyperpage{5}
+  \item add() (in module pydash\_app.dashboard.repository), \hyperpage{19}
+  \item add() (in module pydash\_app.user.repository), \hyperpage{23}
+  \item add\_background\_task() (in module periodic\_tasks), \hyperpage{2}
   \item add\_background\_task() (periodic\_tasks.task\_scheduler.TaskScheduler method), 
-		\hyperpage{3}
+		\hyperpage{4}
   \item add\_endpoint() (pydash\_app.dashboard.entity.Dashboard method), \hyperpage{17}
-  \item add\_endpoint\_call() (pydash\_app.dashboard.aggregator.Aggregator method), \hyperpage{13}
+  \item add\_endpoint\_call() (pydash\_app.dashboard.aggregator.Aggregator method), \hyperpage{6}
   \item add\_endpoint\_call() (pydash\_app.dashboard.aggregator.aggregator\_group.AggregatorGroup method), 
-		\hyperpage{6}
+		\hyperpage{7}
   \item add\_endpoint\_call() (pydash\_app.dashboard.endpoint.Endpoint method), \hyperpage{14}
   \item add\_endpoint\_call() (pydash\_app.dashboard.entity.Dashboard method), \hyperpage{17}
-  \item add\_periodic\_task() (in module periodic\_tasks), \hyperpage{5}
-  \item add\_periodic\_task() (periodic\_tasks.task\_scheduler.TaskScheduler method), \hyperpage{3}
+  \item add\_periodic\_task() (in module periodic\_tasks), \hyperpage{2}
+  \item add\_periodic\_task() (periodic\_tasks.task\_scheduler.TaskScheduler method), \hyperpage{4}
   \item add\_to\_collection() (pydash\_app.dashboard.aggregator.statistics.Statistic class method), 
 		\hyperpage{11}
-  \item add\_to\_repository() (in module pydash\_app.dashboard), \hyperpage{20}
-  \item add\_to\_repository() (in module pydash\_app.user), \hyperpage{25}
+  \item add\_to\_repository() (in module pydash\_app.dashboard), \hyperpage{5}
+  \item add\_to\_repository() (in module pydash\_app.user), \hyperpage{20}
   \item add\_together() (pydash\_app.dashboard.aggregator.statistics.AverageExecutionTime method), 
 		\hyperpage{9}
   \item add\_together() (pydash\_app.dashboard.aggregator.statistics.ExecutionTimePercentileABC method), 
 		\hyperpage{9}
   \item add\_together() (pydash\_app.dashboard.aggregator.statistics.ExecutionTimeTDigest method), 
-		\hyperpage{9}
+		\hyperpage{10}
   \item add\_together() (pydash\_app.dashboard.aggregator.statistics.Statistic method), 
 		\hyperpage{11}
   \item add\_together() (pydash\_app.dashboard.aggregator.statistics.TotalExecutionTime method), 
 		\hyperpage{11}
   \item add\_together() (pydash\_app.dashboard.aggregator.statistics.TotalVisits method), 
-		\hyperpage{11}
+		\hyperpage{12}
   \item add\_together() (pydash\_app.dashboard.aggregator.statistics.UniqueVisitorsAllTime method), 
 		\hyperpage{12}
   \item add\_together() (pydash\_app.dashboard.aggregator.statistics.Versions method), 
 		\hyperpage{12}
   \item add\_together() (pydash\_app.dashboard.aggregator.statistics.VisitsPerIP method), 
 		\hyperpage{12}
-  \item aggregated\_data() (pydash\_app.dashboard.endpoint.Endpoint method), \hyperpage{15}
+  \item aggregated\_data() (pydash\_app.dashboard.endpoint.Endpoint method), \hyperpage{14}
   \item aggregated\_data() (pydash\_app.dashboard.entity.Dashboard method), \hyperpage{17}
   \item aggregated\_data\_daterange() (pydash\_app.dashboard.endpoint.Endpoint method), 
 		\hyperpage{15}
   \item aggregated\_data\_daterange() (pydash\_app.dashboard.entity.Dashboard method), 
 		\hyperpage{17}
-  \item Aggregator (class in pydash\_app.dashboard.aggregator), \hyperpage{13}
+  \item Aggregator (class in pydash\_app.dashboard.aggregator), \hyperpage{6}
   \item AggregatorGroup (class in pydash\_app.dashboard.aggregator.aggregator\_group), 
 		\hyperpage{6}
   \item AggregatorPartitionFun (class in pydash\_app.dashboard.aggregator.aggregator\_group), 
 		\hyperpage{8}
-  \item all() (in module pydash\_app.dashboard.repository), \hyperpage{20}
-  \item all() (in module pydash\_app.user.repository), \hyperpage{22}
-  \item all\_unverified() (in module pydash\_app.user.repository), \hyperpage{22}
+  \item all() (in module pydash\_app.dashboard.repository), \hyperpage{19}
+  \item all() (in module pydash\_app.user.repository), \hyperpage{23}
+  \item all\_unverified() (in module pydash\_app.user.repository), \hyperpage{24}
   \item append() (pydash\_app.dashboard.aggregator.statistics.Statistic method), \hyperpage{11}
-  \item as\_dict() (pydash\_app.dashboard.aggregator.Aggregator method), \hyperpage{13}
+  \item as\_dict() (pydash\_app.dashboard.aggregator.Aggregator method), \hyperpage{6}
   \item as\_dict() (pydash\_app.dashboard.endpoint\_call.EndpointCall method), \hyperpage{16}
-  \item authenticate() (in module pydash\_app.user), \hyperpage{25}
+  \item authenticate() (in module pydash\_app.user), \hyperpage{20}
   \item AverageExecutionTime (class in pydash\_app.dashboard.aggregator.statistics), \hyperpage{9}
 
   \indexspace
   \bigletter B
-  \item bar() (in module periodic\_tasks), \hyperpage{5}
-  \item baz() (in module periodic\_tasks), \hyperpage{5}
+  \item bar() (in module periodic\_tasks), \hyperpage{2}
+  \item baz() (in module periodic\_tasks), \hyperpage{3}
 
   \indexspace
   \bigletter C
   \item calc\_endpoint\_call\_identifier() (in module pydash\_app.dashboard.aggregator.aggregator\_group), 
 		\hyperpage{8}
-  \item change\_dashboard\_settings() (in module pydash\_web.api\_routes), \hyperpage{31}
+  \item change\_dashboard\_settings() (in module pydash\_web.api\_routes), \hyperpage{30}
   \item change\_dashboard\_settings() (in module pydash\_web.controller.change\_dashboard\_settings), 
-		\hyperpage{28}
-  \item change\_password() (in module pydash\_web.api\_routes), \hyperpage{31}
-  \item change\_password() (in module pydash\_web.controller.change\_password), \hyperpage{28}
-  \item change\_settings() (in module pydash\_web.api\_routes), \hyperpage{32}
-  \item change\_settings() (in module pydash\_web.controller.change\_settings), \hyperpage{28}
-  \item check\_allowed\_statistics() (in module pydash\_web.controller.dashboards), \hyperpage{28}
-  \item check\_allowed\_timeslices() (in module pydash\_web.controller.dashboards), \hyperpage{28}
-  \item check\_password() (pydash\_app.user.entity.User method), \hyperpage{21}
-  \item check\_password\_requirements() (in module pydash\_app.user), \hyperpage{25}
-  \item clean\_in\_memory\_database() (in module conftest), \hyperpage{1}
-  \item clear\_all() (in module pydash\_app.dashboard.repository), \hyperpage{20}
-  \item clear\_all() (in module pydash\_app.user.repository), \hyperpage{22}
-  \item Config (class in config), \hyperpage{1}
-  \item config (module), \hyperpage{1}
-  \item conftest (module), \hyperpage{1}
+		\hyperpage{27}
+  \item change\_password() (in module pydash\_web.api\_routes), \hyperpage{30}
+  \item change\_password() (in module pydash\_web.controller.change\_password), \hyperpage{27}
+  \item change\_settings() (in module pydash\_web.api\_routes), \hyperpage{30}
+  \item change\_settings() (in module pydash\_web.controller.change\_settings), \hyperpage{27}
+  \item check\_allowed\_statistics() (in module pydash\_web.controller.dashboards), \hyperpage{27}
+  \item check\_allowed\_timeslices() (in module pydash\_web.controller.dashboards), \hyperpage{27}
+  \item check\_password() (pydash\_app.user.entity.User method), \hyperpage{23}
+  \item check\_password\_requirements() (in module pydash\_app.user), \hyperpage{20}
+  \item clear\_all() (in module pydash\_app.dashboard.repository), \hyperpage{19}
+  \item clear\_all() (in module pydash\_app.user.repository), \hyperpage{24}
   \item contained\_statistics\_classes (pydash\_app.dashboard.aggregator.Aggregator attribute), 
-		\hyperpage{13}
+		\hyperpage{6}
 
   \indexspace
   \bigletter D
   \item Dashboard (class in pydash\_app.dashboard.entity), \hyperpage{17}
-  \item dashboard() (in module pydash\_web.controller.dashboards), \hyperpage{28}
-  \item dashboards() (in module pydash\_web.controller.dashboards), \hyperpage{29}
-  \item dashboards\_of\_user() (in module pydash\_app.dashboard), \hyperpage{20}
+  \item dashboard() (in module pydash\_web.controller.dashboards), \hyperpage{27}
+  \item dashboards() (in module pydash\_web.controller.dashboards), \hyperpage{28}
+  \item dashboards\_of\_user() (in module pydash\_app.dashboard), \hyperpage{5}
   \item DashboardState (class in pydash\_app.dashboard.entity), \hyperpage{18}
-  \item database\_connection() (in module pydash\_database), \hyperpage{26}
-  \item database\_root() (in module pydash\_database), \hyperpage{26}
-  \item date\_dict() (in module pydash\_app.dashboard.aggregator.statistics), \hyperpage{12}
-  \item daterange() (in module pydash\_web.controller.visitor\_heatmap), \hyperpage{31}
-  \item debug() (pydash\_logger.logger.Logger method), \hyperpage{27}
-  \item delete() (in module pydash\_app.dashboard.repository), \hyperpage{20}
-  \item delete\_by\_id() (in module pydash\_app.user.repository), \hyperpage{23}
-  \item delete\_dashboard() (in module pydash\_web.api\_routes), \hyperpage{32}
-  \item delete\_dashboard() (in module pydash\_web.controller.delete\_dashboard), \hyperpage{30}
-  \item delete\_user() (in module pydash\_web.api\_routes), \hyperpage{32}
-  \item delete\_user() (in module pydash\_web.controller.delete\_user), \hyperpage{30}
+  \item database\_connection() (in module pydash\_database), \hyperpage{25}
+  \item database\_root() (in module pydash\_database), \hyperpage{25}
+  \item date\_dict() (in module pydash\_app.dashboard.aggregator.statistics), \hyperpage{13}
+  \item daterange() (in module pydash\_web.controller.visitor\_heatmap), \hyperpage{30}
+  \item debug() (pydash\_logger.logger.Logger method), \hyperpage{26}
+  \item delete() (in module pydash\_app.dashboard.repository), \hyperpage{19}
+  \item delete\_by\_id() (in module pydash\_app.user.repository), \hyperpage{24}
+  \item delete\_dashboard() (in module pydash\_web.api\_routes), \hyperpage{30}
+  \item delete\_dashboard() (in module pydash\_web.controller.delete\_dashboard), \hyperpage{29}
+  \item delete\_user() (in module pydash\_web.api\_routes), \hyperpage{30}
+  \item delete\_user() (in module pydash\_web.controller.delete\_user), \hyperpage{29}
   \item dependencies (pydash\_app.dashboard.aggregator.statistics.AverageExecutionTime attribute), 
 		\hyperpage{9}
   \item dependencies (pydash\_app.dashboard.aggregator.statistics.ExecutionTimePercentileABC attribute), 
@@ -118,23 +114,23 @@
   \item empty() (pydash\_app.dashboard.aggregator.statistics.ExecutionTimePercentileABC method), 
 		\hyperpage{9}
   \item empty() (pydash\_app.dashboard.aggregator.statistics.ExecutionTimeTDigest method), 
-		\hyperpage{9}
+		\hyperpage{10}
   \item empty() (pydash\_app.dashboard.aggregator.statistics.Statistic method), \hyperpage{11}
   \item empty() (pydash\_app.dashboard.aggregator.statistics.TotalExecutionTime method), 
 		\hyperpage{11}
-  \item empty() (pydash\_app.dashboard.aggregator.statistics.TotalVisits method), \hyperpage{11}
+  \item empty() (pydash\_app.dashboard.aggregator.statistics.TotalVisits method), \hyperpage{12}
   \item empty() (pydash\_app.dashboard.aggregator.statistics.UniqueVisitorsAllTime method), 
 		\hyperpage{12}
   \item empty() (pydash\_app.dashboard.aggregator.statistics.Versions method), \hyperpage{12}
-  \item empty() (pydash\_app.dashboard.aggregator.statistics.VisitsPerIP method), \hyperpage{12}
+  \item empty() (pydash\_app.dashboard.aggregator.statistics.VisitsPerIP method), \hyperpage{13}
   \item Endpoint (class in pydash\_app.dashboard.endpoint), \hyperpage{14}
   \item endpoint\_execution\_times\_boxplots() (in module pydash\_web.controller.execution\_times\_boxplots), 
-		\hyperpage{30}
-  \item EndpointCall (class in pydash\_app.dashboard.endpoint\_call), \hyperpage{16}
-  \item error() (pydash\_logger.logger.Logger method), \hyperpage{27}
-  \item execution\_times() (in module pydash\_web.controller.utils), \hyperpage{31}
+		\hyperpage{29}
+  \item EndpointCall (class in pydash\_app.dashboard.endpoint\_call), \hyperpage{15}
+  \item error() (pydash\_logger.logger.Logger method), \hyperpage{26}
+  \item execution\_times() (in module pydash\_web.controller.utils), \hyperpage{30}
   \item execution\_times\_per\_version() (in module pydash\_web.controller.execution\_times\_per\_version), 
-		\hyperpage{30}
+		\hyperpage{29}
   \item ExecutionTimePercentileABC (class in pydash\_app.dashboard.aggregator.statistics), 
 		\hyperpage{9}
   \item ExecutionTimeTDigest (class in pydash\_app.dashboard.aggregator.statistics), \hyperpage{9}
@@ -145,13 +141,13 @@
   \item FastestQuartileExecutionTime (class in pydash\_app.dashboard.aggregator.statistics), 
 		\hyperpage{10}
   \item fetch\_aggregator() (pydash\_app.dashboard.aggregator.aggregator\_group.AggregatorGroup method), 
-		\hyperpage{6}
+		\hyperpage{7}
   \item fetch\_aggregator\_daterange() (pydash\_app.dashboard.aggregator.aggregator\_group.AggregatorGroup method), 
 		\hyperpage{7}
   \item fetch\_aggregator\_inclusive\_daterange() (pydash\_app.dashboard.aggregator.aggregator\_group.AggregatorGroup method), 
 		\hyperpage{7}
   \item fetch\_aggregators\_per\_timeslice() (pydash\_app.dashboard.aggregator.aggregator\_group.AggregatorGroup method), 
-		\hyperpage{7}
+		\hyperpage{8}
   \item fetch\_and\_add\_endpoint\_calls() (in module pydash\_app.dashboard.services.fetching), 
 		\hyperpage{13}
   \item fetch\_and\_add\_endpoints() (in module pydash\_app.dashboard.services.fetching), 
@@ -169,7 +165,7 @@
   \item field\_name() (pydash\_app.dashboard.aggregator.statistics.AverageExecutionTime method), 
 		\hyperpage{9}
   \item field\_name() (pydash\_app.dashboard.aggregator.statistics.ExecutionTimeTDigest method), 
-		\hyperpage{9}
+		\hyperpage{10}
   \item field\_name() (pydash\_app.dashboard.aggregator.statistics.FastestExecutionTime method), 
 		\hyperpage{10}
   \item field\_name() (pydash\_app.dashboard.aggregator.statistics.FastestQuartileExecutionTime method), 
@@ -179,75 +175,75 @@
   \item field\_name() (pydash\_app.dashboard.aggregator.statistics.NinetiethPercentileExecutionTime method), 
 		\hyperpage{10}
   \item field\_name() (pydash\_app.dashboard.aggregator.statistics.NinetyNinthPercentileExecutionTime method), 
-		\hyperpage{10}
+		\hyperpage{11}
   \item field\_name() (pydash\_app.dashboard.aggregator.statistics.SlowestExecutionTime method), 
-		\hyperpage{10}
+		\hyperpage{11}
   \item field\_name() (pydash\_app.dashboard.aggregator.statistics.SlowestQuartileExecutionTime method), 
-		\hyperpage{10}
+		\hyperpage{11}
   \item field\_name() (pydash\_app.dashboard.aggregator.statistics.Statistic class method), 
 		\hyperpage{11}
   \item field\_name() (pydash\_app.dashboard.aggregator.statistics.TotalExecutionTime method), 
 		\hyperpage{11}
   \item field\_name() (pydash\_app.dashboard.aggregator.statistics.TotalVisits method), 
-		\hyperpage{11}
+		\hyperpage{12}
   \item field\_name() (pydash\_app.dashboard.aggregator.statistics.UniqueVisitorsAllTime method), 
 		\hyperpage{12}
   \item field\_name() (pydash\_app.dashboard.aggregator.statistics.Versions method), \hyperpage{12}
   \item field\_name() (pydash\_app.dashboard.aggregator.statistics.VisitsPerIP method), 
-		\hyperpage{12}
-  \item find() (in module pydash\_app.dashboard), \hyperpage{20}
-  \item find() (in module pydash\_app.dashboard.repository), \hyperpage{20}
-  \item find() (in module pydash\_app.user), \hyperpage{25}
-  \item find() (in module pydash\_app.user.repository), \hyperpage{23}
-  \item find\_by\_name() (in module pydash\_app.user), \hyperpage{25}
-  \item find\_by\_name() (in module pydash\_app.user.repository), \hyperpage{23}
-  \item find\_by\_verification\_code() (in module pydash\_app.user), \hyperpage{25}
-  \item find\_by\_verification\_code() (in module pydash\_app.user.repository), \hyperpage{23}
-  \item find\_verified\_dashboard() (in module pydash\_app.dashboard), \hyperpage{20}
+		\hyperpage{13}
+  \item find() (in module pydash\_app.dashboard), \hyperpage{5}
+  \item find() (in module pydash\_app.dashboard.repository), \hyperpage{19}
+  \item find() (in module pydash\_app.user), \hyperpage{20}
+  \item find() (in module pydash\_app.user.repository), \hyperpage{24}
+  \item find\_by\_name() (in module pydash\_app.user), \hyperpage{20}
+  \item find\_by\_name() (in module pydash\_app.user.repository), \hyperpage{24}
+  \item find\_by\_verification\_code() (in module pydash\_app.user), \hyperpage{21}
+  \item find\_by\_verification\_code() (in module pydash\_app.user.repository), \hyperpage{24}
+  \item find\_verified\_dashboard() (in module pydash\_app.dashboard), \hyperpage{6}
   \item first\_endpoint\_call\_time() (pydash\_app.dashboard.entity.Dashboard method), 
 		\hyperpage{18}
   \item flask\_monitoring\_dashboard\_client (module), \hyperpage{1}
   \item FloatStatisticABC (class in pydash\_app.dashboard.aggregator.statistics), \hyperpage{10}
-  \item foo() (in module periodic\_tasks), \hyperpage{5}
-  \item format\_verification\_mail\_html() (in module pydash\_mail.templates), \hyperpage{27}
-  \item format\_verification\_mail\_plain() (in module pydash\_mail.templates), \hyperpage{27}
+  \item foo() (in module periodic\_tasks), \hyperpage{3}
+  \item format\_verification\_mail\_html() (in module pydash\_mail.templates), \hyperpage{26}
+  \item format\_verification\_mail\_plain() (in module pydash\_mail.templates), \hyperpage{26}
 
   \indexspace
   \bigletter G
-  \item generate\_new\_verification\_code() (pydash\_app.user.entity.User method), \hyperpage{21}
-  \item get\_dashboard() (in module pydash\_web.api\_routes), \hyperpage{32}
-  \item get\_dashboards() (in module pydash\_web.api\_routes), \hyperpage{32}
+  \item generate\_new\_verification\_code() (pydash\_app.user.entity.User method), \hyperpage{23}
+  \item get\_dashboard() (in module pydash\_web.api\_routes), \hyperpage{31}
+  \item get\_dashboards() (in module pydash\_web.api\_routes), \hyperpage{31}
   \item get\_data() (in module flask\_monitoring\_dashboard\_client), \hyperpage{1}
   \item get\_details() (in module flask\_monitoring\_dashboard\_client), \hyperpage{1}
   \item get\_endpoint\_execution\_times\_boxplots() (in module pydash\_web.api\_routes), 
-		\hyperpage{32}
-  \item get\_execution\_times\_boxplot() (in module pydash\_web.api\_routes), \hyperpage{32}
+		\hyperpage{31}
+  \item get\_execution\_times\_boxplot() (in module pydash\_web.api\_routes), \hyperpage{31}
   \item get\_execution\_times\_per\_version\_dashboard() (in module pydash\_web.api\_routes), 
-		\hyperpage{32}
+		\hyperpage{31}
   \item get\_execution\_times\_per\_version\_endpoint() (in module pydash\_web.api\_routes), 
-		\hyperpage{32}
-  \item get\_hourly\_data() (in module pydash\_web.controller.visitor\_heatmap), \hyperpage{31}
+		\hyperpage{31}
+  \item get\_hourly\_data() (in module pydash\_web.controller.visitor\_heatmap), \hyperpage{30}
   \item get\_id() (pydash\_app.dashboard.endpoint.Endpoint method), \hyperpage{15}
   \item get\_id() (pydash\_app.dashboard.entity.Dashboard method), \hyperpage{18}
-  \item get\_id() (pydash\_app.user.entity.User method), \hyperpage{21}
-  \item get\_monitor\_rules() (in module flask\_monitoring\_dashboard\_client), \hyperpage{2}
-  \item get\_unique\_visitor\_heatmap() (in module pydash\_web.api\_routes), \hyperpage{32}
-  \item get\_verification\_code() (pydash\_app.user.entity.User method), \hyperpage{22}
+  \item get\_id() (pydash\_app.user.entity.User method), \hyperpage{23}
+  \item get\_monitor\_rules() (in module flask\_monitoring\_dashboard\_client), \hyperpage{1}
+  \item get\_unique\_visitor\_heatmap() (in module pydash\_web.api\_routes), \hyperpage{31}
+  \item get\_verification\_code() (pydash\_app.user.entity.User method), \hyperpage{23}
   \item get\_verification\_code\_expiration\_date() (pydash\_app.user.entity.User method), 
-		\hyperpage{22}
-  \item get\_visitor\_heatmap() (in module pydash\_web.api\_routes), \hyperpage{32}
+		\hyperpage{23}
+  \item get\_visitor\_heatmap() (in module pydash\_web.api\_routes), \hyperpage{31}
 
   \indexspace
   \bigletter H
   \item handle\_statistic\_per\_timeslice() (in module pydash\_web.controller.dashboards), 
-		\hyperpage{29}
+		\hyperpage{28}
   \item handle\_statistic\_without\_timeslice() (in module pydash\_web.controller.dashboards), 
-		\hyperpage{29}
-  \item has\_verification\_code\_expired() (pydash\_app.user.entity.User method), \hyperpage{22}
+		\hyperpage{28}
+  \item has\_verification\_code\_expired() (pydash\_app.user.entity.User method), \hyperpage{23}
 
   \indexspace
   \bigletter I
-  \item info() (pydash\_logger.logger.Logger method), \hyperpage{27}
+  \item info() (pydash\_logger.logger.Logger method), \hyperpage{26}
   \item initialize\_endpoint\_calls\_failure (pydash\_app.dashboard.entity.DashboardState attribute), 
 		\hyperpage{18}
   \item initialize\_endpoints\_failure (pydash\_app.dashboard.entity.DashboardState attribute), 
@@ -256,33 +252,27 @@
 		\hyperpage{18}
   \item initialized\_endpoints (pydash\_app.dashboard.entity.DashboardState attribute), 
 		\hyperpage{18}
-  \item InvalidVerificationCodeError, \hyperpage{24}
-  \item is\_expired() (pydash\_app.user.verification\_code.VerificationCode method), \hyperpage{24}
-  \item is\_valid\_dashboard() (in module pydash\_app.dashboard.services), \hyperpage{14}
-  \item is\_verified() (pydash\_app.user.entity.User method), \hyperpage{22}
+  \item InvalidVerificationCodeError, \hyperpage{25}
+  \item is\_expired() (pydash\_app.user.verification\_code.VerificationCode method), \hyperpage{25}
+  \item is\_valid\_dashboard() (in module pydash\_app.dashboard.services), \hyperpage{13}
+  \item is\_verified() (pydash\_app.user.entity.User method), \hyperpage{23}
 
   \indexspace
   \bigletter L
-  \item load\_user() (in module pydash\_web), \hyperpage{32}
-  \item Logger (class in pydash\_logger.logger), \hyperpage{27}
-  \item login() (in module pydash\_web.api\_routes), \hyperpage{32}
-  \item login() (in module pydash\_web.controller.login), \hyperpage{30}
-  \item logout() (in module pydash\_web.api\_routes), \hyperpage{32}
-  \item logout() (in module pydash\_web.controller.logout), \hyperpage{30}
+  \item load\_user() (in module pydash\_web), \hyperpage{26}
+  \item Logger (class in pydash\_logger.logger), \hyperpage{26}
+  \item login() (in module pydash\_web.api\_routes), \hyperpage{31}
+  \item login() (in module pydash\_web.controller.login), \hyperpage{29}
+  \item logout() (in module pydash\_web.api\_routes), \hyperpage{31}
+  \item logout() (in module pydash\_web.controller.logout), \hyperpage{29}
 
   \indexspace
   \bigletter M
-  \item MAIL\_DEFAULT\_SENDER (config.Config attribute), \hyperpage{1}
-  \item MAIL\_PASSWORD (config.Config attribute), \hyperpage{1}
-  \item MAIL\_PORT (config.Config attribute), \hyperpage{1}
-  \item MAIL\_SERVER (config.Config attribute), \hyperpage{1}
-  \item MAIL\_USE\_TLS (config.Config attribute), \hyperpage{1}
-  \item MAIL\_USERNAME (config.Config attribute), \hyperpage{1}
   \item match\_datetime\_string\_with\_formats() (in module pydash\_web.controller.dashboards), 
-		\hyperpage{30}
-  \item maybe\_find\_user() (in module pydash\_app.user), \hyperpage{25}
+		\hyperpage{28}
+  \item maybe\_find\_user() (in module pydash\_app.user), \hyperpage{21}
   \item MedianExecutionTime (class in pydash\_app.dashboard.aggregator.statistics), \hyperpage{10}
-  \item MultiIndexedPersistentCollection (class in pydash\_database), \hyperpage{26}
+  \item MultiIndexedPersistentCollection (class in pydash\_database), \hyperpage{25}
 
   \indexspace
   \bigletter N
@@ -305,17 +295,17 @@
   \item partition\_by\_ip\_fun() (in module pydash\_app.dashboard.aggregator.aggregator\_group), 
 		\hyperpage{8}
   \item partition\_by\_minute\_fun() (in module pydash\_app.dashboard.aggregator.aggregator\_group), 
-		\hyperpage{8}
+		\hyperpage{9}
   \item partition\_by\_month\_fun() (in module pydash\_app.dashboard.aggregator.aggregator\_group), 
-		\hyperpage{8}
+		\hyperpage{9}
   \item partition\_by\_version\_fun() (in module pydash\_app.dashboard.aggregator.aggregator\_group), 
-		\hyperpage{8}
+		\hyperpage{9}
   \item partition\_by\_week\_fun() (in module pydash\_app.dashboard.aggregator.aggregator\_group), 
-		\hyperpage{8}
+		\hyperpage{9}
   \item partition\_by\_year\_fun() (in module pydash\_app.dashboard.aggregator.aggregator\_group), 
-		\hyperpage{8}
+		\hyperpage{9}
   \item partition\_field\_names() (in module pydash\_app.dashboard.aggregator.aggregator\_group), 
-		\hyperpage{8}
+		\hyperpage{9}
   \item partition\_funs (pydash\_app.dashboard.aggregator.aggregator\_group.AggregatorGroup attribute), 
 		\hyperpage{8}
   \item partition\_powerset (pydash\_app.dashboard.aggregator.aggregator\_group.AggregatorGroup attribute), 
@@ -333,106 +323,106 @@
   \item percentile\_nr() (pydash\_app.dashboard.aggregator.statistics.NinetiethPercentileExecutionTime method), 
 		\hyperpage{10}
   \item percentile\_nr() (pydash\_app.dashboard.aggregator.statistics.NinetyNinthPercentileExecutionTime method), 
-		\hyperpage{10}
+		\hyperpage{11}
   \item percentile\_nr() (pydash\_app.dashboard.aggregator.statistics.SlowestExecutionTime method), 
-		\hyperpage{10}
+		\hyperpage{11}
   \item percentile\_nr() (pydash\_app.dashboard.aggregator.statistics.SlowestQuartileExecutionTime method), 
-		\hyperpage{10}
+		\hyperpage{11}
   \item perform\_append() (pydash\_app.dashboard.aggregator.statistics.AverageExecutionTime method), 
 		\hyperpage{9}
   \item perform\_append() (pydash\_app.dashboard.aggregator.statistics.ExecutionTimePercentileABC method), 
 		\hyperpage{9}
   \item perform\_append() (pydash\_app.dashboard.aggregator.statistics.ExecutionTimeTDigest method), 
-		\hyperpage{9}
+		\hyperpage{10}
   \item perform\_append() (pydash\_app.dashboard.aggregator.statistics.Statistic method), 
 		\hyperpage{11}
   \item perform\_append() (pydash\_app.dashboard.aggregator.statistics.TotalExecutionTime method), 
 		\hyperpage{11}
   \item perform\_append() (pydash\_app.dashboard.aggregator.statistics.TotalVisits method), 
-		\hyperpage{11}
+		\hyperpage{12}
   \item perform\_append() (pydash\_app.dashboard.aggregator.statistics.UniqueVisitorsAllTime method), 
 		\hyperpage{12}
   \item perform\_append() (pydash\_app.dashboard.aggregator.statistics.Versions method), 
 		\hyperpage{12}
   \item perform\_append() (pydash\_app.dashboard.aggregator.statistics.VisitsPerIP method), 
-		\hyperpage{12}
-  \item periodic\_task() (in module periodic\_tasks), \hyperpage{5}
-  \item periodic\_tasks (module), \hyperpage{4}
-  \item periodic\_tasks.pqdict\_iter\_upto\_priority (module), \hyperpage{2}
-  \item periodic\_tasks.queue\_nonblocking\_iter (module), \hyperpage{2}
-  \item periodic\_tasks.task\_scheduler (module), \hyperpage{2}
+		\hyperpage{13}
+  \item periodic\_task() (in module periodic\_tasks), \hyperpage{3}
+  \item periodic\_tasks (module), \hyperpage{1}
+  \item periodic\_tasks.pqdict\_iter\_upto\_priority (module), \hyperpage{3}
+  \item periodic\_tasks.queue\_nonblocking\_iter (module), \hyperpage{3}
+  \item periodic\_tasks.task\_scheduler (module), \hyperpage{4}
   \item powerset\_generator() (in module pydash\_app.dashboard.aggregator.aggregator\_group), 
-		\hyperpage{8}
+		\hyperpage{9}
   \item pqdict\_iter\_upto\_priority (class in periodic\_tasks.pqdict\_iter\_upto\_priority), 
-		\hyperpage{2}
-  \item pydash (module), \hyperpage{6}
-  \item pydash\_app (module), \hyperpage{26}
-  \item pydash\_app.dashboard (module), \hyperpage{20}
-  \item pydash\_app.dashboard.aggregator (module), \hyperpage{13}
+		\hyperpage{3}
+  \item pydash (module), \hyperpage{5}
+  \item pydash\_app (module), \hyperpage{5}
+  \item pydash\_app.dashboard (module), \hyperpage{5}
+  \item pydash\_app.dashboard.aggregator (module), \hyperpage{6}
   \item pydash\_app.dashboard.aggregator.aggregator\_group (module), \hyperpage{6}
   \item pydash\_app.dashboard.aggregator.statistics (module), \hyperpage{9}
   \item pydash\_app.dashboard.endpoint (module), \hyperpage{14}
-  \item pydash\_app.dashboard.endpoint\_call (module), \hyperpage{16}
+  \item pydash\_app.dashboard.endpoint\_call (module), \hyperpage{15}
   \item pydash\_app.dashboard.entity (module), \hyperpage{16}
-  \item pydash\_app.dashboard.repository (module), \hyperpage{19}
-  \item pydash\_app.dashboard.services (module), \hyperpage{14}
+  \item pydash\_app.dashboard.repository (module), \hyperpage{18}
+  \item pydash\_app.dashboard.services (module), \hyperpage{13}
   \item pydash\_app.dashboard.services.fetching (module), \hyperpage{13}
   \item pydash\_app.dashboard.services.seeding (module), \hyperpage{14}
-  \item pydash\_app.user (module), \hyperpage{24}
-  \item pydash\_app.user.entity (module), \hyperpage{21}
-  \item pydash\_app.user.repository (module), \hyperpage{22}
-  \item pydash\_app.user.services (module), \hyperpage{21}
-  \item pydash\_app.user.services.pruning (module), \hyperpage{20}
-  \item pydash\_app.user.services.seeding (module), \hyperpage{21}
-  \item pydash\_app.user.verification (module), \hyperpage{24}
-  \item pydash\_app.user.verification\_code (module), \hyperpage{24}
-  \item pydash\_database (module), \hyperpage{26}
-  \item pydash\_logger (module), \hyperpage{27}
-  \item pydash\_logger.logger (module), \hyperpage{27}
-  \item pydash\_mail (module), \hyperpage{28}
-  \item pydash\_mail.templates (module), \hyperpage{27}
-  \item pydash\_web (module), \hyperpage{32}
-  \item pydash\_web.api (module), \hyperpage{31}
-  \item pydash\_web.api\_routes (module), \hyperpage{31}
-  \item pydash\_web.controller (module), \hyperpage{31}
-  \item pydash\_web.controller.change\_dashboard\_settings (module), \hyperpage{28}
-  \item pydash\_web.controller.change\_password (module), \hyperpage{28}
-  \item pydash\_web.controller.change\_settings (module), \hyperpage{28}
-  \item pydash\_web.controller.dashboards (module), \hyperpage{28}
-  \item pydash\_web.controller.delete\_dashboard (module), \hyperpage{30}
-  \item pydash\_web.controller.delete\_user (module), \hyperpage{30}
-  \item pydash\_web.controller.execution\_times\_boxplots (module), \hyperpage{30}
-  \item pydash\_web.controller.execution\_times\_per\_version (module), \hyperpage{30}
-  \item pydash\_web.controller.login (module), \hyperpage{30}
-  \item pydash\_web.controller.logout (module), \hyperpage{30}
-  \item pydash\_web.controller.register\_dashboard (module), \hyperpage{30}
-  \item pydash\_web.controller.register\_user (module), \hyperpage{31}
-  \item pydash\_web.controller.user\_verification (module), \hyperpage{31}
-  \item pydash\_web.controller.utils (module), \hyperpage{31}
-  \item pydash\_web.controller.visitor\_heatmap (module), \hyperpage{31}
-  \item pydash\_web.react\_server (module), \hyperpage{32}
+  \item pydash\_app.user (module), \hyperpage{20}
+  \item pydash\_app.user.entity (module), \hyperpage{22}
+  \item pydash\_app.user.repository (module), \hyperpage{23}
+  \item pydash\_app.user.services (module), \hyperpage{22}
+  \item pydash\_app.user.services.pruning (module), \hyperpage{22}
+  \item pydash\_app.user.services.seeding (module), \hyperpage{22}
+  \item pydash\_app.user.verification (module), \hyperpage{25}
+  \item pydash\_app.user.verification\_code (module), \hyperpage{25}
+  \item pydash\_database (module), \hyperpage{25}
+  \item pydash\_logger (module), \hyperpage{26}
+  \item pydash\_logger.logger (module), \hyperpage{26}
+  \item pydash\_mail (module), \hyperpage{26}
+  \item pydash\_mail.templates (module), \hyperpage{26}
+  \item pydash\_web (module), \hyperpage{26}
+  \item pydash\_web.api (module), \hyperpage{30}
+  \item pydash\_web.api\_routes (module), \hyperpage{30}
+  \item pydash\_web.controller (module), \hyperpage{27}
+  \item pydash\_web.controller.change\_dashboard\_settings (module), \hyperpage{27}
+  \item pydash\_web.controller.change\_password (module), \hyperpage{27}
+  \item pydash\_web.controller.change\_settings (module), \hyperpage{27}
+  \item pydash\_web.controller.dashboards (module), \hyperpage{27}
+  \item pydash\_web.controller.delete\_dashboard (module), \hyperpage{29}
+  \item pydash\_web.controller.delete\_user (module), \hyperpage{29}
+  \item pydash\_web.controller.execution\_times\_boxplots (module), \hyperpage{29}
+  \item pydash\_web.controller.execution\_times\_per\_version (module), \hyperpage{29}
+  \item pydash\_web.controller.login (module), \hyperpage{29}
+  \item pydash\_web.controller.logout (module), \hyperpage{29}
+  \item pydash\_web.controller.register\_dashboard (module), \hyperpage{29}
+  \item pydash\_web.controller.register\_user (module), \hyperpage{30}
+  \item pydash\_web.controller.user\_verification (module), \hyperpage{30}
+  \item pydash\_web.controller.utils (module), \hyperpage{30}
+  \item pydash\_web.controller.visitor\_heatmap (module), \hyperpage{30}
+  \item pydash\_web.react\_server (module), \hyperpage{31}
 
   \indexspace
   \bigletter Q
-  \item queue\_nonblocking\_iter (class in periodic\_tasks.queue\_nonblocking\_iter), \hyperpage{2}
-  \item qux() (in module periodic\_tasks), \hyperpage{5}
+  \item queue\_nonblocking\_iter (class in periodic\_tasks.queue\_nonblocking\_iter), \hyperpage{3}
+  \item qux() (in module periodic\_tasks), \hyperpage{3}
 
   \indexspace
   \bigletter R
-  \item reduce\_precision() (in module pydash\_app.dashboard.aggregator.statistics), \hyperpage{12}
-  \item register\_dashboard() (in module pydash\_web.api\_routes), \hyperpage{32}
+  \item reduce\_precision() (in module pydash\_app.dashboard.aggregator.statistics), \hyperpage{13}
+  \item register\_dashboard() (in module pydash\_web.api\_routes), \hyperpage{31}
   \item register\_dashboard() (in module pydash\_web.controller.register\_dashboard), 
-		\hyperpage{30}
-  \item register\_user() (in module pydash\_web.api\_routes), \hyperpage{32}
-  \item register\_user() (in module pydash\_web.controller.register\_user), \hyperpage{31}
+		\hyperpage{29}
+  \item register\_user() (in module pydash\_web.api\_routes), \hyperpage{31}
+  \item register\_user() (in module pydash\_web.controller.register\_user), \hyperpage{30}
   \item remove\_duplicate\_categories() (in module pydash\_app.dashboard.aggregator.aggregator\_group), 
-		\hyperpage{8}
+		\hyperpage{9}
   \item remove\_endpoint() (pydash\_app.dashboard.entity.Dashboard method), \hyperpage{18}
   \item remove\_endpoint\_call() (pydash\_app.dashboard.endpoint.Endpoint method), \hyperpage{15}
-  \item remove\_from\_repository() (in module pydash\_app.dashboard), \hyperpage{20}
-  \item remove\_from\_repository() (in module pydash\_app.user), \hyperpage{25}
-  \item remove\_task() (in module periodic\_tasks), \hyperpage{5}
-  \item remove\_task() (periodic\_tasks.task\_scheduler.TaskScheduler method), \hyperpage{3}
+  \item remove\_from\_repository() (in module pydash\_app.dashboard), \hyperpage{6}
+  \item remove\_from\_repository() (in module pydash\_app.user), \hyperpage{21}
+  \item remove\_task() (in module periodic\_tasks), \hyperpage{3}
+  \item remove\_task() (periodic\_tasks.task\_scheduler.TaskScheduler method), \hyperpage{4}
   \item rendered\_value() (pydash\_app.dashboard.aggregator.statistics.FloatStatisticABC method), 
 		\hyperpage{10}
   \item rendered\_value() (pydash\_app.dashboard.aggregator.statistics.Statistic method), 
@@ -442,7 +432,7 @@
   \item rendered\_value() (pydash\_app.dashboard.aggregator.statistics.Versions method), 
 		\hyperpage{12}
   \item rendered\_value() (pydash\_app.dashboard.aggregator.statistics.VisitsPerIP method), 
-		\hyperpage{12}
+		\hyperpage{13}
 
   \indexspace
   \bigletter S
@@ -453,17 +443,16 @@
   \item schedule\_periodic\_dashboard\_fetching() (in module pydash\_app.dashboard.services.fetching), 
 		\hyperpage{14}
   \item schedule\_periodic\_pruning\_task() (in module pydash\_app.user.services.pruning), 
-		\hyperpage{20}
-  \item schedule\_periodic\_tasks() (in module pydash\_app), \hyperpage{26}
-  \item SECRET\_KEY (config.Config attribute), \hyperpage{1}
+		\hyperpage{22}
+  \item schedule\_periodic\_tasks() (in module pydash\_app), \hyperpage{5}
   \item seed() (in module pydash\_app.dashboard.services.seeding), \hyperpage{14}
-  \item seed() (in module pydash\_app.user.services.seeding), \hyperpage{21}
-  \item seed\_datastructures() (in module pydash\_app), \hyperpage{26}
-  \item serve() (in module pydash\_web.react\_server), \hyperpage{32}
+  \item seed() (in module pydash\_app.user.services.seeding), \hyperpage{22}
+  \item seed\_datastructures() (in module pydash\_app), \hyperpage{5}
+  \item serve() (in module pydash\_web.react\_server), \hyperpage{31}
   \item set\_monitored() (pydash\_app.dashboard.endpoint.Endpoint method), \hyperpage{15}
-  \item set\_password() (pydash\_app.user.entity.User method), \hyperpage{22}
+  \item set\_password() (pydash\_app.user.entity.User method), \hyperpage{23}
   \item should\_be\_rendered (pydash\_app.dashboard.aggregator.statistics.ExecutionTimeTDigest attribute), 
-		\hyperpage{9}
+		\hyperpage{10}
   \item should\_be\_rendered (pydash\_app.dashboard.aggregator.statistics.Statistic attribute), 
 		\hyperpage{11}
   \item should\_be\_rendered() (pydash\_app.dashboard.aggregator.statistics.AverageExecutionTime method), 
@@ -473,65 +462,60 @@
   \item should\_be\_rendered() (pydash\_app.dashboard.aggregator.statistics.TotalExecutionTime method), 
 		\hyperpage{11}
   \item should\_be\_rendered() (pydash\_app.dashboard.aggregator.statistics.TotalVisits method), 
-		\hyperpage{11}
+		\hyperpage{12}
   \item should\_be\_rendered() (pydash\_app.dashboard.aggregator.statistics.UniqueVisitorsAllTime method), 
 		\hyperpage{12}
   \item should\_be\_rendered() (pydash\_app.dashboard.aggregator.statistics.Versions method), 
 		\hyperpage{12}
   \item should\_be\_rendered() (pydash\_app.dashboard.aggregator.statistics.VisitsPerIP method), 
-		\hyperpage{12}
-  \item SlowestExecutionTime (class in pydash\_app.dashboard.aggregator.statistics), \hyperpage{10}
+		\hyperpage{13}
+  \item SlowestExecutionTime (class in pydash\_app.dashboard.aggregator.statistics), \hyperpage{11}
   \item SlowestQuartileExecutionTime (class in pydash\_app.dashboard.aggregator.statistics), 
-		\hyperpage{10}
-  \item splinter\_driver\_kwargs() (in module tests.conftest), \hyperpage{32}
-  \item start() (periodic\_tasks.task\_scheduler.TaskScheduler method), \hyperpage{3}
-  \item start\_default\_scheduler() (in module periodic\_tasks), \hyperpage{6}
-  \item start\_task\_scheduler() (in module pydash\_app), \hyperpage{26}
+		\hyperpage{11}
+  \item start() (periodic\_tasks.task\_scheduler.TaskScheduler method), \hyperpage{4}
+  \item start\_default\_scheduler() (in module periodic\_tasks), \hyperpage{3}
+  \item start\_task\_scheduler() (in module pydash\_app), \hyperpage{5}
   \item Statistic (class in pydash\_app.dashboard.aggregator.statistics), \hyperpage{11}
-  \item statistic (pydash\_app.dashboard.aggregator.Aggregator attribute), \hyperpage{13}
+  \item statistic (pydash\_app.dashboard.aggregator.Aggregator attribute), \hyperpage{6}
   \item statistic() (pydash\_app.dashboard.endpoint.Endpoint method), \hyperpage{15}
   \item statistic() (pydash\_app.dashboard.entity.Dashboard method), \hyperpage{18}
   \item statistic\_per\_timeslice() (pydash\_app.dashboard.endpoint.Endpoint method), 
 		\hyperpage{15}
   \item statistic\_per\_timeslice() (pydash\_app.dashboard.entity.Dashboard method), \hyperpage{18}
   \item statistics\_classes\_with\_dependencies (pydash\_app.dashboard.aggregator.Aggregator attribute), 
-		\hyperpage{13}
-  \item stop() (periodic\_tasks.task\_scheduler.TaskScheduler method), \hyperpage{3}
-  \item stop\_task\_scheduler() (in module pydash\_app), \hyperpage{26}
+		\hyperpage{6}
+  \item stop() (periodic\_tasks.task\_scheduler.TaskScheduler method), \hyperpage{5}
+  \item stop\_task\_scheduler() (in module pydash\_app), \hyperpage{5}
 
   \indexspace
   \bigletter T
-  \item TaskScheduler (class in periodic\_tasks.task\_scheduler), \hyperpage{2}
-  \item tests (module), \hyperpage{33}
-  \item tests.common\_fixtures (module), \hyperpage{32}
-  \item tests.conftest (module), \hyperpage{32}
-  \item testserver() (in module tests.conftest), \hyperpage{33}
+  \item TaskScheduler (class in periodic\_tasks.task\_scheduler), \hyperpage{4}
   \item TotalExecutionTime (class in pydash\_app.dashboard.aggregator.statistics), \hyperpage{11}
-  \item TotalVisits (class in pydash\_app.dashboard.aggregator.statistics), \hyperpage{11}
+  \item TotalVisits (class in pydash\_app.dashboard.aggregator.statistics), \hyperpage{12}
 
   \indexspace
   \bigletter U
-  \item unauthorized() (in module pydash\_web), \hyperpage{32}
+  \item unauthorized() (in module pydash\_web), \hyperpage{26}
   \item UniqueVisitorsAllTime (class in pydash\_app.dashboard.aggregator.statistics), 
-		\hyperpage{11}
-  \item update() (in module pydash\_app.dashboard.repository), \hyperpage{20}
-  \item update() (in module pydash\_app.user.repository), \hyperpage{23}
-  \item User (class in pydash\_app.user.entity), \hyperpage{21}
+		\hyperpage{12}
+  \item update() (in module pydash\_app.dashboard.repository), \hyperpage{19}
+  \item update() (in module pydash\_app.user.repository), \hyperpage{25}
+  \item User (class in pydash\_app.user.entity), \hyperpage{22}
 
   \indexspace
   \bigletter V
-  \item VerificationCode (class in pydash\_app.user.verification\_code), \hyperpage{24}
-  \item VerificationCodeExpiredError, \hyperpage{24}
-  \item verify() (in module pydash\_app.user), \hyperpage{26}
-  \item verify() (in module pydash\_app.user.verification), \hyperpage{24}
-  \item verify\_user() (in module pydash\_web.api\_routes), \hyperpage{32}
-  \item verify\_user() (in module pydash\_web.controller.user\_verification), \hyperpage{31}
+  \item VerificationCode (class in pydash\_app.user.verification\_code), \hyperpage{25}
+  \item VerificationCodeExpiredError, \hyperpage{25}
+  \item verify() (in module pydash\_app.user), \hyperpage{21}
+  \item verify() (in module pydash\_app.user.verification), \hyperpage{25}
+  \item verify\_user() (in module pydash\_web.api\_routes), \hyperpage{31}
+  \item verify\_user() (in module pydash\_web.controller.user\_verification), \hyperpage{30}
   \item Versions (class in pydash\_app.dashboard.aggregator.statistics), \hyperpage{12}
-  \item visitor\_heatmap() (in module pydash\_web.controller.visitor\_heatmap), \hyperpage{31}
+  \item visitor\_heatmap() (in module pydash\_web.controller.visitor\_heatmap), \hyperpage{30}
   \item VisitsPerIP (class in pydash\_app.dashboard.aggregator.statistics), \hyperpage{12}
 
   \indexspace
   \bigletter W
-  \item warning() (pydash\_logger.logger.Logger method), \hyperpage{27}
+  \item warning() (pydash\_logger.logger.Logger method), \hyperpage{26}
 
 \end{sphinxtheindex}

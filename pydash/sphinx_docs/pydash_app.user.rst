@@ -1,6 +1,11 @@
 pydash\_app.user package
 ========================
 
+.. automodule:: pydash_app.user
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -11,43 +16,10 @@ Subpackages
 Submodules
 ----------
 
-pydash\_app.user.entity module
-------------------------------
+.. toctree::
 
-.. automodule:: pydash_app.user.entity
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   pydash_app.user.entity
+   pydash_app.user.repository
+   pydash_app.user.verification
+   pydash_app.user.verification_code
 
-pydash\_app.user.repository module
-----------------------------------
-
-.. automodule:: pydash_app.user.repository
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pydash\_app.user.verification module
-------------------------------------
-
-.. automodule:: pydash_app.user.verification
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pydash\_app.user.verification\_code module
-------------------------------------------
-
-.. automodule:: pydash_app.user.verification_code
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: pydash_app.user
-    :members:
-    :undoc-members:
-    :show-inheritance:

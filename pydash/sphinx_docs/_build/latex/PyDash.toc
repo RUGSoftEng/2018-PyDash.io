@@ -1,90 +1,70 @@
 \babel@toc {english}{}
 \contentsline {chapter}{\numberline {1}pydash}{1}{chapter.1}
-\contentsline {section}{\numberline {1.1}config module}{1}{section.1.1}
-\contentsline {section}{\numberline {1.2}conftest module}{1}{section.1.2}
-\contentsline {section}{\numberline {1.3}flask\_monitoring\_dashboard\_client package}{1}{section.1.3}
-\contentsline {subsection}{\numberline {1.3.1}Module contents}{1}{subsection.1.3.1}
-\contentsline {section}{\numberline {1.4}periodic\_tasks package}{2}{section.1.4}
-\contentsline {subsection}{\numberline {1.4.1}Submodules}{2}{subsection.1.4.1}
-\contentsline {subsection}{\numberline {1.4.2}periodic\_tasks.pqdict\_iter\_upto\_priority module}{2}{subsection.1.4.2}
-\contentsline {subsection}{\numberline {1.4.3}periodic\_tasks.queue\_nonblocking\_iter module}{2}{subsection.1.4.3}
-\contentsline {subsection}{\numberline {1.4.4}periodic\_tasks.task\_scheduler module}{2}{subsection.1.4.4}
-\contentsline {subsection}{\numberline {1.4.5}Module contents}{4}{subsection.1.4.5}
-\contentsline {section}{\numberline {1.5}pydash module}{6}{section.1.5}
-\contentsline {section}{\numberline {1.6}pydash\_app package}{6}{section.1.6}
-\contentsline {subsection}{\numberline {1.6.1}Subpackages}{6}{subsection.1.6.1}
-\contentsline {subsubsection}{pydash\_app.dashboard package}{6}{subsubsection*.32}
-\contentsline {paragraph}{Subpackages}{6}{paragraph*.33}
-\contentsline {subparagraph}{pydash\_app.dashboard.aggregator package}{6}{subparagraph*.34}
-\contentsline {subparagraph}{Submodules}{6}{subparagraph*.35}
-\contentsline {subparagraph}{pydash\_app.dashboard.aggregator.aggregator\_group module}{6}{subparagraph*.36}
-\contentsline {subparagraph}{pydash\_app.dashboard.aggregator.statistics module}{9}{subparagraph*.60}
-\contentsline {subparagraph}{Module contents}{13}{subparagraph*.150}
-\contentsline {subparagraph}{pydash\_app.dashboard.services package}{13}{subparagraph*.157}
-\contentsline {subparagraph}{Submodules}{13}{subparagraph*.158}
-\contentsline {subparagraph}{pydash\_app.dashboard.services.fetching module}{13}{subparagraph*.159}
-\contentsline {subparagraph}{pydash\_app.dashboard.services.seeding module}{14}{subparagraph*.168}
-\contentsline {subparagraph}{Module contents}{14}{subparagraph*.170}
-\contentsline {paragraph}{Submodules}{14}{paragraph*.172}
-\contentsline {paragraph}{pydash\_app.dashboard.endpoint module}{14}{paragraph*.173}
-\contentsline {paragraph}{pydash\_app.dashboard.endpoint\_call module}{16}{paragraph*.183}
-\contentsline {paragraph}{pydash\_app.dashboard.entity module}{16}{paragraph*.186}
-\contentsline {paragraph}{pydash\_app.dashboard.repository module}{19}{paragraph*.205}
-\contentsline {paragraph}{Module contents}{20}{paragraph*.212}
-\contentsline {subsubsection}{pydash\_app.user package}{20}{subsubsection*.218}
-\contentsline {paragraph}{Subpackages}{20}{paragraph*.219}
-\contentsline {subparagraph}{pydash\_app.user.services package}{20}{subparagraph*.220}
-\contentsline {subparagraph}{Submodules}{20}{subparagraph*.221}
-\contentsline {subparagraph}{pydash\_app.user.services.pruning module}{20}{subparagraph*.222}
-\contentsline {subparagraph}{pydash\_app.user.services.seeding module}{21}{subparagraph*.224}
-\contentsline {subparagraph}{Module contents}{21}{subparagraph*.226}
-\contentsline {paragraph}{Submodules}{21}{paragraph*.227}
-\contentsline {paragraph}{pydash\_app.user.entity module}{21}{paragraph*.228}
-\contentsline {paragraph}{pydash\_app.user.repository module}{22}{paragraph*.238}
-\contentsline {paragraph}{pydash\_app.user.verification module}{24}{paragraph*.248}
-\contentsline {paragraph}{pydash\_app.user.verification\_code module}{24}{paragraph*.252}
-\contentsline {paragraph}{Module contents}{24}{paragraph*.255}
-\contentsline {subsection}{\numberline {1.6.2}Module contents}{26}{subsection.1.6.2}
-\contentsline {section}{\numberline {1.7}pydash\_database package}{26}{section.1.7}
-\contentsline {subsection}{\numberline {1.7.1}Module contents}{26}{subsection.1.7.1}
-\contentsline {section}{\numberline {1.8}pydash\_logger package}{27}{section.1.8}
-\contentsline {subsection}{\numberline {1.8.1}Submodules}{27}{subsection.1.8.1}
-\contentsline {subsection}{\numberline {1.8.2}pydash\_logger.logger module}{27}{subsection.1.8.2}
-\contentsline {subsection}{\numberline {1.8.3}Module contents}{27}{subsection.1.8.3}
-\contentsline {section}{\numberline {1.9}pydash\_mail package}{27}{section.1.9}
-\contentsline {subsection}{\numberline {1.9.1}Submodules}{27}{subsection.1.9.1}
-\contentsline {subsection}{\numberline {1.9.2}pydash\_mail.templates module}{27}{subsection.1.9.2}
-\contentsline {subsection}{\numberline {1.9.3}Module contents}{28}{subsection.1.9.3}
-\contentsline {section}{\numberline {1.10}pydash\_web package}{28}{section.1.10}
-\contentsline {subsection}{\numberline {1.10.1}Subpackages}{28}{subsection.1.10.1}
-\contentsline {subsubsection}{pydash\_web.controller package}{28}{subsubsection*.279}
-\contentsline {paragraph}{Submodules}{28}{paragraph*.280}
-\contentsline {paragraph}{pydash\_web.controller.change\_dashboard\_settings module}{28}{paragraph*.281}
-\contentsline {paragraph}{pydash\_web.controller.change\_password module}{28}{paragraph*.283}
-\contentsline {paragraph}{pydash\_web.controller.change\_settings module}{28}{paragraph*.285}
-\contentsline {paragraph}{pydash\_web.controller.dashboards module}{28}{paragraph*.287}
-\contentsline {paragraph}{pydash\_web.controller.delete\_dashboard module}{30}{paragraph*.295}
-\contentsline {paragraph}{pydash\_web.controller.delete\_user module}{30}{paragraph*.297}
-\contentsline {paragraph}{pydash\_web.controller.execution\_times\_boxplots module}{30}{paragraph*.299}
-\contentsline {paragraph}{pydash\_web.controller.execution\_times\_per\_version module}{30}{paragraph*.301}
-\contentsline {paragraph}{pydash\_web.controller.login module}{30}{paragraph*.303}
-\contentsline {paragraph}{pydash\_web.controller.logout module}{30}{paragraph*.305}
-\contentsline {paragraph}{pydash\_web.controller.register\_dashboard module}{30}{paragraph*.307}
-\contentsline {paragraph}{pydash\_web.controller.register\_user module}{31}{paragraph*.309}
-\contentsline {paragraph}{pydash\_web.controller.user\_verification module}{31}{paragraph*.311}
-\contentsline {paragraph}{pydash\_web.controller.utils module}{31}{paragraph*.313}
-\contentsline {paragraph}{pydash\_web.controller.visitor\_heatmap module}{31}{paragraph*.315}
-\contentsline {paragraph}{Module contents}{31}{paragraph*.319}
-\contentsline {subsection}{\numberline {1.10.2}Submodules}{31}{subsection.1.10.2}
-\contentsline {subsection}{\numberline {1.10.3}pydash\_web.api module}{31}{subsection.1.10.3}
-\contentsline {subsection}{\numberline {1.10.4}pydash\_web.api\_routes module}{31}{subsection.1.10.4}
-\contentsline {subsection}{\numberline {1.10.5}pydash\_web.react\_server module}{32}{subsection.1.10.5}
-\contentsline {subsection}{\numberline {1.10.6}Module contents}{32}{subsection.1.10.6}
-\contentsline {section}{\numberline {1.11}tests package}{32}{section.1.11}
-\contentsline {subsection}{\numberline {1.11.1}Submodules}{32}{subsection.1.11.1}
-\contentsline {subsection}{\numberline {1.11.2}tests.common\_fixtures module}{32}{subsection.1.11.2}
-\contentsline {subsection}{\numberline {1.11.3}tests.conftest module}{32}{subsection.1.11.3}
-\contentsline {subsection}{\numberline {1.11.4}Module contents}{33}{subsection.1.11.4}
-\contentsline {chapter}{\numberline {2}Indices and tables}{35}{chapter.2}
-\contentsline {chapter}{Python Module Index}{37}{section*.343}
-\contentsline {chapter}{Index}{39}{section*.344}
+\contentsline {section}{\numberline {1.1}flask\_monitoring\_dashboard\_client package}{1}{section.1.1}
+\contentsline {section}{\numberline {1.2}periodic\_tasks package}{1}{section.1.2}
+\contentsline {subsection}{\numberline {1.2.1}Submodules}{3}{subsection.1.2.1}
+\contentsline {subsubsection}{periodic\_tasks.pqdict\_iter\_upto\_priority module}{3}{subsubsection*.15}
+\contentsline {subsubsection}{periodic\_tasks.queue\_nonblocking\_iter module}{3}{subsubsection*.17}
+\contentsline {subsubsection}{periodic\_tasks.task\_scheduler module}{4}{subsubsection*.19}
+\contentsline {section}{\numberline {1.3}pydash module}{5}{section.1.3}
+\contentsline {section}{\numberline {1.4}pydash\_app package}{5}{section.1.4}
+\contentsline {subsection}{\numberline {1.4.1}Subpackages}{5}{subsection.1.4.1}
+\contentsline {subsubsection}{pydash\_app.dashboard package}{5}{subsubsection*.30}
+\contentsline {paragraph}{Subpackages}{6}{paragraph*.36}
+\contentsline {subparagraph}{pydash\_app.dashboard.aggregator package}{6}{subparagraph*.37}
+\contentsline {subparagraph}{Submodules}{6}{subparagraph*.44}
+\contentsline {subparagraph}{pydash\_app.dashboard.aggregator.aggregator\_group module}{6}{subparagraph*.45}
+\contentsline {subparagraph}{pydash\_app.dashboard.aggregator.statistics module}{9}{subparagraph*.69}
+\contentsline {subparagraph}{pydash\_app.dashboard.services package}{13}{subparagraph*.159}
+\contentsline {subparagraph}{Submodules}{13}{subparagraph*.161}
+\contentsline {subparagraph}{pydash\_app.dashboard.services.fetching module}{13}{subparagraph*.162}
+\contentsline {subparagraph}{pydash\_app.dashboard.services.seeding module}{14}{subparagraph*.171}
+\contentsline {paragraph}{Submodules}{14}{paragraph*.173}
+\contentsline {subparagraph}{pydash\_app.dashboard.endpoint module}{14}{subparagraph*.174}
+\contentsline {subparagraph}{pydash\_app.dashboard.endpoint\_call module}{15}{subparagraph*.184}
+\contentsline {subparagraph}{pydash\_app.dashboard.entity module}{16}{subparagraph*.187}
+\contentsline {subparagraph}{pydash\_app.dashboard.repository module}{18}{subparagraph*.206}
+\contentsline {subsubsection}{pydash\_app.user package}{20}{subsubsection*.213}
+\contentsline {paragraph}{Subpackages}{22}{paragraph*.223}
+\contentsline {subparagraph}{pydash\_app.user.services package}{22}{subparagraph*.224}
+\contentsline {subparagraph}{Submodules}{22}{subparagraph*.225}
+\contentsline {subparagraph}{pydash\_app.user.services.pruning module}{22}{subparagraph*.226}
+\contentsline {subparagraph}{pydash\_app.user.services.seeding module}{22}{subparagraph*.228}
+\contentsline {paragraph}{Submodules}{22}{paragraph*.230}
+\contentsline {subparagraph}{pydash\_app.user.entity module}{22}{subparagraph*.231}
+\contentsline {subparagraph}{pydash\_app.user.repository module}{23}{subparagraph*.241}
+\contentsline {subparagraph}{pydash\_app.user.verification module}{25}{subparagraph*.251}
+\contentsline {subparagraph}{pydash\_app.user.verification\_code module}{25}{subparagraph*.255}
+\contentsline {section}{\numberline {1.5}pydash\_database package}{25}{section.1.5}
+\contentsline {section}{\numberline {1.6}pydash\_logger package}{26}{section.1.6}
+\contentsline {subsection}{\numberline {1.6.1}Submodules}{26}{subsection.1.6.1}
+\contentsline {subsubsection}{pydash\_logger.logger module}{26}{subsubsection*.261}
+\contentsline {section}{\numberline {1.7}pydash\_mail package}{26}{section.1.7}
+\contentsline {subsection}{\numberline {1.7.1}Submodules}{26}{subsection.1.7.1}
+\contentsline {subsubsection}{pydash\_mail.templates module}{26}{subsubsection*.267}
+\contentsline {section}{\numberline {1.8}pydash\_web package}{26}{section.1.8}
+\contentsline {subsection}{\numberline {1.8.1}Subpackages}{27}{subsection.1.8.1}
+\contentsline {subsubsection}{pydash\_web.controller package}{27}{subsubsection*.272}
+\contentsline {paragraph}{Submodules}{27}{paragraph*.273}
+\contentsline {subparagraph}{pydash\_web.controller.change\_dashboard\_settings module}{27}{subparagraph*.274}
+\contentsline {subparagraph}{pydash\_web.controller.change\_password module}{27}{subparagraph*.276}
+\contentsline {subparagraph}{pydash\_web.controller.change\_settings module}{27}{subparagraph*.278}
+\contentsline {subparagraph}{pydash\_web.controller.dashboards module}{27}{subparagraph*.280}
+\contentsline {subparagraph}{pydash\_web.controller.delete\_dashboard module}{29}{subparagraph*.288}
+\contentsline {subparagraph}{pydash\_web.controller.delete\_user module}{29}{subparagraph*.290}
+\contentsline {subparagraph}{pydash\_web.controller.execution\_times\_boxplots module}{29}{subparagraph*.292}
+\contentsline {subparagraph}{pydash\_web.controller.execution\_times\_per\_version module}{29}{subparagraph*.294}
+\contentsline {subparagraph}{pydash\_web.controller.login module}{29}{subparagraph*.296}
+\contentsline {subparagraph}{pydash\_web.controller.logout module}{29}{subparagraph*.298}
+\contentsline {subparagraph}{pydash\_web.controller.register\_dashboard module}{29}{subparagraph*.300}
+\contentsline {subparagraph}{pydash\_web.controller.register\_user module}{30}{subparagraph*.302}
+\contentsline {subparagraph}{pydash\_web.controller.user\_verification module}{30}{subparagraph*.304}
+\contentsline {subparagraph}{pydash\_web.controller.utils module}{30}{subparagraph*.306}
+\contentsline {subparagraph}{pydash\_web.controller.visitor\_heatmap module}{30}{subparagraph*.308}
+\contentsline {subsection}{\numberline {1.8.2}Submodules}{30}{subsection.1.8.2}
+\contentsline {subsubsection}{pydash\_web.api module}{30}{subsubsection*.312}
+\contentsline {subsubsection}{pydash\_web.api\_routes module}{30}{subsubsection*.313}
+\contentsline {subsubsection}{pydash\_web.react\_server module}{31}{subsubsection*.332}
+\contentsline {chapter}{\numberline {2}Indices and tables}{33}{chapter.2}
+\contentsline {chapter}{Python Module Index}{35}{section*.334}
+\contentsline {chapter}{Index}{37}{section*.335}

@@ -1,6 +1,11 @@
 pydash\_web package
 ===================
 
+.. automodule:: pydash_web
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -11,35 +16,9 @@ Subpackages
 Submodules
 ----------
 
-pydash\_web.api module
-----------------------
+.. toctree::
 
-.. automodule:: pydash_web.api
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   pydash_web.api
+   pydash_web.api_routes
+   pydash_web.react_server
 
-pydash\_web.api\_routes module
-------------------------------
-
-.. automodule:: pydash_web.api_routes
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pydash\_web.react\_server module
---------------------------------
-
-.. automodule:: pydash_web.react_server
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: pydash_web
-    :members:
-    :undoc-members:
-    :show-inheritance:
