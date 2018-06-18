@@ -85,7 +85,7 @@ class AddDashboardDialog extends Component {
         }
         return 1;
     }
-https://se2018-pydashio.slack.com/messages/C9A0LP9HV/
+
     resetState = () => {
         this.setState(prevState => ({
             ...prevState,
