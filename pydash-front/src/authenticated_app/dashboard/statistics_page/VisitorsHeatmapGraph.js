@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 // Contents:
-import { HeatMap } from '@nivo/heatmap';
+import { HeatMapCanvas } from '@nivo/heatmap';
 
 // Utils:
 import ResponsiveGraphWrapper from '../../../common/ResponsiveGraphWrapper';
@@ -28,7 +28,7 @@ class VisitorsHeatmapGraph extends Component {
         return (
             <ResponsiveGraphWrapper height={this.props.height}>
                 <h4>{this.props.title}</h4>
-                <HeatMap
+                <HeatMapCanvas
                     height={this.props.height}
                     data={this.props.data}
                     keys={keys}
