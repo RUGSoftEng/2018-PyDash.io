@@ -1,0 +1,225 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>periodic_tasks &#8212; PyDash 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for periodic_tasks</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Allows for the running of tasks in the background, as well as periodically.</span>
+<span class="sd">Tasks can either be added to the `default_task_scheduler`, or multiple schedulers can be created.</span>
+
+
+<span class="sd">Tasks are run in a process pool of subprocesses (See `multiprocessing.Pool`).</span>
+<span class="sd">The task scheduler itself, which passes tasks on to this process pool, runs its scheduling loop in a separate subprocess as well.</span>
+<span class="sd">This means that there is no computational overhead for the main process at runtime.</span>
+
+<span class="sd">Internally, an indexable priority queue (c.f. the `pqdict` package) is used to keep track of the next tasks to run.</span>
+<span class="sd">This makes the scheduling loop quite efficient, because tasks are already ordered (so only the oldest task&#39;s desired execution moment needs to be compared to the current timestamp).</span>
+<span class="sd">Because the priority queue is indexed, adding and removing a task is also done in `O(log(n))`.</span>
+
+<span class="sd">Adding/updating/removing tasks is possible by using the same name as used previously for the task.</span>
+<span class="sd">Names can be strings, but also any other hashable object, so referring to a task based on a tuple of strings + integers is also possible.</span>
+
+<span class="sd">Tasks can be added/updated/removed at any time, including before the scheduler is started.</span>
+
+<span class="sd">The scheduler will be started by calling the `start()` function. It will stop scheduling and tear down the spawned processes when calling the `stop()` function.</span>
+<span class="sd">This function will also (in most cases) be automatically called when the main process finishes execution.</span>
+
+
+<span class="sd">Example code with default scheduler:</span>
+
+
+<span class="sd">    &gt;&gt;&gt; import periodic_tasks as pt</span>
+<span class="sd">    &gt;&gt;&gt; import datetime</span>
+<span class="sd">    &gt;&gt;&gt; pt.start_default_scheduler()</span>
+<span class="sd">    &gt;&gt;&gt; pt.add_periodic_task(&#39;foo&#39;, datetime.timedelta(seconds=3), pt.foo)</span>
+<span class="sd">    &gt;&gt;&gt; pt.add_periodic_task(&#39;bar&#39;, datetime.timedelta(seconds=5), pt.bar)</span>
+<span class="sd">    &gt;&gt;&gt; pt.add_background_task(&#39;baz&#39;, pt.baz)</span>
+<span class="sd">    &gt;&gt;&gt; pt.add_periodic_task(&#39;bar&#39;, datetime.timedelta(seconds=1), pt.bar) # overrides previous `bar` task with new settings</span>
+<span class="sd">    &gt;&gt;&gt; pt.remove_task(&#39;foo&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; pt.default_task_scheduler.stop()</span>
+
+
+<span class="sd">Example code with custom scheduler:</span>
+
+<span class="sd">    &gt;&gt;&gt; import periodic_tasks as pt</span>
+<span class="sd">    &gt;&gt;&gt; ts = pt.TaskScheduler()</span>
+<span class="sd">    &gt;&gt;&gt; import datetime, time</span>
+<span class="sd">    &gt;&gt;&gt; ts.start()</span>
+<span class="sd">    &gt;&gt;&gt; ts.add_periodic_task(&#39;foo&#39;, datetime.timedelta(milliseconds=1), pt.foo)</span>
+<span class="sd">    &gt;&gt;&gt; ts.add_periodic_task(&#39;bar&#39;, datetime.timedelta(milliseconds=5), pt.bar)</span>
+<span class="sd">    &gt;&gt;&gt; time.sleep(2)</span>
+<span class="sd">    &gt;&gt;&gt; ts.stop()</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.task_scheduler</span> <span class="k">import</span> <span class="n">TaskScheduler</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="n">default_task_scheduler</span> <span class="o">=</span> <span class="n">TaskScheduler</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="add_periodic_task"><a class="viewcode-back" href="../periodic_tasks.html#periodic_tasks.add_periodic_task">[docs]</a><span class="k">def</span> <span class="nf">add_periodic_task</span><span class="p">(</span><span class="n">name</span><span class="p">,</span>
+                      <span class="n">interval</span><span class="p">,</span>
+                      <span class="n">task</span><span class="p">,</span>
+                      <span class="n">run_at_start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">scheduler</span><span class="o">=</span><span class="n">default_task_scheduler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds a task to be run periodically to the given `scheduler`, which defaults to the global `default_task_scheduler` that this module provides.</span>
+
+<span class="sd">    :name: An identifier to find this task again later (and e.g. remove or alter it). Can be any hashable (using a string or a tuple of strings/integers is common.)</span>
+<span class="sd">    (Calling this function again with the same name will override the earlier task).</span>
+<span class="sd">    :target: A function (or other callable) that will perform this task&#39;s functionality.</span>
+<span class="sd">    :interval: A datetime.timedelta representing how frequently to run the given target.</span>
+<span class="sd">    :run_at_start: If true, runs task right after it was added to the scheduler, rather than only after the first interval has passed.</span>
+<span class="sd">    :scheduler: Which TaskScheduler to run the task on. It defaults to the global `default_task_scheduler` that this module provides.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scheduler</span><span class="o">.</span><span class="n">add_periodic_task</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="add_background_task"><a class="viewcode-back" href="../periodic_tasks.html#periodic_tasks.add_background_task">[docs]</a><span class="k">def</span> <span class="nf">add_background_task</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">scheduler</span><span class="o">=</span><span class="n">default_task_scheduler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds a task to be run only once (and as soon as possible) to the given `scheduler`, which defaults to the global `default_task_scheduler` that this module provides.</span>
+
+<span class="sd">    :name: An identifier to find this task again later (and e.g. remove or alter it). Can be any hashable (using a string or a tuple of strings/integers is common.)</span>
+<span class="sd">    (Calling this function again with the same name will override the earlier task).</span>
+<span class="sd">    :target: A function (or other callable) that will perform this task&#39;s functionality.</span>
+<span class="sd">    :scheduler: Which TaskScheduler to run the task on. It defaults to the global `default_task_scheduler` that this module provides.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scheduler</span><span class="o">.</span><span class="n">add_background_task</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="remove_task"><a class="viewcode-back" href="../periodic_tasks.html#periodic_tasks.remove_task">[docs]</a><span class="k">def</span> <span class="nf">remove_task</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">scheduler</span><span class="o">=</span><span class="n">default_task_scheduler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes a task that was previously added from the given `scheduler`, which defaults to the global `default_task_scheduler` that this module provides..</span>
+<span class="sd">    Will do nothing if there is no task with the given name.</span>
+
+<span class="sd">    :name: The task with this name will be removed.</span>
+<span class="sd">    :scheduler: Which TaskScheduler to remove the task from. It defaults to the global `default_task_scheduler` that this module provides.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scheduler</span><span class="o">.</span><span class="n">remove_task</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="periodic_task"><a class="viewcode-back" href="../periodic_tasks.html#periodic_tasks.periodic_task">[docs]</a><span class="k">def</span> <span class="nf">periodic_task</span><span class="p">(</span><span class="n">name</span><span class="p">,</span>
+                  <span class="n">interval</span><span class="p">,</span>
+                  <span class="n">run_at_start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                  <span class="n">scheduler</span><span class="o">=</span><span class="n">default_task_scheduler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function decorator to specify that the following function</span>
+<span class="sd">    should be called periodically;</span>
+<span class="sd">    It accepts the same arguments as `add_periodic_task` (with the `target` argument filled in by the function being decorated.)</span>
+
+<span class="sd">    Usage:</span>
+
+<span class="sd">        @periodic_task(&#39;qux&#39;, datetime.timedelta(seconds=2))</span>
+<span class="sd">        def qux():</span>
+<span class="sd">            print(&#39;qux&#39;)</span>
+
+
+<span class="sd">        @periodic_task(&#39;qux&#39;, datetime.timedelta(seconds=2), run_at_start=True, scheduler = your_scheduler)</span>
+<span class="sd">        def qux():</span>
+<span class="sd">            print(&#39;qux&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">task_decorator</span><span class="p">(</span><span class="n">task_function</span><span class="p">):</span>
+        <span class="n">add_periodic_task</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">task_function</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">task_function</span>
+
+    <span class="k">return</span> <span class="n">task_decorator</span></div>
+
+
+<div class="viewcode-block" id="start_default_scheduler"><a class="viewcode-back" href="../periodic_tasks.html#periodic_tasks.start_default_scheduler">[docs]</a><span class="k">def</span> <span class="nf">start_default_scheduler</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Starts the default (global) scheduler that this module provides.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">default_task_scheduler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+
+<span class="c1"># Some example test functions.</span>
+<span class="c1"># Should be removed once the scheduler is really stable</span>
+<div class="viewcode-block" id="foo"><a class="viewcode-back" href="../periodic_tasks.html#periodic_tasks.foo">[docs]</a><span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="bar"><a class="viewcode-back" href="../periodic_tasks.html#periodic_tasks.bar">[docs]</a><span class="k">def</span> <span class="nf">bar</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;bar&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="baz"><a class="viewcode-back" href="../periodic_tasks.html#periodic_tasks.baz">[docs]</a><span class="k">def</span> <span class="nf">baz</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;baz&#39;</span><span class="p">)</span></div>
+
+
+<span class="c1"># @periodic_task(&#39;qux&#39;, datetime.timedelta(seconds=2))</span>
+<div class="viewcode-block" id="qux"><a class="viewcode-back" href="../periodic_tasks.html#periodic_tasks.qux">[docs]</a><span class="k">def</span> <span class="nf">qux</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;qux&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, The PyDash Team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

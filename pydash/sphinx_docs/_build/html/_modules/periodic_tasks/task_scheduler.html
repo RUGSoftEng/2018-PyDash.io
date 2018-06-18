@@ -1,0 +1,439 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>periodic_tasks.task_scheduler &#8212; PyDash 0.4.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for periodic_tasks.task_scheduler</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Contains the meat of the task scheduling: The TaskScheduler class,</span>
+<span class="sd">and a couple of classes that it uses under the hood.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">signal</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span> <span class="nn">atexit</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">sleep</span>
+<span class="kn">from</span> <span class="nn">pqdict</span> <span class="k">import</span> <span class="n">pqdict</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">log_to_stderr</span><span class="p">()</span>
+<span class="kn">from</span> <span class="nn">.pqdict_iter_upto_priority</span> <span class="k">import</span> <span class="n">pqdict_iter_upto_priority</span>
+<span class="kn">from</span> <span class="nn">.queue_nonblocking_iter</span> <span class="k">import</span> <span class="n">queue_nonblocking_iter</span>
+
+<span class="kn">from</span> <span class="nn">pytest_cov.embed</span> <span class="k">import</span> <span class="n">cleanup</span>
+
+<span class="c1"># import os</span>
+<span class="c1"># if &quot;TESTING&quot; in os.environ:</span>
+<span class="c1">#     multiprocessing.Process = threading.Thread</span>
+
+<span class="k">class</span> <span class="nc">_Task</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A task that can be run using the TaskScheduler.</span>
+
+<span class="sd">    Usually you&#39;d want to use one of the more concrete instances of this class.</span>
+
+<span class="sd">    &gt;&gt;&gt; def awesome_fun():</span>
+<span class="sd">    ...   print(&quot;Awesome!&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; task = _Task(&quot;mytask&quot;, awesome_fun)</span>
+
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; task = _Task(&quot;error_task&quot;, 10)</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">      ...</span>
+<span class="sd">    ValueError</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :name: An identifier to find this task again later (and e.g. remove or alter it). Can be any hashable (using a string or a tuple of strings/integers is common.)</span>
+<span class="sd">        :target: A function (or other callable) that will perform this task&#39;s functionality.</span>
+<span class="sd">        :run_at_start: If true, runs task right after it was added to the scheduler, rather than only after the first interval has passed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">target</span><span class="p">)</span> <span class="ow">and</span> <span class="n">target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`target` passed to _Task constructor should be callable (or None), but `</span><span class="si">{target}</span><span class="s2">` is not.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_run_dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        It is possible to manually call this task using arguments, but usually the functions do not contain extra arguments</span>
+
+<span class="sd">        &gt;&gt;&gt; def awesome_fun(text):</span>
+<span class="sd">        ...   print(text)</span>
+<span class="sd">        &gt;&gt;&gt; task = _Task(&quot;mytask&quot;, awesome_fun)</span>
+<span class="sd">        &gt;&gt;&gt; task(&quot;Awesome!&quot;)</span>
+<span class="sd">        Awesome!</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;TESTING&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+            <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">cleanup</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">traceback</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;&quot;&quot;---</span>
+<span class="s2">            Task execution failed.</span>
+<span class="s2">            Task: </span><span class="si">{self}</span><span class="s2"></span>
+<span class="s2">            Exception: </span><span class="si">{exception}</span><span class="s2"></span>
+<span class="s2">            Traceback:</span>
+<span class="s2">            {traceback.format_exc()}</span>
+<span class="s2">            ---</span>
+<span class="s2">            &quot;&quot;&quot;</span>
+            <span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        All tasks are hashed, such that two tasks with the same name are considered equal.</span>
+<span class="sd">        This is to ensure that new instances of tasks with the same name replace old instances of these tasks inside the scheduler.</span>
+
+
+<span class="sd">        &gt;&gt;&gt; def awesome_fun1():</span>
+<span class="sd">        ...   print(&quot;foo&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; def awesome_fun2():</span>
+<span class="sd">        ...   print(&quot;bar&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; task = _Task(&quot;mytask&quot;, awesome_fun1)</span>
+<span class="sd">        &gt;&gt;&gt; task2 = _Task(&quot;mytask&quot;, awesome_fun1)</span>
+<span class="sd">        &gt;&gt;&gt; task == task2</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; hash(task) == hash(task2)</span>
+<span class="sd">        True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">_Task</span><span class="p">)</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Tasks have a special string representation for easy introspection.</span>
+
+<span class="sd">        &gt;&gt;&gt; def awesome_fun():</span>
+<span class="sd">        ...   print(&quot;Awesome!&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; task = _Task(&quot;mytask&quot;, awesome_fun)</span>
+<span class="sd">        &gt;&gt;&gt; f&quot;{task}&quot;.startswith(&quot;&lt;_Task name=mytask&quot;)</span>
+<span class="sd">        True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">f</span><span class="s2">&quot;&lt;</span><span class="si">{self.__class__.__name__}</span><span class="s2"> name=</span><span class="si">{self.name}</span><span class="s2">, target=</span><span class="si">{self.target}</span><span class="s2">, next_run_dt=</span><span class="si">{self.next_run_dt}</span><span class="s2">&gt;&quot;</span>
+
+
+<span class="k">class</span> <span class="nc">_TaskRemoval</span><span class="p">(</span><span class="n">_Task</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A placeholder &#39;_Task&#39; that will indicate to the scheduler</span>
+<span class="sd">    that the existing task that has `name` should be removed from the schedule.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_BackgroundTask</span><span class="p">(</span><span class="n">_Task</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A task that is run only once, right after it is added to the scheduler.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :name: An identifier to find this task again later (and e.g. remove or alter it). Can be any hashable (using a string or a tuple of strings/integers is common.)</span>
+<span class="sd">        :target: A function (or other callable) that will perform this task&#39;s functionality.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_PeriodicTask</span><span class="p">(</span><span class="n">_Task</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A task that is run many times periodically.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">run_at_start</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :name: An identifier to find this task again later (and e.g. remove or alter it). Can be any hashable (using a string or a tuple of strings/integers is common.)</span>
+<span class="sd">        :target: A function (or other callable) that will perform this task&#39;s functionality.</span>
+<span class="sd">        :interval: A datetime.timedelta representing how frequently to run the given target.</span>
+<span class="sd">        :run_at_start: If true, runs task right after it was added to the scheduler, rather than only after the first interval has passed.</span>
+
+<span class="sd">        It is expected that `interval` is a datetime.timedelta.</span>
+
+<span class="sd">        &gt;&gt;&gt; import periodic_tasks as pt</span>
+<span class="sd">        &gt;&gt;&gt; def awesome_fun():</span>
+<span class="sd">        ...   print(&quot;Awesome!&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; _PeriodicTask(&quot;foo&quot;, awesome_fun, 42)</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">           ...</span>
+<span class="sd">        ValueError</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;`interval` is expected to be a `datetime.timedelta` instance, but `</span><span class="si">{interval}</span><span class="s2">` is not.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="n">interval</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">run_at_start</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">next_run_dt</span> <span class="o">+=</span> <span class="n">interval</span>
+
+    <span class="k">def</span> <span class="nf">update_for_next_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Makes the Task ready to be re-run once the next period has passed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># A conscious choice has been made to always update next_run_dt w.r.t the current time.</span>
+        <span class="c1"># This means that even if a task&#39;s `next_run_dt` would lag behind,</span>
+        <span class="c1"># the task would not be run multiple times right after another.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next_run_dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_run_dt</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overrides superclass to show `interval` and `next_run_dt` in the string representation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">f</span><span class="s2">&quot;&lt;</span><span class="si">{self.__class__.__name__}</span><span class="s2"> name=</span><span class="si">{self.name}</span><span class="s2">, target=</span><span class="si">{self.target}</span><span class="s2">, interval=</span><span class="si">{self.interval}</span><span class="s2">, next_run_dt=</span><span class="si">{self.next_run_dt}</span><span class="s2">&gt;&quot;</span>
+
+
+<div class="viewcode-block" id="TaskScheduler"><a class="viewcode-back" href="../../periodic_tasks.html#periodic_tasks.task_scheduler.TaskScheduler">[docs]</a><span class="k">class</span> <span class="nc">TaskScheduler</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Runs tasks in a process pool of subprocesses (See `multiprocessing.Pool`).</span>
+<span class="sd">    The task scheduler itself, which passes tasks on to this process pool, runs its scheduling loop in a separate subprocess as well.</span>
+<span class="sd">    This means that there is no computational overhead for the main process at runtime.</span>
+
+<span class="sd">    Internally, an indexable priority queue (c.f. the `pqdict` package) is used to keep track of the next tasks to run.</span>
+<span class="sd">    This makes the scheduling loop quite efficient, because tasks are already ordered (so only the oldest task&#39;s desired execution moment needs to be compared to the current timestamp).</span>
+<span class="sd">    Because the priority queue is indexed, adding and removing a task is also done in `O(log(n))`.</span>
+
+<span class="sd">    Adding/updating/removing tasks is possible by using the same name as used previously for the task.</span>
+<span class="sd">    Names can be strings, but also any other hashable object, so referring to a task based on a tuple of strings + integers is also possible.</span>
+
+<span class="sd">    Tasks can be added/updated/removed at any time, including before the scheduler is started.</span>
+
+<span class="sd">    The scheduler will be started by calling the `start()` function. It will stop scheduling and tear down the spawned processes when calling the `stop()` function.</span>
+<span class="sd">    This function will also (in most cases) be automatically called when the main process finishes execution.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">granularity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">pool_settings</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :granularity: How often the scheduler should check if a periodic task&#39;s timeout has passed, in seconds. Defaults to `1.0`.</span>
+<span class="sd">        :pool_settings: A dictionary of keyword-arguments to pass to the initialization of the multiprocessing.Pool that will be used to run the tasks on.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_task_queue</span> <span class="o">=</span> <span class="n">pqdict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pool</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_granularity</span> <span class="o">=</span> <span class="n">granularity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tasks_to_be_scheduled</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_graceful_shutdown</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pool_settings</span> <span class="o">=</span> <span class="n">pool_settings</span>
+
+<div class="viewcode-block" id="TaskScheduler.add_periodic_task"><a class="viewcode-back" href="../../periodic_tasks.html#periodic_tasks.task_scheduler.TaskScheduler.add_periodic_task">[docs]</a>    <span class="k">def</span> <span class="nf">add_periodic_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">run_at_start</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a task to be run periodically to the scheduler.</span>
+
+<span class="sd">        :name: An identifier to find this task again later (and e.g. remove or alter it). Can be any hashable (using a string or a tuple of strings/integers is common.)</span>
+<span class="sd">        (Calling this function again with the same name will override the earlier task).</span>
+<span class="sd">        :target: A function (or other callable) that will perform this task&#39;s functionality.</span>
+<span class="sd">        :interval: A datetime.timedelta representing how frequently to run the given target.</span>
+<span class="sd">        :run_at_start: If true, runs task right after it was added to the scheduler, rather than only after the first interval has passed.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_task</span><span class="p">(</span>
+            <span class="n">_PeriodicTask</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span> <span class="n">run_at_start</span><span class="o">=</span><span class="n">run_at_start</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TaskScheduler.add_background_task"><a class="viewcode-back" href="../../periodic_tasks.html#periodic_tasks.task_scheduler.TaskScheduler.add_background_task">[docs]</a>    <span class="k">def</span> <span class="nf">add_background_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a task to be run only once (and as soon as possible) to the scheduler.</span>
+
+<span class="sd">        :name: An identifier to find this task again later (and e.g. remove or alter it). Can be any hashable (using a string or a tuple of strings/integers is common.)</span>
+<span class="sd">        (Calling this function again with the same name will override the earlier task).</span>
+<span class="sd">        :target: A function (or other callable) that will perform this task&#39;s functionality.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_task</span><span class="p">(</span><span class="n">_BackgroundTask</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">task</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TaskScheduler.remove_task"><a class="viewcode-back" href="../../periodic_tasks.html#periodic_tasks.task_scheduler.TaskScheduler.remove_task">[docs]</a>    <span class="k">def</span> <span class="nf">remove_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes a task that was previously added from the scheduler.</span>
+<span class="sd">        Will do nothing if there is no task with the given name.</span>
+
+<span class="sd">        :name: The task with this name will be removed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_task</span><span class="p">(</span><span class="n">_TaskRemoval</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="nf">_add_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tasks_to_be_scheduled</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TaskScheduler.start"><a class="viewcode-back" href="../../periodic_tasks.html#periodic_tasks.task_scheduler.TaskScheduler.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Starts the scheduler scheduling loop on a separate process.</span>
+
+<span class="sd">        Should only be called once per scheduler.</span>
+
+
+<span class="sd">        &gt;&gt;&gt; import periodic_tasks as pt</span>
+<span class="sd">        &gt;&gt;&gt; ts = pt.TaskScheduler()</span>
+<span class="sd">        &gt;&gt;&gt; ts.start()</span>
+<span class="sd">        &gt;&gt;&gt; ts.start()</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">           ...</span>
+<span class="sd">        Exception</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_scheduler_process&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;TaskScheduler.start() called multiple times.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler_process</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_scheduling_loop</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># Ensure scheduler quits alongside main program:</span>
+        <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler_process</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TaskScheduler.stop"><a class="viewcode-back" href="../../periodic_tasks.html#periodic_tasks.task_scheduler.TaskScheduler.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stops the scheduler scheduling loop.</span>
+
+<span class="sd">        Should only be called once per scheduler, and only after `start()` was called.</span>
+<span class="sd">        When the program exits suddenly, this function will (in most cases) automatically be called</span>
+<span class="sd">        to clean up the scheduling process.</span>
+
+
+<span class="sd">        &gt;&gt;&gt; import periodic_tasks as pt</span>
+<span class="sd">        &gt;&gt;&gt; ts = pt.TaskScheduler()</span>
+<span class="sd">        &gt;&gt;&gt; ts.stop()</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">           ...</span>
+<span class="sd">        Exception</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_scheduler_process&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;`TaskScheduler.stop()` called before calling `TaskScheduler.start()`&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_graceful_shutdown</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler_process</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_granularity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler_process</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_scheduling_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executed in the separate process.</span>
+<span class="sd">        It makes sure all tasks are run whenever their time has come.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;TESTING&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+            <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">cleanup</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">pool_settings</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graceful_shutdown</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_tasks_to_be_scheduled</span><span class="p">()</span>
+                <span class="n">current_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_run_waiting_tasks</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span> <span class="n">current_time</span><span class="p">)</span>
+                <span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_granularity</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_tasks_to_be_scheduled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds tasks that were added to the multiprocessing.Queue to the internal scheduling priority queue.</span>
+<span class="sd">        (old tasks with the same name as the new task are replaced; and if the new task does not have a terget function, it is removed alltogether.)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">queue_nonblocking_iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tasks_to_be_scheduled</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">target</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Removing task </span><span class="si">{task.name}</span><span class="s2"> from internal pqueue&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_task_queue</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Adding task </span><span class="si">{task.name}</span><span class="s2"> to internal pqueue&quot;</span><span class="p">)</span>
+                <span class="c1"># Remove old task with same name if it existed</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_task_queue</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+                <span class="c1"># And then add new task with new priority</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_task_queue</span><span class="p">[</span><span class="n">task</span><span class="p">]</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">next_run_dt</span>
+
+    <span class="k">def</span> <span class="nf">_run_waiting_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pool</span><span class="p">,</span> <span class="n">current_time</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs all tasks whose `next_run_dt` has passed since last time.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">pqdict_iter_upto_priority</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_task_queue</span><span class="p">,</span> <span class="n">current_time</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;====Running task </span><span class="si">{task}</span><span class="s2"> at </span><span class="si">{current_time}</span><span class="s2">...&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_run_task</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;====Finished running task </span><span class="si">{task}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">_PeriodicTask</span><span class="p">):</span>
+                <span class="n">task</span><span class="o">.</span><span class="n">update_for_next_run</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_task_queue</span><span class="p">[</span><span class="n">task</span><span class="p">]</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">next_run_dt</span>
+
+    <span class="k">def</span> <span class="nf">_run_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pool</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes a single task in one of the pool&#39;s processes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">apply_async</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="p">())</span></div>
+        <span class="c1"># res.get() # &lt;- Uncomment this line to debug tasks in an easy way. Serializes task execution however!</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  <li><a href="../periodic_tasks.html">periodic_tasks</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, The PyDash Team.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
