@@ -100,6 +100,16 @@ RunTests()
     PydashPrint "Done!"
 }
 
+RunProduction()
+{
+    PydashPrint "Starting Production Server..."
+    export FLASK_DEBUG=0;
+    export FLASK_ENV=production;
+    export ENV=production;
+    RunDatabase
+    RunFlask
+}
+
 
 if [ $# -gt 0 ];
 then
@@ -121,6 +131,10 @@ then
         if [ $i == "databasebg" ];
         then
             RunDatabase
+        fi
+        if [ $i == "production" ];
+        then
+            RunProduction
         fi
         if [ $i == "server" ];
         then
