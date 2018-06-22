@@ -7,7 +7,7 @@ _DEFAULT_EXPIRATION_TIME = timedelta(days=1)
 class VerificationCode:
     """
     A 'smart' randomly generated verification code that keeps track of whether it has expired.
-    Default expiration time is 7 days.
+    Default expiration time is one day.
     """
     def __init__(self, expiration_time=_DEFAULT_EXPIRATION_TIME):
         self.verification_code = uuid.uuid4()
