@@ -39,7 +39,7 @@ from enum import Enum
 
 from pydash_app.dashboard.endpoint import Endpoint
 from ..dashboard.aggregator import Aggregator
-from pydash_app.dashboard.aggregator.aggregator_group import AggregatorGroup
+from pydash_app.dashboard.aggregator.aggregator_group import AggregatorGroup, truncate_datetime_by_granularity
 
 
 class DashboardState(Enum):
@@ -256,9 +256,9 @@ class Dashboard(persistent.Persistent):
 
     def statistic_per_timeslice(self, statistic, timeslice, timeslice_is_static, start_datetime, end_datetime, filters={}):
         f"""
-        Slices up the specified datetime range (=[start_datetime, end_datetime)) by chunks of the size of `timeslice`.
-        For each datetime_slice it computes the value of the denoted statistic and returns a dictionary containing these pairs.
-        (Note that a returned datetime_slice is a string: represented as the start of that slice and formatted according
+        Slices up the specified datetime range (=[start_datetime, end_datetime)) into slices of the size of `timeslice`.
+        For each datetime slice it computes the value of the denoted statistic and returns a dictionary containing these pairs.
+        (Note that a returned datetime slice is a string: represented as the start of that slice and formatted according
          to the ISO-8601 standard.
         Filters can be applied to narrow down the search.
 
@@ -270,13 +270,10 @@ class Dashboard(persistent.Persistent):
           The currently supported values for this are: 'year', 'month', 'week', 'day', 'hour' and 'minute'.
         :param timeslice_is_static: A boolean denoting whether the given timeslice should be interpreted as being 'static' or 'dynamic'.
           A 'static' timeslice encompasses a preset datetime range (e.g. the month of May or the 25th day of May).
-          `start_datetime` and `end_datetime` will be truncated to the beginning of their respective timeslice,
-          in order to ensure the starting and ending timeslices are handled in full.
           `start_datetime` and `end_datetime` are expected to be equal to the start of their respective timeslice
-          (e.g. 2000-01-01 with timeslice 'month', instead of something like 2000-01-20), such that 
-          #TODO: DISCUSS WITH TEAM: when `end_datetime` is not equal to the beginning of its timeslice, truncate it to the beginning of said timeslice or to the timeslice after it.
+          (e.g. 2000-01-01 with timeslice 'month', instead of something like 2000-01-20).
           A 'dynamic' timeslice on the other hand encompasses a set timespan (e.g. a week or a day).
-          As such, timeslices that do correspond to a set timespan (such as 'year' and 'month') are not allowed.
+          As such, timeslices whose length are not consistent (such as 'year' and 'month', excluding leap seconds) are not allowed.
         :param start_datetime: A datetime object indicating the inclusive lower bound for the datetime range to
           aggregate over.
         :param end_datetime: A datetime object indicating the exclusive upper bound for the datetime range to
@@ -305,7 +302,6 @@ class Dashboard(persistent.Persistent):
         :raises KeyError: This happens when the statistic is not supported by the dashboard.
         """
 
-        from ..dashboard.aggregator.aggregator_group import truncate_datetime_by_granularity
         if timeslice_is_static and (start_datetime != truncate_datetime_by_granularity(start_datetime, timeslice) or
                                     end_datetime != truncate_datetime_by_granularity(end_datetime, timeslice)):
             raise ValueError(f"start_datetime and end_datetime should denote the start of their respective {timeslice}.")
@@ -317,14 +313,5 @@ class Dashboard(persistent.Persistent):
                                                                                            end_datetime
                                                                                            ).items():
             return_dict[datetime] = aggregator.as_dict()[statistic]
-
-        # #DEBUG
-        # from collections import defaultdict
-        # debug_return_dict = defaultdict(int)
-        #
-        # for endpointcall in self._endpoint_calls:
-        #     debug_return_dict[endpointcall.time.strftime("%Y-%m-%d")] += 1
-        # print(debug_return_dict)
-        # #DEBUG
 
         return return_dict

@@ -16,40 +16,12 @@ import pydash_logger
 logger = pydash_logger.Logger(__name__)
 
 
-"""
-Plan:
-A timeslice can be either 'static' (i.e. have a set place in the overarching timespan [e.g. W23, or the month of June]),
-or 'dynamic' (i.e. the start- and end-dates are taken as-is instead of truncated to match a certain static timespan).
-Since we need a constant step for our 'dynamic' option, said option only includes the 'week', 'day', 'hour' and 'minute'
-timeslices, as 'year' and 'month' may vary. (Note that we do not take leap seconds into account) We should do that at
-some point.
-
-A 'static' timeslice handled in the following manner:
-  - statistic: just a string to denote what statistic you want.
-  - start_date: is truncated in order to correspond with the start of the timeslice it is in.
-  - end_date: is truncated in order to correspond with the start of the timeslice it is in, such that when converting it
-      to an exclusive upper bound, there will always be a singular timeslice returned.
-  - is_static: a boolean to indicate whether the timeslice in question should be handled dynamically or statically.
-      In these circumstances this should be True.
-
-A 'dynamic' timeslice is handled in the following manner:
-  - statistic: just a string to denote what statistic you want. 
-  - start_date: is left alone.
-  - end_date: is left alone. If the final timeslice (i.e. [begin_timeslice, end_date]) is smaller than the size of a
-      normal timeslice, that timeslice is not enlarged to fit the normal size. (so with bad input, the last timeslice
-      will not contain the full data of that day.
-      As an aside, it might be a good idea to instead of that (or along with that) return an error message stating that 
-      the end-date led to a smaller final timeslice than expected.
-  - is_static: a boolean to indicate whether the timeslice in question hsould be handled dynamically or statically.
-      In these circumstances this should be False.
-"""
-
-
 def dashboard(dashboard_id):
     """
     Lists information of a single dashboard.
     :param dashboard_id: ID of the dashboard to retrieve information from.
     :return: The returned value consists of a tuple of dashboard information, together with a http status code.
+
     This route supports the following request arguments:
     - statistic: The name of the statistic of which aggregated information should be returned.
       The currently supported statistics are:
@@ -68,18 +40,15 @@ def dashboard(dashboard_id):
 
     - start_date, end_date: The start- and end dates of the datetime range in which the desired information lies.
         start_date and end_date are the resp. inclusive lower- and exclusive upper bounds of this datetime range.
-        If start_date is not provided, it defaults to timestamp of the dashboard's first endpointcall.
+        If start_date is not provided, it defaults to timestamp of the dashboard's first endpoint call.
         If end_date is not provided, it defaults to the current utc time.
         It is assumed both start_date and end_date are provided in utc time.
 
-    # - granularity: Since end_date is inclusive, a time granularity is required in order to determine how much time from
-    #     end_date on should be included as well. The possibilities here are: 'year', 'month', 'week', 'day', 'hour' and 'minute'.
-    #     If granularity is not privided, it defaults to 'day'.
     - timeslice: Indicates the data should be returned as a series of points in time, each 'timeslice' long.
         The currently supported timeslices are: 'year', 'month', 'week', 'day', 'hour' and 'minute'.
 
-    # - is_dynamic: Indicates whether the timeslice should be 'dynamic' (i.e. its start and end can be anything, but its
-    #      length is set in stone) or 'static' (i.e.
+    - is_static: Indicates whether the timeslice should be 'static' (i.e. have a set place in the overarching timespan
+        [e.g. W23, or the month of June]) or 'dynamic' (i.e. its start and end can be anything, but its length is set in stone)
 
     If 'timeslice' is absent, a the returned information is a single value. When it is not, a dictionary is returned,
       containing datetime-value pairs, where 'datetime' is formatted to the granularity of 'timeslice'.
@@ -97,7 +66,6 @@ def dashboard(dashboard_id):
 
     params = request.args
     first_endpoint_call_time = valid_dashboard.first_endpoint_call_time()
-    print(f'first_endpoint_call_time={first_endpoint_call_time}')
     if not first_endpoint_call_time:
         logger.info(f"Retrieved empty dashboard {valid_dashboard}")
         result = {}
@@ -115,9 +83,7 @@ def dashboard(dashboard_id):
         end_date = datetime.utcnow().strftime('%Y-%m-%dT%H-%M')
 
     timeslice = params.get('timeslice')
-    timeslice_is_static = params.get('timeslice_is_static', type=bool)
-
-    print(f'===Timeslice=static: {timeslice_is_static}===')
+    timeslice_is_static = params.get('timeslice_is_static')
 
     if statistic is None:  # Default to returning the generic dashboard_detail.
         # Check if any other parameter is passed. This would make the request invalid.
@@ -163,13 +129,20 @@ def dashboard(dashboard_id):
             result = handle_statistic_without_timeslice(valid_dashboard, statistic, start_date_time_value,
                                                         end_date_time_value)
         else:
-            print(f'===Timeslice=static: {timeslice_is_static}===')
+            # Check whether timeslice_is_static is passed as an argument (as it is mandatory at this point)
             if timeslice_is_static is None:
                 logger.warning(f'In dashboard: Argument \'timeslice_is_static\' not provided, while timeslice {timeslice} is.')
                 result = {'message': 'Argument \'timeslice_is_static\' should be provided when \'timeslice\' is provided.'}
                 return jsonify(result), 400
-            print(f'===Timeslice=static: {timeslice_is_static}===')
-            print(f'check_allowed_timeslices: {check_allowed_timeslices(timeslice, timeslice_is_static)}')
+
+            try:
+                timeslice_is_static = string_to_bool(timeslice_is_static)
+            except ValueError:
+                logger.warning(f'In dashboard: Argument \'timeslice_is_static\' has an invalid value: {timeslice_is_static}.')
+                result = {'message': f'Argument \'timeslice_is_static\' has an invalid value: {timeslice_is_static}.'
+                                     f' It should be either "True" or "False"'}
+                return jsonify(result), 400
+
             if not check_allowed_timeslices(timeslice, timeslice_is_static):
                 if timeslice_is_static:
                     message = 'Static'
@@ -179,7 +152,7 @@ def dashboard(dashboard_id):
                 logger.warning(f'In dashboard: ' + message)
                 result = {'message': message}
                 return jsonify(result), 400
-            print(f'===Timeslice=static: {timeslice_is_static}===')
+
             # Handle timeslice statistics
             result = handle_statistic_per_timeslice(valid_dashboard, statistic, timeslice, timeslice_is_static,
                                                     start_date_time_value, end_date_time_value,
@@ -228,10 +201,7 @@ def handle_statistic_per_timeslice(dashboard, statistic, timeslice, timeslice_is
     :return: A dictionary consisting of a datetime string (key)(formatted according to the ISO-8601 standard)
              and the corresponding statistic, over the specified datetime range.
     """
-    print(f'handle_statistic_per_timeslice: timeslice_is_static={timeslice_is_static}')
     if not start_date_in_params and timeslice_is_static:
-        print(f'not start_date_in_params and timeslice_is_static: {not start_date_in_params and timeslice_is_static}')
-        print(f'handle_statistic_per_timeslice: timeslice_is_static={timeslice_is_static}')
         # Truncate start_datetime in order to encompass the whole timeslice.
         from pydash_app.dashboard.aggregator.aggregator_group import truncate_datetime_by_granularity
         start_datetime = truncate_datetime_by_granularity(start_datetime, timeslice)
@@ -243,8 +213,6 @@ def handle_statistic_per_timeslice(dashboard, statistic, timeslice, timeslice_is
         if end_datetime != truncate_datetime_by_granularity(end_datetime, timeslice):
             end_datetime = truncate_datetime_by_granularity(end_datetime, timeslice)
             end_datetime += convert_unit_to_timedelta(end_datetime, timeslice)
-
-    print(f'After: start_datetime={start_datetime}, end_datetime={end_datetime}')
 
     statistic_dict = dashboard.statistic_per_timeslice(statistic=statistic, timeslice=timeslice,
                                                        timeslice_is_static=timeslice_is_static,
@@ -258,6 +226,15 @@ def handle_statistic_per_timeslice(dashboard, statistic, timeslice, timeslice_is
         return_dict[datetime_rendered_string] = statistic_value
 
     return return_dict
+
+
+def string_to_bool(string):
+    if string == 'True':
+        return True
+    elif string == 'False':
+        return False
+    else:
+        raise ValueError("string must be either 'True' or 'False'")
 
 
 def match_datetime_string_with_formats(datetime_string):
@@ -289,8 +266,8 @@ def datetime_to_rendered_string(datetime_value, granularity, granularity_is_stat
     if not granularity_is_static and granularity not in dynamic_timeslices:
         return ValueError(f"{granularity} cannot be dynamic.")
 
-    if not granularity_is_static and granularity == 'week':
-        datetime_format = 'day'
+    if not granularity_is_static:
+        datetime_format = datetime_formats['minute']
     else:
         datetime_format = datetime_formats[granularity]
 
@@ -298,13 +275,9 @@ def datetime_to_rendered_string(datetime_value, granularity, granularity_is_stat
 
 
 def check_allowed_timeslices(timeslice, timeslice_is_static):
-    print(f'Timeslice=static: {timeslice_is_static}')
-    print(f'Timeslice=static type: {type(timeslice_is_static)}')
     if timeslice_is_static:
-        print(f'timeslice={timeslice}, static_timeslices={static_timeslices}')
         return timeslice in static_timeslices
     else:
-        print(f'timeslice={timeslice}, dynamic_timeslices={dynamic_timeslices}')
         return timeslice in dynamic_timeslices
 
 

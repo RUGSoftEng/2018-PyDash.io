@@ -36,59 +36,9 @@ datetime_formats['day'] = datetime_formats['month'] + '-%d'
 datetime_formats['hour'] = datetime_formats['day'] + 'T%H'
 datetime_formats['minute'] = datetime_formats['hour'] + '-%M'
 
-# allowed_timeslices = ['year', 'month', 'week_static', 'week_dynamic', 'day_static', 'day_dynamic', 'hour_static',
-#                       'hour_dynamic', 'minute_static', 'minute_dynamic']
-
 dynamic_timeslices = ['week', 'day', 'hour', 'minute']
 static_timeslices = ['year', 'month', 'week', 'day', 'hour', 'minute']
-
 allowed_timeslices = ['year', 'month', 'week', 'day', 'hour', 'minute']
-
-
-# granularity_to_timedelta_convertor = {'week_static': timedelta(weeks=1), 'week_dynamic': timedelta(weeks=1),
-#                                       'day_static': timedelta(days=1), 'day_dynamic': timedelta(days=1),
-#                                       'hour_static': timedelta(hours=1), 'hour_dynamic': timedelta(hours=1),
-#                                       'minute_static': timedelta(minutes=1), 'minute_dynamic': timedelta(minutes=1)
-#                                       }
-#
-# granularity_to_timedelta_convertor_original = {'week': timedelta(weeks=1), 'week_dynamic': timedelta(weeks=1),
-#                                       'week_static': timedelta(weeks=1), 'day': timedelta(days=1),
-#                                       'hour': timedelta(hours=1), 'minute': timedelta(minutes=1)
-#                                       }
-#
-# granularity_to_timedelta_convertor_with_is_static = {'week': timedelta(weeks=1), 'day': timedelta()}
-
-
-# def inclusive_to_exclusive_datetime_adaptor(end_date, granularity):
-#     """This is for the Gregorian calendar only. Note that one should not use this to add time, due to possible
-#     truncation of dates. (e.g. input 2000-1-30 and 'month' would result in 2000-2-29."""
-#     if granularity in granularity_to_timedelta_convertor.keys():
-#         return end_date + granularity_to_timedelta_convertor[granularity]
-#     else:
-#         year = end_date.year
-#         month = end_date.month
-#         day = end_date.day
-#         hour = end_date.hour
-#         minute = end_date.minute
-#
-#         if granularity in ['year', 'month']:
-#             if granularity == 'year':
-#                 next_year = year+1
-#                 max_month_day = calendar.monthrange(next_year, month)
-#                 if day > max_month_day:
-#                     return datetime(next_year, month, max_month_day, hour, minute)
-#                 else:
-#                     return datetime(next_year, month, day, hour, minute)
-#             else:
-#                 next_year = year + int((month+1)/12)
-#                 next_month = (month+1) % 12
-#                 max_next_month_day = calendar.monthrange(next_year, next_month)[1]
-#                 if day > max_next_month_day:
-#                     return datetime(next_year, next_month, max_next_month_day, hour, minute)
-#                 else:
-#                     return datetime(next_year, next_month, day, hour, minute)
-#         else:
-#             raise ValueError(f'Granularity {granularity} is not supported.')
 
 
 def truncate_datetime_by_granularity(datetime_value, granularity):
@@ -97,8 +47,7 @@ def truncate_datetime_by_granularity(datetime_value, granularity):
     if granularity == 'month':
         return datetime(datetime_value.year, datetime_value.month, 1)
     if granularity == 'week':  # This is assuming 'week' is meant as a static week in the year (e.g. 2018W23)
-        # using 1 as week day in order to have %W be used in calculations. Also Python week days are rather counter-intuitive,
-        # as 1 is the beginning of the week (monday) and this loops around to 0 as the end of the week (sunday).
+        # using 1 as week day in order to have %W be used in calculations.
         return datetime.strptime(f'{datetime_value.year}W{int(datetime_value.strftime("%W"))}-1', '%YW%W-%w')
     if granularity == 'day':
         return datetime(datetime_value.year, datetime_value.month, datetime_value.day)
@@ -332,47 +281,35 @@ class AggregatorGroup(persistent.Persistent):
 
         return aggregator
 
-    # def fetch_aggregator_inclusive_daterange(self, filters, datetime_begin, datetime_end, granularity):
-    #     """
-    #     Fetches an aggregator over the entire provided datetime range.
-    #     :param filters: A dictionary that contains property_name-value pairs to filter on.
-    #       This is in the gist of {'ip': '127.0.0.1', 'version': '1.0.1'}
-    #       For the complete set of possible filters, see AggregatorGroup.fetch_aggregator.
-    #       Note: May not contain time-based filters, for obvious reasons.
-    #     :param datetime_begin: A datetime object indicating the inclusive lower bound for the datetime range to
-    #      aggregate over.
-    #     :param datetime_end:  A datetime object indicating the inclusive upper bound for the datetime range to
-    #      aggregate over.
-    #     :param granularity: A string denoting the granularity of the daterange. This can be one of the following:
-    #                         'year', 'month', 'week', 'day', 'hour', 'minute'.
-    #     :return: An Aggregator object that contains the aggregated data over the entirety of the specified datetime
-    #      range.
-    #     """
-    #     datetime_begin = truncate_datetime_by_granularity(datetime_begin, granularity)
-    #     datetime_end = truncate_datetime_by_granularity(datetime_end, granularity)
-    #     return self.fetch_aggregator_daterange(filters, datetime_begin, inclusive_to_exclusive_datetime_adaptor(datetime_end, granularity))
-
     def fetch_aggregators_per_timeslice(self, filters, timeslice, start_datetime, end_datetime):
         """
-        These datetimes are treated as inclusive boundaries of a datetime range (e.g. [start_datetime, end_datetime].
+        Slices up the indicated exclusive datetime range into slices of the size of `timeslice` and returns a dictionary
+        containing the corresponding datetime and aggregator values for those datetime slices.
         Assumes start_datetime and end_datetime are both from utc.
         :param filters: A dictionary that contains property_name-value pairs to filter on.
           This is in the gist of {'ip': '127.0.0.1', 'version': '1.0.1'}
           For the complete set of possible filters, see AggregatorGroup.fetch_aggregator.
-          Note: May not contain time-based filters, for obvious reasons.
+          Note: May not contain time-based filters.
         :param timeslice: A string denoting at what granularity the indicated datetime range should be split.
           The currently supported values for this are: 'year', 'month', 'week', 'day', 'hour' and 'minute'.
         :param start_datetime: A datetime object indicating the inclusive lower bound for the datetime range to
           aggregate over.
         :param end_datetime: A datetime object indicating the exclusive upper bound for the datetime range to
           aggregate over.
-        :return: A list of tuples consisting of a datetime instances and the corresponding aggregator,
+        :return: A dictionary consisting of a datetime instance and the corresponding aggregator,
           over the specified datetime range.
         """
         statistics_aggregators = {}
 
         def datetime_range(start, stop, step, unit):
-            """Note: datetime_range has an exclusive upper-bound (stop)."""
+            """
+            Note: datetime_range has an exclusive upper-bound (stop).
+            Further note: since years and months are not consistent with their length, every yielded date might not be
+            as consistently spaced apart as you might expect when using 'year' or 'month' for `unit`.
+            (e.g. with start = datetime(2000,1,31), step=1 and unit='month', the first yielded date would be 2000-1-31,
+            while the second yielded date would be 2000-3-2, as 31 days (the length of the first yielded value's month)
+            is added.
+            """
             def add_time(datetime_value, step, unit):
                 # We cannot simply multiply by step here, since each step is not necessarily equal.
                 # (i.e. not every month has the same amount of days or there might be a leap year)
@@ -387,7 +324,6 @@ class AggregatorGroup(persistent.Persistent):
 
         daterange = peekable(datetime_range(start_datetime, end_datetime, 1, timeslice))
         for datetime_value in daterange:
-            # print(f'datetime_value={datetime_value}, next_datetime_value={next_datetime_value}')
             try:
                 next_datetime_value = daterange.peek()
             except StopIteration:
@@ -399,6 +335,18 @@ class AggregatorGroup(persistent.Persistent):
 
 
 def convert_unit_to_timedelta(datetime_value, unit):
+    """
+    Converts a datetime granularity (unit) to a timedelta object, depending on the given datetime.
+
+    Example:
+    >>> convert_unit_to_timedelta(datetime(2000,1,1), 'year') == timedelta(days=366)
+    True
+    >>> convert_unit_to_timedelta(datetime(2001,1,1), 'year') == timedelta(days=355)
+    True
+    >>> convert_unit_to_timedelta(datetime(2000,1,18), 'month') == timedelta(days=31)
+    True
+    >>> convert_unit_to_timedelta(datetime(2000,2,2), 'month') == timedelta(days=29)
+    """
     if unit == 'year':
         if calendar.isleap(datetime_value.year):
             return timedelta(days=366)
@@ -418,7 +366,7 @@ def convert_unit_to_timedelta(datetime_value, unit):
 
 def _chop_date_range_into_chunks(datetime_begin, datetime_end):
     """
-    Chops the given datetime range into chunks of full days, hours and minutes. Does account for leap seconds.
+    Chops the given datetime range into chunks of full days, hours and minutes.
     :param datetime_begin: A datetime object that indicates the inclusive lower bound of the datetime range.
     :param datetime_end: A datetime object that indicates the exclusive upper bound of the datetime range.
     :return: A dict with the keys "days", "hours" and "minutes", where the values are lists of corresponding datetime
