@@ -44,10 +44,10 @@ class User(persistent.Persistent, flask_login.UserMixin):
         # Needed for the database to search for users by verification code
         self._verification_code = self._smart_verification_code.verification_code
 
-        try:
-            validate_email(mail)
-        except EmailNotValidError:
-            logger.warning(f"User creation error - mail address invalid")
+        # Check if there is a somewhat valid mail address
+        if '@' not in mail:
+            logger.warning('User registration failed - mail address invalid')
+            raise ValueError('Invalid mail address')
 
         self.mail = mail
 
