@@ -345,6 +345,7 @@ def convert_unit_to_timedelta(datetime_value, unit):
     >>> convert_unit_to_timedelta(datetime(2000,1,18), 'month') == timedelta(days=31)
     True
     >>> convert_unit_to_timedelta(datetime(2000,2,2), 'month') == timedelta(days=29)
+    True
     """
     if unit == 'year':
         if calendar.isleap(datetime_value.year):
