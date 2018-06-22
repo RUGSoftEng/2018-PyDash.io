@@ -270,7 +270,6 @@ class AggregatorGroup(persistent.Persistent):
         for key in filters.keys():
             if key in allowed_timeslices:
                 raise ValueError('filters may not contain time-based properties')
-        print(f'datetime_begin={datetime_begin}, datetime_end={datetime_end}')
         date_chunks = _chop_date_range_into_chunks(datetime_begin, datetime_end)
         aggregator = Aggregator()
         for key, value in date_chunks.items():
@@ -341,7 +340,7 @@ def convert_unit_to_timedelta(datetime_value, unit):
     Example:
     >>> convert_unit_to_timedelta(datetime(2000,1,1), 'year') == timedelta(days=366)
     True
-    >>> convert_unit_to_timedelta(datetime(2001,1,1), 'year') == timedelta(days=355)
+    >>> convert_unit_to_timedelta(datetime(2001,1,1), 'year') == timedelta(days=365)
     True
     >>> convert_unit_to_timedelta(datetime(2000,1,18), 'month') == timedelta(days=31)
     True
