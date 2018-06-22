@@ -115,7 +115,7 @@ def dashboard(dashboard_id):
         end_date = datetime.utcnow().strftime('%Y-%m-%dT%H-%M')
 
     timeslice = params.get('timeslice')
-    timeslice_is_static = params.get('timeslice_is_static')
+    timeslice_is_static = params.get('timeslice_is_static', type=bool)
 
     print(f'===Timeslice=static: {timeslice_is_static}===')
 
@@ -299,6 +299,7 @@ def datetime_to_rendered_string(datetime_value, granularity, granularity_is_stat
 
 def check_allowed_timeslices(timeslice, timeslice_is_static):
     print(f'Timeslice=static: {timeslice_is_static}')
+    print(f'Timeslice=static type: {type(timeslice_is_static)}')
     if timeslice_is_static:
         print(f'timeslice={timeslice}, static_timeslices={static_timeslices}')
         return timeslice in static_timeslices
