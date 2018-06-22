@@ -132,13 +132,12 @@ class AddDashboardDialog extends Component {
     tryCreation = (e) => {
         e.preventDefault();
 
-        this.resetState()
         if(this.preventEmpty()===0){
             return;
         }
 
         this.registerCall()
-        
+        this.resetState()
     }
 
     render() {

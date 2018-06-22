@@ -111,6 +111,16 @@ BuildDocumentation()
     PydashPrint "Resulting PDF can be found in ./pydash/sphinx_docs/_build/latex/PyDash.pdf"
 }
 
+RunProduction()
+{
+    PydashPrint "Starting Production Server..."
+    export FLASK_DEBUG=0;
+    export FLASK_ENV=production;
+    export ENV=production;
+    RunDatabase
+    RunFlask
+}
+
 
 if [ $# -gt 0 ];
 then
@@ -133,6 +143,10 @@ then
         then
             RunDatabase
         fi
+        if [ $i == "production" ];
+        then
+            RunProduction
+        fi
         if [ $i == "server" ];
         then
             xdg-open "http://localhost:5000" &
@@ -150,9 +164,9 @@ then
         then
             RunFlaskConsole
         fi
-	if [ $i == "documentation" ];
-	then
-	    BuildDocumentation
+        if [ $i == "documentation" ];
+        then
+            BuildDocumentation
         fi
     done;
     PydashPrint "Done! Goodbye :-)"
