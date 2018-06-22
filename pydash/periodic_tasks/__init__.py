@@ -128,20 +128,20 @@ def start_default_scheduler():
     default_task_scheduler.start()
 
 
-# Some example test functions.
-# Should be removed once the scheduler is really stable
-def foo():
-    print('foo')
-
-
-def bar():
-    print('bar')
-
-
-def baz():
-    print('baz')
-
-
-# @periodic_task('qux', datetime.timedelta(seconds=2))
-def qux():
-    print('qux')
+# # Some example test functions.
+# # Should be removed once the scheduler is really stable
+# def foo():
+#     print('foo')
+#
+#
+# def bar():
+#     print('bar')
+#
+#
+# def baz():
+#     print('baz')
+#
+#
+# # @periodic_task('qux', datetime.timedelta(seconds=2))
+# def qux():
+#     print('qux')

@@ -1,7 +1,5 @@
 """
-Manages the lookup and returning of dashboard information for a certain user.
-
-Currently only returns static mock data.
+Manages the lookup and returning of dashboard information for the logged in user.
 """
 
 from flask import jsonify, request

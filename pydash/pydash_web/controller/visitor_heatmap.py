@@ -1,3 +1,7 @@
+"""
+Handles the request for visitor heatmap values.
+"""
+
 from flask import jsonify, request
 from datetime import timedelta, date, datetime
 from pydash_app.dashboard import find_verified_dashboard

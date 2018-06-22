@@ -43,7 +43,6 @@ class Aggregator(persistent.Persistent):
         })
         for endpoint_call in endpoint_calls:
             self.add_endpoint_call(endpoint_call)
-    
 
     def add_endpoint_call(self, endpoint_call):
         """
@@ -57,7 +56,6 @@ class Aggregator(persistent.Persistent):
         self.endpoint_calls.append(endpoint_call)
         self._p_changed = True  # ZODB mark object as changed
 
-
     def as_dict(self):
         """
         Return aggregated data in a dict. Only includes statistics that should be rendered.
@@ -70,18 +68,19 @@ class Aggregator(persistent.Persistent):
         }
 
     def __add__(self, other):
-        """Creates a new aggregator object that combines the aggregates of both aggegators."""
+        """Creates a new Aggregator instance that combines the aggregates of both aggegators."""
         if other is None:
             return deepcopy(self)
 
         new = Aggregator()
-        new.endpoint_calls += self.endpoint_calls
-        new.endpoint_calls += other.endpoint_calls
+        new.endpoint_calls = [endpoint_call for endpoint_call in set(self.endpoint_calls).union(set(other.endpoint_calls))]
         for key, _ in new.statistics.items():
             new.statistics[key] = self.statistics[key].add_together(other.statistics[key], self.statistics, other.statistics)
         return new
 
     def __radd__(self, other):
+        """Creates a new Aggregator instance that combines the aggregates of both aggregators.
+         If other == 0 (e.g. when using sum() on an iterable of Aggregators), returns a copy of itself."""
         # Return a deep copy in case sum(<Aggregator iterable>) is called
         if other == 0:
             return self.deepcopy()
@@ -89,10 +88,10 @@ class Aggregator(persistent.Persistent):
             return self.__add__(other)
 
     def __iadd__(self, other):
-
+        """In-place version of _add_()."""
         if other is None:
             return self
-        self.endpoint_calls += other.endpoint_calls
+        self.endpoint_calls = [endpoint_call for endpoint_call in set(self.endpoint_calls).union(set(other.endpoint_calls))]
         for key in self.statistics.keys():
             self.statistics[key] = self.statistics[key].add_together(other.statistics[key], self.statistics, other.statistics)
         return self
