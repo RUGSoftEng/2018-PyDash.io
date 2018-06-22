@@ -4,7 +4,6 @@ Manages changing of user settings.
 
 from flask import request, jsonify
 from flask_login import current_user
-from email_validator import validate_email, EmailNotValidError
 
 import pydash_app.user
 import pydash_app.user.repository as user_repository

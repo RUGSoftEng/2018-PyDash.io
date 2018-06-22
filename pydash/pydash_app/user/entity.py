@@ -1,7 +1,6 @@
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from .verification_code import VerificationCode
-from email_validator import validate_email, EmailNotValidError
 
 
 import uuid
