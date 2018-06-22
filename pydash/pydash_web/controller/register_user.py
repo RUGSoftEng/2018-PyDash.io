@@ -37,6 +37,12 @@ def register_user():
         result = {'message': 'Username, password or email address cannot be empty'}
         return jsonify(result), 400
 
+    # Check if there is a somewhat valid mail address
+    if '@' not in email_address:
+        logger.warning('User registration failed - mail address invalid')
+        result = {'message': 'Mail address invalid'}
+        return jsonify(result), 400
+
     if not pydash_app.user.check_password_requirements(password):
         logger.warning('User registration failed - password does not conform to the requirements.')
         result = {'message': 'User registration failed - password does not conform to the requirements.'}

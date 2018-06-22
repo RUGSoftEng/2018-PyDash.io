@@ -53,12 +53,10 @@ def change_settings():
     # Email
     if new_mail != current_user.mail:
 
-        try:
-            validate_email(new_mail)
-        except EmailNotValidError:
-            logger.warning(f"Changing settings failed - mail address invalid")
-            result = {'message': 'Invalid mail address'}
-            return jsonify(result), 400
+        if '@' not in new_mail:
+                logger.warning(f"Changing settings failed - mail address invalid")
+                result = {'message': 'Invalid mail address'}
+                return jsonify(result), 400
 
         settings_to_change['mail'] = new_mail
 
