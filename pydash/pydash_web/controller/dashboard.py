@@ -43,7 +43,8 @@ def dashboard(dashboard_id):
         start_date and end_date are the resp. inclusive lower- and exclusive upper bounds of this datetime range.
         If start_date is not provided, it defaults to timestamp of the dashboard's first endpoint call.
         If end_date is not provided, it defaults to the current utc time.
-        It is assumed both start_date and end_date are provided in utc time.
+        It is assumed both start_date and end_date are provided in utc time, as well as that they conform to
+        the ISO-8601 date and time standard.
 
     - timeslice: Indicates the data should be returned as a series of points in time, each 'timeslice' long.
         The currently supported timeslices are: 'year', 'month', 'week', 'day', 'hour' and 'minute'.
