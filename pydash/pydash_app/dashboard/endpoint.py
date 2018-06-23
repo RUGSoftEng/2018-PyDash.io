@@ -115,20 +115,20 @@ class Endpoint(persistent.Persistent):
         Returns the desired statistic of this endpoint, filtered by the specified filters.
         :param statistic: A string denoting the specific statistic that should be queried.
         :param statistic: A string denoting the statistic in question. The complete amount of allowed statistics is:
-      - 'total_visits'
-      - 'total_execution_time'
-      - 'average_execution_time'
-      - 'visits_per_ip'
-      - 'unique_visitors'
-      - 'fastest_measured_execution_time'
-      - 'fastest_quartile_execution_time'
-      - 'median_execution_time'
-      - 'slowest_quartile_execution_time'
-      - 'ninetieth_percentile_execution_time'
-      - 'ninety-ninth_percentile_execution_time'
-      - 'slowest_measured_execution_time'
-      - 'versions'
-    :param filters: A dictionary containing property_name-value pairs to filter on. The keys are assumed to be strings.
+          - 'total_visits'
+          - 'total_execution_time'
+          - 'average_execution_time'
+          - 'visits_per_ip'
+          - 'unique_visitors'
+          - 'fastest_measured_execution_time'
+          - 'fastest_quartile_execution_time'
+          - 'median_execution_time'
+          - 'slowest_quartile_execution_time'
+          - 'ninetieth_percentile_execution_time'
+          - 'ninety-ninth_percentile_execution_time'
+          - 'slowest_measured_execution_time'
+          - 'versions'
+        :param filters: A dictionary containing property_name-value pairs to filter on. The keys are assumed to be strings.
           This is in the gist of `{'day':'2018-05-20', 'ip':'127.0.0.1'}`, thus filtering on a specific Time and IP combination.
           Defaults to an empty dictionary.
 
@@ -159,7 +159,7 @@ class Endpoint(persistent.Persistent):
         return self._aggregator_group.fetch_aggregator(filters).as_dict()[statistic]
 
     def statistic_per_timeslice(self, statistic, timeslice, timeslice_is_static, start_datetime, end_datetime, filters={}):
-        f"""
+        """
         Slices up the specified datetime range (=[start_datetime, end_datetime)) into slices of the size of `timeslice`.
         For each datetime slice it computes the value of the denoted statistic and returns a dictionary containing these pairs.
         (Note that a returned datetime slice is a string: represented as the start of that slice and formatted according
@@ -167,20 +167,20 @@ class Endpoint(persistent.Persistent):
         Filters can be applied to narrow down the search.
 
         :param statistic: A string denoting the statistic in question. The complete amount of allowed statistics is:
-      - 'total_visits'
-      - 'total_execution_time'
-      - 'average_execution_time'
-      - 'visits_per_ip'
-      - 'unique_visitors'
-      - 'fastest_measured_execution_time'
-      - 'fastest_quartile_execution_time'
-      - 'median_execution_time'
-      - 'slowest_quartile_execution_time'
-      - 'ninetieth_percentile_execution_time'
-      - 'ninety-ninth_percentile_execution_time'
-      - 'slowest_measured_execution_time'
-      - 'versions'
-    :param timeslice: A string denoting at what granularity the indicated datetime range should be split.
+          - 'total_visits'
+          - 'total_execution_time'
+          - 'average_execution_time'
+          - 'visits_per_ip'
+          - 'unique_visitors'
+          - 'fastest_measured_execution_time'
+          - 'fastest_quartile_execution_time'
+          - 'median_execution_time'
+          - 'slowest_quartile_execution_time'
+          - 'ninetieth_percentile_execution_time'
+          - 'ninety-ninth_percentile_execution_time'
+          - 'slowest_measured_execution_time'
+          - 'versions'
+        :param timeslice: A string denoting at what granularity the indicated datetime range should be split.
           The currently supported values for this are: 'year', 'month', 'week', 'day', 'hour' and 'minute'.
         :param timeslice_is_static: A boolean denoting whether the given timeslice should be interpreted as being 'static' or 'dynamic'.
           A 'static' timeslice encompasses a preset datetime range (e.g. the month of May or the 25th day of May).

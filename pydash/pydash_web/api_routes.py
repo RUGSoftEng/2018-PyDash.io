@@ -79,6 +79,12 @@ def delete_dashboard(dashboard_id):
     return controller.delete_dashboard(dashboard_id)
 
 
+@api.route("/api/dashboards/<dashboard_id>/statistic", methods=["GET"])
+@login_required
+def get_dashboard_statistic(dashboard_id):
+    return controller.dashboard_statistic(dashboard_id)
+
+
 @api.route("/api/dashboards/<dashboard_id>/visitor_heatmap", methods=["GET"])
 @login_required
 def get_visitor_heatmap(dashboard_id):

@@ -15,6 +15,7 @@ class Aggregator(persistent.Persistent):
 
     contained_statistics_classes = OrderedSet([
         statistics.TotalVisits,
+        statistics.TotalExecutionTime,
         statistics.AverageExecutionTime,
         statistics.VisitsPerIP,
         statistics.UniqueVisitorsAllTime,
