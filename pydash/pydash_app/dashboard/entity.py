@@ -127,12 +127,10 @@ class Dashboard(persistent.Persistent):
     def remove_endpoint(self, endpoint):
         """
         Removes an endpoint from this dashboard's internal collection of endpoints.
-
-        Raises a ValueError if no such endpoint exists.
         :param endpoint: The endpoint to remove.
+        :raises ValueError: If no such endpoint exists within this dashboard's internal collection of endpoints.
         """
         # TODO: perhaps remove all relevant endpoint calls from endpoint_calls? Discuss with team.
-        # TODO: THIS IS POST-MVP
         # TODO: Is this function required at all?
         del self.endpoints[endpoint.name]
 
@@ -151,6 +149,7 @@ class Dashboard(persistent.Persistent):
         self._aggregator_group.add_endpoint_call(endpoint_call)
 
     def first_endpoint_call_time(self):
+        """Returns the first endpoint call time of this dashboard, or None if no endpoint calls have been added yet."""
         if not self._endpoint_calls:
             return None
         else:

@@ -4,7 +4,6 @@ Manages changing of user settings.
 
 from flask import request, jsonify
 from flask_login import current_user
-from email_validator import validate_email, EmailNotValidError
 
 import pydash_app.user
 import pydash_app.user.repository as user_repository
@@ -53,12 +52,10 @@ def change_settings():
     # Email
     if new_mail != current_user.mail:
 
-        try:
-            validate_email(new_mail)
-        except EmailNotValidError:
-            logger.warning(f"Changing settings failed - mail address invalid")
-            result = {'message': 'Invalid mail address'}
-            return jsonify(result), 400
+        if '@' not in new_mail:
+                logger.warning(f"Changing settings failed - mail address invalid")
+                result = {'message': 'Invalid mail address'}
+                return jsonify(result), 400
 
         settings_to_change['mail'] = new_mail
 

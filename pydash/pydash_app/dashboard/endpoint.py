@@ -49,6 +49,7 @@ class Endpoint(persistent.Persistent):
         Raises a ValueError if no such call exists.
         Note: does not remove it from its aggregated dataset yet.
         :param call: The endpoint call to remove.
+        :raises ValueError: If `call` is not in this endpoint's internal collection of endpoint calls.
         """
         self._calls.remove(call)
 

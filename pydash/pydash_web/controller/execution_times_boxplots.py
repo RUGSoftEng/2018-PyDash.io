@@ -1,3 +1,6 @@
+"""
+Handles requests for execution times boxplot values.
+"""
 
 from flask import jsonify
 import pydash_app.dashboard
