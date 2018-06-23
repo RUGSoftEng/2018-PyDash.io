@@ -22,6 +22,7 @@ def dashboard(dashboard_id):
     :param dashboard_id: ID of the dashboard to retrieve information from.
     :return: The returned value consists of a tuple of dashboard information, together with a http status code.
 
+    If no arguments are given, a representation of the dashboard itself is returned.
     This route supports the following request arguments:
     - statistic: The name of the statistic of which aggregated information should be returned.
       The currently supported statistics are:
@@ -47,8 +48,9 @@ def dashboard(dashboard_id):
     - timeslice: Indicates the data should be returned as a series of points in time, each 'timeslice' long.
         The currently supported timeslices are: 'year', 'month', 'week', 'day', 'hour' and 'minute'.
 
-    - is_static: Indicates whether the timeslice should be 'static' (i.e. have a set place in the overarching timespan
+    - timeslice_is_static: Indicates whether the timeslice should be 'static' (i.e. have a set place in the overarching timespan
         [e.g. W23, or the month of June]) or 'dynamic' (i.e. its start and end can be anything, but its length is set in stone)
+        Note that `timeslice_is_static` is mandatory when `timeslice` is provided.
 
     If 'timeslice' is absent, a the returned information is a single value. When it is not, a dictionary is returned,
       containing datetime-value pairs, where 'datetime' is formatted to the granularity of 'timeslice'.
@@ -191,7 +193,20 @@ def handle_statistic_per_timeslice(dashboard, statistic, timeslice, timeslice_is
     """These datetimes are treated as inclusive boundaries of a datetime range (e.g. [start_datetime, end_datetime].
     Assumes start_timedate and end_timedate are both timezone aware, with timezone utc.
     :param dashboard: The Dashboard object to retrieve the time-sliced statistic information from.
-    :param statistic: A string denoting the statistic in question. The complete amount of allowed statistics is: #TODO: Put statistics here.
+    :param statistic: A string denoting the statistic in question. The complete amount of allowed statistics is:
+      - 'total_visits'
+      - 'total_execution_time'
+      - 'average_execution_time'
+      - 'visits_per_ip'
+      - 'unique_visitors'
+      - 'fastest_measured_execution_time'
+      - 'fastest_quartile_execution_time'
+      - 'median_execution_time'
+      - 'slowest_quartile_execution_time'
+      - 'ninetieth_percentile_execution_time'
+      - 'ninety-ninth_percentile_execution_time'
+      - 'slowest_measured_execution_time'
+      - 'versions'
     :param timeslice: A string denoting the granularity of the timeslice (e.g. 'day' to slice up the time range in entire days.)
     :param timeslice_is_static: A boolean indicating whether the timeslice should be interpreted as being either 'static' or 'dynamic'.
     :param start_datetime: A datetime instance denoting the inclusive lower bound of the desired datetime range.

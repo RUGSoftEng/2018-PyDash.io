@@ -220,11 +220,21 @@ class Dashboard(persistent.Persistent):
     def statistic(self, statistic, filters={}):
         """
         Returns the desired statistic of this dashboard, filtered by the specified filters.
-        :param statistic: A string denoting the specific statistic that should be queried.
-        """ \
-        f'  The following statistics are allowed:{[stat_class.field_name(stat_class) for stat_class in Aggregator.contained_statistics_classes]}.' \
-        """
-        :param filters: A dictionary containing property_name-value pairs to filter on. The keys are assumed to be strings.
+        :param statistic: A string denoting the statistic in question. The complete amount of allowed statistics is:
+      - 'total_visits'
+      - 'total_execution_time'
+      - 'average_execution_time'
+      - 'visits_per_ip'
+      - 'unique_visitors'
+      - 'fastest_measured_execution_time'
+      - 'fastest_quartile_execution_time'
+      - 'median_execution_time'
+      - 'slowest_quartile_execution_time'
+      - 'ninetieth_percentile_execution_time'
+      - 'ninety-ninth_percentile_execution_time'
+      - 'slowest_measured_execution_time'
+      - 'versions'
+    :param filters: A dictionary containing property_name-value pairs to filter on. The keys are assumed to be strings.
           This is in the gist of `{'day':'2018-05-20', 'ip':'127.0.0.1'}`, thus filtering on a specific Time and IP combination.
           Defaults to an empty dictionary.
 
@@ -262,11 +272,21 @@ class Dashboard(persistent.Persistent):
          to the ISO-8601 standard.
         Filters can be applied to narrow down the search.
 
-        :param statistic: A string denoting the specific statistic that should be queried.
-        """ \
-        f'  The following statistics are allowed:{[stat_class.field_name(stat_class) for stat_class in Aggregator.contained_statistics_classes]}.' \
-        """
-        :param timeslice: A string denoting at what granularity the indicated datetime range should be split.
+        :param statistic: A string denoting the statistic in question. The complete amount of allowed statistics is:
+      - 'total_visits'
+      - 'total_execution_time'
+      - 'average_execution_time'
+      - 'visits_per_ip'
+      - 'unique_visitors'
+      - 'fastest_measured_execution_time'
+      - 'fastest_quartile_execution_time'
+      - 'median_execution_time'
+      - 'slowest_quartile_execution_time'
+      - 'ninetieth_percentile_execution_time'
+      - 'ninety-ninth_percentile_execution_time'
+      - 'slowest_measured_execution_time'
+      - 'versions'
+    :param timeslice: A string denoting at what granularity the indicated datetime range should be split.
           The currently supported values for this are: 'year', 'month', 'week', 'day', 'hour' and 'minute'.
         :param timeslice_is_static: A boolean denoting whether the given timeslice should be interpreted as being 'static' or 'dynamic'.
           A 'static' timeslice encompasses a preset datetime range (e.g. the month of May or the 25th day of May).
