@@ -6,7 +6,7 @@ import _find from 'lodash-es/find';
 import { Switch } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 import BreadcrumbRoute from '../../common/BreadcrumbRoute';
-import Endpoint from '../endpoint/Endpoint';
+import EndpointPage from '../endpoint/EndpointPage';
 // Contents:
 import StatisticsPage from './statistics_page/StatisticsPage';
 
@@ -41,7 +41,7 @@ class DashboardRoutes extends Component {
                                                 path={match.url}
                                                      title={endpoint_info.name}
                                                      render = {(_) => (
-                                                         <Endpoint endpointData={endpoint_info}/>
+                                                         <EndpointPage endpointData={endpoint_info}/>
                                                      )}
                                             />
                                         )

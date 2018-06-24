@@ -52,34 +52,11 @@ isAuthenticated|bool|yes||
 signInHandler|func|yes||
 signOutHandler|func|yes||
 -----
-**src/app/main_interface/Notifications.js/snackbars.js**
-
-### 1. SimpleSnackbar
-
-Outdated   
-
-
-
-
-Property | Type | Required | Default value | Description
-:--- | :--- | :--- | :--- | :---
-classes|object|yes||
------
-**src/app/statistics/Statistics.js**
-
-### 1. Statistics
-
-Outdated   
-
-
-
-
------
 **src/authenticated_app/AuthenticatedApp.js**
 
 ### 1. AuthenticatedApp
 
-Base of the app after logging in. Renders the user interface and the relevant page for the current URL.
+Base of the app after logging in. Renders the user interface and the relevant page for the current path.
 Also handles the updating of data for the dashboards linked to the logged in account.   
 
 
@@ -95,8 +72,7 @@ signOutHandler|func|yes||
 
 ### 1. AuthenticatedRoutes
 
-Same purpose as Routes.js, routing, but for the website after authentication. The routes after a certain dashboard are
-handled by DashboardRoutes.js.   
+Similar to `Routes`, this component performs routing, but for the website after being authenticated.   
 
 
 
@@ -242,9 +218,11 @@ Property | Type | Required | Default value | Description
 :--- | :--- | :--- | :--- | :---
 dashboard_id|string|yes||
 -----
-**src/authenticated_app/endpoint/Endpoint.js**
+**src/authenticated_app/endpoint/EndpointPage.js**
 
-### 1. Endpoint
+### 1. EndpointPage
+
+The `EndpointPage` renders the details page of a single EndpointPage.   
 
 
 
@@ -262,6 +240,9 @@ dashboard_id|string|yes||
 
 ### 1. AddDashboardDialog
 
+`AddDashboardDialog` shows the modal dialog that allows a user to add a new dashboard to PyDash.
+It also performs the handling logic of saving the information that has been entered in the form.   
+
 
 
 
@@ -269,6 +250,8 @@ dashboard_id|string|yes||
 **src/authenticated_app/overview/DashboardList.js**
 
 ### 1. DashboardList
+
+A list of dashboards, where each entry (`DashboardListItem`) contains some general information about the dashboard.   
 
 
 
@@ -278,6 +261,10 @@ dashboard_id|string|yes||
 
 ### 1. DashboardListItem
 
+The `DashboardListItem` displays some general information about the given dashboard;
+
+This component is to be used as part of a `DashboardList`.   
+
 
 
 
@@ -285,6 +272,8 @@ dashboard_id|string|yes||
 **src/authenticated_app/overview/OverviewPage.js**
 
 ### 1. OverviewPage
+
+The `OverviewPage` is the main page the user sees after logging in.   
 
 
 
@@ -294,7 +283,9 @@ dashboard_id|string|yes||
 
 ### 1. SettingsPage
 
-Component representing the settings page. Provides rendering and functionality for changing account details, enabling 
+Component representing the settings page.
+
+Provides rendering and functionality for changing account details, enabling
 disabling sounds, and removing user accounts.   
 
 
@@ -334,7 +325,11 @@ signOutHandler|func|yes||
 
 ### 1. UserInterface
 
-Shows the user interface for logged in users, including the sidebar with links to the overview and the settings page.   
+Shows the user interface for logged in users:
+
+- The top menu
+- The side menu that is used for navigation (whose contents live in `Menu.js`)
+- The `Breadcrumbs` of the currently shown page.   
 
 
 
@@ -348,6 +343,11 @@ theme|object|yes||
 
 ### 1. BreadcrumbRoute
 
+A special version of the `Route` component that the `react-router-dom` exposes
+which not only contains a Route handler, but will also add that part of the route to the breadcrumbs of the current page.
+This means that when multiple of these components are nested in one another, the breadcrumbs of this nesting will show up.
+(The actual rendering of these breadcrumbs happens in `UserInterface` using the `Breadcrumbs` component)   
+
 
 
 
@@ -360,7 +360,9 @@ isLink||no|true|
 
 ### 1. ResponsiveGraphWrapper
 
-Wrapper for the graphs, making sure they are shown the right way   
+A Nivo Graph component (or other component that you want to auto-resize to fill its container width), can be added to this component to ensure that this resizing will happen.
+
+This component will pass on the 'width' prop to the child, which will be set to the measured width the component ('s container, the ResponsiveGraphWrapper itself) currently has on the page.   
 
 
 
@@ -369,22 +371,11 @@ Property | Type | Required | Default value | Description
 :--- | :--- | :--- | :--- | :---
 height|number|yes||
 -----
-**src/common/WidthAwareContainer.js**
-
-### 1. WidthAwareContainer
-
-This component becomes as large as its container, and then passes its resulting `width` on as the `with` prop to its child,
-as to make child components that require a width in pixels responsive.   
-
-
-
-
------
 **src/login/LoginPage.js**
 
 ### 1. LoginPage
 
-Purpose: Renders the login page and handles the login requests. Lets the user know if something went wrong with logging in,
+Renders the login page and handles the login requests. Lets the user know if something went wrong with logging in,
 warns the user about an unsafe password if he has one and contains a link to the register page.   
 
 
@@ -393,14 +384,6 @@ warns the user about an unsafe password if he has one and contains a link to the
 Property | Type | Required | Default value | Description
 :--- | :--- | :--- | :--- | :---
 signInHandler|func|yes||
------
-**src/login/ProtectedRoute.js**
-
-### 1. ProtectedRoute
-
-
-
-
 -----
 **src/registration/RegistrationPage.js**
 
@@ -421,8 +404,7 @@ signInHandler|func|yes||
 
 ### 1. VerificationPage
 
-Renders the verification page new accounts are sent to after clicking on the vericiation link in their e-mail
-.   
+Renders the verification page new accounts are sent to after clicking on the vericiation link in their e-mail.   
 
 
 

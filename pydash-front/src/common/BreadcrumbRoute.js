@@ -6,11 +6,11 @@ import { Breadcrumb } from '@pydash/react-breadcrumbs';
 
 
 /**
-* A special version of the `Route` component that the `react-router-dom` exposes
-* which not only contains a Route handler, but will also add that part of the route to the breadcrumbs of the current page.
-* This means that when multiple of these components are nested in one another, the breadcrumbs of this nesting will show up.
-* (The actual rendering of these breadcrumbs happens in `UserInterface` using the `Breadcrumbs` component)
-* /
+ * A special version of the `Route` component that the `react-router-dom` exposes
+ * which not only contains a Route handler, but will also add that part of the route to the breadcrumbs of the current page.
+ * This means that when multiple of these components are nested in one another, the breadcrumbs of this nesting will show up.
+ * (The actual rendering of these breadcrumbs happens in `UserInterface` using the `Breadcrumbs` component)
+ */
 const BreadcrumbRoute = ({
 	  component: Component,
 	  includeSearch = false,
