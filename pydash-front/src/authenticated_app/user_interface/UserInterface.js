@@ -72,6 +72,10 @@ const styles = theme => ({
     },
 });
 
+/**
+ * Shows the user interface for logged in users, including the sidebar with links to the overview and the settings page.
+ * 
+ */
 class UserInterface extends React.Component {
     state = {
         mobileOpen: false,
