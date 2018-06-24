@@ -1129,7 +1129,7 @@ Url query string parameters:
     \end{quote}
   \item
     \begin{quote}
-    Slowest\_measured\_execution\_time
+    slowest\_measured\_execution\_time
     \end{quote}
   \end{itemize}
 \item
@@ -1138,17 +1138,16 @@ Url query string parameters:
   datetime range in which the desired information lies. start\_date and
   end\_date are resp. The inclusive lower- and exclusive upper bounds of
   this datetime range.
+  If start\_date is not provided, it defaults to the timestamp of the
+  dashboard's first endpoint call.  
+  If end\_date is not provided, it defaults to the current utc time.  
+  It is assumed both start\_date and end\_date are provided in utc time,
+  as well as that they conform to the ISO-8601 date and time standard.
   \end{quote}
 \end{itemize}
 
 \begin{quote}
-If start\_date is not provided, it defaults to the timestamp of the
-dashboard's first endpoint call.
 
-If end\_date is not provided, it defaults to the current utc time.
-
-It is assumed both start\_date and end\_date are provided in utc time,
-as well as that they conform to the ISO-8601 date and time standard.
 \end{quote}
 
 \begin{itemize}
@@ -1156,11 +1155,11 @@ as well as that they conform to the ISO-8601 date and time standard.
   \begin{quote}
   timeslice (string) - Indicates the data should be returned as a series
   of points in time, each timeslice long.
+  The currently supported timeslices are: 'year', 'month', 'week', 'day',
+  'hour' and 'minute'.
   \end{quote}
 \end{itemize}
 
-The currently supported timeslices are: 'year', 'month', 'week', 'day',
-'hour' and 'minute'.
 
 \begin{itemize}
 \item
@@ -1169,11 +1168,12 @@ The currently supported timeslices are: 'year', 'month', 'week', 'day',
   should be 'static' (i.e. have a set place in the overarching timespan
   {[}e.g. W23, or the month of June{]}) or 'dynamic' (i.e. its start and
   end can be anything, but its length is set in stone)
+  
+  Note that timeslice\_is\_static is {mandatory} when timeslice is
+  provided.
   \end{quote}
 \end{itemize}
 
-Note that timeslice\_is\_static is {mandatory} when timeslice is
-provided.
 
 Responses:
 
