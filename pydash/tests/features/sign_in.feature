@@ -10,7 +10,6 @@ Scenario: Signing in successfully as existent verified user
   And I enter the password "mypass"
   And I click the sign in button
   Then I should be on the overview page
-  And I should see the username "W-M" in the menu
 
 Scenario: Signing in without entering anything
   When I visit the Pydash sign in page

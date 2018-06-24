@@ -108,7 +108,8 @@ BuildDocumentation()
     pipenv run make latexpdf
     xdg-open ./_build/latex/PyDash.pdf
     cd ../..
-    PydashPrint "Resulting PDF can be found in ./pydash/sphinx_docs/_build/latex/PyDash.pdf"
+    cp ./pydash/sphinx_docs/_build/latex/PyDash.pdf ./docs/PyDashDocumentation.pdf
+    PydashPrint "Resulting PDF can be found in ./docs/PyDashDocumentation.pdf"
 }
 
 RunProduction()
