@@ -1,42 +1,42 @@
 import axios from 'axios';
 
-import {dict_to_xy_arr, getIsoDateString} from "../../../utils";
+import {dict_to_xy_arr} from "../../../utils";
 
-function getDateString(timeslice) {
-    let date = new Date();
-    let dateString = "&start_date=";
+// function getDateString(timeslice) {
+//     let date = new Date();
+//     let dateString = "&start_date=";
 
-    switch (timeslice) {
-        case "hour":
-            date.setHours(date.getHours() - 12);
-            break;
-        case "day":
-            date.setDate(date.getDate() - 7);
-            break;
-        case "week":
-            date.setDate(date.getDate() - 56);
-            break;
-        case "month":
-            date.setMonth(date.getMonth() - 12);
-            console.log("calculated date: ", date);
-            break;
-        case "year":
-            console.log("current year: ", date.getFullYear());
-            date.setYear(date.getFullYear() - 5);
-            console.log("calculated date: ", date);
-            break;       
-        default:
-            break;
-    }
+//     switch (timeslice) {
+//         case "hour":
+//             date.setHours(date.getHours() - 12);
+//             break;
+//         case "day":
+//             date.setDate(date.getDate() - 7);
+//             break;
+//         case "week":
+//             date.setDate(date.getDate() - 56);
+//             break;
+//         case "month":
+//             date.setMonth(date.getMonth() - 12);
+//             console.log("calculated date: ", date);
+//             break;
+//         case "year":
+//             console.log("current year: ", date.getFullYear());
+//             date.setYear(date.getFullYear() - 5);
+//             console.log("calculated date: ", date);
+//             break;       
+//         default:
+//             break;
+//     }
 
-    dateString = dateString + getIsoDateString(date);
+//     dateString = dateString + getIsoDateString(date);
 
-    if (timeslice === "all_time") {
-        dateString = "";
-    }
+//     if (timeslice === "all_time") {
+//         dateString = "";
+//     }
 
-    return dateString;
-}
+//     return dateString;
+// }
 
 // function getGranularity(timeslice) {
 //     switch (timeslice) {
@@ -56,11 +56,11 @@ function getDateString(timeslice) {
 // }
 
 async function requestStatisticData(dashboard_id, statistic, timeslice, callback) {
-    let dateString = getDateString(timeslice);
+    // let dateString = getDateString(timeslice);
     return await axios({
         method: 'get',
         withCredentials: true,
-        url: window.api_path + '/api/dashboards/' + dashboard_id + '/statistic?statistic=' + statistic + '&timeslice=' + timeslice + '&timeslice_is_static=True&granularity=' + timeslice + dateString,
+        url: window.api_path + '/api/dashboards/' + dashboard_id + '/statistic?statistic=' + statistic + '&timeslice=' + timeslice + '&timeslice_is_static=True'
     }).then((response) => {
         console.log("Statistics data returned: ", response);
         const timeslice_statistics_data = dict_to_xy_arr(response.data);
