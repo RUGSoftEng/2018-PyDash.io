@@ -15,11 +15,13 @@ def seed():
     """
     For each user, stores some preliminary debug dashboards in the datastore,
     to be used during development.
+    Note: For now it only generates a dashboard for the user named "Arjan", to speed up seeding.
     """
 
     repository.clear_all()
 
-    for user in user_repository.all():
+    # for user in user_repository.all():
+    for user in [user_repository.find_by_name("Arjan")]:
         dashboard_new = Dashboard('http://flask-sample.koenbolhuis.nl/dashboard',
                                   'cc83733cb0af8b884ff6577086b87909',
                                   user.get_id(),
@@ -29,7 +31,11 @@ def seed():
                                   'cc83733cb0af8b884ff6577086b87909',
                                   user.get_id(),
                                   'Unsupported Dashboard (FMD v1.11.5)')
-        for dashboard in [dashboard_new, dashboard_old]:
+        pydash = Dashboard('http://localhost:5000/api/fmd',
+                                  'cc83733cb0af8b884ff6577086b87909',
+                                  user.get_id(),
+                                  'PyDash Meta')
+        for dashboard in [dashboard_new, dashboard_old, pydash]:
             print(f'Adding dashboard {dashboard}')
             repository.add(dashboard)
             print(f'Fetching remote info for dashboard {dashboard}.')

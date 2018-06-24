@@ -77,6 +77,13 @@ if not hasattr(database_root(), 'dashboards'):
 
 
 def find(dashboard_id):
+    """
+    Find and retrieve the dashboard from the repository with id `dashboard_id`.
+    :param dashboard_id: A string, integer or UUID instance representing the id of the dashboard in question.
+    :return: A Dashboard instance if it is in the repository.
+    :raises KeyError: If no dashboard with id `dashboard_id` is found in the repository.
+    :raises Exception: If some internal error occurred.
+    """
     # Ensure that this is also callable with strings or integers:
     if not isinstance(dashboard_id, uuid.UUID):
         dashboard_id = uuid.UUID(dashboard_id)
@@ -92,10 +99,16 @@ def find(dashboard_id):
 
 
 def all():
+    """Returns an iterable collection of all dashboards in the repository (in no guaranteed order)."""
     return database_root().dashboards.values()
 
 
 def add(dashboard):
+    """
+    Adds a dashboard to the repository.
+    :param dashboard: The Dashboard instance to add to the repository.
+    :raises (KeyError, DuplicateIndexError): When a dashboard with the same id already exists in the repository.
+    """
     try:
         transaction.begin()
         database_root().dashboards.add(dashboard)
@@ -106,6 +119,11 @@ def add(dashboard):
 
 
 def delete(dashboard):
+    """
+    Deletes a dashboard from the repository.
+    :param dashboard: The Dashboard instance to delete from the repository.
+    :raises KeyError: When the given dashboard does not exist within the repository.
+    """
     try:
         transaction.begin()
         database_root().dashboards.remove(dashboard)
@@ -116,6 +134,10 @@ def delete(dashboard):
 
 
 def update(dashboard):
+    """
+    Updates a dashboard in the repository with the values of the provided dashboard.
+    :param dashboard: The Dashboard instance to update its counterpart in the repository with.
+    """
     # Update item itself:
     transaction.commit()
 
@@ -127,6 +149,7 @@ def update(dashboard):
 
 
 def clear_all():
+    """Clears the entire repository."""
     transaction.begin()
     database_root().dashboards = MultiIndexedPersistentCollection({'id'})
     transaction.commit()

@@ -35,6 +35,7 @@ class OverviewPage extends Component {
                 <AddDashboardDialog
                     open={this.state.open}
                     onClose={this.handleClose}
+                    callBack={this.props.updateData}
                 />
 
                 {((this.props.dashboards == null) ?
