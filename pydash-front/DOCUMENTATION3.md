@@ -1,11 +1,11 @@
-# PyDash Front-end Components Documentation 
+Components
+
+
+-----
 
 
 
-
-
-
-
+-----
 
 
 
@@ -27,6 +27,8 @@ username|string|no||
 isAuthenticated|bool|yes||
 
 
+-----
+
 
 **src/Notifier.js**
 
@@ -44,6 +46,8 @@ The application should only contain one Notifier component, because the `showNot
 
 
 
+
+-----
 
 
 **src/Routes.js**
@@ -65,6 +69,8 @@ signInHandler|func|yes||
 signOutHandler|func|yes||
 
 
+-----
+
 
 **src/authenticated_app/AuthenticatedApp.js**
 
@@ -83,6 +89,8 @@ isAuthenticated|bool|yes||
 signOutHandler|func|yes||
 
 
+-----
+
 
 **src/authenticated_app/AuthenticatedRoutes.js**
 
@@ -97,6 +105,8 @@ Property | Type | Required | Default value | Description
 :--- | :--- | :--- | :--- | :---
 dashboards|object|no||
 
+
+-----
 
 
 **src/authenticated_app/dashboard/DashboardRoutes.js**
@@ -114,6 +124,8 @@ dashboard|shape|no||
 match|shape|no||
 
 
+-----
+
 
 **src/authenticated_app/dashboard/statistics_page/EndpointExecutionTimesPanel.js**
 
@@ -128,6 +140,8 @@ Property | Type | Required | Default value | Description
 :--- | :--- | :--- | :--- | :---
 dashboard_id|string|yes||
 
+
+-----
 
 
 **src/authenticated_app/dashboard/statistics_page/ExecutionTimesGraph.js**
@@ -145,6 +159,8 @@ data|array|yes||
 title|string|yes||
 
 
+-----
+
 
 **src/authenticated_app/dashboard/statistics_page/StatisticFetcher.js**
 
@@ -159,6 +175,8 @@ Property | Type | Required | Default value | Description
 :--- | :--- | :--- | :--- | :---
 timeslice|string|no||
 
+
+-----
 
 
 **src/authenticated_app/dashboard/statistics_page/StatisticsPage.js**
@@ -176,6 +194,8 @@ theme|object|yes||
 dashboard|shape|yes||
 
 
+-----
+
 
 **src/authenticated_app/dashboard/statistics_page/TimesliceTabs.js**
 
@@ -189,6 +209,8 @@ This property is set, depending on the tab that the user selects (one of hour, d
 
 
 
+
+-----
 
 
 **src/authenticated_app/dashboard/statistics_page/UniqueVisitorsHeatmapPanel.js**
@@ -205,6 +227,8 @@ Property | Type | Required | Default value | Description
 dashboard_id|string|yes||
 
 
+-----
+
 
 **src/authenticated_app/dashboard/statistics_page/UniqueVisitorsPanel.js**
 
@@ -219,6 +243,8 @@ Property | Type | Required | Default value | Description
 :--- | :--- | :--- | :--- | :---
 dashboard_id|string|yes||
 
+
+-----
 
 
 **src/authenticated_app/dashboard/statistics_page/VisitorsHeatmapGraph.js**
@@ -236,6 +262,8 @@ data|array|yes||
 title|string|yes||
 
 
+-----
+
 
 **src/authenticated_app/dashboard/statistics_page/VisitorsHeatmapPanel.js**
 
@@ -250,6 +278,8 @@ Property | Type | Required | Default value | Description
 :--- | :--- | :--- | :--- | :---
 dashboard_id|string|yes||
 
+
+-----
 
 
 **src/authenticated_app/dashboard/statistics_page/VisitsGraph.js**
@@ -270,6 +300,8 @@ height|number|yes||
 timeslice|string|yes||
 
 
+-----
+
 
 **src/authenticated_app/dashboard/statistics_page/VisitsPanel.js**
 
@@ -285,6 +317,8 @@ Property | Type | Required | Default value | Description
 dashboard_id|string|yes||
 
 
+-----
+
 
 **src/authenticated_app/endpoint/EndpointPage.js**
 
@@ -297,6 +331,8 @@ The `EndpointPage` renders the details page of a single EndpointPage.
 
 
 
+-----
+
 
 **src/authenticated_app/endpoint/EndpointsTable.js**
 
@@ -306,6 +342,8 @@ The `EndpointPage` renders the details page of a single EndpointPage.
 
 
 
+
+-----
 
 
 **src/authenticated_app/overview/AddDashboardDialog.js**
@@ -320,6 +358,8 @@ It also performs the handling logic of saving the information that has been ente
 
 
 
+-----
+
 
 **src/authenticated_app/overview/DashboardList.js**
 
@@ -331,6 +371,8 @@ A list of dashboards, where each entry (`DashboardListItem`) contains some gener
 
 
 
+
+-----
 
 
 **src/authenticated_app/overview/DashboardListItem.js**
@@ -346,6 +388,8 @@ This component is to be used as part of a `DashboardList`.
 
 
 
+-----
+
 
 **src/authenticated_app/overview/OverviewPage.js**
 
@@ -357,6 +401,8 @@ The `OverviewPage` is the main page the user sees after logging in.
 
 
 
+
+-----
 
 
 **src/authenticated_app/settings/SettingsPage.js**
@@ -376,6 +422,8 @@ Property | Type | Required | Default value | Description
 classes|object|yes||
 
 
+-----
+
 
 **src/authenticated_app/user_interface/Logout.js**
 
@@ -391,6 +439,8 @@ Property | Type | Required | Default value | Description
 signOutHandler|func|yes||
 
 
+-----
+
 
 **src/authenticated_app/user_interface/Menu.js**
 
@@ -405,6 +455,8 @@ signOutHandler|func|yes||
 
 
 
+
+-----
 
 
 **src/authenticated_app/user_interface/UserInterface.js**
@@ -426,6 +478,8 @@ classes|object|yes||
 theme|object|yes||
 
 
+-----
+
 
 **src/common/BreadcrumbRoute.js**
 
@@ -445,6 +499,8 @@ includeSearch||no|false|
 isLink||no|true|
 
 
+-----
+
 
 **src/common/ResponsiveGraphWrapper.js**
 
@@ -462,6 +518,8 @@ Property | Type | Required | Default value | Description
 height|number|yes||
 
 
+-----
+
 
 **src/login/LoginPage.js**
 
@@ -477,6 +535,8 @@ Property | Type | Required | Default value | Description
 :--- | :--- | :--- | :--- | :---
 signInHandler|func|yes||
 
+
+-----
 
 
 **src/registration/RegistrationPage.js**
@@ -495,6 +555,8 @@ Property | Type | Required | Default value | Description
 signInHandler|func|yes||
 
 
+-----
+
 
 **src/registration/VerificationPage.js**
 
@@ -506,6 +568,8 @@ Renders the verification page new accounts are sent to after clicking on the ver
 
 
 
+
+-----
 
 
 

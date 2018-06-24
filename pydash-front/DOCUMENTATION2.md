@@ -1,17 +1,17 @@
-# PyDash Front-end Components Documentation 
+Components
+
+
+-----
 
 
 
-
-
-
-
+-----
 
 
 
 **src/App.js**
 
-### App
+### 1. App
 
 The entry point of the React application.
 Almost all work is delegated to subcomponents.
@@ -27,10 +27,12 @@ username|string|no||
 isAuthenticated|bool|yes||
 
 
+-----
+
 
 **src/Notifier.js**
 
-### Notifier
+### 1. Notifier
 
 This component shows the notifications ('Snackbars') that the app might generate.
 This has been put in its own component that is included at the outside of the application,
@@ -45,10 +47,12 @@ The application should only contain one Notifier component, because the `showNot
 
 
 
+-----
+
 
 **src/Routes.js**
 
-### Routes
+### 1. Routes
 
 Will dispatch between the various top-level routes that the application uses.
 
@@ -65,10 +69,12 @@ signInHandler|func|yes||
 signOutHandler|func|yes||
 
 
+-----
+
 
 **src/authenticated_app/AuthenticatedApp.js**
 
-### AuthenticatedApp
+### 1. AuthenticatedApp
 
 Base of the app after logging in. Renders the user interface and the relevant page for the current path.
 Also handles the updating of data for the dashboards linked to the logged in account.   
@@ -83,10 +89,12 @@ isAuthenticated|bool|yes||
 signOutHandler|func|yes||
 
 
+-----
+
 
 **src/authenticated_app/AuthenticatedRoutes.js**
 
-### AuthenticatedRoutes
+### 1. AuthenticatedRoutes
 
 Similar to `Routes`, this component performs routing, but for the website after being authenticated.   
 
@@ -98,10 +106,12 @@ Property | Type | Required | Default value | Description
 dashboards|object|no||
 
 
+-----
+
 
 **src/authenticated_app/dashboard/DashboardRoutes.js**
 
-### DashboardRoutes
+### 1. DashboardRoutes
 
 Dispatches between all routes concerning a single dashboard.   
 
@@ -114,10 +124,12 @@ dashboard|shape|no||
 match|shape|no||
 
 
+-----
+
 
 **src/authenticated_app/dashboard/statistics_page/EndpointExecutionTimesPanel.js**
 
-### EndpointExecutionTimesPanel
+### 1. EndpointExecutionTimesPanel
 
 Panel containing the `EndpointExecutionTimesGraph`.   
 
@@ -129,10 +141,12 @@ Property | Type | Required | Default value | Description
 dashboard_id|string|yes||
 
 
+-----
+
 
 **src/authenticated_app/dashboard/statistics_page/ExecutionTimesGraph.js**
 
-### ExecutionTimesGraph
+### 1. ExecutionTimesGraph
 
 Displays the average execution time per the given dashboard's endpoint.   
 
@@ -145,10 +159,12 @@ data|array|yes||
 title|string|yes||
 
 
+-----
+
 
 **src/authenticated_app/dashboard/statistics_page/StatisticFetcher.js**
 
-### StatisticFetcher
+### 1. StatisticFetcher
 
 Base class component that specific Statistics-fetchers inherit.   
 
@@ -160,10 +176,12 @@ Property | Type | Required | Default value | Description
 timeslice|string|no||
 
 
+-----
+
 
 **src/authenticated_app/dashboard/statistics_page/StatisticsPage.js**
 
-### StatisticsPage
+### 1. StatisticsPage
 
 The main Dashboard page that cointains all general statistics we've gathered for it.   
 
@@ -176,10 +194,12 @@ theme|object|yes||
 dashboard|shape|yes||
 
 
+-----
+
 
 **src/authenticated_app/dashboard/statistics_page/TimesliceTabs.js**
 
-### TimesliceTabs
+### 1. TimesliceTabs
 
 A component put inside this component will receive the `timeslice` property
 
@@ -190,10 +210,12 @@ This property is set, depending on the tab that the user selects (one of hour, d
 
 
 
+-----
+
 
 **src/authenticated_app/dashboard/statistics_page/UniqueVisitorsHeatmapPanel.js**
 
-### UniqueVisitorsHeatmapPanel
+### 1. UniqueVisitorsHeatmapPanel
 
 Panel containing a heatmap of all unique visitors that have been visiting this Dashboard.   
 
@@ -205,10 +227,12 @@ Property | Type | Required | Default value | Description
 dashboard_id|string|yes||
 
 
+-----
+
 
 **src/authenticated_app/dashboard/statistics_page/UniqueVisitorsPanel.js**
 
-### UniqueVisitorsPanel
+### 1. UniqueVisitorsPanel
 
 A Panel containing a line graph showing how many unique visitors this Dashboard had.   
 
@@ -220,10 +244,12 @@ Property | Type | Required | Default value | Description
 dashboard_id|string|yes||
 
 
+-----
+
 
 **src/authenticated_app/dashboard/statistics_page/VisitorsHeatmapGraph.js**
 
-### VisitorsHeatmapGraph
+### 1. VisitorsHeatmapGraph
 
 Heatmap of visitors that have been visiting this Dashboard.   
 
@@ -236,10 +262,12 @@ data|array|yes||
 title|string|yes||
 
 
+-----
+
 
 **src/authenticated_app/dashboard/statistics_page/VisitorsHeatmapPanel.js**
 
-### VisitorsHeatmapPanel
+### 1. VisitorsHeatmapPanel
 
 Panel containing a heatmap of all visitors that have been visiting this Dashboard.   
 
@@ -251,10 +279,12 @@ Property | Type | Required | Default value | Description
 dashboard_id|string|yes||
 
 
+-----
+
 
 **src/authenticated_app/dashboard/statistics_page/VisitsGraph.js**
 
-### VisitsGraph
+### 1. VisitsGraph
 
 A line graph showing how many visitors this Dashboard had.   
 
@@ -270,10 +300,12 @@ height|number|yes||
 timeslice|string|yes||
 
 
+-----
+
 
 **src/authenticated_app/dashboard/statistics_page/VisitsPanel.js**
 
-### VisitsPanel
+### 1. VisitsPanel
 
 A Panel containing a line graph showing how many visitors this Dashboard had.   
 
@@ -285,10 +317,12 @@ Property | Type | Required | Default value | Description
 dashboard_id|string|yes||
 
 
+-----
+
 
 **src/authenticated_app/endpoint/EndpointPage.js**
 
-### EndpointPage
+### 1. EndpointPage
 
 The `EndpointPage` renders the details page of a single EndpointPage.   
 
@@ -297,20 +331,24 @@ The `EndpointPage` renders the details page of a single EndpointPage.
 
 
 
+-----
+
 
 **src/authenticated_app/endpoint/EndpointsTable.js**
 
-### EndpointsTable
+### 1. EndpointsTable
 
 
 
 
 
+
+-----
 
 
 **src/authenticated_app/overview/AddDashboardDialog.js**
 
-### AddDashboardDialog
+### 1. AddDashboardDialog
 
 `AddDashboardDialog` shows the modal dialog that allows a user to add a new dashboard to PyDash.
 It also performs the handling logic of saving the information that has been entered in the form.   
@@ -320,10 +358,12 @@ It also performs the handling logic of saving the information that has been ente
 
 
 
+-----
+
 
 **src/authenticated_app/overview/DashboardList.js**
 
-### DashboardList
+### 1. DashboardList
 
 A list of dashboards, where each entry (`DashboardListItem`) contains some general information about the dashboard.   
 
@@ -332,10 +372,12 @@ A list of dashboards, where each entry (`DashboardListItem`) contains some gener
 
 
 
+-----
+
 
 **src/authenticated_app/overview/DashboardListItem.js**
 
-### DashboardListItem
+### 1. DashboardListItem
 
 The `DashboardListItem` displays some general information about the given dashboard;
 
@@ -346,10 +388,12 @@ This component is to be used as part of a `DashboardList`.
 
 
 
+-----
+
 
 **src/authenticated_app/overview/OverviewPage.js**
 
-### OverviewPage
+### 1. OverviewPage
 
 The `OverviewPage` is the main page the user sees after logging in.   
 
@@ -358,10 +402,12 @@ The `OverviewPage` is the main page the user sees after logging in.
 
 
 
+-----
+
 
 **src/authenticated_app/settings/SettingsPage.js**
 
-### SettingsPage
+### 1. SettingsPage
 
 Component representing the settings page.
 
@@ -376,10 +422,12 @@ Property | Type | Required | Default value | Description
 classes|object|yes||
 
 
+-----
+
 
 **src/authenticated_app/user_interface/Logout.js**
 
-### Logout
+### 1. Logout
 
 Renders the logout icon, handles logout requests and redirects to the login page when succesful.   
 
@@ -391,10 +439,12 @@ Property | Type | Required | Default value | Description
 signOutHandler|func|yes||
 
 
+-----
+
 
 **src/authenticated_app/user_interface/Menu.js**
 
-### MainMenuItems
+### 1. MainMenuItems
 
 
 
@@ -406,10 +456,12 @@ signOutHandler|func|yes||
 
 
 
+-----
+
 
 **src/authenticated_app/user_interface/UserInterface.js**
 
-### UserInterface
+### 1. UserInterface
 
 Shows the user interface for logged in users:
 
@@ -426,10 +478,12 @@ classes|object|yes||
 theme|object|yes||
 
 
+-----
+
 
 **src/common/BreadcrumbRoute.js**
 
-### BreadcrumbRoute
+### 1. BreadcrumbRoute
 
 A special version of the `Route` component that the `react-router-dom` exposes
 which not only contains a Route handler, but will also add that part of the route to the breadcrumbs of the current page.
@@ -445,10 +499,12 @@ includeSearch||no|false|
 isLink||no|true|
 
 
+-----
+
 
 **src/common/ResponsiveGraphWrapper.js**
 
-### ResponsiveGraphWrapper
+### 1. ResponsiveGraphWrapper
 
 A Nivo Graph component (or other component that you want to auto-resize to fill its container width), can be added to this component to ensure that this resizing will happen.
 
@@ -462,10 +518,12 @@ Property | Type | Required | Default value | Description
 height|number|yes||
 
 
+-----
+
 
 **src/login/LoginPage.js**
 
-### LoginPage
+### 1. LoginPage
 
 Renders the login page and handles the login requests. Lets the user know if something went wrong with logging in,
 warns the user about an unsafe password if he has one and contains a link to the register page.   
@@ -478,10 +536,12 @@ Property | Type | Required | Default value | Description
 signInHandler|func|yes||
 
 
+-----
+
 
 **src/registration/RegistrationPage.js**
 
-### RegistrationPage
+### 1. RegistrationPage
 
 Renders the registration page. Also handles the register request itself, including making sure all the necessary fields
 are filled in correctly. Shows relevant error messages when something is going wrong and provides an explanation on
@@ -495,10 +555,12 @@ Property | Type | Required | Default value | Description
 signInHandler|func|yes||
 
 
+-----
+
 
 **src/registration/VerificationPage.js**
 
-### VerificationPage
+### 1. VerificationPage
 
 Renders the verification page new accounts are sent to after clicking on the vericiation link in their e-mail.   
 
@@ -506,6 +568,8 @@ Renders the verification page new accounts are sent to after clicking on the ver
 
 
 
+
+-----
 
 
 

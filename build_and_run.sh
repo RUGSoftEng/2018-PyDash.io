@@ -103,13 +103,30 @@ RunTests()
 BuildDocumentation()
 {
     RunDatabase
-    PydashPrint "Starting Documentation generation"
+    PydashPrint "Starting Backend Documentation generation"
     cd pydash/sphinx_docs
     pipenv run make latexpdf
-    xdg-open ./_build/latex/PyDash.pdf
     cd ../..
     cp ./pydash/sphinx_docs/_build/latex/PyDash.pdf ./docs/PyDashDocumentation.pdf
-    PydashPrint "Resulting PDF can be found in ./docs/PyDashDocumentation.pdf"
+    PydashPrint "Resulting Backend Documentation PDF can be found in ./docs/PyDashDocumentation.pdf"
+    killall runzeo
+
+    PydashPrint "Starting Frontend Documentation generation"
+    cd pydash-front
+    yarn doc
+    sed -i.bak 's/-----/\n\n/g' DOCUMENTATION.md
+    sed -i.bak 's/1. //g' DOCUMENTATION.md
+    sed -i.bak 's/^Components//g' DOCUMENTATION.md
+    sed -i '1i # PyDash Front-end Components Documentation \n\n\n' DOCUMENTATION.md
+    pandoc DOCUMENTATION.md -o PyDashFrontDocumentation.pdf
+    cd ..
+    cp ./pydash-front/PyDashFrontDocumentation.pdf ./docs/PyDashFrontDocumentation.pdf
+    PydashPrint "Resulting Frontend Documentation PDF can be found in ./docs/PyDashFrontDocumentation.pdf"
+
+    PydashPrint "Done!"
+    PydashPrint "Documentation files in ./docs updated!"
+
+
 }
 
 RunProduction()
