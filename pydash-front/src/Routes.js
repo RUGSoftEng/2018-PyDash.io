@@ -8,8 +8,9 @@ import AuthenticatedApp from './authenticated_app/AuthenticatedApp';
 import VerificationPage from './registration/VerificationPage';
 
 /**
- * Purpose: Shows the correct pages when the link is matching one of the switch statements.
- * 
+ * Will dispatch between the various top-level routes that the application uses.
+ *
+ * After having logged in, there are various sub-routes, which are dispatched in their own component, inside of AuthenticatedApp.
  */
 class Routes extends Component {
     render = () => {

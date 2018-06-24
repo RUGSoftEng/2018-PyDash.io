@@ -2,10 +2,15 @@ import React from 'react';
 import Snackbar from 'material-ui/Snackbar';
 
 let openSnackbarFunction;
+
 /**
- * This component ensures the snackbar notification bar functions correctly,
- *  for example by making it visible long enough to be readable 
- * 
+ * This component shows the notifications ('Snackbars') that the app might generate.
+ * This has been put in its own component that is included at the outside of the application,
+ * so that logging in/logging out and other state changes that might completely alter how the page will look,
+ * will be able to show notifications as well.
+ *
+ * The Notifier component is not used directly from within the app. Rather, the `showNotification()` function that this component file exports is.
+ * The application should only contain one Notifier component, because the `showNotification()` function expects there to only be one Notifier.
  */
 class Notifier extends React.Component {
     state = {
@@ -41,19 +46,19 @@ class Notifier extends React.Component {
 
     render() {
         const message = (
-                <span
-            id="snackbar-message-id">
+            <span
+                id="snackbar-message-id">
                 {this.state.message}
             </span>
         );
 
         return (
-                <Snackbar
-            message={message}
-            autoHideDuration={ this.state.preventClosing ? null : this.state.autoHideDuration}
-            onClose={this.handleSnackbarClose}
-            open={this.state.open}
-                />
+            <Snackbar
+                message={message}
+                autoHideDuration={ this.state.preventClosing ? null : this.state.autoHideDuration}
+                onClose={this.handleSnackbarClose}
+                open={this.state.open}
+            />
         );
     }
 }

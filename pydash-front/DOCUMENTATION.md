@@ -5,6 +5,11 @@ Components
 
 ### 1. App
 
+The entry point of the React application.
+Almost all work is delegated to subcomponents.
+The only work that the App component itself does, is to check if the user is logged in or not,
+and pass functions to lower-level components to sign a user in or out.   
+
 
 
 
@@ -17,8 +22,13 @@ isAuthenticated|bool|yes||
 
 ### 1. Notifier
 
-This component ensures the snackbar notification bar functions correctly,
- for example by making it visible long enough to be readable   
+This component shows the notifications ('Snackbars') that the app might generate.
+This has been put in its own component that is included at the outside of the application,
+so that logging in/logging out and other state changes that might completely alter how the page will look,
+will be able to show notifications as well.
+
+The Notifier component is not used directly from within the app. Rather, the `showNotification()` function that this component file exports is.
+The application should only contain one Notifier component, because the `showNotification()` function expects there to only be one Notifier.   
 
 
 
@@ -28,7 +38,9 @@ This component ensures the snackbar notification bar functions correctly,
 
 ### 1. Routes
 
-Purpose: Shows the correct pages when the link is matching one of the switch statements.   
+Will dispatch between the various top-level routes that the application uses.
+
+After having logged in, there are various sub-routes, which are dispatched in their own component, inside of AuthenticatedApp.   
 
 
 
