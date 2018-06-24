@@ -14,6 +14,11 @@ import TextField from 'material-ui/TextField';
 import Logo from '../images/logo.png';
 import Warning from '@material-ui/icons/Warning';
 
+import IconButton from 'material-ui/IconButton';
+import Visibility from 'material-ui-icons/Visibility';
+import VisibilityOff from 'material-ui-icons/VisibilityOff';
+import {InputAdornment} from 'material-ui/Input'
+
 // Sound:
 import {Howl} from 'howler';
 import login_soundfile from "./boot.mp3";
@@ -31,6 +36,14 @@ const styles = theme => ({
         width: theme.spacing.unit * 4,
         height: theme.spacing.unit * 4,
     },
+    rightIcon: {
+        marginLeft: theme.spacing.unit,
+      },
+      textpanel: {
+        width: '200px',
+        
+
+             },
 });
 
 class LoginPage extends Component {
@@ -42,6 +55,8 @@ class LoginPage extends Component {
         success: false,
         loading: false,
         IsPasswordTooShort: true,
+        showPassword: false,
+
     };
 
     handleChange = key => event => {
@@ -67,6 +82,14 @@ class LoginPage extends Component {
         }
 
     };
+
+    handleMouseDownPassword = event => {
+        event.preventDefault();
+      };
+    
+      handleClickShowPassword = () => {
+        this.setState({ showPassword: !this.state.showPassword });
+      };
 
     tryLogin = (e) => {
         e.preventDefault()
@@ -108,7 +131,7 @@ class LoginPage extends Component {
             if(error.response && error.response.status === 401) {
                 this.setState(prevState => ({
                     error: true,
-                    helperText: 'Incorrect credentials 😱',
+                    helperText: 'Incorrect credentials',
                     loading: false,
                 }))
             } else {
@@ -122,6 +145,8 @@ class LoginPage extends Component {
     }
 
     render() {
+        const { classes } = this.props;
+
         return this.state.success ? (
             <Redirect to="/overview" />
         ) : (
@@ -130,26 +155,42 @@ class LoginPage extends Component {
                     <img alt="PyDash logo" width="200" src={Logo} />
                 </header>
 
-                <form onSubmit={this.tryLogin}>
+                <form onSubmit={this.tryLogin} >
                     <br />
-                    <TextField
+                    <TextField className={classes.textpanel}
                         id="username"
                         label="Username"
                         value={this.state.username}
                         onChange={this.handleChange('username')}
                         margin="normal"
+                        fullWidth
                         error={this.state.error}
                     />
                     <br />
-                    <TextField
+                    <TextField className={classes.textpanel}
                         id="password"
                         label="Password"
                         value={this.state.password}
                         onChange={this.handleChange('password')}
                         margin="normal"
-                        type="password"
+                        fullWidth
+                        type={this.state.showPassword ? 'text' : 'password'}
                         error={this.state.error}
                         helperText={this.state.helperText}
+                        InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton className={classes.rightIcon}
+
+                                    aria-label="Toggle password visibility"
+                                    onClick={this.handleClickShowPassword}
+                                    onMouseDown={this.handleMouseDownPassword}
+                                    >
+                                    {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          }}
                     />
                     {(this.state.isPasswordUnsafe ?
                       <p className="password-safety-warning" >
