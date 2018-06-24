@@ -158,7 +158,7 @@ class AddDashboardDialog extends Component {
                         <TextField
                             autoFocus
                             id="url"
-                            label="Dashboard URL"
+                            label="Dashboard URL: https://example.com/dashboard"
                             type="url"
                             value={this.state.url}
                             fullWidth
@@ -166,6 +166,7 @@ class AddDashboardDialog extends Component {
                             error={this.state.errorURL||this.state.error}
                             onChange={this.handleChange('url')}
                         />
+                        <small>This is the page at which you can access the Flask Monitoring Dashboard, without trailing slash. Unless configured otherwise, this is your domain name followed by '/dashboard'.</small>
                         <TextField
                             id="name"
                             label="Dashboard name"
@@ -174,6 +175,7 @@ class AddDashboardDialog extends Component {
                             fullWidth 
                             onChange={this.handleChange('name')}
                         />
+                        <small>Optional. This name will be used in PyDash's interface.</small>
                         <TextField 
                             id="token"
                             label="Security token"
@@ -185,6 +187,7 @@ class AddDashboardDialog extends Component {
                             helperText={this.state.helperText}
                             onChange={this.handleChange('token')}
                         />
+                        <small>The Flask Monitoring Dashboard <em>security token</em> is set after importing <em>flask_monitoringdashboard</em> into your Flask application using <em>flask_monitoringdashboard.config.security_token</em>. If you are still using the default token, you are susceptible to eavesdroppers, so do not forget to change it!</small>
                          <DialogActions>
                         <Button onClick={this.props.onClose} color="default">
                             Cancel
