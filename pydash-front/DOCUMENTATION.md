@@ -17,6 +17,9 @@ isAuthenticated|bool|yes||
 
 ### 1. Notifier
 
+This component ensures the snackbar notification bar functions correctly,
+ for example by making it visible long enough to be readable   
+
 
 
 
@@ -24,6 +27,8 @@ isAuthenticated|bool|yes||
 **src/Routes.js**
 
 ### 1. Routes
+
+Purpose: Shows the correct pages when the link is matching one of the switch statements.   
 
 
 
@@ -39,6 +44,8 @@ signOutHandler|func|yes||
 
 ### 1. SimpleSnackbar
 
+Outdated   
+
 
 
 
@@ -50,6 +57,8 @@ classes|object|yes||
 
 ### 1. Statistics
 
+Outdated   
+
 
 
 
@@ -57,6 +66,9 @@ classes|object|yes||
 **src/authenticated_app/AuthenticatedApp.js**
 
 ### 1. AuthenticatedApp
+
+Base of the app after logging in. Renders the user interface and the relevant page for the current URL.
+Also handles the updating of data for the dashboards linked to the logged in account.   
 
 
 
@@ -70,6 +82,9 @@ signOutHandler|func|yes||
 **src/authenticated_app/AuthenticatedRoutes.js**
 
 ### 1. AuthenticatedRoutes
+
+Same purpose as Routes.js, routing, but for the website after authentication. The routes after a certain dashboard are
+handled by DashboardRoutes.js.   
 
 
 
@@ -267,6 +282,9 @@ dashboard_id|string|yes||
 
 ### 1. SettingsPage
 
+Component representing the settings page. Provides rendering and functionality for changing account details, enabling 
+disabling sounds, and removing user accounts.   
+
 
 
 
@@ -277,6 +295,8 @@ classes|object|yes||
 **src/authenticated_app/user_interface/Logout.js**
 
 ### 1. Logout
+
+Renders the logout icon, handles logout requests and redirects to the login page when succesful.   
 
 
 
@@ -302,6 +322,8 @@ signOutHandler|func|yes||
 
 ### 1. UserInterface
 
+Shows the user interface for logged in users, including the sidebar with links to the overview and the settings page.   
+
 
 
 
@@ -326,6 +348,8 @@ isLink||no|true|
 
 ### 1. ResponsiveGraphWrapper
 
+Wrapper for the graphs, making sure they are shown the right way   
+
 
 
 
@@ -337,6 +361,9 @@ height|number|yes||
 
 ### 1. WidthAwareContainer
 
+This component becomes as large as its container, and then passes its resulting `width` on as the `with` prop to its child,
+as to make child components that require a width in pixels responsive.   
+
 
 
 
@@ -344,6 +371,9 @@ height|number|yes||
 **src/login/LoginPage.js**
 
 ### 1. LoginPage
+
+Purpose: Renders the login page and handles the login requests. Lets the user know if something went wrong with logging in,
+warns the user about an unsafe password if he has one and contains a link to the register page.   
 
 
 
@@ -364,6 +394,10 @@ signInHandler|func|yes||
 
 ### 1. RegistrationPage
 
+Renders the registration page. Also handles the register request itself, including making sure all the necessary fields
+are filled in correctly. Shows relevant error messages when something is going wrong and provides an explanation on
+the required security for passwords.   
+
 
 
 
@@ -374,6 +408,9 @@ signInHandler|func|yes||
 **src/registration/VerificationPage.js**
 
 ### 1. VerificationPage
+
+Renders the verification page new accounts are sent to after clicking on the vericiation link in their e-mail
+.   
 
 
 
