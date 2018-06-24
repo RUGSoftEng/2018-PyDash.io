@@ -87,9 +87,12 @@ class StatisticsPage extends Component {
                         ...prevState,
 
                         dashboard: response.data,
+<<<<<<< HEAD
+=======
                         
 
                         total_visits: total_visits,
+>>>>>>> development
                         error: response.data.error,
                     }
                 });
@@ -100,8 +103,11 @@ class StatisticsPage extends Component {
 
 
                         dashboard: response.data,
+<<<<<<< HEAD
+=======
 
                         total_visits: total_visits,
+>>>>>>> development
                     };
                 });
             }
