@@ -60,7 +60,7 @@ async function requestStatisticData(dashboard_id, statistic, timeslice, callback
     return await axios({
         method: 'get',
         withCredentials: true,
-        url: window.api_path + '/api/dashboards/' + dashboard_id + '?statistic=' + statistic + '&timeslice=' + timeslice + '&granularity=' + timeslice + dateString,
+        url: window.api_path + '/api/dashboards/' + dashboard_id + '/statistic?statistic=' + statistic + '&timeslice=' + timeslice + '&granularity=' + timeslice + dateString,
     }).then((response) => {
         console.log("Statistics data returned: ", response);
         const timeslice_statistics_data = dict_to_xy_arr(response.data);
