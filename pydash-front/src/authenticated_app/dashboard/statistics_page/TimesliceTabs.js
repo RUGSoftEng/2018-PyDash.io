@@ -50,7 +50,6 @@ class TimesliceTabs extends Component {
                     <Tab label="week" value="week" />
                     <Tab label="month" value="month" />
                     <Tab label="year" value="year" />
-                    <Tab label="all time" value="all_time" />
                 </Tabs>
             <TabContainer>
                 {updatedChildren}
