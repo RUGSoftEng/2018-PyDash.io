@@ -17,6 +17,9 @@ import ExpansionPanel, {
 // Utils:
 import { api_to_bar_data} from "../../../utils";
 
+/**
+ * Panel containing the `EndpointExecutionTimesGraph`.
+ */
 class EndpointExecutionTimesPanel extends Component {
     constructor(props) {
         super(props);

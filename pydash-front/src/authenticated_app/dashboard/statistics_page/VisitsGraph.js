@@ -7,6 +7,9 @@ import { Line } from '@nivo/line'
 // Utils:
 import ResponsiveGraphWrapper from '../../../common/ResponsiveGraphWrapper';
 
+/**
+* A line graph showing how many visitors this Dashboard had.
+*/
 class VisitsGraph extends Component {
     render() {
         let width = this.props.width;

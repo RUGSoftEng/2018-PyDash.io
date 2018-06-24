@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 // Visual:
 import Tabs, { Tab } from 'material-ui/Tabs';
 
-
+/**
+ * Container that the `TimesliceTabs` will fill with children that receive the extra 'timeslice' prop.
+ */
 function TabContainer(props) {
     return (
         <div style={{ padding: 8 * 3 }}>
@@ -17,6 +19,11 @@ TabContainer.propTypes = {
     children: PropTypes.node.isRequired,
 };
 
+/**
+ * A component put inside this component will receive the `timeslice` property
+ *
+ * This property is set, depending on the tab that the user selects (one of hour, day, week, month, year)
+ */
 class TimesliceTabs extends Component {
     constructor(props) {
         super(props);

@@ -4,6 +4,9 @@ import axios from 'axios';
 
 import Logo from '../images/logo.png';
 
+/**
+ * Renders the verification page new accounts are sent to after clicking on the vericiation link in their e-mail.
+ */
 class VerificationPage extends Component {
     state = {
         message: 'Loading'

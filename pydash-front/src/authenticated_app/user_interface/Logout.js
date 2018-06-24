@@ -25,7 +25,10 @@ const styles = theme => ({
     },
   });
 
-
+/**
+ * Renders the logout icon, handles logout requests and redirects to the login page when succesful.
+ * 
+ */
 class Logout extends Component {
     state = {
         success: false,

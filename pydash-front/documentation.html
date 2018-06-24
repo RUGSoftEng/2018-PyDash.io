@@ -1,0 +1,627 @@
+<h2 id="components">Components</h2>
+<p><strong>src/App.js</strong></p>
+<h3 id="app">1. App</h3>
+<p>The entry point of the React application. Almost all work is delegated to subcomponents. The only work that the App component itself does, is to check if the user is logged in or not, and pass functions to lower-level components to sign a user in or out.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Required</th>
+<th style="text-align: left;">Default value</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">username</td>
+<td style="text-align: left;">string</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">isAuthenticated</td>
+<td style="text-align: left;">bool</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<table style="width:8%;">
+<colgroup>
+<col style="width: 8%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>src/Notifier.js</strong></td>
+</tr>
+<tr class="even">
+<td>### 1. Notifier</td>
+</tr>
+<tr class="odd">
+<td>This component shows the notifications (‘Snackbars’) that the app might generate. This has been put in its own component that is included at the outside of the application, so that logging in/logging out and other state changes that might completely alter how the page will look, will be able to show notifications as well.</td>
+</tr>
+<tr class="even">
+<td>The Notifier component is not used directly from within the app. Rather, the <code>showNotification()</code> function that this component file exports is. The application should only contain one Notifier component, because the <code>showNotification()</code> function expects there to only be one Notifier.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>src/Routes.js</strong></p>
+<h3 id="routes">1. Routes</h3>
+<p>Will dispatch between the various top-level routes that the application uses.</p>
+<p>After having logged in, there are various sub-routes, which are dispatched in their own component, inside of AuthenticatedApp.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Required</th>
+<th style="text-align: left;">Default value</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">username</td>
+<td style="text-align: left;">string</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">isAuthenticated</td>
+<td style="text-align: left;">bool</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">signInHandler</td>
+<td style="text-align: left;">func</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">signOutHandler</td>
+<td style="text-align: left;">func</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<table style="width:8%;">
+<colgroup>
+<col style="width: 8%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>src/authenticated_app/AuthenticatedApp.js</strong></td>
+</tr>
+<tr class="even">
+<td>### 1. AuthenticatedApp</td>
+</tr>
+<tr class="odd">
+<td>Base of the app after logging in. Renders the user interface and the relevant page for the current path. Also handles the updating of data for the dashboards linked to the logged in account.</td>
+</tr>
+<tr class="even">
+<td>Property | Type | Required | Default value | Description :— | :— | :— | :— | :— username|string|yes|| isAuthenticated|bool|yes|| signOutHandler|func|yes||</td>
+</tr>
+</tbody>
+</table>
+<p><strong>src/authenticated_app/AuthenticatedRoutes.js</strong></p>
+<h3 id="authenticatedroutes">1. AuthenticatedRoutes</h3>
+<p>Similar to <code>Routes</code>, this component performs routing, but for the website after being authenticated.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Required</th>
+<th style="text-align: left;">Default value</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">dashboards</td>
+<td style="text-align: left;">object</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<table style="width:8%;">
+<colgroup>
+<col style="width: 8%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>src/authenticated_app/dashboard/DashboardRoutes.js</strong></td>
+</tr>
+<tr class="even">
+<td>### 1. DashboardRoutes</td>
+</tr>
+<tr class="odd">
+<td>Dispatches between all routes concerning a single dashboard.</td>
+</tr>
+<tr class="even">
+<td>Property | Type | Required | Default value | Description :— | :— | :— | :— | :— dashboard|shape|no|| match|shape|no||</td>
+</tr>
+</tbody>
+</table>
+<p><strong>src/authenticated_app/dashboard/statistics_page/EndpointExecutionTimesPanel.js</strong></p>
+<h3 id="endpointexecutiontimespanel">1. EndpointExecutionTimesPanel</h3>
+<p>Panel containing the <code>EndpointExecutionTimesGraph</code>.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Required</th>
+<th style="text-align: left;">Default value</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">dashboard_id</td>
+<td style="text-align: left;">string</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<table style="width:8%;">
+<colgroup>
+<col style="width: 8%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>src/authenticated_app/dashboard/statistics_page/ExecutionTimesGraph.js</strong></td>
+</tr>
+<tr class="even">
+<td>### 1. ExecutionTimesGraph</td>
+</tr>
+<tr class="odd">
+<td>Displays the average execution time per the given dashboard’s endpoint.</td>
+</tr>
+<tr class="even">
+<td>Property | Type | Required | Default value | Description :— | :— | :— | :— | :— data|array|yes|| title|string|yes||</td>
+</tr>
+</tbody>
+</table>
+<p><strong>src/authenticated_app/dashboard/statistics_page/StatisticFetcher.js</strong></p>
+<h3 id="statisticfetcher">1. StatisticFetcher</h3>
+<p>Base class component that specific Statistics-fetchers inherit.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Required</th>
+<th style="text-align: left;">Default value</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">timeslice</td>
+<td style="text-align: left;">string</td>
+<td style="text-align: left;">no</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<table style="width:8%;">
+<colgroup>
+<col style="width: 8%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>src/authenticated_app/dashboard/statistics_page/StatisticsPage.js</strong></td>
+</tr>
+<tr class="even">
+<td>### 1. StatisticsPage</td>
+</tr>
+<tr class="odd">
+<td>The main Dashboard page that cointains all general statistics we’ve gathered for it.</td>
+</tr>
+<tr class="even">
+<td>Property | Type | Required | Default value | Description :— | :— | :— | :— | :— theme|object|yes|| dashboard|shape|yes||</td>
+</tr>
+</tbody>
+</table>
+<p><strong>src/authenticated_app/dashboard/statistics_page/TimesliceTabs.js</strong></p>
+<h3 id="timeslicetabs">1. TimesliceTabs</h3>
+<p>A component put inside this component will receive the <code>timeslice</code> property</p>
+<p>This property is set, depending on the tab that the user selects (one of hour, day, week, month, year)</p>
+<table style="width:8%;">
+<colgroup>
+<col style="width: 8%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>src/authenticated_app/dashboard/statistics_page/UniqueVisitorsHeatmapPanel.js</strong></td>
+</tr>
+<tr class="even">
+<td>### 1. UniqueVisitorsHeatmapPanel</td>
+</tr>
+<tr class="odd">
+<td>Panel containing a heatmap of all unique visitors that have been visiting this Dashboard.</td>
+</tr>
+<tr class="even">
+<td>Property | Type | Required | Default value | Description :— | :— | :— | :— | :— dashboard_id|string|yes||</td>
+</tr>
+</tbody>
+</table>
+<p><strong>src/authenticated_app/dashboard/statistics_page/UniqueVisitorsPanel.js</strong></p>
+<h3 id="uniquevisitorspanel">1. UniqueVisitorsPanel</h3>
+<p>A Panel containing a line graph showing how many unique visitors this Dashboard had.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Required</th>
+<th style="text-align: left;">Default value</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">dashboard_id</td>
+<td style="text-align: left;">string</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<table style="width:8%;">
+<colgroup>
+<col style="width: 8%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>src/authenticated_app/dashboard/statistics_page/VisitorsHeatmapGraph.js</strong></td>
+</tr>
+<tr class="even">
+<td>### 1. VisitorsHeatmapGraph</td>
+</tr>
+<tr class="odd">
+<td>Heatmap of visitors that have been visiting this Dashboard.</td>
+</tr>
+<tr class="even">
+<td>Property | Type | Required | Default value | Description :— | :— | :— | :— | :— data|array|yes|| title|string|yes||</td>
+</tr>
+</tbody>
+</table>
+<p><strong>src/authenticated_app/dashboard/statistics_page/VisitorsHeatmapPanel.js</strong></p>
+<h3 id="visitorsheatmappanel">1. VisitorsHeatmapPanel</h3>
+<p>Panel containing a heatmap of all visitors that have been visiting this Dashboard.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Required</th>
+<th style="text-align: left;">Default value</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">dashboard_id</td>
+<td style="text-align: left;">string</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<table style="width:8%;">
+<colgroup>
+<col style="width: 8%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>src/authenticated_app/dashboard/statistics_page/VisitsGraph.js</strong></td>
+</tr>
+<tr class="even">
+<td>### 1. VisitsGraph</td>
+</tr>
+<tr class="odd">
+<td>A line graph showing how many visitors this Dashboard had.</td>
+</tr>
+<tr class="even">
+<td>Property | Type | Required | Default value | Description :— | :— | :— | :— | :— data|array|yes|| title|string|yes|| tooltip_title|string|yes|| height|number|yes|| timeslice|string|yes||</td>
+</tr>
+</tbody>
+</table>
+<p><strong>src/authenticated_app/dashboard/statistics_page/VisitsPanel.js</strong></p>
+<h3 id="visitspanel">1. VisitsPanel</h3>
+<p>A Panel containing a line graph showing how many visitors this Dashboard had.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Required</th>
+<th style="text-align: left;">Default value</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">dashboard_id</td>
+<td style="text-align: left;">string</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<table style="width:8%;">
+<colgroup>
+<col style="width: 8%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>src/authenticated_app/endpoint/EndpointPage.js</strong></td>
+</tr>
+<tr class="even">
+<td>### 1. EndpointPage</td>
+</tr>
+<tr class="odd">
+<td>The <code>EndpointPage</code> renders the details page of a single EndpointPage.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>src/authenticated_app/endpoint/EndpointsTable.js</strong></p>
+<h3 id="endpointstable">1. EndpointsTable</h3>
+<table style="width:8%;">
+<colgroup>
+<col style="width: 8%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>src/authenticated_app/overview/AddDashboardDialog.js</strong></td>
+</tr>
+<tr class="even">
+<td>### 1. AddDashboardDialog</td>
+</tr>
+<tr class="odd">
+<td><code>AddDashboardDialog</code> shows the modal dialog that allows a user to add a new dashboard to PyDash. It also performs the handling logic of saving the information that has been entered in the form.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>src/authenticated_app/overview/DashboardList.js</strong></p>
+<h3 id="dashboardlist">1. DashboardList</h3>
+<p>A list of dashboards, where each entry (<code>DashboardListItem</code>) contains some general information about the dashboard.</p>
+<table style="width:8%;">
+<colgroup>
+<col style="width: 8%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>src/authenticated_app/overview/DashboardListItem.js</strong></td>
+</tr>
+<tr class="even">
+<td>### 1. DashboardListItem</td>
+</tr>
+<tr class="odd">
+<td>The <code>DashboardListItem</code> displays some general information about the given dashboard;</td>
+</tr>
+<tr class="even">
+<td>This component is to be used as part of a <code>DashboardList</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>src/authenticated_app/overview/OverviewPage.js</strong></p>
+<h3 id="overviewpage">1. OverviewPage</h3>
+<p>The <code>OverviewPage</code> is the main page the user sees after logging in.</p>
+<table style="width:8%;">
+<colgroup>
+<col style="width: 8%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>src/authenticated_app/settings/SettingsPage.js</strong></td>
+</tr>
+<tr class="even">
+<td>### 1. SettingsPage</td>
+</tr>
+<tr class="odd">
+<td>Component representing the settings page.</td>
+</tr>
+<tr class="even">
+<td>Provides rendering and functionality for changing account details, enabling disabling sounds, and removing user accounts.</td>
+</tr>
+<tr class="odd">
+<td>Property | Type | Required | Default value | Description :— | :— | :— | :— | :— classes|object|yes||</td>
+</tr>
+</tbody>
+</table>
+<p><strong>src/authenticated_app/user_interface/Logout.js</strong></p>
+<h3 id="logout">1. Logout</h3>
+<p>Renders the logout icon, handles logout requests and redirects to the login page when succesful.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Required</th>
+<th style="text-align: left;">Default value</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">signOutHandler</td>
+<td style="text-align: left;">func</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<table style="width:8%;">
+<colgroup>
+<col style="width: 8%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>src/authenticated_app/user_interface/Menu.js</strong></td>
+</tr>
+<tr class="even">
+<td>### 1. MainMenuItems</td>
+</tr>
+<tr class="odd">
+<td>### 2. OtherMenuItems</td>
+</tr>
+</tbody>
+</table>
+<p><strong>src/authenticated_app/user_interface/UserInterface.js</strong></p>
+<h3 id="userinterface">1. UserInterface</h3>
+<p>Shows the user interface for logged in users:</p>
+<ul>
+<li>The top menu</li>
+<li>The side menu that is used for navigation (whose contents live in <code>Menu.js</code>)</li>
+<li>The <code>Breadcrumbs</code> of the currently shown page.</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Required</th>
+<th style="text-align: left;">Default value</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">classes</td>
+<td style="text-align: left;">object</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">theme</td>
+<td style="text-align: left;">object</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<table style="width:8%;">
+<colgroup>
+<col style="width: 8%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>src/common/BreadcrumbRoute.js</strong></td>
+</tr>
+<tr class="even">
+<td>### 1. BreadcrumbRoute</td>
+</tr>
+<tr class="odd">
+<td>A special version of the <code>Route</code> component that the <code>react-router-dom</code> exposes which not only contains a Route handler, but will also add that part of the route to the breadcrumbs of the current page. This means that when multiple of these components are nested in one another, the breadcrumbs of this nesting will show up. (The actual rendering of these breadcrumbs happens in <code>UserInterface</code> using the <code>Breadcrumbs</code> component)</td>
+</tr>
+<tr class="even">
+<td>Property | Type | Required | Default value | Description :— | :— | :— | :— | :— includeSearch||no|false| isLink||no|true|</td>
+</tr>
+</tbody>
+</table>
+<p><strong>src/common/ResponsiveGraphWrapper.js</strong></p>
+<h3 id="responsivegraphwrapper">1. ResponsiveGraphWrapper</h3>
+<p>A Nivo Graph component (or other component that you want to auto-resize to fill its container width), can be added to this component to ensure that this resizing will happen.</p>
+<p>This component will pass on the ‘width’ prop to the child, which will be set to the measured width the component (’s container, the ResponsiveGraphWrapper itself) currently has on the page.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Required</th>
+<th style="text-align: left;">Default value</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">height</td>
+<td style="text-align: left;">number</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<table style="width:8%;">
+<colgroup>
+<col style="width: 8%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>src/login/LoginPage.js</strong></td>
+</tr>
+<tr class="even">
+<td>### 1. LoginPage</td>
+</tr>
+<tr class="odd">
+<td>Renders the login page and handles the login requests. Lets the user know if something went wrong with logging in, warns the user about an unsafe password if he has one and contains a link to the register page.</td>
+</tr>
+<tr class="even">
+<td>Property | Type | Required | Default value | Description :— | :— | :— | :— | :— signInHandler|func|yes||</td>
+</tr>
+</tbody>
+</table>
+<p><strong>src/registration/RegistrationPage.js</strong></p>
+<h3 id="registrationpage">1. RegistrationPage</h3>
+<p>Renders the registration page. Also handles the register request itself, including making sure all the necessary fields are filled in correctly. Shows relevant error messages when something is going wrong and provides an explanation on the required security for passwords.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Required</th>
+<th style="text-align: left;">Default value</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">signInHandler</td>
+<td style="text-align: left;">func</td>
+<td style="text-align: left;">yes</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<table style="width:8%;">
+<colgroup>
+<col style="width: 8%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>src/registration/VerificationPage.js</strong></td>
+</tr>
+<tr class="even">
+<td>### 1. VerificationPage</td>
+</tr>
+<tr class="odd">
+<td>Renders the verification page new accounts are sent to after clicking on the vericiation link in their e-mail.</td>
+</tr>
+</tbody>
+</table>
+<p><sub>This document was generated by the <a href="https://github.com/marborkowski/react-doc-generator" target="_blank"><strong>React DOC Generator v1.2.5</strong></a>.</sub></p>

@@ -7,6 +7,11 @@ import axios from 'axios';
 import UserInterface from './user_interface/UserInterface'
 import AuthenticatedRoutes from './AuthenticatedRoutes';
 
+/**
+ * Base of the app after logging in. Renders the user interface and the relevant page for the current path.
+ * Also handles the updating of data for the dashboards linked to the logged in account.
+ *
+ */
 class AuthenticatedApp extends Component {
     state = {
         dashboards: null

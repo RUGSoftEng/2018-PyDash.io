@@ -72,6 +72,14 @@ const styles = theme => ({
     },
 });
 
+/**
+ * Shows the user interface for logged in users:
+ *
+ * - The top menu
+ * - The side menu that is used for navigation (whose contents live in `Menu.js`)
+ * - The `Breadcrumbs` of the currently shown page.
+ *
+ */
 class UserInterface extends React.Component {
     state = {
         mobileOpen: false,
