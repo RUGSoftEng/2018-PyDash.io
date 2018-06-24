@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+
+import axios from 'axios';
+
+// Visual:
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import Dialog, {
@@ -7,10 +11,9 @@ import Dialog, {
     DialogContentText,
     DialogTitle,
 } from 'material-ui/Dialog';
-import Snackbar from 'material-ui/Snackbar';
-import IconButton from 'material-ui/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import axios from 'axios';
+
+// Notifications
+import { showNotification } from '../../Notifier'
 
 /**
  * `AddDashboardDialog` shows the modal dialog that allows a user to add a new dashboard to PyDash.
@@ -28,7 +31,6 @@ class AddDashboardDialog extends Component {
             errorURL: false,
             errorToken: false,
             loading: false,
-            openS: false,
             success: false,
         }
     }
@@ -52,17 +54,8 @@ class AddDashboardDialog extends Component {
     };
 
     handleSubmit = (e) => {
-        this.setState({ openS: true });
         this.tryCreation(e);
         //alert("Settings saved!");
-    };
-
-    handleCloseSnack = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        this.setState({ openS: false });
     };
 
     preventEmpty = () =>{
@@ -118,6 +111,7 @@ class AddDashboardDialog extends Component {
                 success: true,
                 loading: false,
             }));
+            showNotification({ message: "Dashboard has been added!"});
             this.props.callBack();
         }).catch((err) => {
             console.log(err);
@@ -201,38 +195,10 @@ class AddDashboardDialog extends Component {
                             
                         </DialogActions>
                     </DialogContent>
-                    
-
-                    
                 </Dialog>
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    open={this.state.openS}
-                    autoHideDuration={6000}
-                    onClose={this.handleCloseSnack}
-                    ContentProps={{
-                        'aria-describedby': 'message-id',
-                    }}
-                    message={<span id="message-id">Changes have been saved!</span>}
-                    action={[
-                        <IconButton
-                            key="close"
-                                 aria-label="Close"
-                                 color="inherit"
-                            //className={classes.close}
-                        onClick={this.handleCloseSnack}
-                            >
-                            <CloseIcon />
-                        </IconButton>,
-                    ]}
-                />
             </div>
         );
     }
-
 }
 
 export default AddDashboardDialog;

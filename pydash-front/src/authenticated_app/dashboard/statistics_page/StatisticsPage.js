@@ -81,7 +81,6 @@ class StatisticsPage extends Component {
             method: 'get',
             withCredentials: true
         }).then((response) => {
-            let total_visits = (response.data && response.data.aggregates && response.data.aggregates.total_visits) || 0;
             console.log("Response: ", response);
             if (response.data.hasOwnProperty('error')) {
                 this.setState(prevState => {
@@ -89,7 +88,6 @@ class StatisticsPage extends Component {
                         ...prevState,
 
                         dashboard: response.data,
-                        total_visits: total_visits,
                         error: response.data.error,
                     }
                 });
@@ -100,7 +98,6 @@ class StatisticsPage extends Component {
 
 
                         dashboard: response.data,
-                        total_visits: total_visits,
 
                     };
                 });
