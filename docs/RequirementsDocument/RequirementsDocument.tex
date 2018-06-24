@@ -509,149 +509,6 @@ requirements}\label{non-functional-requirements}}
   \end{itemize}
 \end{itemize}
 
-\hypertarget{backlog}{%
-\section{Backlog}\label{backlog}}
-
-\hypertarget{sprint-6}{%
-\subsection{Sprint 6}\label{sprint-6}}
-
-\emph{Backend}
-
-\begin{itemize}
-\item
-  \begin{quote}
-  Uptime checking
-  \end{quote}
-
-  \begin{itemize}
-  \item
-    \begin{quote}
-    Ping the remote dashboard to see if it's still up.
-    \end{quote}
-  \item
-    \begin{quote}
-    Add some kind of status in the Dashboard object in the database.
-    \end{quote}
-  \item
-    \begin{quote}
-    Do this every five minutes.
-    \end{quote}
-  \end{itemize}
-\item
-  \begin{quote}
-  Meta-monitoring
-  \end{quote}
-
-  \begin{itemize}
-  \item
-    \begin{quote}
-    We need to have \emph{flask-monitoring-dashboard} monitor PyDash
-    itself.
-    \end{quote}
-  \item
-    \begin{quote}
-    In principle this is as simple as:
-    \end{quote}
-
-    \begin{itemize}
-    \item
-      \begin{quote}
-      following the \emph{flask-monitoring-dashboard} install
-      instructions;
-      \end{quote}
-    \item
-      \begin{quote}
-      adding it to the PyDash project;
-      \end{quote}
-    \item
-      \begin{quote}
-      and connecting this dashboard to a PyDash user account.
-      \end{quote}
-    \end{itemize}
-  \end{itemize}
-\end{itemize}
-
-\emph{Frontend}
-
-\begin{itemize}
-\item
-  \begin{quote}
-  Fill graphs with data.
-  \end{quote}
-\item
-  \begin{quote}
-  Add endpoint graphs
-  \end{quote}
-\end{itemize}
-
-\hypertarget{sprint-7}{%
-\subsection{Sprint 7}\label{sprint-7}}
-
-\emph{Backend}
-
-\begin{itemize}
-\item
-  \begin{quote}
-  Overflow, bugs, documentation, and other leftovers
-  \end{quote}
-
-  \begin{itemize}
-  \item
-    \begin{quote}
-    Decided in the review for sprint 6
-    \end{quote}
-  \end{itemize}
-\end{itemize}
-
-\emph{Frontend}
-
-\begin{itemize}
-\item
-  \begin{quote}
-  Overflow, bugs, documentation, new graphs, leftovers
-  \end{quote}
-
-  \begin{itemize}
-  \item
-    \begin{quote}
-    Decided in the review for sprint 6
-    \end{quote}
-  \end{itemize}
-\end{itemize}
-
-\emph{Other}
-
-\begin{itemize}
-\item
-  \begin{quote}
-  Make video tutorial on PyDash
-  \end{quote}
-
-  \begin{itemize}
-  \item
-    \begin{quote}
-    Explain to new users how the site works in a tutorial containing
-    easy-to-follow steps and pictures for clarification.
-    \end{quote}
-  \end{itemize}
-\item
-  \begin{quote}
-  Design new logo.
-  \end{quote}
-\item
-  \begin{quote}
-  Review project
-  \end{quote}
-
-  \begin{itemize}
-  \item
-    \begin{quote}
-    We will consider this sprint a soft deadline for the project, and
-    review what functionalities we would like to improve/add for the
-    final deadline.
-    \end{quote}
-  \end{itemize}
-\end{itemize}
 
 \hypertarget{finished-backlog-tasks}{%
 \section{Finished backlog tasks}\label{finished-backlog-tasks}}
@@ -1083,6 +940,132 @@ requirements}\label{non-functional-requirements}}
 \item
   \begin{quote}
   Pages or text boxes for email verification
+  \end{quote}
+\end{itemize}
+
+
+\hypertarget{sprint-7}{%
+\subsection{Sprint 7}\label{sprint-7}}
+
+
+\emph{Backend}
+
+\begin{itemize}
+\item
+  \begin{quote}
+  Meta-monitoring
+  \end{quote}
+  \begin{itemize}
+  \item
+    \begin{quote}
+    We need to have \emph{flask-monitoring-dashboard} monitor PyDash
+    itself.
+    \end{quote}
+  \item
+    \begin{quote}
+    In principle this is as simple as:
+    \end{quote}
+
+    \begin{itemize}
+    \item
+      \begin{quote}
+      following the \emph{flask-monitoring-dashboard} install
+      instructions;
+      \end{quote}
+    \item
+      \begin{quote}
+      adding it to the PyDash project;
+      \end{quote}
+    \item
+      \begin{quote}
+      and connecting this dashboard to a PyDash user account.
+      \end{quote}
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+
+\emph{Frontend}
+
+\begin{itemize}
+\item
+  \begin{quote}
+  Fill graphs with data.
+  \end{quote}
+\item
+  \begin{quote}
+  Add endpoint graphs
+  \end{quote}
+\item
+  \begin{quote}
+  Update front-end documentation
+  \end{quote}
+\item
+  \begin{quote}
+  Update front-end documentation
+  \end{quote}
+\item
+  \begin{quote}
+  Ensure user interface is responsive (works on all screen sizes)
+  \end{quote}
+
+\end{itemize}
+
+\emph{Other}
+\begin{itemize}
+\item Finalize documents
+\item Extract application documentation and add to documents, where possible.
+\end{itemize}
+
+
+
+
+\hypertarget{backlog}{%
+\section{Future Work}\label{backlog}}
+
+This is a list of features that we would like to add, but ended up having too little time during the project time to do.
+
+\begin{itemize}
+\item
+  \begin{quote}
+  Uptime checking
+  \end{quote}
+
+  \begin{itemize}
+  \item
+    \begin{quote}
+    Ping the remote dashboard to see if it's still up.
+    \end{quote}
+  \item
+    \begin{quote}
+    Add some kind of status in the Dashboard object in the database.
+    \end{quote}
+  \item
+    \begin{quote}
+    Do this every five minutes.
+    \end{quote}
+  \end{itemize}
+\item Switch Database (ZODB is not as nice as we'd hoped)   
+\end{itemize}
+
+\emph{Other}
+
+\begin{itemize}
+\item
+  \begin{quote}
+  Make video tutorial on PyDash
+  \end{quote}
+
+  \begin{itemize}
+  \item
+    \begin{quote}
+    Explain to new users how the site works in a tutorial containing
+    easy-to-follow steps and pictures for clarification.
+    \end{quote}
+  \end{itemize}
+\item
+  \begin{quote}
+  Design new logo.
   \end{quote}
 \end{itemize}
 
