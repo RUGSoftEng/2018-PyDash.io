@@ -42,7 +42,7 @@ def find_by_name(name):
     """
     Returns a single User-entity with the given `name`, or None if it could not be found.
 
-    name -- Name of the user we hope to find.
+    :param name: A string denoting the name of the user we hope to find.
     """
     return database_root().users.get('name', name, default=None)
 
@@ -51,8 +51,7 @@ def find_by_verification_code(verification_code):
     """
     Returns a single User-entity with the given `verification_code`, or None if it could not be found.
     The latter case might indicate that the user does not exist, or that the verification code has expired.
-    :param verification_code: The verification code of the user we hope to find.
-    Should be a pydash_app.user.verification_code.VerificationCode object.
+    :param verification_code: A VerificationCode instance denoting the verification code of the user we hope to find.
     """
     return database_root().users.get('_verification_code', verification_code, default=None)
 
@@ -63,8 +62,8 @@ def all():
 
     >>> list(all())
     []
-    >>> gandalf = User("Gandalf", "pass")
-    >>> dumbledore = User("Dumbledore", "secret")
+    >>> gandalf = User("Gandalf", "pass", 'some@email.com')
+    >>> dumbledore = User("Dumbledore", "secret", 'some@email.com')
     >>> add(gandalf)
     >>> add(dumbledore)
     >>> sorted([user.name for user in all()])
@@ -76,15 +75,21 @@ def all():
     return database_root().users.values()
 
 
+def all_unverified():
+    """Returns a collection of all unverified users (in no guaranteed order)."""
+    return database_root().users.values('_verification_code')
+
+
 def add(user):
     """
-    Adds the User-entity to the repository. Will raise a (KeyError, DuplicateIndexError) tuple on failure.
+    Adds the User-entity to the repository.
     :param user: The User-entity to add.
+    :raises (KeyError, DuplicateIndexError): If a user with one of the same indexes already exists within the repository.
 
     >>> list(all())
     []
-    >>> gandalf = User("Gandalf", "pass")
-    >>> dumbledore = User("Dumbledore", "secret")
+    >>> gandalf = User("Gandalf", "pass", 'some@email.com')
+    >>> dumbledore = User("Dumbledore", "secret", 'some@email.com')
     >>> add(gandalf)
     >>> add(dumbledore)
     >>> sorted([user.name for user in all()])
@@ -101,8 +106,9 @@ def add(user):
 
 def _delete(user):
     """
-    Removes the provided User-entity from the repository. Will raise a KeyError if said user is not in the repository.
+    Removes the provided User-entity from the repository.
     :param user: The User-entity to remove.
+    :raises KeyError: if the user does not exist in the repository.
     """
     try:
         transaction.begin()
@@ -116,13 +122,13 @@ def _delete(user):
 def delete_by_id(user_id):
     """
     Removes the User-entity whose user_id is `user_id` from the repository.
-    Will raise a KeyError if said user is not in the repository.
-    Note that this might also occur when delete_by_id(user_id) is called in the middle of the deletion,
-     in a multiprocessing environment.
     :param user_id: The ID of the User-entity to be removed. This can be either a UUID-entity or the corresponding
         string representation.
+    :raises KeyError: if the user does not exist in the repository.
+      (As a side-note: this might occur when delete_by_id() is called in the middle of the deletion of the same user,
+      in a multiprocessing environment.
 
-    >>> gandalf = User("Gandalf", "pass")
+    >>> gandalf = User("Gandalf", "pass", 'some@email.com')
     >>> add(gandalf)
     >>> find_by_name("Gandalf") == gandalf
     True
@@ -147,10 +153,10 @@ def delete_by_id(user_id):
 
 def update(user):
     """
-    Changes the user's information
+    Updates a user in the repository with the values of the provided user.
+    :param user: The User instance to update its counterpart in the repository with.
 
-
-    >>> gandalf = User("GandalfTheGrey", "pass")
+    >>> gandalf = User("GandalfTheGrey", "pass", 'some@email.com')
     >>> add(gandalf)
     >>> gandalf.name = "GandalfTheWhite"
     >>> update(gandalf)
@@ -169,10 +175,10 @@ def update(user):
 
 def clear_all():
     """
-    Flushes the database.
+    Flushes the repository.
 
-    >>> gandalf = User("Gandalf", "pass")
-    >>> dumbledore = User("Dumbledore", "secret")
+    >>> gandalf = User("Gandalf", "pass", 'some@email.com')
+    >>> dumbledore = User("Dumbledore", "secret", 'some@email.com')
     >>> add(gandalf)
     >>> add(dumbledore)
     >>> sorted([user.name for user in all()])

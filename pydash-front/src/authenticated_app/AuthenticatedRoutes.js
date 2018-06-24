@@ -14,11 +14,11 @@ import SettingsPage from './settings/SettingsPage';
 class AuthenticatedRoutes extends Component {
     render = () => {
         return (
-            <BreadcrumbRoute path='/overview' title='Overview' render={ ({ match }) => (
+            <BreadcrumbRoute path='/overview' title='Dashboards' render={ ({ match }) => (
                 <div>
-                    <Route exact path={match.url + '/'} component={() => (<OverviewPage dashboards={this.props.dashboards} />)} />
+                    <Route exact path={match.url + '/'} component={() => (<OverviewPage dashboards={this.props.dashboards} updateData={this.props.updateData} />)} />
                     <BreadcrumbRoute exact path={match.url + '/settings'} component={() => (<SettingsPage username={this.props.username} />)} title='Settings' />
-                    <BreadcrumbRoute path={match.url + '/dashboards/'} isLink={false} title='Dashboards' render={ ({ match }) => (
+                    <Route path={match.url + '/dashboards/'} render={ ({ match }) => (
                         <Route path={match.url + '/:id'} render={ ({match}) => {
                                 if(this.props.dashboards === null){
                                     return (<em>Loading...</em>)

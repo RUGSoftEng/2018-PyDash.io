@@ -7,6 +7,7 @@ If things grow, they should move to their own module, of course.
 
 // Transforms a hashmap of key-value pairs into an array of {x: key, y: value} objects.
 function dict_to_xy_arr(dict){
+    console.log("Dict: ", dict);
     let res =  Object.entries(dict).map(function([key, value]){
         return {x: key, y: value};
     });
@@ -27,4 +28,48 @@ function api_to_bar_data(endpoints) {
     return res;
 }
 
-export {dict_to_xy_arr, api_to_bar_data};
+// Returns a string containing the date, contained in the Date object passed to the function, according to ISO standards.
+function getIsoDateString(date) {
+    let year, month, dt, string;
+    year = date.getFullYear();
+    month = date.getMonth()+1;
+    dt = date.getDate();
+
+    if (dt < 10) {
+        dt = '0' + dt;
+    }
+    if (month < 10) {
+        month = '0' + month;
+    }
+
+    string = year+'-'+month+'-'+dt;
+    return string;
+}
+
+// Converts the data returned from the backend into a usable format for a Nivo heatmap.
+function convertHeatmapData(data) {
+    let dayCount = data.length;
+    let currentDate = new Date();
+    let heatmap = [];
+    for (let day in data) {
+        let dayData = {};
+        let calculatedDate = new Date();
+        calculatedDate.setDate(currentDate.getDate() - (dayCount-day));
+        dayData["date"] = getIsoDateString(calculatedDate);
+
+        for (let hour = 0; hour < 24; hour++) {
+            let key = '';
+            if (hour < 10) {
+                key = '0' + hour + ':00';
+            } else {
+                key = '' + hour + ':00';
+            }
+            dayData[key] = data[day][hour];
+        }
+
+        heatmap.push(dayData);
+    }
+    return heatmap;
+}
+
+export {dict_to_xy_arr, api_to_bar_data, getIsoDateString, convertHeatmapData};

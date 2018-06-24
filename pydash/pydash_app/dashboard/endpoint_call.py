@@ -105,7 +105,7 @@ class EndpointCall(persistent.Persistent):
 
     # Note: this function only exists to provide an interface and abstract away from internal representation.
     def as_dict(self):
-        """returns a dict containing the data of the EndpointCall"""
+        """Returns a dict containing the data of the EndpointCall, as an interface to abstract away from internal representation."""
         return {"endpoint": self.endpoint,
                 "execution_time": self.execution_time,
                 "time": self.time,

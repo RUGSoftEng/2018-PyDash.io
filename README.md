@@ -12,17 +12,19 @@ Use this branch for weekly deadlines
 ## Development branch
 Push to this branch as soon as you've implemented a feature.
 
+# Installing Dependencies
+
+This app manages its language-version dependencies using the ASDF Version Manager.
+
+More information on how to install this can be found in [./docs/setting-up-virtual-env-using-asdf.md](./docs/setting-up-virtual-env-using-asdf.md)
+
 # Running in Development
 
 ### Side-Note: Seeding the database
 
 Before running your application for the first time (and possibly after a lot of changes have occurred in the development version), you will want to re-seed your application, using:
 
-1. Move into the `pydash` folder.
-2. Setup your virtual environment using `./start_pipenv.sh`.
-3. Make sure you have the latest versions of the dependencies using `pipenv install`.
-3. Start up the database using the `./start_database.sh` shell-script.
-4. In another tab (or after running above script in the background using `&`), run `flask seed`
+`./build_and_run.sh databasebg seed`
 
 ## Running the application as a whole
 
@@ -34,26 +36,23 @@ In the event that the database does not properly close, use `killall runzeo`.
 
 ## Running only the Flask Back-End+Database
 
-1. Move into the `pydash` folder.
-2. Setup your virtual environment using `./start_pipenv.sh`.
-3. Make sure you have the latest versions of the dependencies using `pipenv install`.
-3. Start up the database using the `./start_database.sh` shell-script.
-4. In another tab (or after running above script in the background using `&`), run `flask run --no-reload` to start up the web application on port 5000.
-
+`./build_and_run.sh databasebg backend`
 
 ## Building the React.js Front-End
 
-1. Move into the `pydash-front` folder.
-2. Run `yarn` to install all dependencies.
-3. Run`yarn build` to build the React application and put it at the location where the Flask Back-End application can find it.
+`./build_and_run.sh build`
 
 ## Running the React.js Front-End separately for a quick feedback-loop
 
 Ensure that the Flask back-end+database is running using above steps.
 
-1. Move into the `pydash-front` folder.
-2. Run `yarn` to install all dependencies.
-3. Run`yarn start` to start an interactive session that will auto-rebuild whenever you make a change.
+In one shell: 
+`./build_and_run.sh databasebg server`
+
+In another: 
+
+`./build_and_run.sh frontend`
+
 
 # Testing
 
@@ -70,20 +69,27 @@ Tests are written using `pytest`, with a couple of plugins:
 
 Tests as a whole can be run by:
 
+`./build_and_run.sh test`
+
+To do this manually:
+
 1. move into the `pydash` folder
 2. Setup your virtual environment using `./start_pipenv.sh`.
 3. Run `pytest`.
 
 Do note that for the integration tests, you will need the `chromedriver` binary (that can be found in your OS distribution's package manager).
 
+You might also need to install development dependencies. This is done by running `cd pydash && pipenv install --dev && cd ..`
+
+
 ## Running only back-end unit tests
 
-Follow the steps as above, but instead of `pytest`, run `pytest -k "not features"`
+Follow the manual steps as above, but instead of `pytest`, run `pytest -k "not features"`
 
 ## Running only feature tests
 
-Follow the steps as above, but instead of `pytest`, run `pytest -k "features"`
+Follow the manual steps as above, but instead of `pytest`, run `pytest -k "features"`
 
 ## Running tests iteratively during development
 
-Follow the steps as above, but instead of `pytest`, run `pytest -f`
+Follow the manual steps as above, but instead of `pytest`, run `pytest -f`

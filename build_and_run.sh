@@ -1,5 +1,12 @@
 #!/bin/bash
 
+ExportEnvironmentVars()
+{
+  export FLASK_APP=pydash.py
+  export FLASK_ENV=development
+  export FMD_CONFIG_PATH=fmd_config.cfg
+}
+
 PydashPrint()
 {
     echo -e '\e[1m\e[92m[PyDash.io]: \e[0m\e[1m' "$1" '\e[0m'
@@ -30,8 +37,7 @@ SeedBackend()
     PydashPrint "seeding backend..."
     cd pydash
     mkdir -p logs
-    export FLASK_APP=pydash.py
-    export FLASK_ENV=development
+    ExportEnvironmentVars
     #rm -f ./zeo_filestorage.fs*
     pipenv run flask seed
     cd ..
@@ -60,8 +66,7 @@ RunFlask()
 {
     PydashPrint "Starting flask webservice. Close with Ctrl+C"
     cd pydash
-    export FLASK_APP=pydash.py
-    export FLASK_ENV=development
+    ExportEnvironmentVars
     pipenv run flask run --no-reload --host=0.0.0.0
     cd ..
 }
@@ -70,8 +75,7 @@ RunFlaskConsole()
 {
     PydashPrint "Starting flask webservice as shell."
     cd pydash
-    export FLASK_APP=pydash.py
-    export FLASK_ENV=development
+    ExportEnvironmentVars
     pipenv run flask shell
     cd ..
 
@@ -88,11 +92,32 @@ RunFrontend()
 RunTests()
 {
     cd pydash
-    export FLASK_APP=pydash.py
-    export FLASK_ENV=development
+    ExportEnvironmentVars
     pipenv run pytest
     cd ..
     PydashPrint "Done!"
+}
+
+BuildDocumentation()
+{
+    RunDatabase
+    PydashPrint "Starting Documentation generation"
+    cd pydash/sphinx_docs
+    pipenv run make latexpdf
+    xdg-open ./_build/latex/PyDash.pdf
+    cd ../..
+    cp ./pydash/sphinx_docs/_build/latex/PyDash.pdf ./docs/PyDashDocumentation.pdf
+    PydashPrint "Resulting PDF can be found in ./docs/PyDashDocumentation.pdf"
+}
+
+RunProduction()
+{
+    PydashPrint "Starting Production Server..."
+    export FLASK_DEBUG=0;
+    export FLASK_ENV=production;
+    export ENV=production;
+    RunDatabase
+    RunFlask
 }
 
 
@@ -117,6 +142,10 @@ then
         then
             RunDatabase
         fi
+        if [ $i == "production" ];
+        then
+            RunProduction
+        fi
         if [ $i == "server" ];
         then
             xdg-open "http://localhost:5000" &
@@ -133,6 +162,10 @@ then
         if [ $i == "shell" ];
         then
             RunFlaskConsole
+        fi
+        if [ $i == "documentation" ];
+        then
+            BuildDocumentation
         fi
     done;
     PydashPrint "Done! Goodbye :-)"

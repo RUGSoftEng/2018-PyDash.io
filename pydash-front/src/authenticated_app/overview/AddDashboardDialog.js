@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+
+import axios from 'axios';
+
+// Visual:
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import Dialog, {
@@ -8,7 +12,8 @@ import Dialog, {
     DialogTitle,
 } from 'material-ui/Dialog';
 
-import axios from 'axios';
+// Notifications
+import { showNotification } from '../../Notifier'
 
 class AddDashboardDialog extends Component {
     constructor(props) {
@@ -19,6 +24,8 @@ class AddDashboardDialog extends Component {
             token: '',
             message: '',
             error: false,
+            errorURL: false,
+            errorToken: false,
             loading: false,
             success: false,
         }
@@ -42,30 +49,52 @@ class AddDashboardDialog extends Component {
         this.setState({ open: false });
     };
 
-    tryCreation = (e) => {
-        e.preventDefault();
+    handleSubmit = (e) => {
+        this.tryCreation(e);
+        //alert("Settings saved!");
+      };
+
+
+    preventEmpty = () =>{
+        let url = this.state.url,
+            token = this.state.token;
+        if (!(token.trim())||!(url.trim())) {
+            if(!token.trim()){
+                this.setState(prevState => ({
+                    ...prevState,
+                    errorToken: true,
+                    open: false,
+                    helperText: 'These fields are required!',
+                }))
+            }
+            if(!url.trim()){
+                this.setState(prevState => ({
+                    ...prevState,
+                    errorURL: true,
+                    open: false,
+                    helperText: 'These fields are required!',
+                }))
+            }
+            return 0;
+        }
+        return 1;
+    }
+
+    resetState = () => {
+        this.setState(prevState => ({
+            ...prevState,
+            helperText: '',
+            error: false,
+            errorToken: false,
+            errorURL: false,
+        })) 
+    };
+
+    registerCall = () =>{
         let url = this.state.url,
             name = this.state.name,
             token = this.state.token;
-
-        if (!(url.trim()) || !(token.trim())) {
-            this.setState(prevState => ({
-                ...prevState,
-                error: true,
-                open: false,
-                helperText: 'These fields are required!',
-            }))
-
-            return;
-        }
-
-        this.setState(prevState => ({
-            ...prevState,
-            error: false,
-            helperText: '',
-            loading: true
-        }))
-
+            
         axios.post(window.api_path + '/api/dashboards/register', {
             url,
             name,
@@ -75,11 +104,12 @@ class AddDashboardDialog extends Component {
             console.log(response);
             this.setState(prevState => ({
                 ...prevState,
-                error: false,
                 helperText: '',
                 success: true,
                 loading: false,
             }));
+            showNotification({ message: "Dashboard has been added!"});
+            this.props.callBack();
         }).catch((err) => {
             console.log(err);
             console.log(err.response);
@@ -92,10 +122,21 @@ class AddDashboardDialog extends Component {
                 }));
             }
         });
-        
+    }
+
+    tryCreation = (e) => {
+        e.preventDefault();
+
+        if(this.preventEmpty()===0){
+            return;
+        }
+
+        this.registerCall()
+        this.resetState()
     }
 
     render() {
+
         return (
             <div>
                 <Dialog
@@ -111,23 +152,24 @@ class AddDashboardDialog extends Component {
                         <TextField
                             autoFocus
                             id="url"
-                            label="Dashboard URL"
+                            label="Dashboard URL: https://example.com/dashboard"
                             type="url"
                             value={this.state.url}
                             fullWidth
                             required
-                            error={this.state.error}
+                            error={this.state.errorURL||this.state.error}
                             onChange={this.handleChange('url')}
                         />
+                        <small>This is the page at which you can access the Flask Monitoring Dashboard, without trailing slash. Unless configured otherwise, this is your domain name followed by '/dashboard'.</small>
                         <TextField
                             id="name"
                             label="Dashboard name"
                             type="text"
                             value={this.state.name}
                             fullWidth 
-                            error={this.state.error}
                             onChange={this.handleChange('name')}
                         />
+                        <small>Optional. This name will be used in PyDash's interface.</small>
                         <TextField 
                             id="token"
                             label="Security token"
@@ -135,24 +177,24 @@ class AddDashboardDialog extends Component {
                             value={this.state.token}
                             fullWidth 
                             required
-                            error={this.state.error}
+                            error={this.state.errorToken||this.state.error}
                             helperText={this.state.helperText}
                             onChange={this.handleChange('token')}
                         />
-                    </DialogContent>
-                    <DialogActions>
+                        <small>The Flask Monitoring Dashboard <em>security token</em> is set after importing <em>flask_monitoringdashboard</em> into your Flask application using <em>flask_monitoringdashboard.config.security_token</em>. If you are still using the default token, you are susceptible to eavesdroppers, so do not forget to change it!</small>
+                         <DialogActions>
                         <Button onClick={this.props.onClose} color="default">
                             Cancel
                         </Button>
-                        <Button onClick={this.tryCreation} color="primary" disabled={this.state.loading} variant="raised">
+                        <Button onClick={this.handleSubmit} color="primary" disabled={this.state.loading} variant="raised">
                             {this.state.loading ? "Adding dashboard" : "Save"}
                         </Button>
                     </DialogActions>
+                    </DialogContent>
                 </Dialog>
             </div>
         );
     }
-
 }
 
 export default AddDashboardDialog;

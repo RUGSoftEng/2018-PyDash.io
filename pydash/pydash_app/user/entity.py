@@ -2,27 +2,14 @@ from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from .verification_code import VerificationCode
 
+
 import uuid
 import flask_login
 import persistent
+import pydash_logger
 
 
-_MINIMUM_PASSWORD_LENGTH1 = 8
-_MINIMUM_PASSWORD_LENGTH2 = 12
-
-
-def check_password_requirements(password):
-    rules1 = [lambda xs: any(x.isupper() for x in xs),
-              lambda xs: any(not x.isalpha() for x in xs),
-              lambda xs: len(xs) >= _MINIMUM_PASSWORD_LENGTH1
-              ]
-    rules2 = [lambda xs: len(xs) >= _MINIMUM_PASSWORD_LENGTH2]
-    alternatives = [rules1, rules2]
-
-    def func(rules):
-        return all(rule(password) for rule in rules)
-
-    return any(func(alternative) for alternative in alternatives)
+logger = pydash_logger.Logger(__name__)
 
 
 class User(persistent.Persistent, flask_login.UserMixin):
@@ -38,13 +25,13 @@ class User(persistent.Persistent, flask_login.UserMixin):
 
     The User entity checks its parameters on creation:
 
-    >>> User(42, 32)
+    >>> User(42, 32, 11)
     Traceback (most recent call last):
       ...
     TypeError
     """
 
-    def __init__(self, name, password):
+    def __init__(self, name, password, mail):
         if not isinstance(name, str) or not isinstance(password, str):
             raise TypeError("User expects name and password to be strings.")
 
@@ -56,13 +43,20 @@ class User(persistent.Persistent, flask_login.UserMixin):
         # Needed for the database to search for users by verification code
         self._verification_code = self._smart_verification_code.verification_code
 
+        # Check if there is a somewhat valid mail address
+        if '@' not in mail:
+            logger.warning('User registration failed - mail address invalid')
+            raise ValueError('Invalid mail address')
+
+        self.mail = mail
+
         self.play_sounds = True
 
     def __repr__(self):
         """
         The user has a string representation to be easily introspectable:
 
-        >>> user = User("Gandalf", "pass")
+        >>> user = User("Gandalf", "pass", 'some@email.com')
         >>> f"{user}".startswith("<User ")
         True
         """
@@ -73,7 +67,7 @@ class User(persistent.Persistent, flask_login.UserMixin):
 
     def get_verification_code(self):
         """Returns this User's verification code or None if it has expired or this User has already been verified"""
-        if hasattr(self, 'verification_code'):
+        if hasattr(self, '_verification_code'):
             return self._verification_code
         else:
             return None
@@ -87,6 +81,13 @@ class User(persistent.Persistent, flask_login.UserMixin):
         else:
             return None
 
+    def has_verification_code_expired(self):
+        """Returns a boolean whether this User's verification code has expired, if it has one."""
+        if hasattr(self, '_smart_verification_code'):
+            return self._smart_verification_code.is_expired()
+        else:
+            return False
+
     def is_verified(self):
         return self.verified
 
@@ -98,10 +99,6 @@ class User(persistent.Persistent, flask_login.UserMixin):
         self._verification_code = self._smart_verification_code.verification_code
 
     def set_password(self, password):
-
-        if not self._check_password_requirements(password):
-            raise ValueError("Supplied password does not meet requirements")
-
         self.password_hash = generate_password_hash(password)
 
     # Required because `multi_indexed_collection` puts users in a set, that needs to order its keys for fast lookup.
@@ -114,8 +111,8 @@ class User(persistent.Persistent, flask_login.UserMixin):
         The actual order does not matter, as long as the same object always has the same location.
         Therefore, we use the UUIDs for this.
 
-        >>> gandalf = User("Gandalf", "pass")
-        >>> dumbledore = User("Dumbledore", "secret")
+        >>> gandalf = User("Gandalf", "pass", 'some@email.com')
+        >>> dumbledore = User("Dumbledore", "secret", 'some@email.com')
         >>> gandalf < dumbledore or gandalf > dumbledore
         True
         >>> gandalf < gandalf

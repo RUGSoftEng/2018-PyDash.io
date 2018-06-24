@@ -37,3 +37,17 @@ body {
 .menubar_inner {
     margin-right: -1px;
 }
+
+.dashboard_error_message {
+    color: #f44336;
+}
+
+.statistics_page {
+    max-width: 70vw;
+}
+
+@media screen and (max-width: 400px) {
+    .statistics_page {
+        max-width: 85vw;
+    }
+}
