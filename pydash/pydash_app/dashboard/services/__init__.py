@@ -14,7 +14,7 @@ import flask_monitoring_dashboard_client
 def is_valid_dashboard(url):
     try:
         details = flask_monitoring_dashboard_client.get_details(url)
-        version = details['dashboard-version']
+        version = details['dashboard-version']  # Throws KeyError if dashboard version is not supported (see below).
     except requests.exceptions.ConnectionError:
         return False, {'message': 'Could not connect to the dashboard'}
     except requests.exceptions.Timeout:

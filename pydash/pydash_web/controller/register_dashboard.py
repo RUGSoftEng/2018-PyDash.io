@@ -1,3 +1,7 @@
+"""
+Manages the registration of a dashboard .
+"""
+
 from flask import jsonify, request
 from flask_login import current_user
 

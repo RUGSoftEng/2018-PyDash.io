@@ -15,6 +15,7 @@ def seed():
     """
     For each user, stores some preliminary debug dashboards in the datastore,
     to be used during development.
+    Note: For now it only generates a dashboard for the user named "Arjan", to speed up seeding.
     """
 
     repository.clear_all()

@@ -87,8 +87,6 @@ class StatisticsPage extends Component {
                         ...prevState,
 
                         dashboard: response.data,
-                        
-
                         total_visits: total_visits,
                         error: response.data.error,
                     }
@@ -100,8 +98,8 @@ class StatisticsPage extends Component {
 
 
                         dashboard: response.data,
-
                         total_visits: total_visits,
+
                     };
                 });
             }
@@ -172,7 +170,7 @@ class StatisticsPage extends Component {
         return (
             
 
-            <div className={"Name"}>
+            <div className="statistics_page" >
               <Tabs
                 value={this.state.current_tab}
                 onChange={this.changeTab}
@@ -192,7 +190,7 @@ class StatisticsPage extends Component {
               <TabContainer dir={theme.direction}>
                  <div ref={this.divRef} >
                     <h2>Dashboard: {this.state.dashboard.url}</h2>
-                    <h3>{this.state.error}</h3>
+                    <h3 className="dashboard_error_message">{this.state.error}</h3>
                     <div>
                         <VisitsPanel dashboard_id={this.props.dashboard.id} />
                         <UniqueVisitorsPanel dashboard_id={this.props.dashboard.id} />
