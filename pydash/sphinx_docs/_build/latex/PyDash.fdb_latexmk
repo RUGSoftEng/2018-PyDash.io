@@ -1,10 +1,10 @@
 # Fdb version 3
-["makeindex PyDash.idx"] 1529861220 "PyDash.idx" "PyDash.ind" "PyDash" 1529861825
-  "PyDash.idx" 1529861803 31946 a587dbd2206197e034c08de49f520708 ""
+["makeindex PyDash.idx"] 1529861220 "PyDash.idx" "PyDash.ind" "PyDash" 1529876269
+  "PyDash.idx" 1529876242 31946 a587dbd2206197e034c08de49f520708 ""
   (generated)
   "PyDash.ilg"
   "PyDash.ind"
-["pdflatex"] 1529861825 "PyDash.tex" "PyDash.pdf" "PyDash" 1529861825
+["pdflatex"] 1529876269 "PyDash.tex" "PyDash.pdf" "PyDash" 1529876269
   "/usr/share/texmf-dist/fonts/enc/dvips/base/8r.enc" 1520157250 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1520157216 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/share/texmf-dist/fonts/tfm/adobe/courier/pcrb8c.tfm" 1520157222 1268 8067e4f35cbae42c0f58b48da75bf496 ""
@@ -166,20 +166,20 @@
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1520157258 32585 d82bbcf7626b7842c87671687479e852 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1526804875 334286 7d54d57af850f32d2e4cd0d3222731c3 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1520635665 7738160 998028dae0da165508b1687a1771c5f9 ""
-  "PyDash.aux" 1529861803 81839 a5baa72309a0e2a1cd6137036498bfb8 ""
-  "PyDash.ind" 1529861220 32021 5527abc902d92312d409d81dd6996204 "makeindex PyDash.idx"
-  "PyDash.out" 1529861803 1791 eef7a3402cdd74e9a34ca7ff957adb21 ""
-  "PyDash.tex" 1529861825 276622 2e1b9fb672301b95517f036849876efb ""
-  "PyDash.toc" 1529861803 6149 cadaaf3248697e748d71a5c72ad9b443 ""
-  "footnotehyper-sphinx.sty" 1529849031 8886 0562fcad2b7e25f93331edc6fc422c87 ""
-  "sphinx.sty" 1529843974 67813 626684f1806f65c5b33d5f8b01540dad ""
-  "sphinxhighlight.sty" 1529861824 8137 38a433148fcb7611515a989ff1750dd5 ""
-  "sphinxmanual.cls" 1529849031 3589 0b0aac49c6f36925cf5f9d524a75a978 ""
-  "sphinxmulticell.sty" 1529849031 14618 0defbdc8536ad2e67f1eac6a1431bc55 ""
+  "PyDash.aux" 1529876242 81839 a5baa72309a0e2a1cd6137036498bfb8 ""
+  "PyDash.ind" 1529876242 32021 5527abc902d92312d409d81dd6996204 "makeindex PyDash.idx"
+  "PyDash.out" 1529876242 1791 eef7a3402cdd74e9a34ca7ff957adb21 ""
+  "PyDash.tex" 1529876269 276622 219a836f7c142f1e98a1b8972e58adb2 ""
+  "PyDash.toc" 1529876242 6149 cadaaf3248697e748d71a5c72ad9b443 ""
+  "footnotehyper-sphinx.sty" 1529876163 8886 0562fcad2b7e25f93331edc6fc422c87 ""
+  "sphinx.sty" 1529876242 67813 626684f1806f65c5b33d5f8b01540dad ""
+  "sphinxhighlight.sty" 1529876268 8137 38a433148fcb7611515a989ff1750dd5 ""
+  "sphinxmanual.cls" 1529876163 3589 0b0aac49c6f36925cf5f9d524a75a978 ""
+  "sphinxmulticell.sty" 1529876163 14618 0defbdc8536ad2e67f1eac6a1431bc55 ""
   (generated)
-  "PyDash.toc"
   "PyDash.log"
   "PyDash.idx"
-  "PyDash.out"
-  "PyDash.aux"
   "PyDash.pdf"
+  "PyDash.aux"
+  "PyDash.toc"
+  "PyDash.out"

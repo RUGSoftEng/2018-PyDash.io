@@ -286,11 +286,19 @@ dashboard_id|string|yes||
 
 
 
+**src/authenticated_app/endpoint/BoxplotPanel.js**
+
+### BoxplotPanel
+
+
+
+
+
+
+
 **src/authenticated_app/endpoint/EndpointPage.js**
 
-### EndpointPage
-
-The `EndpointPage` renders the details page of a single EndpointPage.   
+### Endpoint
 
 
 
@@ -301,6 +309,16 @@ The `EndpointPage` renders the details page of a single EndpointPage.
 **src/authenticated_app/endpoint/EndpointsTable.js**
 
 ### EndpointsTable
+
+
+
+
+
+
+
+**src/authenticated_app/endpoint/MiscDataPanel.js**
+
+### MiscDataPanel
 
 
 
