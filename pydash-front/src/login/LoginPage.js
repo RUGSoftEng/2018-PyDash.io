@@ -33,6 +33,13 @@ const styles = theme => ({
     },
 });
 
+
+/**
+ * Purpose: Renders the login page and handles the login requests. Lets the user know if something went wrong with logging in,
+ * warns the user about an unsafe password if he has one and contains a link to the register page.
+ * 
+ *   
+ */
 class LoginPage extends Component {
     state = {
         username: '',
@@ -49,7 +56,6 @@ class LoginPage extends Component {
         this.setState((prevState) => {
             let isPasswordUnsafe = prevState.isPasswordUnsafe;
             if(key === 'password') {
-                console.log("TETS")
                 // Only bug person once password is longer than eight characters
                 // because that is a requirement in any case.
                 isPasswordUnsafe = (target_val.length < 12 && target_val.length > 8);

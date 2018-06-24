@@ -2,7 +2,11 @@ import React from 'react';
 import Snackbar from 'material-ui/Snackbar';
 
 let openSnackbarFunction;
-
+/**
+ * This component ensures the snackbar notification bar functions correctly,
+ *  for example by making it visible long enough to be readable 
+ * 
+ */
 class Notifier extends React.Component {
     state = {
         open: false,

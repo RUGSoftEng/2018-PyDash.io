@@ -1,8 +1,11 @@
-// This component becomes as large as its container,
-// and then passes its resulting `width` on as the `with` prop to its child,
-// as to make child components that require a width in pixels responsive.
+
 import React, { Component } from 'react';
 
+/**
+ * This component becomes as large as its container, and then passes its resulting `width` on as the `with` prop to its child,
+ * as to make child components that require a width in pixels responsive.
+ *
+ */
 class WidthAwareContainer extends Component {
     state = {
         width: 0,

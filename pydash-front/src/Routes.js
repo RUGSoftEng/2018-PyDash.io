@@ -7,6 +7,10 @@ import RegistrationPage from './registration/RegistrationPage';
 import AuthenticatedApp from './authenticated_app/AuthenticatedApp';
 import VerificationPage from './registration/VerificationPage';
 
+/**
+ * Purpose: Shows the correct pages when the link is matching one of the switch statements.
+ * 
+ */
 class Routes extends Component {
     render = () => {
         return (

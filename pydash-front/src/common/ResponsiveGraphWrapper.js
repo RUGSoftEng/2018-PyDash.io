@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 
 import ContainerDimensions from 'react-container-dimensions';
 
-
+/**
+ * 
+ * 
+ */
 class ResponsiveGraphWrapper extends Component {
     static propTypes = {
         height: PropTypes.number.isRequired
