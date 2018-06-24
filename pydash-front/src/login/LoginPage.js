@@ -35,10 +35,9 @@ const styles = theme => ({
 
 
 /**
- * Purpose: Renders the login page and handles the login requests. Lets the user know if something went wrong with logging in,
+ * Renders the login page and handles the login requests. Lets the user know if something went wrong with logging in,
  * warns the user about an unsafe password if he has one and contains a link to the register page.
- * 
- *   
+ *
  */
 class LoginPage extends Component {
     state = {
