@@ -62,11 +62,13 @@ class EndpointsTable extends Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {this.props.data.map((endpoint) => {
+                    {
+                    
+                    this.props.data.map((endpoint) => {
                         if(this.state.input === '' || endpoint.name.includes(this.state.input)){
                             let endpoint_link = endpoint_url(this.props.dashboard_id, endpoint.name);
                             return (
-                                <tr>
+                                <tr key={endpoint.name}>
                                     <td><a href={endpoint_link} onClick={(e) => {e.preventDefault(); this.props.history.push(endpoint_link)}} >{endpoint.name}</a></td>
                                     <td>{endpoint.aggregates.unique_visitors}</td>
                                     <td>{endpoint.aggregates.total_visits}</td>
@@ -76,7 +78,7 @@ class EndpointsTable extends Component {
                                 </tr>
                             )
                         } 
-                        return console.log('none'); 
+                            return console.log('none'); 
 
                     
                         }
