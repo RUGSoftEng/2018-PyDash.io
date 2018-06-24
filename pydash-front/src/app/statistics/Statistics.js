@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+/**
+ * Outdated
+ * 
+ */
 class Statistics extends Component {
   render(){
     return (

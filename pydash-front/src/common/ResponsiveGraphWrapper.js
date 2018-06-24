@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ContainerDimensions from 'react-container-dimensions';
 
 /**
- * 
+ * Wrapper for the graphs, making sure they are shown the right way
  * 
  */
 class ResponsiveGraphWrapper extends Component {

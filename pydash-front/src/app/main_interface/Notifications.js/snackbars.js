@@ -13,6 +13,10 @@ const styles = theme => ({
     },
 });
 
+/**
+ * Outdated
+ * 
+ */
 class SimpleSnackbar extends React.Component {
     state = {
     open: false,
