@@ -87,8 +87,6 @@ class StatisticsPage extends Component {
                         ...prevState,
 
                         dashboard: response.data,
-                        
-
                         total_visits: total_visits,
                         error: response.data.error,
                     }
@@ -100,8 +98,8 @@ class StatisticsPage extends Component {
 
 
                         dashboard: response.data,
-
                         total_visits: total_visits,
+
                     };
                 });
             }
