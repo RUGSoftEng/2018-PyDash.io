@@ -14,6 +14,8 @@ Submodules
    pydash_web.controller.change_dashboard_settings
    pydash_web.controller.change_password
    pydash_web.controller.change_settings
+   pydash_web.controller.dashboard
+   pydash_web.controller.dashboard_statistic
    pydash_web.controller.dashboards
    pydash_web.controller.delete_dashboard
    pydash_web.controller.delete_user

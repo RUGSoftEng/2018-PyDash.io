@@ -7,6 +7,11 @@ import RegistrationPage from './registration/RegistrationPage';
 import AuthenticatedApp from './authenticated_app/AuthenticatedApp';
 import VerificationPage from './registration/VerificationPage';
 
+/**
+ * Will dispatch between the various top-level routes that the application uses.
+ *
+ * After having logged in, there are various sub-routes, which are dispatched in their own component, inside of AuthenticatedApp.
+ */
 class Routes extends Component {
     render = () => {
         return (

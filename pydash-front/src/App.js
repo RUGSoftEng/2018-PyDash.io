@@ -8,6 +8,12 @@ import Routes from './Routes'
 import Notifier, { showNotification } from './Notifier'
 
 
+/**
+ * The entry point of the React application.
+ * Almost all work is delegated to subcomponents.
+ * The only work that the App component itself does, is to check if the user is logged in or not,
+ * and pass functions to lower-level components to sign a user in or out.
+ */
 class App extends Component {
     state = {
         username: ''

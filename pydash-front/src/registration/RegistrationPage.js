@@ -22,6 +22,12 @@ const styles = theme => ({
     },
   }); 
 
+  /**
+   * Renders the registration page. Also handles the register request itself, including making sure all the necessary fields
+   * are filled in correctly. Shows relevant error messages when something is going wrong and provides an explanation on
+   * the required security for passwords.
+   * 
+   */
 class RegistrationPage extends Component {
     constructor(props) {
       super(props);

@@ -15,6 +15,10 @@ import Dialog, {
 // Notifications
 import { showNotification } from '../../Notifier'
 
+/**
+ * `AddDashboardDialog` shows the modal dialog that allows a user to add a new dashboard to PyDash.
+ * It also performs the handling logic of saving the information that has been entered in the form.
+ */
 class AddDashboardDialog extends Component {
     constructor(props) {
         super(props);
@@ -52,8 +56,7 @@ class AddDashboardDialog extends Component {
     handleSubmit = (e) => {
         this.tryCreation(e);
         //alert("Settings saved!");
-      };
-
+    };
 
     preventEmpty = () =>{
         let url = this.state.url,
@@ -94,12 +97,12 @@ class AddDashboardDialog extends Component {
         let url = this.state.url,
             name = this.state.name,
             token = this.state.token;
-            
+        
         axios.post(window.api_path + '/api/dashboards/register', {
             url,
             name,
             token},
-            {withCredentials: true}
+                   {withCredentials: true}
         ).then((response) => {
             console.log(response);
             this.setState(prevState => ({
@@ -182,14 +185,15 @@ class AddDashboardDialog extends Component {
                             onChange={this.handleChange('token')}
                         />
                         <small>The Flask Monitoring Dashboard <em>security token</em> is set after importing <em>flask_monitoringdashboard</em> into your Flask application using <em>flask_monitoringdashboard.config.security_token</em>. If you are still using the default token, you are susceptible to eavesdroppers, so do not forget to change it!</small>
-                         <DialogActions>
-                        <Button onClick={this.props.onClose} color="default">
-                            Cancel
-                        </Button>
-                        <Button onClick={this.handleSubmit} color="primary" disabled={this.state.loading} variant="raised">
-                            {this.state.loading ? "Adding dashboard" : "Save"}
-                        </Button>
-                    </DialogActions>
+                        <DialogActions>
+                            <Button onClick={this.props.onClose} color="default">
+                                Cancel
+                            </Button>
+                            <Button onClick={this.handleSubmit} color="primary" disabled={this.state.loading} variant="raised">
+                                {this.state.loading ? "Adding dashboard" : "Save"}
+                            </Button>
+                            
+                        </DialogActions>
                     </DialogContent>
                 </Dialog>
             </div>

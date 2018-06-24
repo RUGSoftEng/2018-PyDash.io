@@ -69,6 +69,13 @@ const styles = theme => ({
 
 });
 
+/**
+ * Component representing the settings page.
+ *
+ * Provides rendering and functionality for changing account details, enabling
+ * disabling sounds, and removing user accounts.
+ *
+ */
 class SettingsPage extends Component {
 
 

@@ -10,7 +10,10 @@ import DashboardRoutes from './dashboard/DashboardRoutes';
 import OverviewPage from './overview/OverviewPage';
 import SettingsPage from './settings/SettingsPage';
 
-
+/**
+ * Similar to `Routes`, this component performs routing, but for the website after being authenticated.
+ *
+ */
 class AuthenticatedRoutes extends Component {
     render = () => {
         return (

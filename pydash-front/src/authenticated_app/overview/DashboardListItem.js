@@ -17,6 +17,11 @@ const styles = {
     }
 };
 
+/**
+ * The `DashboardListItem` displays some general information about the given dashboard;
+ *
+ * This component is to be used as part of a `DashboardList`.
+ */
 class DashboardListItem extends Component {
     constructor(props) {
         super(props);
@@ -32,11 +37,11 @@ class DashboardListItem extends Component {
         return(
             <Grid item xs={12} sm={12}>
                 <NavLink to={'/overview/dashboards/' + this.props.dashboard_id} className="DashboardTileLink">
-                <Card className="DashboardTile">
-                    <CardContent>
-                        <h2>{this.props.title}{this.props.error ? <Warning color="error"/> : ""}</h2>
-                    </CardContent>
-                </Card>
+                    <Card className="DashboardTile">
+                        <CardContent>
+                            <h2>{this.props.title}{this.props.error ? <Warning color="error"/> : ""}</h2>
+                        </CardContent>
+                    </Card>
                 </NavLink>
             </Grid>
         );

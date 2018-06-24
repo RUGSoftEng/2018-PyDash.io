@@ -9,16 +9,19 @@ import { withStyles } from 'material-ui/styles';
 import DashboardListItem from './DashboardListItem';
 
 const styles = theme => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing.unit * 2,
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
+    root: {
+        flexGrow: 1,
+    },
+    paper: {
+        padding: theme.spacing.unit * 2,
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+    },
 });
 
+/**
+ * A list of dashboards, where each entry (`DashboardListItem`) contains some general information about the dashboard.
+ */
 class DashboardList extends Component {
     constructor(props) {
         super(props);

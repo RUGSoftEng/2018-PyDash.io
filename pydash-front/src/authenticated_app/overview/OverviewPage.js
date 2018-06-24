@@ -10,7 +10,9 @@ import AddDashboardDialog from './AddDashboardDialog';
 import DashboardList from './DashboardList';
 import { Button } from 'material-ui';
 
-
+/**
+ * The `OverviewPage` is the main page the user sees after logging in.
+ */
 class OverviewPage extends Component {
     state = {
         open: false,
