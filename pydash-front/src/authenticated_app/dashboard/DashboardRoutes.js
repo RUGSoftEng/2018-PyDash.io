@@ -41,7 +41,7 @@ class DashboardRoutes extends Component {
                                                 path={match.url}
                                                      title={endpoint_info.name}
                                                      render = {(_) => (
-                                                         <Endpoint endpointData={endpoint_info}/>
+                                                         <Endpoint endpointData={endpoint_info} dashboard_id={this.props.dashboard.id}/>
                                                      )}
                                             />
                                         )
