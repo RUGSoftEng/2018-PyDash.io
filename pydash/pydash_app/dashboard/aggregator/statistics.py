@@ -139,6 +139,7 @@ class TotalVisits(Statistic):
 
 
 class TotalExecutionTime(FloatStatisticABC):
+    """Total execution time in ms. Rendered value is rounded to 3 decimal places by default."""
     def should_be_rendered(self):
         return True
 
@@ -158,6 +159,9 @@ class TotalExecutionTime(FloatStatisticABC):
 
 
 class AverageExecutionTime(FloatStatisticABC):
+    """Keeps track of the average execution time in ms of all endpoints that have been appended to it.
+    Rendered value is rounded to 3 decimal places by default."""
+
     dependencies = [TotalVisits, TotalExecutionTime]
 
     def should_be_rendered(self):
