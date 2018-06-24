@@ -189,37 +189,9 @@ class AddDashboardDialog extends Component {
                         <Button onClick={this.handleSubmit} color="primary" disabled={this.state.loading} variant="raised">
                             {this.state.loading ? "Adding dashboard" : "Save"}
                         </Button>
-                       
                     </DialogActions>
                     </DialogContent>
-                    
-
-                    
                 </Dialog>
-                {/* <Snackbar
-                    anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                    }}
-                    open={this.state.openS}
-                    autoHideDuration={6000}
-                    onClose={this.handleCloseSnack}
-                    ContentProps={{
-                    'aria-describedby': 'message-id',
-                    }}
-                    message={<span id="message-id">Changes have been saved!</span>}
-                    action={[
-                    <IconButton
-                    key="close"
-                    aria-label="Close"
-                    color="inherit"
-                    //className={classes.close}
-                    onClick={this.handleCloseSnack}
-                    >
-                    <CloseIcon />
-                    </IconButton>,
-                    ]}
-                    /> */}
             </div>
         );
     }
