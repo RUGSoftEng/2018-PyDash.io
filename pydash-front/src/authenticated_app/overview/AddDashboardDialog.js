@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+
+import axios from 'axios';
+
+// Visual:
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import Dialog, {
@@ -7,10 +11,9 @@ import Dialog, {
     DialogContentText,
     DialogTitle,
 } from 'material-ui/Dialog';
-import Snackbar from 'material-ui/Snackbar';
-import IconButton from 'material-ui/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import axios from 'axios';
+
+// Notifications
+import { showNotification } from '../../Notifier'
 
 class AddDashboardDialog extends Component {
     constructor(props) {
@@ -24,7 +27,6 @@ class AddDashboardDialog extends Component {
             errorURL: false,
             errorToken: false,
             loading: false,
-            openS: false,
             success: false,
         }
     }
@@ -48,18 +50,10 @@ class AddDashboardDialog extends Component {
     };
 
     handleSubmit = (e) => {
-        this.setState({ openS: true });
         this.tryCreation(e);
         //alert("Settings saved!");
       };
 
-    handleCloseSnack = (event, reason) => {
-      if (reason === 'clickaway') {
-        return;
-      }
-
-      this.setState({ openS: false });
-    };
 
     preventEmpty = () =>{
         let url = this.state.url,
@@ -85,7 +79,7 @@ class AddDashboardDialog extends Component {
         }
         return 1;
     }
-https://se2018-pydashio.slack.com/messages/C9A0LP9HV/
+
     resetState = () => {
         this.setState(prevState => ({
             ...prevState,
@@ -114,6 +108,8 @@ https://se2018-pydashio.slack.com/messages/C9A0LP9HV/
                 success: true,
                 loading: false,
             }));
+            showNotification({ message: "Dashboard has been added!"});
+            this.props.callBack();
         }).catch((err) => {
             console.log(err);
             console.log(err.response);
@@ -131,13 +127,12 @@ https://se2018-pydashio.slack.com/messages/C9A0LP9HV/
     tryCreation = (e) => {
         e.preventDefault();
 
-        this.resetState()
         if(this.preventEmpty()===0){
             return;
         }
 
         this.registerCall()
-        
+        this.resetState()
     }
 
     render() {
@@ -157,7 +152,7 @@ https://se2018-pydashio.slack.com/messages/C9A0LP9HV/
                         <TextField
                             autoFocus
                             id="url"
-                            label="Dashboard URL"
+                            label="Dashboard URL: https://example.com/dashboard"
                             type="url"
                             value={this.state.url}
                             fullWidth
@@ -165,6 +160,7 @@ https://se2018-pydashio.slack.com/messages/C9A0LP9HV/
                             error={this.state.errorURL||this.state.error}
                             onChange={this.handleChange('url')}
                         />
+                        <small>This is the page at which you can access the Flask Monitoring Dashboard, without trailing slash. Unless configured otherwise, this is your domain name followed by '/dashboard'.</small>
                         <TextField
                             id="name"
                             label="Dashboard name"
@@ -173,6 +169,7 @@ https://se2018-pydashio.slack.com/messages/C9A0LP9HV/
                             fullWidth 
                             onChange={this.handleChange('name')}
                         />
+                        <small>Optional. This name will be used in PyDash's interface.</small>
                         <TextField 
                             id="token"
                             label="Security token"
@@ -184,6 +181,7 @@ https://se2018-pydashio.slack.com/messages/C9A0LP9HV/
                             helperText={this.state.helperText}
                             onChange={this.handleChange('token')}
                         />
+                        <small>The Flask Monitoring Dashboard <em>security token</em> is set after importing <em>flask_monitoringdashboard</em> into your Flask application using <em>flask_monitoringdashboard.config.security_token</em>. If you are still using the default token, you are susceptible to eavesdroppers, so do not forget to change it!</small>
                          <DialogActions>
                         <Button onClick={this.props.onClose} color="default">
                             Cancel
@@ -191,41 +189,12 @@ https://se2018-pydashio.slack.com/messages/C9A0LP9HV/
                         <Button onClick={this.handleSubmit} color="primary" disabled={this.state.loading} variant="raised">
                             {this.state.loading ? "Adding dashboard" : "Save"}
                         </Button>
-                       
                     </DialogActions>
                     </DialogContent>
-                    
-
-                    
                 </Dialog>
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    open={this.state.openS}
-                    autoHideDuration={6000}
-                    onClose={this.handleCloseSnack}
-                    ContentProps={{
-                        'aria-describedby': 'message-id',
-                    }}
-                    message={<span id="message-id">Changes have been saved!</span>}
-                    action={[
-                        <IconButton
-                        key="close"
-                        aria-label="Close"
-                        color="inherit"
-                        //className={classes.close}
-                        onClick={this.handleCloseSnack}
-                        >
-                        <CloseIcon />
-                        </IconButton>,
-                    ]}
-                    />
             </div>
         );
     }
-
 }
 
 export default AddDashboardDialog;

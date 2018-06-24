@@ -29,11 +29,22 @@ def reduce_precision(value, nr_of_digits):
 
 
 def date_dict(dict):
+    """
+    Converts a {datetime: value} dictionary to a {datetime_formatted_string: value} dictionary,
+    where the string is formatted according to the ISO 6801 Date format (representing a day).
+
+    Example:
+    >>> from datetime import datetime
+    >>> dictionary = {datetime(1970,1,1): "Foo"}
+    >>> date_dict(dictionary)
+    {'1970-01-01': 'Foo'}
+    """
     # JS expects dates in the ISO 8601 Date format (example: 2018-03)
     return {k.strftime("%Y-%m-%d"): v for (k, v) in dict.items()}
 
 
 class Statistic(persistent.Persistent, abc.ABC):
+    """Aggregates a single statistic value."""
     dependencies = []
 
     def __init__(self):
@@ -42,7 +53,11 @@ class Statistic(persistent.Persistent, abc.ABC):
     @property
     @abc.abstractmethod
     def should_be_rendered(self):
-        """Note: implementing subclasses should add the @property decorator.
+        """
+        Indicates whether this Statistic instance should be rendered or not. The latter would be the case for statistics
+        that solely serve as dependencies for other statistics.
+
+        Note: implementing subclasses should add the @property decorator.
         There was some strange behaviour where without adding the decorator,
         subclasses implementing it as `return True` behaved normally, but those implementing it as `return False` still
         were treated as if it returned True. Adding the @property decorator fixed it.
@@ -51,18 +66,22 @@ class Statistic(persistent.Persistent, abc.ABC):
 
     @abc.abstractmethod
     def empty(self):
+        """Returns the empty state of self.value, such that it contains no data of any endpoint calls."""
         return None
 
     def append(self, endpoint_call, dependencies):
+        """Wrapper for perform_append, that makes sure this Statistic instance is marked as changed for a ZODB database."""
         self.perform_append(endpoint_call, dependencies)
-        self._p_changed = True # ZODB mark object as changed
+        self._p_changed = True  # ZODB mark object as changed
 
     @abc.abstractmethod
     def perform_append(self, endpoint_call, dependencies):
+        """Updates self.value to reflect the addition/appending of the given endpoint call, given its dependencies."""
         pass
 
+    @classmethod
     @abc.abstractmethod
-    def field_name(self):
+    def field_name(cls):
         pass
 
     def rendered_value(self):
@@ -70,7 +89,10 @@ class Statistic(persistent.Persistent, abc.ABC):
 
     @classmethod
     def add_to_collection(cls, collection):
-        """cls should only be a class instead of an instance."""
+        """
+        Adds this Statistic instance and its dependencies to a collection.
+        cls should only be a class instead of an instance.
+        """
         for dependency in cls.dependencies:
             dependency.add_to_collection(collection)
         collection.add(cls)
@@ -90,6 +112,7 @@ class FloatStatisticABC(Statistic):
 
     @property
     def nr_of_digits(self):
+        """Number of digits to round its rendered value to. See reduce_precision()."""
         return 3
 
     def rendered_value(self):
@@ -116,6 +139,7 @@ class TotalVisits(Statistic):
 
 
 class TotalExecutionTime(FloatStatisticABC):
+    """Total execution time in ms. Rendered value is rounded to 3 decimal places by default."""
     def should_be_rendered(self):
         return True
 
@@ -135,8 +159,9 @@ class TotalExecutionTime(FloatStatisticABC):
 
 
 class AverageExecutionTime(FloatStatisticABC):
-    """Keeps track of the average execution time of all endpoints that have been appended to it.
+    """Keeps track of the average execution time in ms of all endpoints that have been appended to it.
     Rendered value is rounded to 3 decimal places by default."""
+
     dependencies = [TotalVisits, TotalExecutionTime]
 
     def should_be_rendered(self):
@@ -169,31 +194,6 @@ class AverageExecutionTime(FloatStatisticABC):
             aet.value = (self_tet + other_tet)/(self_tv + other_tv)
 
         return aet
-
-
-class VisitsPerDay(Statistic):
-    def should_be_rendered(self):
-        return True
-
-    def empty(self):
-        return defaultdict(int)
-
-    def field_name(self):
-        return 'visits_per_day'
-
-    def perform_append(self, endpoint_call, dependencies):
-        date = endpoint_call.time.date()
-        self.value[date] += 1
-
-    def rendered_value(self):
-        return date_dict(self.value)
-
-    def add_together(self, other, dependencies_self, dependencies_other):
-        vpd = VisitsPerDay()
-        keyset = set(self.value.keys()).union(set(other.value.keys()))
-        for key in keyset:
-            vpd.value[key] = self.value[key] + other.value[key]
-        return vpd
 
 
 class VisitsPerIP(Statistic):
@@ -240,31 +240,6 @@ class UniqueVisitorsAllTime(Statistic):
         uvat = UniqueVisitorsAllTime()
         uvat.value = self.value.union(other.value)
         return uvat
-
-
-class UniqueVisitorsPerDay(Statistic):
-    def should_be_rendered(self):
-        return True
-
-    def empty(self):
-        return defaultdict(set)
-
-    def field_name(self):
-        return 'unique_visitors_per_day'
-
-    def perform_append(self, endpoint_call, dependencies):
-        date = endpoint_call.time.date()
-        self.value[date].add(endpoint_call.ip)
-
-    def rendered_value(self):
-        return date_dict({k: len(v) for k, v in self.value.items()})
-
-    def add_together(self, other, dependencies_self, dependencies_other):
-        uvpd = UniqueVisitorsPerDay()
-        keyset = set(self.value.keys()).union(set(other.value.keys()))
-        for key in keyset:
-            uvpd.value[key] = self.value[key].union(other.value[key])
-        return uvpd
 
 
 class ExecutionTimeTDigest(Statistic):
@@ -386,3 +361,25 @@ class SlowestExecutionTime(ExecutionTimePercentileABC):
 
     def percentile_nr(self):
         return 100
+
+
+class Versions(Statistic):
+    def should_be_rendered(self):
+        return True
+
+    def empty(self):
+        return set()
+
+    def field_name(self):
+        return 'versions'
+
+    def rendered_value(self):
+        return list(self.value)
+
+    def perform_append(self, endpoint_call, dependencies):
+        self.value.add(endpoint_call.version)
+
+    def add_together(self, other, dependencies_self, dependencies_other):
+        versions = Versions()
+        versions.value = self.value.union(other.value)
+        return versions

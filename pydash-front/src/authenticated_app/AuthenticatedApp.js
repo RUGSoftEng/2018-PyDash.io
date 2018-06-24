@@ -12,38 +12,42 @@ class AuthenticatedApp extends Component {
         dashboards: null
     }
 
+    updateData = () => {
+        axios(window.api_path + '/api/dashboards', {
+          method: 'get',
+          withCredentials: true
+        }).then((response) => {
+          console.log('found some data', response);
+          if (response.data.hasOwnProperty('error')) {
+            console.log("Error found");
+            this.setState(prevState => {
+              return {
+                ...prevState,
+                  dashboards: null,
+                error: response.data.error,
+              };
+            });
+          } else {
+              const dashboards = response.data.reduce((accum, dashboard) => {
+                  accum[dashboard.id] = dashboard;
+                  return accum;
+              }, {});
+              console.log("DASHBOARDS DATA:", dashboards);
+            this.setState(prevState => {
+              return {
+                ...prevState,
+                dashboards: dashboards,
+              };
+            });
+          }
+        }).catch((error) => {
+          console.log('error while fetching dashboards information', error);
+        });
+    }
+
     componentDidMount = () => {
         console.log("Before DashboardList endpoint call")
-      axios(window.api_path + '/api/dashboards', {
-        method: 'get',
-        withCredentials: true
-      }).then((response) => {
-        console.log('found some data', response);
-        if (response.data.hasOwnProperty('error')) {
-          console.log("Error found");
-          this.setState(prevState => {
-            return {
-              ...prevState,
-                dashboards: null,
-              error: response.data.error,
-            };
-          });
-        } else {
-            const dashboards = response.data.reduce((accum, dashboard) => {
-                accum[dashboard.id] = dashboard;
-                return accum;
-            }, {});
-            console.log("DASHBOARDS DATA:", dashboards);
-          this.setState(prevState => {
-            return {
-              ...prevState,
-              dashboards: dashboards,
-            };
-          });
-        }
-      }).catch((error) => {
-        console.log('error while fetching dashboards information', error);
-      });
+        this.updateData();
     }
 
     render = () => {
@@ -52,7 +56,7 @@ class AuthenticatedApp extends Component {
                 username={this.props.username}
                 signOutHandler={this.props.signOutHandler}
             >
-                <AuthenticatedRoutes dashboards={this.state.dashboards} username={this.props.username}/>
+                <AuthenticatedRoutes dashboards={this.state.dashboards} username={this.props.username} updateData={this.updateData} />
             </UserInterface>
         );
     };

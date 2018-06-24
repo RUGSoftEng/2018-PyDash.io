@@ -98,10 +98,20 @@ RunTests()
     PydashPrint "Done!"
 }
 
+BuildDocumentation()
+{
+    RunDatabase
+    PydashPrint "Starting Documentation generation"
+    cd pydash/sphinx_docs
+    pipenv run make latexpdf
+    xdg-open ./_build/latex/PyDash.pdf
+    cd ../..
+    cp ./pydash/sphinx_docs/_build/latex/PyDash.pdf ./docs/PyDashDocumentation.pdf
+    PydashPrint "Resulting PDF can be found in ./docs/PyDashDocumentation.pdf"
+}
+
 RunProduction()
 {
-    PydashPrint "Current Environment:"
-    printenv
     PydashPrint "Starting Production Server..."
     export FLASK_DEBUG=0;
     export FLASK_ENV=production;
@@ -152,6 +162,10 @@ then
         if [ $i == "shell" ];
         then
             RunFlaskConsole
+        fi
+        if [ $i == "documentation" ];
+        then
+            BuildDocumentation
         fi
     done;
     PydashPrint "Done! Goodbye :-)"

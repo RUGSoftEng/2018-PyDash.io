@@ -22,7 +22,7 @@ class EndpointsTable extends Component {
 
     render = () => {
         console.log("ENDPOINTS TABLE", this.props.data);
-        if(this.props.data.length === 0) {
+        if(this.props.data === undefined || this.props.data.length === 0) {
             return (
                 <em>
                     No Endpoints could currently be found for this Dashboard.
@@ -32,7 +32,8 @@ class EndpointsTable extends Component {
 
         return (
 
-            <div className="EndpointsTable">
+            <div className="EndpointsTable" style={{maxWidth: "200px", margin: "0 auto"}}>
+                <div>
                 <TextField
                 id="filter"
                 label="Filter endpoints"
@@ -40,6 +41,8 @@ class EndpointsTable extends Component {
                 onChange={this.handleType('input')}
                 margin="normal"
                 />
+                </div>
+                <div>
                 <table width="100%">
                     <thead>
                     <tr>
@@ -58,11 +61,14 @@ class EndpointsTable extends Component {
                         <th>Details</th>
                     </tr>
                     </thead>
-                    {this.props.data.map((endpoint) => {
+                    <tbody>
+                    {
+                    
+                    this.props.data.map((endpoint) => {
                         if(this.state.input === '' || endpoint.name.includes(this.state.input)){
                             let endpoint_link = endpoint_url(this.props.dashboard_id, endpoint.name);
                             return (
-                                <tr>
+                                <tr key={endpoint.name}>
                                     <td><a href={endpoint_link} onClick={(e) => {e.preventDefault(); this.props.history.push(endpoint_link)}} >{endpoint.name}</a></td>
                                     <td>{endpoint.aggregates.unique_visitors}</td>
                                     <td>{endpoint.aggregates.total_visits}</td>
@@ -72,14 +78,16 @@ class EndpointsTable extends Component {
                                 </tr>
                             )
                         } 
-                        return console.log('none'); 
+                            return console.log('none'); 
 
                     
                         }
                         
                     )}
+                    </tbody>
 
                 </table>
+                </div>
             </div>
         );
     }
