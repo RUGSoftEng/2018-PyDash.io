@@ -11,9 +11,8 @@ import OverviewPage from './overview/OverviewPage';
 import SettingsPage from './settings/SettingsPage';
 
 /**
- * Same purpose as Routes.js, routing, but for the website after authentication. The routes after a certain dashboard are
- * handled by DashboardRoutes.js. 
- * 
+ * Similar to `Routes`, this component performs routing, but for the website after being authenticated.
+ *
  */
 class AuthenticatedRoutes extends Component {
     render = () => {

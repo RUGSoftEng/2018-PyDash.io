@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 
-class Endpoint extends Component {
+
+/**
+ * The `EndpointPage` renders the details page of a single EndpointPage.
+ */
+class EndpointPage extends Component {
 
   render() {
       return (
@@ -10,4 +14,4 @@ class Endpoint extends Component {
     }
   }
   
-  export default Endpoint;
+  export default EndpointPage;
