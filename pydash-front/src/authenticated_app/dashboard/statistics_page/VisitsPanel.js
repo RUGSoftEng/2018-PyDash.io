@@ -34,6 +34,9 @@ VisitsFetcher.propTypes = {
 }
 
 
+/**
+ * A Panel containing a line graph showing how many visitors this Dashboard had.
+ */
 function VisitsPanel(props) {
     return (
         <ExpansionPanel>

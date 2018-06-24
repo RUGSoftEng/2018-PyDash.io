@@ -19,7 +19,9 @@ const MatchedStatisticsPage = (props) => {
     return () => (<StatisticsPage dashboard={props.dashboard} />);
 }
 
-
+/**
+ * Dispatches between all routes concerning a single dashboard.
+*/
 class DashboardRoutes extends Component {
     render = () => {
         return (

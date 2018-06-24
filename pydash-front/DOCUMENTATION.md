@@ -85,6 +85,8 @@ dashboards|object|no||
 
 ### 1. DashboardRoutes
 
+Dispatches between all routes concerning a single dashboard.   
+
 
 
 
@@ -97,6 +99,8 @@ match|shape|no||
 
 ### 1. EndpointExecutionTimesPanel
 
+Panel containing the `EndpointExecutionTimesGraph`.   
+
 
 
 
@@ -107,6 +111,8 @@ dashboard_id|string|yes||
 **src/authenticated_app/dashboard/statistics_page/ExecutionTimesGraph.js**
 
 ### 1. ExecutionTimesGraph
+
+Displays the average execution time per the given dashboard's endpoint.   
 
 
 
@@ -120,6 +126,8 @@ title|string|yes||
 
 ### 1. StatisticFetcher
 
+Base class component that specific Statistics-fetchers inherit.   
+
 
 
 
@@ -130,6 +138,8 @@ timeslice|string|no||
 **src/authenticated_app/dashboard/statistics_page/StatisticsPage.js**
 
 ### 1. StatisticsPage
+
+The main Dashboard page that cointains all general statistics we've gathered for it.   
 
 
 
@@ -143,6 +153,10 @@ dashboard|shape|yes||
 
 ### 1. TimesliceTabs
 
+A component put inside this component will receive the `timeslice` property
+
+This property is set, depending on the tab that the user selects (one of hour, day, week, month, year)   
+
 
 
 
@@ -150,6 +164,8 @@ dashboard|shape|yes||
 **src/authenticated_app/dashboard/statistics_page/UniqueVisitorsHeatmapPanel.js**
 
 ### 1. UniqueVisitorsHeatmapPanel
+
+Panel containing a heatmap of all unique visitors that have been visiting this Dashboard.   
 
 
 
@@ -162,6 +178,8 @@ dashboard_id|string|yes||
 
 ### 1. UniqueVisitorsPanel
 
+A Panel containing a line graph showing how many unique visitors this Dashboard had.   
+
 
 
 
@@ -172,6 +190,8 @@ dashboard_id|string|yes||
 **src/authenticated_app/dashboard/statistics_page/VisitorsHeatmapGraph.js**
 
 ### 1. VisitorsHeatmapGraph
+
+Heatmap of visitors that have been visiting this Dashboard.   
 
 
 
@@ -185,6 +205,8 @@ title|string|yes||
 
 ### 1. VisitorsHeatmapPanel
 
+Panel containing a heatmap of all visitors that have been visiting this Dashboard.   
+
 
 
 
@@ -195,6 +217,8 @@ dashboard_id|string|yes||
 **src/authenticated_app/dashboard/statistics_page/VisitsGraph.js**
 
 ### 1. VisitsGraph
+
+A line graph showing how many visitors this Dashboard had.   
 
 
 
@@ -210,6 +234,8 @@ timeslice|string|yes||
 **src/authenticated_app/dashboard/statistics_page/VisitsPanel.js**
 
 ### 1. VisitsPanel
+
+A Panel containing a line graph showing how many visitors this Dashboard had.   
 
 
 

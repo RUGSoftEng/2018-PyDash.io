@@ -7,6 +7,9 @@ import { Bar } from '@nivo/bar';
 // Utils:
 import ResponsiveGraphWrapper from '../../../common/ResponsiveGraphWrapper';
 
+/**
+ * Displays the average execution time per the given dashboard's endpoint.
+ */
 class ExecutionTimesGraph extends Component {
     render() {
         return (

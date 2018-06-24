@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 // Utils:
 import {requestStatisticData} from "./statistics_utils"
 
-
+/**
+ * Base class component that specific Statistics-fetchers inherit.
+ */
 class StatisticFetcher extends Component {
     statistic_name = null
     constructor(props) {

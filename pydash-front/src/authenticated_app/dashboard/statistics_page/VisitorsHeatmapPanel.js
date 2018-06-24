@@ -14,6 +14,9 @@ import VisitorsHeatmapGraph from './VisitorsHeatmapGraph';
 
 import { getIsoDateString, convertHeatmapData } from '../../../utils';
 
+/**
+ * Panel containing a heatmap of all visitors that have been visiting this Dashboard.
+ */
 class VisitorsHeatmapPanel extends Component {
     constructor(props) {
         super(props);

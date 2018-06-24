@@ -34,8 +34,9 @@ UniqueVisitsFetcher.propTypes = {
     timeslice: PropTypes.string,
 }
 
-
-
+/**
+ * A Panel containing a line graph showing how many unique visitors this Dashboard had.
+ */
 
 function UniqueVisitorsPanel(props) {
         return (

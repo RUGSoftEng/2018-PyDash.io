@@ -46,7 +46,9 @@ const styles = theme => ({
   },
 });
 
-
+/**
+ * The main Dashboard page that cointains all general statistics we've gathered for it.
+ */
 class StatisticsPage extends Component {
     constructor(props) {
         super(props);

@@ -19,8 +19,9 @@ function getKeys() {
     return keys;
 }
 
-
-
+/**
+ * Heatmap of visitors that have been visiting this Dashboard.
+ */
 class VisitorsHeatmapGraph extends Component {
     render() {
         let keys = getKeys();
