@@ -4,7 +4,8 @@ import axios from 'axios';
 
 import _find from 'lodash-es/find';
 
-import BoxplotPanel from './BoxplotPanel.js';
+import BoxplotPanel from './BoxplotPanel';
+import MiscDataPanel from './MiscDataPanel';
 
 class Endpoint extends Component {
   constructor(props) {
@@ -33,13 +34,17 @@ class Endpoint extends Component {
 
   render() {
       console.log("ENDPOINT DATA", this.state);
-      return (
-        <div>
-          <h1>Page of endpoint "{this.props.endpointData.name}"</h1>
-          <BoxplotPanel data={this.state.endpointData} />
-
-        </div>
-      )
+      if (!this.state.endpointData.aggregates) {
+        return (<h2>Loading...</h2>);
+      } else {
+        return (
+          <div>
+            <h1>Page of endpoint "{this.props.endpointData.name}"</h1>
+            <BoxplotPanel data={this.state.endpointData.aggregates} />
+            <MiscDataPanel data={this.state.endpointData.aggregates} />
+          </div>
+        );
+      }
     }
   }
   
