@@ -36,11 +36,13 @@ Involved usage example:
 import uuid
 import persistent
 from enum import Enum
+from datetime import datetime, timedelta, timezone
+
+from pydash_app.dashboard.downtime import DowntimeLog
 
 from pydash_app.dashboard.endpoint import Endpoint
 from ..dashboard.aggregator import Aggregator
 from pydash_app.dashboard.aggregator.aggregator_group import AggregatorGroup, truncate_datetime_by_granularity
-
 
 class DashboardState(Enum):
     """
@@ -85,12 +87,15 @@ class Dashboard(persistent.Persistent):
     This task is handled by the `dashboard_repository`.
     """
 
-    def __init__(self, url, token, user_id, name=None):
+    def __init__(self, url, token, user_id, name=None, monitor_downtime=False):
         if not isinstance(url, str) or not isinstance(token, str):
             raise TypeError("Dashboard expects both url and token to be strings.")
 
         if name is not None and not isinstance(name, str):
             raise TypeError("Dashboard expects name to be a string.")
+
+        if not isinstance(monitor_downtime, bool):
+            raise TypeError("Dashboard expects monitor_downtime to be a string.")
 
         # Make sure integers and strings are allowed as well.
         if not isinstance(user_id, uuid.UUID):
@@ -110,6 +115,9 @@ class Dashboard(persistent.Persistent):
 
         self._endpoint_calls = []  # list of unfiltered endpoint calls, for use with an aggregator.
         self._aggregator_group = AggregatorGroup()
+
+        self.monitor_downtime = monitor_downtime
+        self._downtime_log = DowntimeLog()
 
     def __repr__(self):
         return f'<{self.__class__.__name__} id={self.id} url={self.url}>'
@@ -262,7 +270,7 @@ class Dashboard(persistent.Persistent):
         :raises KeyError: This happens when the statistic is not supported by the dashboard.
         """
         return self._aggregator_group.fetch_aggregator(filters).as_dict()[statistic]
-
+    
     def statistic_per_timeslice(self, statistic, timeslice, timeslice_is_static, start_datetime, end_datetime, filters={}):
         """
         Slices up the specified datetime range (=[start_datetime, end_datetime)) into slices of the size of `timeslice`.
@@ -334,3 +342,33 @@ class Dashboard(persistent.Persistent):
             return_dict[datetime] = aggregator.as_dict()[statistic]
 
         return return_dict
+
+    def add_ping_result(self, is_up, ping_datetime=datetime.now(tz=timezone.utc)):
+        """
+        Adds the result of a ping request to the dashboard.
+        :param is_up: Whether the dashboard's web service is up.
+        :param ping_datetime: When the ping took place (approximately); defaults to the current time in UTC.
+        """
+        self._downtime_log.add_ping_result(is_up, ping_datetime)
+
+    def get_downtime_data(
+            self,
+            start=datetime.now(tz=timezone.utc).date() - timedelta(days=90),
+            end=datetime.now(tz=timezone.utc).date()):
+        """
+        Returns a dict containing this dashboard's downtime data for a given date range.
+        :param start: The start date (exclusive; defaults to 90 days before the current date).
+        :param end: The end date (inclusive; defaults to the current date).
+        :return: A dictionary containing the dashboard's downtime data in the given date range.
+        """
+        return {
+            'downtime_intervals': self._downtime_log.get_downtime_intervals(start, end),
+            'total_downtimes': self._downtime_log.get_total_downtimes(start, end),
+            'downtime_percentage': self._downtime_log.get_downtime_percentage(start, end)
+        }
+
+    # Required because `multi_indexed_collection` puts dashboards in a set,
+    #  that needs to order its keys for fast lookup.
+    # Because the IDs are unchanging integer values, use that.
+    def __lt__(self, other):
+        return self.id < other.id
