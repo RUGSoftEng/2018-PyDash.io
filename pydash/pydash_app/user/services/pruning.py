@@ -20,7 +20,7 @@ def schedule_periodic_pruning_task(
     :param scheduler: The TaskScheduler instance that should schedule this user pruning task and execute it.
       Defaults to the default task scheduler of pydash.periodic_tasks.
     """
-    scheduler.add_periodic_task(
+    periodic_tasks.add_periodic_task(
         name=('users', 'pruning'),
         task=_prune_unverified_users,
         interval=interval,
