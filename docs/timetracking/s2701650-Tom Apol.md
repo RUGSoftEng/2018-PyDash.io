@@ -120,3 +120,45 @@
 | *2018-05-28* | 22:00-1:25 | Dashboard routes |
 | *2018-05-29* | 12:40-16:15 | Dashboard routes (testing) |
 | *2018-05-29* | 16:30-17:45 | Dashboard routes (final fixes) |
+| *2018-05-30* | 16:30-18:45 | Refactoring statistic per timeslice methods |
+| *2018-05-31* | 16:05-18:45 | Backend API Request: Response time per version #413 |
+| *2018-05-31* | 19:45-23:50 | Backend API Request: Response time per version #413 & Refactoring statistics |
+| *2018-06-01* | 16:20-18:10 | Attempt at resolving periodic task scheduling issues |
+| *2018-06-01* | 18:15-19:20 | Backend API Request: Response time per version #413 - PR cleanup |
+| *2018-06-01* | 20:20-20:40 | Backend API Request: Response time per version #413 - PR cleanup |
+| *2018-06-02* | 14:30-16:35 | Backend API request: per-endpoint execution times boxplot #412 |
+| *2018-06-02* | 18:45-20:20 | Attempt at resolving periodic task scheduling issues |
+| *2018-06-02* | 22:00-1:20 | Attempt at resolving periodic task scheduling issues |
+| *2018-06-03* | 14:20-15:30 | Dealing with login issues (database related?) & statistic_per_timeslice fix |
+| *2018-06-03* | 15:30-17:25 | Writing database conflict resolution code |
+| *2018-06-03* | 18:00-18:40 | Writing database conflict resolution code |
+| *2018-06-03* | 19:50-22:20 | Writing database conflict resolution code |
+| *2018-06-04* | 11:00-11:25 | Reading up on Zope TransactionManager alternatives 
+(solution to ConflictErrors on high traffic deployment?) |
+| *2018-06-04* | 13:00-13:45 | Misc things/maintenance |
+| *2018-06-04* | 15:00-17:00 | Meeting & presentation rehearsal |
+| *2018-06-04* | 17:00-18:00 | Making user registration deployment ready & presentation rehearsal |
+| *2018-06-07* | 16:20-17:30 | Fixing timeslice feature in `/api/dashboards/<id>` url |
+| *2018-06-07* | 18:35-20:20 | Fixing timeslice feature in `/api/dashboards/<id>` url |
+| *2018-06-07* | 20:35-21:25 | Fixing timeslice feature in `/api/dashboards/<id>` url |
+| *2018-06-08* | 18:20-21:10 | Fixing timeslice feature in `/api/dashboards/<id>` url |
+| *2018-06-09* | 15:15-17:50 | Fixing timeslice feature in `/api/dashboards/<id>` url |
+| *2018-06-10* | 15:00-15:40 | Redesigning and rewriting timeslice feature in `/api/dashboards/<id>` url |
+| *2018-06-14* | 17:10-18:00 | Redesigning and rewriting timeslice feature in `/api/dashboards/<id>` url |
+| *2018-06-17* | 17:00-18:00 | Redesigning and rewriting timeslice feature in `/api/dashboards/<id>` url |
+| *2018-06-17* | 21:30-0:15 | Redesigning and rewriting timeslice feature in `/api/dashboards/<id>` url |
+| *2018-06-18* | 12:00-13:00 | Redesigning and rewriting timeslice feature in `/api/dashboards/<id>` url |
+| *2018-06-18* | 13:45-14:55 | Redesigning and rewriting timeslice feature in `/api/dashboards/<id>` url |
+| *2018-06-18* | 15:00-16:00 | Team meeting |
+| *2018-06-19* | 16:25-16:50 | Redesigning and rewriting timeslice feature in `/api/dashboards/<id>` url |
+| *2018-06-20* | 16:30-17:00 | Redesigning and rewriting timeslice feature in `/api/dashboards/<id>` url |
+| *2018-06-20* | 17:05-18:35 | Filling in the Peer- and Self-evaluation form |
+| *2018-06-21* | 15:55-16:30 | Redesigning and rewriting timeslice feature in `/api/dashboards/<id>` url |
+| *2018-06-22* | 16:00-19:20 | Addressing python part of the documentation #443 |
+| *2018-06-22* | 20:00-22:00 | Fixing dynamic timeslice bug in `/api/dashboards/<id>` url |
+| *2018-06-23* | 0:00-1:20 | Finishing documentation for `/api/dashboards/<id>` url and related files |
+| *2018-06-23* | 1:20-2:10 | Finishing documentation for `/api/dashboards/<id>` url and related files + PR |
+| *2018-06-23* | 16:00-17:15 | Fixing docstring error and splitting `/api/dashboards/<id>` route |
+| *2018-06-23* | 17:15-17:45 | Updating ADD - API specification |
+| *2018-06-24* | 14:15-16:15 | Miscellanious things, discussion and PR checking |
+| *2018-06-24* | 15:00-18:55 | Misc things, general documentation |

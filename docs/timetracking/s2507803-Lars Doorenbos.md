@@ -87,3 +87,15 @@
 | *2018-05-28* | 19:30-20:40 | #349 and #353 |
 | *2018-05-29* | 9:00-10:00 | Fixing PRs & refactoring |
 | *2018-05-29* | 21:45-22:00 | Final updates presprint |
+| *2018-05-30* | 8:30-9:10 | Fix other PR |
+| *2018-06-02* | 15:00-16:00 | Trying to fix issues |
+| *2018-06-04* | 15:00-17:00 | Meeting & presentation rehearsal |
+| *2018-06-04* | 20:00-22:00 | Running issues (AGAIN) + small issues |
+| *2018-06-05* | 14:00-17:10 | Presentations |
+| *2018-06-08* | 11:00-12:00 | Fixing small issues |
+| *2018-06-12* | 14:45-17:00 | sqlite3 trouble |
+| *2018-06-16* | 20:00-20:15 | Survey |
+| *2018-06-18* | 15:00-17:00 | Internal meeting |
+| *2018-06-24* | 15:40-16:20 | React doc tools  |
+| *2018-06-24* | 16:30-17:30 | React doc tools v2 |
+| *2018-06-25* | 15:00-17:00 | Final meeting |
