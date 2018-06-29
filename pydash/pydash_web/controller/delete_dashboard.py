@@ -28,6 +28,7 @@ def delete_dashboard(dashboard_id):
 
     periodic_tasks.remove_task(('dashboard', valid_dashboard.id, 'historic_fetching'))
     periodic_tasks.remove_task(('dashboard', valid_dashboard.id, 'fetching'))
+    periodic_tasks.remove_task(('dashboard', valid_dashboard.id, 'pinging'))
 
     result = {'message': 'Successfully removed dashboard'}
     return jsonify(result), 200

@@ -20,3 +20,4 @@ from .delete_dashboard import delete_dashboard
 from .execution_times_boxplots import endpoint_execution_times_boxplots
 from .visitor_heatmap import visitor_heatmap
 from .execution_times_per_version import execution_times_per_version
+from .downtime import dashboard_downtime

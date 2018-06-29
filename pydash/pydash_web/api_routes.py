@@ -96,7 +96,6 @@ def get_visitor_heatmap(dashboard_id):
 def get_unique_visitor_heatmap(dashboard_id):
     return controller.visitor_heatmap(dashboard_id, 'unique_visitors')
 
-
 @api.route("/api/dashboards/<dashboard_id>/endpoint_execution_times_boxplots", methods=["GET"])
 @login_required
 def get_endpoint_execution_times_boxplots(dashboard_id):
@@ -119,3 +118,9 @@ def get_execution_times_per_version_dashboard(dashboard_id):
 @login_required
 def get_execution_times_per_version_endpoint(dashboard_id, endpoint_name):
     return controller.execution_times_per_version(dashboard_id=dashboard_id, endpoint_name=endpoint_name)
+
+  
+@api.route("/api/dashboards/<dashboard_id>/downtime", methods=["GET"])
+@login_required
+def get_dashboard_downtime(dashboard_id):
+    return controller.dashboard_downtime(dashboard_id)
