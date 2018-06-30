@@ -96,14 +96,17 @@ def remove_from_repository(user_id):
 def find(user_id):
     """
     Returns a single User-entity with the given UUID or None if it could not be found.
-
-    user_id- UUID of the user we hope to find."""
+    :param user_id: The ID of the User-entity to be removed. This can be either a UUID-entity or the corresponding
+        string representation.
+    """
     return repository.find(user_id)
 
 
 def maybe_find_user(user_id):
     """
     Returns the User entity, or `None` if it does not exist.
+    :param user_id: The ID of the User-entity to be removed. This can be either a UUID-entity or the corresponding
+        string representation.
 
     >>> user = User("Gandalf", "pass", 'some@email.com')
     >>> add_to_repository(user)
@@ -127,7 +130,7 @@ def find_by_name(name):
     """
     Returns a single User-entity with the given `name`, or None if it could not be found.
 
-    name -- Name of the user we hope to find.
+    :param name: Name of the user we hope to find.
     """
     return repository.find_by_name(name)
 
@@ -145,8 +148,9 @@ def authenticate(name, password):
     Attempts to authenticate the user with name `name`
     and password `password`.
 
-    If authentication fails (unknown user or incorrect password), returns None.
-    Otherwise, returns the user object.
+    :param name: A string indicating the user's name.
+    :param password: A string indicating the user's password.
+    :returns: Returns the user object. If authentication fails (unknown user or incorrect password), returns None.
     """
     maybe_user = find_by_name(name)
     if maybe_user is None or not maybe_user.check_password(password):
@@ -160,14 +164,22 @@ def verify(verification_code):
         This is intended as a one-time action per user after registration.
         :param verification_code: The verification code that should match the User-entity's verification code.
             Can be a string or UUID object.
-        :return: Returns True if both verification codes are equal, returns False otherwise.
-            Raises an InvalidVerificationCodeError when the provided verification code is invalid.
-            Raises an VerificationCodeExpiredError when the provided verification code has expired.
+        :raises InvalidVerificationCodeError: When the provided verification code is invalid.
+        :raises VerificationCodeExpiredError: When the provided verification code has expired.
         """
     verification.verify(verification_code)
 
 
 def check_password_requirements(password):
+    f"""
+    Checks whether the given password conforms to at least one set of rules in the following series of alternative requirements:
+     - Password contains at least one upper-case character, at least one non-alphabetical character and is at least
+       {_MINIMUM_PASSWORD_LENGTH1} characters long.
+     - Password is at least {_MINIMUM_PASSWORD_LENGTH2} characters long.
+
+    :param password: A string denoting the password to check.
+    :return: Whether the password conforms to at least one set of the above mentioned rules.
+    """
     rules1 = [
         lambda xs: any(x.isupper() for x in xs),
         lambda xs: any(not x.isalpha() for x in xs),

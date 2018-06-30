@@ -13,8 +13,8 @@ def verify(verification_code):
     :param verification_code: The verification code that should match the User-entity's verification code.
         Can be a string or UUID object.
     :return: Returns True if both verification codes are equal, returns False otherwise.
-        Raises an InvalidVerificationCodeError when the provided verification code is invalid.
-        Raises an VerificationCodeExpiredError when the provided verification code has expired.
+    :raises InvalidVerificationCodeError: When the provided verification code is invalid.
+    :raises VerificationCodeExpiredError: When the provided verification code has expired.
     """
     # Ensure verification code can be a string, an integer or a UUID object.
     if not isinstance(verification_code, uuid.UUID):

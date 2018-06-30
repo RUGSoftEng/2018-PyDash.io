@@ -10,13 +10,16 @@ import DashboardRoutes from './dashboard/DashboardRoutes';
 import OverviewPage from './overview/OverviewPage';
 import SettingsPage from './settings/SettingsPage';
 
-
+/**
+ * Similar to `Routes`, this component performs routing, but for the website after being authenticated.
+ *
+ */
 class AuthenticatedRoutes extends Component {
     render = () => {
         return (
             <BreadcrumbRoute path='/overview' title='Dashboards' render={ ({ match }) => (
                 <div>
-                    <Route exact path={match.url + '/'} component={() => (<OverviewPage dashboards={this.props.dashboards} />)} />
+                    <Route exact path={match.url + '/'} component={() => (<OverviewPage dashboards={this.props.dashboards} updateData={this.props.updateData} />)} />
                     <BreadcrumbRoute exact path={match.url + '/settings'} component={() => (<SettingsPage username={this.props.username} />)} title='Settings' />
                     <Route path={match.url + '/dashboards/'} render={ ({ match }) => (
                         <Route path={match.url + '/:id'} render={ ({match}) => {

@@ -16,7 +16,7 @@ import VisitsGraph from './VisitsGraph';
 
 
 class VisitsFetcher extends StatisticFetcher {
-    statistic_name = "visits_per_day";
+    statistic_name = "total_visits";
 
     render = () => {
         console.log("statistic data:", this.state.statistic_data);
@@ -34,6 +34,9 @@ VisitsFetcher.propTypes = {
 }
 
 
+/**
+ * A Panel containing a line graph showing how many visitors this Dashboard had.
+ */
 function VisitsPanel(props) {
     return (
         <ExpansionPanel>

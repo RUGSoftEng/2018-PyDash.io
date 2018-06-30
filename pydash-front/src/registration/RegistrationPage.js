@@ -22,6 +22,12 @@ const styles = theme => ({
     },
   }); 
 
+  /**
+   * Renders the registration page. Also handles the register request itself, including making sure all the necessary fields
+   * are filled in correctly. Shows relevant error messages when something is going wrong and provides an explanation on
+   * the required security for passwords.
+   * 
+   */
 class RegistrationPage extends Component {
     constructor(props) {
       super(props);
@@ -73,15 +79,20 @@ class RegistrationPage extends Component {
     handlePassword = event => {
         const target_val = event.target.value;
         let password_warning = null;
-        if(target_val.length < 8){
+        let password_confirmation_warning = null;
+        if(target_val.length > 0 && target_val.length < 8){
             password_warning = "The password should be either > 8 chars, containing at least one capital and non-alphabetic char, or > 12 chars.";
-        }
-        if(target_val.length===0){
+        } else {
             password_warning=null;
         }
+        if(target_val !== this.state.password_confirmation && target_val.length > 0){
+            password_confirmation_warning = "The passwords are not the same!";
+        }
+
         this.setState((prevState) => {
             let warnings = prevState.warnings
             warnings['password'] = password_warning;
+            warnings['password_confirmation'] = password_confirmation_warning;
             return {
                 password: target_val,
                 warnings: warnings,
@@ -92,11 +103,8 @@ class RegistrationPage extends Component {
     handlePasswordConfirmation = event => {
         const target_val = event.target.value;
         let password_confirmation_warning;
-        if(target_val !== this.state.password){
+        if(target_val !== this.state.password && target_val.length > 0){
             password_confirmation_warning = "The passwords are not the same!";
-        }
-        if(target_val.length===0){
-            password_confirmation_warning=null;
         }
         this.setState((prevState) => {
             let warnings = prevState.warnings
@@ -107,6 +115,7 @@ class RegistrationPage extends Component {
             }
         })
     }
+
 
 
     handleClick = () => {

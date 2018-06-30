@@ -17,6 +17,8 @@ import Snackbar from 'material-ui/Snackbar';
 import IconButton from 'material-ui/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
+
+
 import { showNotification } from "../../Notifier";
 
 const styles = theme => ({
@@ -42,6 +44,12 @@ const styles = theme => ({
     marginRight: theme.spacing.unit,
     width: 200,
   },
+  textField2: {
+    flexBasis: 200,
+  },
+  margin: {
+    margin: theme.spacing.unit,
+  },
 
   EditDeleteIcons: {
     float:"right",
@@ -61,25 +69,36 @@ const styles = theme => ({
 
 });
 
+/**
+ * Component representing the settings page.
+ *
+ * Provides rendering and functionality for changing account details, enabling
+ * disabling sounds, and removing user accounts.
+ *
+ */
 class SettingsPage extends Component {
 
 
   state = {
     username: '',
     new_username: '',
-    email: this.props.email_address,
+    email: this.props.mail,
     new_email:'',
     password:'',
     new_password:'',
     current_password:'',
     passConfirm:'',
     error:false,
+    error2:false,
     open: false,
     openDeletion: false,
     checked: true,
     SoundSettings: true,
+    play_sounds: true,
     openS: false,
-    loading: false
+    loading: false,
+    showPassword: false,
+
   };
 componentWillMount = () => {
     this.setState({
@@ -101,6 +120,13 @@ handleType = key => event => {
   this.setState({
       [key]: event.target.value
   });
+};
+handleMouseDownPassword = event => {
+  event.preventDefault();
+};
+
+handleClickShowPassword = () => {
+  this.setState({ showPassword: !this.state.showPassword });
 };
 
 handleDelete = (e) => {
@@ -197,27 +223,38 @@ handleCloseSnack = (event, reason) => {
 handleOkButton = (e) => {
     e.preventDefault()
     let username = this.state.new_username,
-        email = this.state.new_email,
+        mail = this.state.new_email,
         new_password = this.state.new_password,
         current_password = this.state.current_password
-    if (!(username.trim()) && !(email.trim()) && !(new_password.trim()) && !(current_password.trim())) {
+      if ((!(new_password.trim()) && (current_password.trim())) || ((new_password.trim()) && !(current_password.trim()))) {
         this.setState(prevState => ({
             ...prevState,
             error:true,
-            snackbar:false,
+            openS:false,
+            helperText: 'Both fields are required!',
             
         }))
-      
-      return alert("All fields cannot be empty!");
   }
-      if(((username.trim())||email.trim())){
+
+    if (!(username.trim()) && !(mail.trim()) && !(new_password.trim()) && !(current_password.trim())) {
+        this.setState(prevState => ({
+            ...prevState,
+            error:true,
+            error2:true,
+            openS:false,
+            helperText2:"All fields cannot be empty!"
+        }))
+      
+      
+  }
+      if(((username.trim()) && (mail.trim()) && (new_password.trim()) && (current_password.trim()))){
       
              this.setState(prevState => ({
               ...prevState,
               loading: true,
           }))
-                axios.post(window.api_path + '/api/user/change_settings', {
-                username,email},{
+                axios.post(window.api_path + '/api/user/change_settings',  {
+                username,mail},{
                 method: 'post',
                 withCredentials: true, 
             }).then((response) => {
@@ -229,7 +266,7 @@ handleOkButton = (e) => {
             }))
                 console.log(response);
                 this.handleClose();
-                window.location.reload();
+                //window.location.reload();
             }).catch((error) => {
                 this.setState(prevState => ({
                 snackbar: false,
@@ -238,8 +275,119 @@ handleOkButton = (e) => {
                 console.log('changing settings failed');
                 this.handleClose();
             });
+            axios.post(window.api_path + '/api/user/change_password', {
+              new_password,
+              current_password,
+          },{
+              method: 'post',
+              withCredentials: true,
+            }).then((response) => {
+              console.log(response);
+              this.handleClose();
+              window.location.reload();
+          }).catch((error) => {
+            this.setState(prevState => ({
+              snackbar: false,
+              error:true,
+          }))
+          this.setState(prevState => ({
+            ...prevState,
+            error:true,
+            snackbar:false,
+            
+        }))
+              console.log('changing password failed');
+              this.handleClose();
+    });
           }
-    else if(((new_password.trim())||current_password.trim())){
+          else if(((username.trim()) && (mail.trim()))){
+      
+            this.setState(prevState => ({
+             ...prevState,
+             loading: true,
+         }))
+               axios.post(window.api_path + '/api/user/change_settings', {
+               username,mail},{
+               method: 'post',
+               withCredentials: true, 
+           }).then((response) => {
+             this.setState(prevState => ({
+               ...prevState,
+               error:true,
+               snackbar:false,
+               
+           }))
+               console.log(response);
+               this.handleClose();
+               window.location.reload();
+           }).catch((error) => {
+               this.setState(prevState => ({
+               snackbar: false,
+               error:true,
+           }))
+               console.log('changing settings failed');
+               this.handleClose();
+           });
+         }
+    else if((!(username.trim())&& mail.trim())){
+      
+            this.setState(prevState => ({
+             ...prevState,
+             loading: true,
+         }))
+               axios.post(window.api_path + '/api/user/change_settings', {
+               mail},{
+               method: 'post',
+               withCredentials: true, 
+           }).then((response) => {
+             this.setState(prevState => ({
+               ...prevState,
+               error:true,
+               snackbar:false,
+               
+           }))
+               console.log(response);
+               this.handleClose();
+               window.location.reload();
+           }).catch((error) => {
+               this.setState(prevState => ({
+               snackbar: false,
+               error:true,
+           }))
+               console.log('changing settings failed');
+               this.handleClose();
+           });
+         }
+      else if(((username.trim()) && !mail.trim())){
+      
+          this.setState(prevState => ({
+           ...prevState,
+           loading: true,
+       }))
+             axios.post(window.api_path + '/api/user/change_settings', {
+             username},{
+             method: 'post',
+             withCredentials: true, 
+         }).then((response) => {
+           this.setState(prevState => ({
+             ...prevState,
+             error:true,
+             snackbar:false,
+             
+         }))
+             console.log(response);
+             this.handleClose();
+             window.location.reload();
+         }).catch((error) => {
+             this.setState(prevState => ({
+             snackbar: false,
+             error:true,
+         }))
+             console.log('changing settings failed');
+             this.handleClose();
+         });
+       }
+    else if(((new_password.trim())&&current_password.trim())){
 
               this.setState(prevState => ({
                 ...prevState,
@@ -352,18 +500,19 @@ handleOkButton = (e) => {
               className={classes.textField}
    
               
-            />
-            
+            />            
             <TextField
               id="currentPassword"
-              label={this.props.password}
+              label="Old password"
               onChange={this.handleType('current_password')}
               margin="normal"
               type="password"
               error={this.state.error}   
               className={classes.textField}
+              helperText={this.state.helperText}
+
    
-            />
+              />
               <TextField
               autoFocus
               margin="dense"
@@ -372,6 +521,8 @@ handleOkButton = (e) => {
               type="new_username"
               onChange={this.handleChange('new_username')}
               fullWidth
+              error={this.state.error2}
+              
               className={classes.textField}
 
             />
@@ -379,10 +530,12 @@ handleOkButton = (e) => {
               autoFocus
               margin="normal"
               id="full-width"
-              label={this.state.email_address}
+              label="New email"
               type="name" 
               onChange={this.handleChange('new_email')}
               fullWidth   
+              error={this.state.error2}
+              helperText={this.state.helperText2}
               className={classes.textField}
 
             />

@@ -7,10 +7,6 @@ from copy import deepcopy
 from . import statistics
 
 
-def date_dict(dict):
-    # JS expects dates in the ISO 8601 Date format (example: 2018-03)
-    return {k.strftime("%Y-%m-%d"): v for (k, v) in dict.items()}
-
 class Aggregator(persistent.Persistent):
     """
     Maintains aggregate data for either a dashboard or a single endpoint.
@@ -19,11 +15,10 @@ class Aggregator(persistent.Persistent):
 
     contained_statistics_classes = OrderedSet([
         statistics.TotalVisits,
+        statistics.TotalExecutionTime,
         statistics.AverageExecutionTime,
-        statistics.VisitsPerDay,
         statistics.VisitsPerIP,
         statistics.UniqueVisitorsAllTime,
-        statistics.UniqueVisitorsPerDay,
         statistics.FastestExecutionTime,
         statistics.FastestQuartileExecutionTime,
         statistics.MedianExecutionTime,
@@ -31,6 +26,7 @@ class Aggregator(persistent.Persistent):
         statistics.NinetiethPercentileExecutionTime,
         statistics.NinetyNinthPercentileExecutionTime,
         statistics.SlowestExecutionTime,
+        statistics.Versions,
     ])
     statistics_classes_with_dependencies = OrderedSet()
     for statistic in contained_statistics_classes:
@@ -49,18 +45,6 @@ class Aggregator(persistent.Persistent):
         for endpoint_call in endpoint_calls:
             self.add_endpoint_call(endpoint_call)
 
-    # Workaround for aggregator problem #323 for now
-        from collections import defaultdict
-        self._visits_per_day_dict = defaultdict(int)
-        self._visits_per_day = defaultdict(int)
-        self._visits_per_ip = defaultdict(int)
-        self._unique_visitors = 0
-        self._unique_visitors_set = set()
-        self._unique_visitors_per_day = defaultdict(int)
-        self._unique_visitors_per_day_set = defaultdict(set)
-
-    # Workaround stops here
-
     def add_endpoint_call(self, endpoint_call):
         """
         Add an endpoint call and update aggregated data
@@ -72,17 +56,6 @@ class Aggregator(persistent.Persistent):
 
         self.endpoint_calls.append(endpoint_call)
         self._p_changed = True  # ZODB mark object as changed
-
-    #Workaround here again
-        date = endpoint_call.time.date()
-        self._visits_per_day_dict[date] += 1
-        self._visits_per_day = date_dict(self._visits_per_day_dict)
-        self._visits_per_ip[endpoint_call.ip] += 1
-        self._unique_visitors_set.add(endpoint_call.ip)
-        self._unique_visitors = len(self._unique_visitors_set)
-        self._unique_visitors_per_day_set[date].add(endpoint_call.ip)
-        self._unique_visitors_per_day = date_dict({k: len(v) for k, v in self._unique_visitors_per_day_set.items()})
-    #Workaround stops here again
 
     def as_dict(self):
         """
@@ -96,18 +69,19 @@ class Aggregator(persistent.Persistent):
         }
 
     def __add__(self, other):
-        """Creates a new aggregator object that combines the aggregates of both aggegators."""
+        """Creates a new Aggregator instance that combines the aggregates of both aggegators."""
         if other is None:
             return deepcopy(self)
 
         new = Aggregator()
-        new.endpoint_calls += self.endpoint_calls
-        new.endpoint_calls += other.endpoint_calls
+        new.endpoint_calls = [endpoint_call for endpoint_call in set(self.endpoint_calls).union(set(other.endpoint_calls))]
         for key, _ in new.statistics.items():
             new.statistics[key] = self.statistics[key].add_together(other.statistics[key], self.statistics, other.statistics)
         return new
 
     def __radd__(self, other):
+        """Creates a new Aggregator instance that combines the aggregates of both aggregators.
+         If other == 0 (e.g. when using sum() on an iterable of Aggregators), returns a copy of itself."""
         # Return a deep copy in case sum(<Aggregator iterable>) is called
         if other == 0:
             return self.deepcopy()
@@ -115,9 +89,10 @@ class Aggregator(persistent.Persistent):
             return self.__add__(other)
 
     def __iadd__(self, other):
+        """In-place version of _add_()."""
         if other is None:
             return self
-        self.endpoint_calls += other.endpoint_calls
-        for key, _ in self.statistics.items():
+        self.endpoint_calls = [endpoint_call for endpoint_call in set(self.endpoint_calls).union(set(other.endpoint_calls))]
+        for key in self.statistics.keys():
             self.statistics[key] = self.statistics[key].add_together(other.statistics[key], self.statistics, other.statistics)
         return self

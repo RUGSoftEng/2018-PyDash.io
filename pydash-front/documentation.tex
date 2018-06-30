@@ -1,0 +1,614 @@
+\hypertarget{components}{%
+\subsection{Components}\label{components}}
+
+\textbf{src/App.js}
+
+\hypertarget{app}{%
+\subsubsection{1. App}\label{app}}
+
+The entry point of the React application. Almost all work is delegated
+to subcomponents. The only work that the App component itself does, is
+to check if the user is logged in or not, and pass functions to
+lower-level components to sign a user in or out.
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+Property & Type & Required & Default value & Description\tabularnewline
+\midrule
+\endhead
+username & string & no & &\tabularnewline
+isAuthenticated & bool & yes & &\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}l@{}}
+\toprule
+\endhead
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\textbf{src/Notifier.js}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\#\#\# 1. Notifier\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+This component shows the notifications (`Snackbars') that the app might
+generate. This has been put in its own component that is included at the
+outside of the application, so that logging in/logging out and other
+state changes that might completely alter how the page will look, will
+be able to show notifications as well.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+The Notifier component is not used directly from within the app. Rather,
+the \texttt{showNotification()} function that this component file
+exports is. The application should only contain one Notifier component,
+because the \texttt{showNotification()} function expects there to only
+be one Notifier.\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{src/Routes.js}
+
+\hypertarget{routes}{%
+\subsubsection{1. Routes}\label{routes}}
+
+Will dispatch between the various top-level routes that the application
+uses.
+
+After having logged in, there are various sub-routes, which are
+dispatched in their own component, inside of AuthenticatedApp.
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+Property & Type & Required & Default value & Description\tabularnewline
+\midrule
+\endhead
+username & string & no & &\tabularnewline
+isAuthenticated & bool & yes & &\tabularnewline
+signInHandler & func & yes & &\tabularnewline
+signOutHandler & func & yes & &\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}l@{}}
+\toprule
+\endhead
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\textbf{src/authenticated\_app/AuthenticatedApp.js}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\#\#\# 1. AuthenticatedApp\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Base of the app after logging in. Renders the user interface and the
+relevant page for the current path. Also handles the updating of data
+for the dashboards linked to the logged in account.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Property \textbar{} Type \textbar{} Required \textbar{} Default value
+\textbar{} Description :--- \textbar{} :--- \textbar{} :--- \textbar{}
+:--- \textbar{} :---
+username\textbar{}string\textbar{}yes\textbar{}\textbar{}
+isAuthenticated\textbar{}bool\textbar{}yes\textbar{}\textbar{}
+signOutHandler\textbar{}func\textbar{}yes\textbar{}\textbar{}\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{src/authenticated\_app/AuthenticatedRoutes.js}
+
+\hypertarget{authenticatedroutes}{%
+\subsubsection{1. AuthenticatedRoutes}\label{authenticatedroutes}}
+
+Similar to \texttt{Routes}, this component performs routing, but for the
+website after being authenticated.
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+Property & Type & Required & Default value & Description\tabularnewline
+\midrule
+\endhead
+dashboards & object & no & &\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}l@{}}
+\toprule
+\endhead
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\textbf{src/authenticated\_app/dashboard/DashboardRoutes.js}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\#\#\# 1. DashboardRoutes\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Dispatches between all routes concerning a single dashboard.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Property \textbar{} Type \textbar{} Required \textbar{} Default value
+\textbar{} Description :--- \textbar{} :--- \textbar{} :--- \textbar{}
+:--- \textbar{} :---
+dashboard\textbar{}shape\textbar{}no\textbar{}\textbar{}
+match\textbar{}shape\textbar{}no\textbar{}\textbar{}\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{src/authenticated\_app/dashboard/statistics\_page/EndpointExecutionTimesPanel.js}
+
+\hypertarget{endpointexecutiontimespanel}{%
+\subsubsection{1.
+EndpointExecutionTimesPanel}\label{endpointexecutiontimespanel}}
+
+Panel containing the \texttt{EndpointExecutionTimesGraph}.
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+Property & Type & Required & Default value & Description\tabularnewline
+\midrule
+\endhead
+dashboard\_id & string & yes & &\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}l@{}}
+\toprule
+\endhead
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\textbf{src/authenticated\_app/dashboard/statistics\_page/ExecutionTimesGraph.js}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\#\#\# 1. ExecutionTimesGraph\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Displays the average execution time per the given dashboard's
+endpoint.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Property \textbar{} Type \textbar{} Required \textbar{} Default value
+\textbar{} Description :--- \textbar{} :--- \textbar{} :--- \textbar{}
+:--- \textbar{} :---
+data\textbar{}array\textbar{}yes\textbar{}\textbar{}
+title\textbar{}string\textbar{}yes\textbar{}\textbar{}\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{src/authenticated\_app/dashboard/statistics\_page/StatisticFetcher.js}
+
+\hypertarget{statisticfetcher}{%
+\subsubsection{1. StatisticFetcher}\label{statisticfetcher}}
+
+Base class component that specific Statistics-fetchers inherit.
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+Property & Type & Required & Default value & Description\tabularnewline
+\midrule
+\endhead
+timeslice & string & no & &\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}l@{}}
+\toprule
+\endhead
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\textbf{src/authenticated\_app/dashboard/statistics\_page/StatisticsPage.js}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\#\#\# 1. StatisticsPage\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+The main Dashboard page that cointains all general statistics we've
+gathered for it.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Property \textbar{} Type \textbar{} Required \textbar{} Default value
+\textbar{} Description :--- \textbar{} :--- \textbar{} :--- \textbar{}
+:--- \textbar{} :---
+theme\textbar{}object\textbar{}yes\textbar{}\textbar{}
+dashboard\textbar{}shape\textbar{}yes\textbar{}\textbar{}\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{src/authenticated\_app/dashboard/statistics\_page/TimesliceTabs.js}
+
+\hypertarget{timeslicetabs}{%
+\subsubsection{1. TimesliceTabs}\label{timeslicetabs}}
+
+A component put inside this component will receive the
+\texttt{timeslice} property
+
+This property is set, depending on the tab that the user selects (one of
+hour, day, week, month, year)
+
+\begin{longtable}[]{@{}l@{}}
+\toprule
+\endhead
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\textbf{src/authenticated\_app/dashboard/statistics\_page/UniqueVisitorsHeatmapPanel.js}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\#\#\# 1. UniqueVisitorsHeatmapPanel\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Panel containing a heatmap of all unique visitors that have been
+visiting this Dashboard.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Property \textbar{} Type \textbar{} Required \textbar{} Default value
+\textbar{} Description :--- \textbar{} :--- \textbar{} :--- \textbar{}
+:--- \textbar{} :---
+dashboard\_id\textbar{}string\textbar{}yes\textbar{}\textbar{}\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{src/authenticated\_app/dashboard/statistics\_page/UniqueVisitorsPanel.js}
+
+\hypertarget{uniquevisitorspanel}{%
+\subsubsection{1. UniqueVisitorsPanel}\label{uniquevisitorspanel}}
+
+A Panel containing a line graph showing how many unique visitors this
+Dashboard had.
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+Property & Type & Required & Default value & Description\tabularnewline
+\midrule
+\endhead
+dashboard\_id & string & yes & &\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}l@{}}
+\toprule
+\endhead
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\textbf{src/authenticated\_app/dashboard/statistics\_page/VisitorsHeatmapGraph.js}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\#\#\# 1. VisitorsHeatmapGraph\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Heatmap of visitors that have been visiting this Dashboard.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Property \textbar{} Type \textbar{} Required \textbar{} Default value
+\textbar{} Description :--- \textbar{} :--- \textbar{} :--- \textbar{}
+:--- \textbar{} :---
+data\textbar{}array\textbar{}yes\textbar{}\textbar{}
+title\textbar{}string\textbar{}yes\textbar{}\textbar{}\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{src/authenticated\_app/dashboard/statistics\_page/VisitorsHeatmapPanel.js}
+
+\hypertarget{visitorsheatmappanel}{%
+\subsubsection{1. VisitorsHeatmapPanel}\label{visitorsheatmappanel}}
+
+Panel containing a heatmap of all visitors that have been visiting this
+Dashboard.
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+Property & Type & Required & Default value & Description\tabularnewline
+\midrule
+\endhead
+dashboard\_id & string & yes & &\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}l@{}}
+\toprule
+\endhead
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\textbf{src/authenticated\_app/dashboard/statistics\_page/VisitsGraph.js}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\#\#\# 1. VisitsGraph\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+A line graph showing how many visitors this Dashboard had.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Property \textbar{} Type \textbar{} Required \textbar{} Default value
+\textbar{} Description :--- \textbar{} :--- \textbar{} :--- \textbar{}
+:--- \textbar{} :---
+data\textbar{}array\textbar{}yes\textbar{}\textbar{}
+title\textbar{}string\textbar{}yes\textbar{}\textbar{}
+tooltip\_title\textbar{}string\textbar{}yes\textbar{}\textbar{}
+height\textbar{}number\textbar{}yes\textbar{}\textbar{}
+timeslice\textbar{}string\textbar{}yes\textbar{}\textbar{}\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{src/authenticated\_app/dashboard/statistics\_page/VisitsPanel.js}
+
+\hypertarget{visitspanel}{%
+\subsubsection{1. VisitsPanel}\label{visitspanel}}
+
+A Panel containing a line graph showing how many visitors this Dashboard
+had.
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+Property & Type & Required & Default value & Description\tabularnewline
+\midrule
+\endhead
+dashboard\_id & string & yes & &\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}l@{}}
+\toprule
+\endhead
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\textbf{src/authenticated\_app/endpoint/EndpointPage.js}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\#\#\# 1. EndpointPage\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+The \texttt{EndpointPage} renders the details page of a single
+EndpointPage.\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{src/authenticated\_app/endpoint/EndpointsTable.js}
+
+\hypertarget{endpointstable}{%
+\subsubsection{1. EndpointsTable}\label{endpointstable}}
+
+\begin{longtable}[]{@{}l@{}}
+\toprule
+\endhead
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\textbf{src/authenticated\_app/overview/AddDashboardDialog.js}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\#\#\# 1. AddDashboardDialog\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\texttt{AddDashboardDialog} shows the modal dialog that allows a user to
+add a new dashboard to PyDash. It also performs the handling logic of
+saving the information that has been entered in the form.\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{src/authenticated\_app/overview/DashboardList.js}
+
+\hypertarget{dashboardlist}{%
+\subsubsection{1. DashboardList}\label{dashboardlist}}
+
+A list of dashboards, where each entry (\texttt{DashboardListItem})
+contains some general information about the dashboard.
+
+\begin{longtable}[]{@{}l@{}}
+\toprule
+\endhead
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\textbf{src/authenticated\_app/overview/DashboardListItem.js}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\#\#\# 1. DashboardListItem\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+The \texttt{DashboardListItem} displays some general information about
+the given dashboard;\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+This component is to be used as part of a \texttt{DashboardList}.\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{src/authenticated\_app/overview/OverviewPage.js}
+
+\hypertarget{overviewpage}{%
+\subsubsection{1. OverviewPage}\label{overviewpage}}
+
+The \texttt{OverviewPage} is the main page the user sees after logging
+in.
+
+\begin{longtable}[]{@{}l@{}}
+\toprule
+\endhead
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\textbf{src/authenticated\_app/settings/SettingsPage.js}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\#\#\# 1. SettingsPage\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Component representing the settings page.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Provides rendering and functionality for changing account details,
+enabling disabling sounds, and removing user accounts.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Property \textbar{} Type \textbar{} Required \textbar{} Default value
+\textbar{} Description :--- \textbar{} :--- \textbar{} :--- \textbar{}
+:--- \textbar{} :---
+classes\textbar{}object\textbar{}yes\textbar{}\textbar{}\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{src/authenticated\_app/user\_interface/Logout.js}
+
+\hypertarget{logout}{%
+\subsubsection{1. Logout}\label{logout}}
+
+Renders the logout icon, handles logout requests and redirects to the
+login page when succesful.
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+Property & Type & Required & Default value & Description\tabularnewline
+\midrule
+\endhead
+signOutHandler & func & yes & &\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}l@{}}
+\toprule
+\endhead
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\textbf{src/authenticated\_app/user\_interface/Menu.js}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\#\#\# 1. MainMenuItems\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\#\#\# 2. OtherMenuItems\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{src/authenticated\_app/user\_interface/UserInterface.js}
+
+\hypertarget{userinterface}{%
+\subsubsection{1. UserInterface}\label{userinterface}}
+
+Shows the user interface for logged in users:
+
+\begin{itemize}
+\tightlist
+\item
+  The top menu
+\item
+  The side menu that is used for navigation (whose contents live in
+  \texttt{Menu.js})
+\item
+  The \texttt{Breadcrumbs} of the currently shown page.
+\end{itemize}
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+Property & Type & Required & Default value & Description\tabularnewline
+\midrule
+\endhead
+classes & object & yes & &\tabularnewline
+theme & object & yes & &\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}l@{}}
+\toprule
+\endhead
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\textbf{src/common/BreadcrumbRoute.js}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\#\#\# 1. BreadcrumbRoute\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+A special version of the \texttt{Route} component that the
+\texttt{react-router-dom} exposes which not only contains a Route
+handler, but will also add that part of the route to the breadcrumbs of
+the current page. This means that when multiple of these components are
+nested in one another, the breadcrumbs of this nesting will show up.
+(The actual rendering of these breadcrumbs happens in
+\texttt{UserInterface} using the \texttt{Breadcrumbs} component)\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Property \textbar{} Type \textbar{} Required \textbar{} Default value
+\textbar{} Description :--- \textbar{} :--- \textbar{} :--- \textbar{}
+:--- \textbar{} :---
+includeSearch\textbar{}\textbar{}no\textbar{}false\textbar{}
+isLink\textbar{}\textbar{}no\textbar{}true\textbar{}\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{src/common/ResponsiveGraphWrapper.js}
+
+\hypertarget{responsivegraphwrapper}{%
+\subsubsection{1. ResponsiveGraphWrapper}\label{responsivegraphwrapper}}
+
+A Nivo Graph component (or other component that you want to auto-resize
+to fill its container width), can be added to this component to ensure
+that this resizing will happen.
+
+This component will pass on the `width' prop to the child, which will be
+set to the measured width the component ('s container, the
+ResponsiveGraphWrapper itself) currently has on the page.
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+Property & Type & Required & Default value & Description\tabularnewline
+\midrule
+\endhead
+height & number & yes & &\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}l@{}}
+\toprule
+\endhead
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\textbf{src/login/LoginPage.js}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\#\#\# 1. LoginPage\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Renders the login page and handles the login requests. Lets the user
+know if something went wrong with logging in, warns the user about an
+unsafe password if he has one and contains a link to the register
+page.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Property \textbar{} Type \textbar{} Required \textbar{} Default value
+\textbar{} Description :--- \textbar{} :--- \textbar{} :--- \textbar{}
+:--- \textbar{} :---
+signInHandler\textbar{}func\textbar{}yes\textbar{}\textbar{}\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{src/registration/RegistrationPage.js}
+
+\hypertarget{registrationpage}{%
+\subsubsection{1. RegistrationPage}\label{registrationpage}}
+
+Renders the registration page. Also handles the register request itself,
+including making sure all the necessary fields are filled in correctly.
+Shows relevant error messages when something is going wrong and provides
+an explanation on the required security for passwords.
+
+\begin{longtable}[]{@{}lllll@{}}
+\toprule
+Property & Type & Required & Default value & Description\tabularnewline
+\midrule
+\endhead
+signInHandler & func & yes & &\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}l@{}}
+\toprule
+\endhead
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\textbf{src/registration/VerificationPage.js}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+\#\#\# 1. VerificationPage\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.08\columnwidth}\raggedright
+Renders the verification page new accounts are sent to after clicking on
+the vericiation link in their e-mail.\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+This document was generated by the \textbf{React DOC Generator v1.2.5}.

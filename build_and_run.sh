@@ -4,8 +4,6 @@ ExportEnvironmentVars()
 {
   export FLASK_APP=pydash.py
   export FLASK_ENV=development
-  export MAIL_USERNAME=noreply.pydashtestmail@gmail.com
-  export MAIL_PASSWORD=verysecurepydashpassword
   export FMD_CONFIG_PATH=fmd_config.cfg
 }
 
@@ -100,6 +98,45 @@ RunTests()
     PydashPrint "Done!"
 }
 
+BuildDocumentation()
+{
+    RunDatabase
+    PydashPrint "Starting Backend Documentation generation"
+    cd pydash/sphinx_docs
+    pipenv run make latexpdf
+    cd ../..
+    cp ./pydash/sphinx_docs/_build/latex/PyDash.pdf ./docs/PyDashDocumentation.pdf
+    PydashPrint "Resulting Backend Documentation PDF can be found in ./docs/PyDashDocumentation.pdf"
+    killall runzeo
+
+    PydashPrint "Starting Frontend Documentation generation"
+    cd pydash-front
+    yarn doc
+    sed -i.bak 's/-----/\n\n/g' DOCUMENTATION.md
+    sed -i.bak 's/1. //g' DOCUMENTATION.md
+    sed -i.bak 's/^Components//g' DOCUMENTATION.md
+    sed -i '1i # PyDash Front-end Components Documentation \n\n\n' DOCUMENTATION.md
+    pandoc DOCUMENTATION.md -o PyDashFrontDocumentation.pdf
+    cd ..
+    cp ./pydash-front/PyDashFrontDocumentation.pdf ./docs/PyDashFrontDocumentation.pdf
+    PydashPrint "Resulting Frontend Documentation PDF can be found in ./docs/PyDashFrontDocumentation.pdf"
+
+    PydashPrint "Done!"
+    PydashPrint "Documentation files in ./docs updated!"
+
+
+}
+
+RunProduction()
+{
+    PydashPrint "Starting Production Server..."
+    export FLASK_DEBUG=0;
+    export FLASK_ENV=production;
+    export ENV=production;
+    RunDatabase
+    RunFlask
+}
+
 
 if [ $# -gt 0 ];
 then
@@ -122,6 +159,10 @@ then
         then
             RunDatabase
         fi
+        if [ $i == "production" ];
+        then
+            RunProduction
+        fi
         if [ $i == "server" ];
         then
             xdg-open "http://localhost:5000" &
@@ -138,6 +179,10 @@ then
         if [ $i == "shell" ];
         then
             RunFlaskConsole
+        fi
+        if [ $i == "documentation" ];
+        then
+            BuildDocumentation
         fi
     done;
     PydashPrint "Done! Goodbye :-)"

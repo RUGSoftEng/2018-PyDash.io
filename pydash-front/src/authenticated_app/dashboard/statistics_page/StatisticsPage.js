@@ -23,11 +23,6 @@ import { Button } from 'material-ui';
 import Dialog, { DialogActions, DialogContent, DialogContentText, DialogTitle,} from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 
-
-// Helper:
-import {dict_to_xy_arr} from "../../../utils";
-
-
 function TabContainer({ children, dir }) {
   return (
     <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
@@ -51,7 +46,9 @@ const styles = theme => ({
   },
 });
 
-
+/**
+ * The main Dashboard page that cointains all general statistics we've gathered for it.
+ */
 class StatisticsPage extends Component {
     constructor(props) {
         super(props);
@@ -84,18 +81,13 @@ class StatisticsPage extends Component {
             method: 'get',
             withCredentials: true
         }).then((response) => {
-            //console.log(response);
+            console.log("Response: ", response);
             if (response.data.hasOwnProperty('error')) {
                 this.setState(prevState => {
                     return {
                         ...prevState,
 
                         dashboard: response.data,
-                        
-
-                        total_visits: response.data.aggregates.total_visits,
-                        visits_per_day: dict_to_xy_arr(response.data.aggregates.visits_per_day),
-                        unique_visitors_per_day: dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day),
                         error: response.data.error,
                     }
                 });
@@ -107,9 +99,6 @@ class StatisticsPage extends Component {
 
                         dashboard: response.data,
 
-                        total_visits: response.data.aggregates.total_visits,
-                        visits_per_day: dict_to_xy_arr(response.data.aggregates.visits_per_day),
-                        unique_visitors_per_day: dict_to_xy_arr(response.data.aggregates.unique_visitors_per_day),
                     };
                 });
             }
@@ -180,7 +169,7 @@ class StatisticsPage extends Component {
         return (
             
 
-            <div className={"Name"}>
+            <div className="statistics_page" >
               <Tabs
                 value={this.state.current_tab}
                 onChange={this.changeTab}
@@ -200,7 +189,7 @@ class StatisticsPage extends Component {
               <TabContainer dir={theme.direction}>
                  <div ref={this.divRef} >
                     <h2>Dashboard: {this.state.dashboard.url}</h2>
-                    <h3>{this.state.error}</h3>
+                    <h3 className="dashboard_error_message">{this.state.error}</h3>
                     <div>
                         <VisitsPanel dashboard_id={this.props.dashboard.id} />
                         <UniqueVisitorsPanel dashboard_id={this.props.dashboard.id} />

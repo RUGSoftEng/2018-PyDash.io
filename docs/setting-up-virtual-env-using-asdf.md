@@ -28,7 +28,23 @@ asdf plugin-add python
 asdf install python 3.6
 
 # Run this from within the project folder; it probably is already set to 3.6 by the `.tool-versions`-file that is there
+# In that case, you do not need to run this.
 asdf local python 3.6
+```
+
+# Installing Nodejs and Yarn
+
+```bash
+asdf plugin-add nodejs
+asdf install nodejs 10.1.0
+
+# Run this from within the project folder; it probably is already set to 10.1.0 by the `.tool-versions`-file that is there
+# In that case, you do not need to run this.
+asdf local nodejs 10.1.0
+asdf reshim nodejs
+
+# Install Yarn
+npm install -g yarn
 ```
 
 # Installing Pipenv
@@ -54,11 +70,4 @@ pipenv install flask
 
 ```bash
 pipenv install --dev
-```
-
-# Running Flask
-
-```bash
-# From within the `pydash` directory:
-FLASK_APP=pydash.py pipenv run flask run
 ```
