@@ -11,7 +11,7 @@
     "@pydash/react-scripts": "^1.3.0",
     "axios": "^0.18.0",
     "howler": "^2.0.9",
-    "lodash-es": "^4.17.8",
+    "lodash-es": "^4.17.21",
     "material-ui": "^1.0.0-beta.36",
     "material-ui-icons": "^1.0.0-beta.36",
     "nivo": "^0.31.0",
